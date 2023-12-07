@@ -1,6 +1,6 @@
 # Eleutherios
 
-A new Flutter project here.
+An open source sociopolitical or economic system.
 
 ## Getting Started
 
