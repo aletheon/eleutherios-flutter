@@ -1,6 +1,6 @@
 # Eleutherios
 
-A new Flutter project.
+A new Flutter project here.
 
 ## Getting Started
 
