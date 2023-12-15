@@ -20,13 +20,17 @@ class ServiceRepository {
   CollectionReference get _services =>
       _firestore.collection(FirebaseConstants.servicesCollection);
 
-  Stream<Service> getServiceById(String serviceId) {
+  Stream<Service?> getServiceById(String serviceId) {
     final DocumentReference documentReference = _services.doc(serviceId);
 
     Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
     return documentStream.map((event) {
-      return Service.fromMap(event.data() as Map<String, dynamic>);
+      if (event.exists) {
+        return Service.fromMap(event.data() as Map<String, dynamic>);
+      } else {
+        return null;
+      }
     });
   }
 
@@ -52,26 +56,39 @@ class ServiceRepository {
   }
 
   Stream<List<Service>> searchServices(String query) {
-    return _services
-        .where('public', isEqualTo: true)
-        .where(
-          'titleLowercase',
-          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-          isLessThan: query.isEmpty
-              ? null
-              : query.substring(0, query.length - 1) +
-                  String.fromCharCode(
-                    query.codeUnitAt(query.length - 1) + 1,
-                  ),
-        )
-        .snapshots()
-        .map((event) {
-      List<Service> services = [];
-      for (var doc in event.docs) {
-        services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
-      }
-      return services;
-    });
+    if (query.isNotEmpty) {
+      return _services
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    } else {
+      return _services
+          .where('public', isEqualTo: true)
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    }
   }
 
   FutureVoid createService(Service service) async {

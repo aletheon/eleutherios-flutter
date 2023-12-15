@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class PolicyScreen extends ConsumerWidget {
@@ -42,6 +43,15 @@ class PolicyScreen extends ConsumerWidget {
                                     : Image.network(
                                         policy.banner,
                                         fit: BoxFit.cover,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          return loadingProgress
+                                                      ?.cumulativeBytesLoaded ==
+                                                  loadingProgress
+                                                      ?.expectedTotalBytes
+                                              ? child
+                                              : const CircularProgressIndicator();
+                                        },
                                       ),
                           )
                         ],
@@ -74,12 +84,26 @@ class PolicyScreen extends ConsumerWidget {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    Text(
-                                      policy.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            policy.title,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        policy.public
+                                            ? const Icon(
+                                                Icons.lock_open_outlined)
+                                            : const Icon(Icons.lock_outlined,
+                                                color: Pallete.greyColor),
+                                      ],
                                     ),
                                     const SizedBox(
                                       height: 5,

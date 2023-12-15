@@ -60,7 +60,7 @@ class RegistrantScreen extends ConsumerWidget {
                             flexibleSpace: Stack(
                               children: [
                                 Positioned.fill(
-                                  child: service.banner ==
+                                  child: service!.banner ==
                                           Constants.serviceBannerDefault
                                       ? Image.asset(
                                           service.banner,
@@ -69,6 +69,15 @@ class RegistrantScreen extends ConsumerWidget {
                                       : Image.network(
                                           service.banner,
                                           fit: BoxFit.cover,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            return loadingProgress
+                                                        ?.cumulativeBytesLoaded ==
+                                                    loadingProgress
+                                                        ?.expectedTotalBytes
+                                                ? child
+                                                : const CircularProgressIndicator();
+                                          },
                                         ),
                                 )
                               ],
@@ -87,6 +96,8 @@ class RegistrantScreen extends ConsumerWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           service.image ==
                                                   Constants.avatarDefault
@@ -104,12 +115,27 @@ class RegistrantScreen extends ConsumerWidget {
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          Text(
-                                            'Registrant - ${service.title}',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  service.title,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              service.public
+                                                  ? const Icon(
+                                                      Icons.lock_open_outlined)
+                                                  : const Icon(
+                                                      Icons.lock_outlined,
+                                                      color: Pallete.greyColor),
+                                            ],
                                           ),
                                           const SizedBox(
                                             height: 5,

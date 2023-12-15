@@ -19,6 +19,14 @@ class ServiceToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('remove-policy');
   }
 
+  void addForum(BuildContext context) {
+    Routemaster.of(context).push('add-forum');
+  }
+
+  void removeForum(BuildContext context) {
+    Routemaster.of(context).push('remove-forum');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -48,6 +56,16 @@ class ServiceToolsScreen extends ConsumerWidget {
           leading: const Icon(Icons.remove_moderator_outlined),
           title: const Text('Remove Policy'),
         ),
+        ListTile(
+          onTap: () => addForum(context),
+          leading: const Icon(Icons.add_moderator_outlined),
+          title: const Text('Add Forum'),
+        ),
+        ListTile(
+          onTap: () => removeForum(context),
+          leading: const Icon(Icons.remove_moderator_outlined),
+          title: const Text('Remove Forum'),
+        )
       ]),
     );
   }

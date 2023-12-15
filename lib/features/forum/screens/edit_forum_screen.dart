@@ -145,7 +145,18 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
                                                     size: 40,
                                                   ),
                                                 )
-                                              : Image.network(forum.banner),
+                                              : Image.network(
+                                                  forum.banner,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    return loadingProgress
+                                                                ?.cumulativeBytesLoaded ==
+                                                            loadingProgress
+                                                                ?.expectedTotalBytes
+                                                        ? child
+                                                        : const CircularProgressIndicator();
+                                                  },
+                                                ),
                                     ),
                                   ),
                                 ),

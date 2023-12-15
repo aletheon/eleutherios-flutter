@@ -54,7 +54,7 @@ class ListUserFavoriteScreen extends ConsumerWidget {
                             .when(
                               data: (service) {
                                 return ListTile(
-                                  title: Text(service.title),
+                                  title: Text(service!.title),
                                   leading: service.image ==
                                           Constants.avatarDefault
                                       ? CircleAvatar(

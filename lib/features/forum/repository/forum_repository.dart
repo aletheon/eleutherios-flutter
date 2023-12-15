@@ -69,26 +69,36 @@ class ForumRepository {
   }
 
   Stream<List<Forum>> searchForums(String query) {
-    return _forums
-        .where('public', isEqualTo: true)
-        .where(
-          'titleLowercase',
-          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-          isLessThan: query.isEmpty
-              ? null
-              : query.substring(0, query.length - 1) +
-                  String.fromCharCode(
-                    query.codeUnitAt(query.length - 1) + 1,
-                  ),
-        )
-        .snapshots()
-        .map((event) {
-      List<Forum> forums = [];
-      for (var doc in event.docs) {
-        forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
-      }
-      return forums;
-    });
+    if (query.isNotEmpty) {
+      return _forums
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
+    } else {
+      return _forums.where('public', isEqualTo: true).snapshots().map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
+    }
   }
 
   FutureVoid createForum(Forum forum) async {

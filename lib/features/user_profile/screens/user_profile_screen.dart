@@ -57,6 +57,15 @@ class UserProfileScreen extends ConsumerWidget {
                                 : Image.network(
                                     user.banner,
                                     fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      return loadingProgress
+                                                  ?.cumulativeBytesLoaded ==
+                                              loadingProgress
+                                                  ?.expectedTotalBytes
+                                          ? child
+                                          : const CircularProgressIndicator();
+                                    },
                                   ),
                           ),
                           user.profilePic == Constants.avatarDefault
@@ -70,8 +79,18 @@ class UserProfileScreen extends ConsumerWidget {
                                   padding: const EdgeInsets.all(20)
                                       .copyWith(bottom: 50),
                                   child: CircleAvatar(
-                                    backgroundImage:
-                                        Image.network(user.profilePic).image,
+                                    backgroundImage: Image.network(
+                                      user.profilePic,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        return loadingProgress
+                                                    ?.cumulativeBytesLoaded ==
+                                                loadingProgress
+                                                    ?.expectedTotalBytes
+                                            ? child
+                                            : const CircularProgressIndicator();
+                                      },
+                                    ).image,
                                     radius: 45,
                                   ),
                                 ),

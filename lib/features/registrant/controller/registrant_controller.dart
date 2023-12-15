@@ -8,9 +8,11 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
 import 'package:reddit_tutorial/features/registrant/repository/registrant_repository.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/service.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,6 +21,13 @@ final getRegistrantByIdProvider =
   return ref
       .watch(registrantControllerProvider.notifier)
       .getRegistrantById(registrantId);
+});
+
+final serviceIsRegisteredInForumProvider =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  return ref
+      .watch(registrantControllerProvider.notifier)
+      .serviceIsRegisteredInForum(params.item1, params.item2);
 });
 
 final getRegistrantsProvider =
@@ -97,53 +106,66 @@ class RegistrantController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
-  void createRegistrant(String forumId, String forumUid, String serviceId,
-      String serviceUid, BuildContext context) async {
+  void createRegistrant(
+      String forumId, String serviceId, BuildContext context) async {
     state = true;
-    final user = await _ref.read(getUserByIdProvider(serviceUid)).first;
-    final registrantCount = await _ref
-        .read(registrantControllerProvider.notifier)
-        .getUserRegistrantCount(forumId, serviceUid)
-        .first;
-    String registrantId = const Uuid().v1().replaceAll('-', '');
-    List<String> defaultPermissions = [RegistrantPermissions.createpost.name];
-
-    // create registrant
-    Registrant registrant = Registrant(
-      registrantId: registrantId,
-      forumId: forumId,
-      forumUid: forumUid,
-      serviceId: serviceId,
-      serviceUid: serviceUid,
-      selected: registrantCount == 0 ? true : false,
-      permissions: defaultPermissions,
-      lastUpdateDate: DateTime.now(),
-      creationDate: DateTime.now(),
-    );
-    final res = await _registrantRepository.createRegistrant(registrant);
-
-    // update forum
     Forum? forum = await _ref
         .read(forumControllerProvider.notifier)
         .getForumById(forumId)
         .first;
-    forum!.registrants.add(registrantId);
-    final resForum = await _forumRepository.updateForum(forum);
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
 
-    // create new forum activity
-    if (user.activities.contains(forumId) == false) {
-      final activityController = _ref.read(activityControllerProvider.notifier);
-      activityController.createActivity(
-          ActivityType.forum.name, user.uid, forumId, forumUid);
+    if (forum != null && service != null) {
+      final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+      final registrantCount = await _ref
+          .read(registrantControllerProvider.notifier)
+          .getUserRegistrantCount(forum.forumId, service.uid)
+          .first;
+      String registrantId = const Uuid().v1().replaceAll('-', '');
+      List<String> defaultPermissions = [RegistrantPermissions.createpost.name];
 
-      // add activity to users acitivity list
-      user.activities.add(forumId);
-      final resUser = await _userProfileRepository.updateUser(user);
+      // create registrant
+      Registrant registrant = Registrant(
+        registrantId: registrantId,
+        forumId: forumId,
+        forumUid: forum.uid,
+        serviceId: serviceId,
+        serviceUid: service.uid,
+        selected: registrantCount == 0 ? true : false,
+        permissions: defaultPermissions,
+        lastUpdateDate: DateTime.now(),
+        creationDate: DateTime.now(),
+      );
+      final res = await _registrantRepository.createRegistrant(registrant);
+
+      // update forum
+      forum!.registrants.add(registrantId);
+      final resForum = await _forumRepository.updateForum(forum);
+
+      // create new forum activity
+      if (user.activities.contains(forumId) == false) {
+        final activityController =
+            _ref.read(activityControllerProvider.notifier);
+        activityController.createActivity(
+            ActivityType.forum.name, user.uid, forumId, forum.uid);
+
+        // add activity to users acitivity list
+        user.activities.add(forumId);
+        final resUser = await _userProfileRepository.updateUser(user);
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Registrant added successfully!');
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Forum or service does not exist');
+      }
     }
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Registrant added successfully!');
-    });
   }
 
   void updateRegistrant(Registrant registrant) async {
@@ -233,6 +255,10 @@ class RegistrantController extends StateNotifier<bool> {
 
   Stream<List<Registrant>> getUserRegistrants(String forumId, String uid) {
     return _registrantRepository.getUserRegistrants(forumId, uid);
+  }
+
+  Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {
+    return _registrantRepository.serviceIsRegisteredInForum(forumId, serviceId);
   }
 
   Stream<int> getUserRegistrantCount(String forumId, String uid) {

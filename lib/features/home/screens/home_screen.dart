@@ -118,6 +118,15 @@ class HomeScreen extends ConsumerWidget {
                                           )
                                         : Image.network(
                                             policies[index].banner,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              return loadingProgress
+                                                          ?.cumulativeBytesLoaded ==
+                                                      loadingProgress
+                                                          ?.expectedTotalBytes
+                                                  ? child
+                                                  : const CircularProgressIndicator();
+                                            },
                                           ),
                                   ),
                                   const SizedBox(
@@ -186,6 +195,15 @@ class HomeScreen extends ConsumerWidget {
                                           )
                                         : Image.network(
                                             forums[index].banner,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              return loadingProgress
+                                                          ?.cumulativeBytesLoaded ==
+                                                      loadingProgress
+                                                          ?.expectedTotalBytes
+                                                  ? child
+                                                  : const CircularProgressIndicator();
+                                            },
                                           ),
                                   ),
                                   const SizedBox(
@@ -254,6 +272,15 @@ class HomeScreen extends ConsumerWidget {
                                           )
                                         : Image.network(
                                             services[index].banner,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              return loadingProgress
+                                                          ?.cumulativeBytesLoaded ==
+                                                      loadingProgress
+                                                          ?.expectedTotalBytes
+                                                  ? child
+                                                  : const CircularProgressIndicator();
+                                            },
                                           ),
                                   ),
                                   const SizedBox(

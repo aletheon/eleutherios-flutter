@@ -29,6 +29,19 @@ class RegistrantRepository {
     });
   }
 
+  Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {
+    return _registrants
+        .where('forumId', isEqualTo: forumId)
+        .where('serviceId', isEqualTo: serviceId)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   Stream<List<Registrant>> getRegistrants(String forumId) {
     return _registrants
         .where('forumId', isEqualTo: forumId)

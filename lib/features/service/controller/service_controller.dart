@@ -141,7 +141,7 @@ class ServiceController extends StateNotifier<bool> {
     return _serviceRepository.getServices();
   }
 
-  Stream<Service> getServiceById(String serviceId) {
+  Stream<Service?> getServiceById(String serviceId) {
     return _serviceRepository.getServiceById(serviceId);
   }
 

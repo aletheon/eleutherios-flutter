@@ -93,7 +93,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
     }
 
     void showRegistrantDetails(String registrantId, BuildContext context) {
-      Routemaster.of(context).push('/registrant/$registrantId');
+      Routemaster.of(context).push('registrant/$registrantId');
     }
 
     void changeSelectedRegistrant(String registrantId) async {
@@ -338,7 +338,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                             children: [
                                                               Row(
                                                                 children: [
-                                                                  service.image ==
+                                                                  service!.image ==
                                                                           Constants
                                                                               .avatarDefault
                                                                       ? CircleAvatar(
@@ -519,7 +519,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                 child: GestureDetector(
                                                   child: Column(
                                                     children: [
-                                                      service.image ==
+                                                      service!.image ==
                                                               Constants
                                                                   .avatarDefault
                                                           ? CircleAvatar(
@@ -645,7 +645,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                               return DropdownMenuItem<String>(
                                                 value: registrant.registrantId,
                                                 child: Row(children: [
-                                                  service.image ==
+                                                  service!.image ==
                                                           Constants
                                                               .avatarDefault
                                                       ? CircleAvatar(

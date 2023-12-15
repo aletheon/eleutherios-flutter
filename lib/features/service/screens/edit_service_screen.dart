@@ -82,7 +82,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
         .when(
           data: (service) {
             if (isLoaded == false) {
-              titleController.text = service.title;
+              titleController.text = service!.title;
               descriptionController.text = service.description;
               isChecked = service.public;
               isLoaded = true;
@@ -100,7 +100,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                 centerTitle: false,
                 actions: [
                   TextButton(
-                    onPressed: () => save(service),
+                    onPressed: () => save(service!),
                     child: const Text('Save'),
                   ),
                 ],
@@ -135,7 +135,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                       ),
                                       child: bannerFile != null
                                           ? Image.file(bannerFile!)
-                                          : service.banner.isEmpty ||
+                                          : service!.banner.isEmpty ||
                                                   service.banner ==
                                                       Constants
                                                           .serviceBannerDefault
@@ -145,7 +145,18 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                                     size: 40,
                                                   ),
                                                 )
-                                              : Image.network(service.banner),
+                                              : Image.network(
+                                                  service.banner,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    return loadingProgress
+                                                                ?.cumulativeBytesLoaded ==
+                                                            loadingProgress
+                                                                ?.expectedTotalBytes
+                                                        ? child
+                                                        : const CircularProgressIndicator();
+                                                  },
+                                                ),
                                     ),
                                   ),
                                 ),
@@ -160,7 +171,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                                 FileImage(profileFile!),
                                             radius: 32,
                                           )
-                                        : service.image ==
+                                        : service!.image ==
                                                 Constants.avatarDefault
                                             ? CircleAvatar(
                                                 backgroundImage:

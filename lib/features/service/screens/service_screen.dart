@@ -8,6 +8,7 @@ import 'package:reddit_tutorial/features/favorite/controller/favorite_controller
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class ServiceScreen extends ConsumerWidget {
@@ -33,6 +34,10 @@ class ServiceScreen extends ConsumerWidget {
     }
   }
 
+  void addForum(BuildContext context, WidgetRef ref, Service service) {
+    Routemaster.of(context).push('/addforum/${service.serviceId}');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
@@ -47,16 +52,25 @@ class ServiceScreen extends ConsumerWidget {
                       flexibleSpace: Stack(
                         children: [
                           Positioned.fill(
-                            child:
-                                service.banner == Constants.serviceBannerDefault
-                                    ? Image.asset(
-                                        service.banner,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        service.banner,
-                                        fit: BoxFit.cover,
-                                      ),
+                            child: service!.banner ==
+                                    Constants.serviceBannerDefault
+                                ? Image.asset(
+                                    service.banner,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(
+                                    service.banner,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      return loadingProgress
+                                                  ?.cumulativeBytesLoaded ==
+                                              loadingProgress
+                                                  ?.expectedTotalBytes
+                                          ? child
+                                          : const CircularProgressIndicator();
+                                    },
+                                  ),
                           )
                         ],
                       ),
@@ -72,6 +86,7 @@ class ServiceScreen extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     service.image == Constants.avatarDefault
                                         ? CircleAvatar(
@@ -88,12 +103,26 @@ class ServiceScreen extends ConsumerWidget {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    Text(
-                                      service.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            service.title,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        service.public
+                                            ? const Icon(
+                                                Icons.lock_open_outlined)
+                                            : const Icon(Icons.lock_outlined,
+                                                color: Pallete.greyColor),
+                                      ],
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -122,9 +151,48 @@ class ServiceScreen extends ConsumerWidget {
                                     const SizedBox(
                                       width: 5,
                                     ),
+                                    // like button
+                                    user.uid != service.uid
+                                        ? OutlinedButton(
+                                            onPressed: () => likeService(
+                                                context, ref, service),
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 25)),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                const Text(
+                                                  'Like',
+                                                ),
+                                                ref
+                                                        .watch(userProvider)!
+                                                        .favorites
+                                                        .where((f) =>
+                                                            f == serviceId)
+                                                        .toList()
+                                                        .isEmpty
+                                                    ? const Icon(
+                                                        Icons.favorite_outline,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.favorite,
+                                                        color: Colors.red,
+                                                      ),
+                                              ],
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    // add to forum button
                                     OutlinedButton(
                                       onPressed: () =>
-                                          likeService(context, ref, service),
+                                          addForum(context, ref, service),
                                       style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
@@ -132,29 +200,10 @@ class ServiceScreen extends ConsumerWidget {
                                           ),
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 25)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          const Text(
-                                            'Like',
-                                          ),
-                                          ref
-                                                  .watch(userProvider)!
-                                                  .favorites
-                                                  .where((f) => f == serviceId)
-                                                  .toList()
-                                                  .isEmpty
-                                              ? const Icon(
-                                                  Icons.favorite_outline,
-                                                )
-                                              : const Icon(
-                                                  Icons.favorite,
-                                                  color: Colors.red,
-                                                ),
-                                        ],
+                                      child: const Text(
+                                        'Add Forum',
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ],

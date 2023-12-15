@@ -8,6 +8,7 @@ import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart'
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
 import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 // ignore: depend_on_referenced_packages
@@ -52,6 +53,15 @@ class ForumScreen extends ConsumerWidget {
                                 : Image.network(
                                     forum.banner,
                                     fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      return loadingProgress
+                                                  ?.cumulativeBytesLoaded ==
+                                              loadingProgress
+                                                  ?.expectedTotalBytes
+                                          ? child
+                                          : const CircularProgressIndicator();
+                                    },
                                   ),
                           )
                         ],
@@ -77,20 +87,43 @@ class ForumScreen extends ConsumerWidget {
                                             radius: 35,
                                           )
                                         : CircleAvatar(
-                                            backgroundImage:
-                                                Image.network(forum.image)
-                                                    .image,
+                                            backgroundImage: Image.network(
+                                              forum.image,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                return loadingProgress
+                                                            ?.cumulativeBytesLoaded ==
+                                                        loadingProgress
+                                                            ?.expectedTotalBytes
+                                                    ? child
+                                                    : const CircularProgressIndicator();
+                                              },
+                                            ).image,
                                             radius: 35,
                                           ),
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    Text(
-                                      forum.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            forum.title,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        forum.public
+                                            ? const Icon(
+                                                Icons.lock_open_outlined)
+                                            : const Icon(Icons.lock_outlined,
+                                                color: Pallete.greyColor),
+                                      ],
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -127,7 +160,7 @@ class ForumScreen extends ConsumerWidget {
                                                                   right: 10),
                                                           child: Column(
                                                             children: [
-                                                              service.image ==
+                                                              service!.image ==
                                                                       Constants
                                                                           .avatarDefault
                                                                   ? CircleAvatar(
@@ -268,7 +301,7 @@ class ForumScreen extends ConsumerWidget {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      service.image ==
+                                                      service!.image ==
                                                               Constants
                                                                   .avatarDefault
                                                           ? CircleAvatar(

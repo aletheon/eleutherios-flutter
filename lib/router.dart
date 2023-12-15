@@ -30,6 +30,8 @@ import 'package:reddit_tutorial/features/service/screens/create_service_screen.d
 import 'package:reddit_tutorial/features/service/screens/edit_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/list_user_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/remove_policy_screen.dart';
+import 'package:reddit_tutorial/features/service/screens/service_add_forum_screen.dart';
+import 'package:reddit_tutorial/features/service/screens/service_remove_forum_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_tools_screen.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/edit_profile_screen.dart';
@@ -68,9 +70,14 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/viewforum/:forumid/registrant/:registrantid': (route) => MaterialPage(
-        child: ServiceScreen(
+  '/addforum/:serviceid': (route) => MaterialPage(
+        child: ServiceAddForumScreen(
           serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/viewforum/:forumid/registrant/:registrantid': (route) => MaterialPage(
+        child: RegistrantScreen(
+          registrantId: route.pathParameters['registrantid']!,
         ),
       ),
   '/viewforum/:forumid/edit': (route) => MaterialPage(
@@ -439,6 +446,16 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/service/:serviceid/service-tools/add-forum': (route) => MaterialPage(
+        child: ServiceAddForumScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/service/:serviceid/service-tools/remove-forum': (route) => MaterialPage(
+        child: ServiceRemoveForumScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/user/service/list': (_) => const MaterialPage(
         child: ListUserServiceScreen(),
       ),
@@ -467,6 +484,18 @@ final loggedInRoute = RouteMap(routes: {
   '/user/service/list/detail/:serviceid/service-tools/remove-policy': (route) =>
       MaterialPage(
         child: RemovePolicyScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/service/list/detail/:serviceid/service-tools/add-forum': (route) =>
+      MaterialPage(
+        child: ServiceAddForumScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/service/list/detail/:serviceid/service-tools/remove-forum': (route) =>
+      MaterialPage(
+        child: ServiceRemoveForumScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),

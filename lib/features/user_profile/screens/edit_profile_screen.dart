@@ -141,7 +141,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                                     size: 40,
                                                   ),
                                                 )
-                                              : Image.network(user.banner),
+                                              : Image.network(
+                                                  user.banner,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    return loadingProgress
+                                                                ?.cumulativeBytesLoaded ==
+                                                            loadingProgress
+                                                                ?.expectedTotalBytes
+                                                        ? child
+                                                        : const CircularProgressIndicator();
+                                                  },
+                                                ),
                                     ),
                                   ),
                                 ),

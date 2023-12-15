@@ -145,7 +145,18 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
                                                     size: 40,
                                                   ),
                                                 )
-                                              : Image.network(policy.banner),
+                                              : Image.network(
+                                                  policy.banner,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    return loadingProgress
+                                                                ?.cumulativeBytesLoaded ==
+                                                            loadingProgress
+                                                                ?.expectedTotalBytes
+                                                        ? child
+                                                        : const CircularProgressIndicator();
+                                                  },
+                                                ),
                                     ),
                                   ),
                                 ),

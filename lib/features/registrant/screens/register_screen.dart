@@ -26,7 +26,7 @@ class RegisterScreen extends ConsumerWidget {
       String forumUid, String serviceId, String serviceUid) {
     ref
         .read(registrantControllerProvider.notifier)
-        .createRegistrant(forumId, forumUid, serviceId, serviceUid, context);
+        .createRegistrant(forumId, serviceId, context);
   }
 
   void viewForum(WidgetRef ref, BuildContext context) {
@@ -75,7 +75,7 @@ class RegisterScreen extends ConsumerWidget {
             return ref.watch(getServiceByIdProvider(favorite.serviceId)).when(
                   data: (service) {
                     return ListTile(
-                      title: Text(service.title),
+                      title: Text(service!.title),
                       leading: service.image == Constants.avatarDefault
                           ? CircleAvatar(
                               backgroundImage: Image.asset(service.image).image,
