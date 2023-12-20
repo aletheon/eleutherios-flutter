@@ -4,7 +4,7 @@ Eleutherios is B2B SASS application or digital, sociopolitical or economic syste
 
 The current "human" sociopoltical or economic system is analogue, where the responsibility for managing polices, services or forums is delegated to a single person, tribe, organisation or company.
 
-This way of managing policies, forums or services doesn't scale, because nobody else can join or help manage it.
+This way of managing policies, forums or services doesn't scale, because nobody else can join.
 
 In the first version of Eleutherios:
 
