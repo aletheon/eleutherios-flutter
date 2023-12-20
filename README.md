@@ -19,5 +19,4 @@ In the first version of Eleutherios:
 Subsequent versions:
 
 - Purchase services
-- Add services to cart
 - Create Apps or dynamic services
