@@ -223,36 +223,43 @@ class RegistrantScreen extends ConsumerWidget {
                       // ****************************************************
                       // list permissions
                       // ****************************************************
-                      body: ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 0, vertical: 0),
-                        itemCount: RegistrantPermissions.values.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final name = RegistrantPermissions.values[index].name;
-                          final value =
-                              RegistrantPermissions.values[index].value;
-                          return CheckboxListTile(
-                            title: Text(
-                              value,
-                              style: const TextStyle(color: Pallete.greyColor),
-                            ),
-                            value: registrant.permissions.contains(name),
-                            onChanged: (bool? selected) {
-                              if (selected!) {
-                                if (!registrant.permissions.contains(name)) {
-                                  registrant.permissions.add(name);
-                                }
-                              } else {
-                                registrant.permissions.remove(name);
-                              }
-                              updateRegistrant(registrant, ref);
-                            },
-                            controlAffinity: ListTileControlAffinity.trailing,
-                            activeColor: Pallete.forumColor,
-                          );
-                        },
-                      ),
+                      body: registrant.forumUid == user.uid &&
+                              service!.uid != user.uid
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 0, vertical: 0),
+                              itemCount: RegistrantPermissions.values.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final name =
+                                    RegistrantPermissions.values[index].name;
+                                final value =
+                                    RegistrantPermissions.values[index].value;
+                                return CheckboxListTile(
+                                  title: Text(
+                                    value,
+                                    style: const TextStyle(
+                                        color: Pallete.greyColor),
+                                  ),
+                                  value: registrant.permissions.contains(name),
+                                  onChanged: (bool? selected) {
+                                    if (selected!) {
+                                      if (!registrant.permissions
+                                          .contains(name)) {
+                                        registrant.permissions.add(name);
+                                      }
+                                    } else {
+                                      registrant.permissions.remove(name);
+                                    }
+                                    updateRegistrant(registrant, ref);
+                                  },
+                                  controlAffinity:
+                                      ListTileControlAffinity.trailing,
+                                  activeColor: Pallete.forumColor,
+                                );
+                              },
+                            )
+                          : const SizedBox(),
                     );
                   },
                   error: (error, stackTrace) =>

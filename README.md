@@ -1,6 +1,10 @@
 # Eleutherios
 
-An open source sociopolitical or economic system.
+Eleutherios is a digital, sociopolitical or economic system that enables people or its end users to create policies, services and forums together.
+
+The current "human" sociopoltical or economic system is analogue, where the duties of managing polices, services or forums is the responsibility of a single person, tribe, organisation or company.
+
+This way of managing human sociopolitical or economic affairs doesn't scale and is preventing humanity from operating as a collective or teno rangatira tanga.
 
 ## Getting Started
 
