@@ -6,7 +6,7 @@ The current "human" sociopoltical or economic system is analogue, where the resp
 
 For example a politician creating a bill to enter into parliament. [Policy]
 
-A bank to provide a financial network to enable service providers to buy or sell items to one another. [Forum]
+A bank who provies a financial network to enable service providers to buy or sell items to one another. [Forum]
 
 Or a family bakery deciding to franchise their business to service more customers. [Service]
 
