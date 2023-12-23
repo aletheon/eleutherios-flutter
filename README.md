@@ -25,5 +25,5 @@ Eleutherios provides tools that enable people or businesses to:
 
 Subsequent versions:
 
-- Purchase services
-- Create Apps or dynamic services
+- Charge customers and make payments
+- Create software applications or dynamic services
