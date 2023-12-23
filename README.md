@@ -1,14 +1,11 @@
 # Eleutherios
 
-Eleutherios is B2B SASS application or digital, sociopolitical or economic system that enables people or its end users to create policies, forums and services together.
+Eleutherios is B2B / SAAS application or digital, sociopolitical or economic system that enables people or businesses to create policies, forums and services together.
 
-The current "human" sociopoltical or economic system is analogue, where the responsibility for managing polices, services or forums is delegated to a single person, tribe, organisation or company.
+The current "human" sociopoltical or economic system is analogue, where the responsibility of managing polices, services or forums is delegated to a single person, tribe or organisation.
 
-This way of managing policies, forums or services doesn't scale, because nobody else can join.
+This way of managing policies, forums or services doesn't scale to enable more than one person or businesses to join.
 
-In the first version of Eleutherios:
-
-- Create / consume policies
 - Create rules for policies
 - Create forums
 - Join forums
