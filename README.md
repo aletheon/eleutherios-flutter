@@ -10,7 +10,7 @@ A bank to provide a financial network to enable service providers to buy or sell
 
 Or a family bakery deciding to franchise their business to service more customers. [Service]
 
-Eleutherios breaks this pattern of one-to-one or one-to-many type of relationship and introduces a many-to-many type of pattern instead.
+Eleutherios breaks this pattern of one-to-one or one-to-many type of relationship and introduces a many-to-many pattern instead.
 
 Eleutherios provides tools that enable people or businesses to:
 
