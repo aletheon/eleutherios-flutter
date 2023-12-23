@@ -6,6 +6,9 @@ The current "human" sociopoltical or economic system is analogue, where the resp
 
 This way of managing policies, forums or services doesn't scale to enable more than one person or businesses to join.
 
+Eleutherios enables people or businesses to:
+
+- Create policies
 - Create rules for policies
 - Create forums
 - Join forums
