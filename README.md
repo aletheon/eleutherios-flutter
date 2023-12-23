@@ -4,11 +4,11 @@ Eleutherios is B2B / SAAS application or digital, sociopolitical or economic sys
 
 The current "human" sociopoltical or economic system is analogue, where the responsibility for managing polices, forums or services is delegated to a single person, tribe or organisation.
 
-For example a politician creating a bill to enter into parliament.
+For example a politician creating a bill to enter into parliament. [Policy]
 
-A bank to provide a financial network to enable service providers to buy or sell items to one another.
+A bank to provide a financial network to enable service providers to buy or sell items to one another. [Forum]
 
-Or a family bakery deciding to franchise their business to service more customers.
+Or a family bakery deciding to franchise their business to service more customers. [Service]
 
 Eleutherios breaks this pattern of one-to-one or one-to-many type of relationship and introduces a many-to-many type of pattern instead.
 
