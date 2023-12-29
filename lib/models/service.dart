@@ -11,6 +11,7 @@ class Service {
   final String banner;
   final bool public;
   final List<String> tags;
+  final List<String> likes;
   final List<String> policies;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
@@ -24,6 +25,7 @@ class Service {
     required this.banner,
     required this.public,
     required this.tags,
+    required this.likes,
     required this.policies,
     required this.lastUpdateDate,
     required this.creationDate,
@@ -39,6 +41,7 @@ class Service {
     String? banner,
     bool? public,
     List<String>? tags,
+    List<String>? likes,
     List<String>? policies,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
@@ -53,6 +56,7 @@ class Service {
       banner: banner ?? this.banner,
       public: public ?? this.public,
       tags: tags ?? this.tags,
+      likes: likes ?? this.likes,
       policies: policies ?? this.policies,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
@@ -70,6 +74,7 @@ class Service {
       'banner': banner,
       'public': public,
       'tags': tags,
+      'likes': likes,
       'policies': policies,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
@@ -87,6 +92,7 @@ class Service {
       banner: map['banner'] as String,
       public: map['public'] as bool,
       tags: List<String>.from(map['tags']),
+      likes: List<String>.from(map['likes']),
       policies: List<String>.from(map['policies']),
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
@@ -97,7 +103,7 @@ class Service {
 
   @override
   String toString() {
-    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -113,6 +119,7 @@ class Service {
         other.banner == banner &&
         other.public == public &&
         listEquals(other.tags, tags) &&
+        listEquals(other.likes, likes) &&
         listEquals(other.policies, policies) &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
@@ -129,6 +136,7 @@ class Service {
         banner.hashCode ^
         public.hashCode ^
         tags.hashCode ^
+        likes.hashCode ^
         policies.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;

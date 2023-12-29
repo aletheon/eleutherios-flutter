@@ -31,6 +31,7 @@ import 'package:reddit_tutorial/features/service/screens/edit_service_screen.dar
 import 'package:reddit_tutorial/features/service/screens/list_user_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/remove_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_add_forum_screen.dart';
+import 'package:reddit_tutorial/features/service/screens/service_likes_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_remove_forum_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_tools_screen.dart';
@@ -132,9 +133,21 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/register/service/:serviceid/likes': (route) =>
+      MaterialPage(
+        child: ServiceLikesScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/forum/:forumid/forum-tools/deregister/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/forum/:forumid/forum-tools/deregister/service/:serviceid/likes': (route) =>
+      MaterialPage(
+        child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -168,8 +181,19 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/forum/:forumid/register/service/:serviceid/likes': (route) => MaterialPage(
+        child: ServiceLikesScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/forum/:forumid/deregister/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/forum/:forumid/deregister/service/:serviceid/likes': (route) =>
+      MaterialPage(
+        child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -216,9 +240,21 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/forum/list/detail/:forumid/forum-tools/register/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/detail/:forumid/forum-tools/deregister/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/forum/list/detail/:forumid/forum-tools/deregister/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -271,12 +307,24 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/user/forum/list/detail/:forumid/register/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/detail/:forumid/deregister/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/user/forum/list/detail/:forumid/deregister/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   // **************************************************
   // Policy
   // **************************************************
@@ -321,6 +369,12 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/policy-tools/register/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/policy/:policyid/policy-tools/register/service/:serviceid/likes': (route) =>
+      MaterialPage(
+        child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -415,6 +469,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/detail/:policyid/policy-tools/register/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   // **************************************************
   // Service
   // **************************************************
@@ -423,6 +483,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/service/:serviceid/likes': (route) => MaterialPage(
+        child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -461,6 +526,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/user/service/list/detail/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/service/list/detail/:serviceid/likes': (route) => MaterialPage(
+        child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),

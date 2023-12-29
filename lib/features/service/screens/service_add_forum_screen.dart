@@ -101,7 +101,16 @@ class ServiceAddForumScreen extends ConsumerWidget {
     } else {
       return forumsProv.when(
         data: (forums) {
-          return showForumList(ref, forums);
+          if (forums.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text("There are no publc forums"),
+              ),
+            );
+          } else {
+            return showForumList(ref, forums);
+          }
         },
         error: (error, stackTrace) => ErrorText(error: error.toString()),
         loading: () => const Loader(),

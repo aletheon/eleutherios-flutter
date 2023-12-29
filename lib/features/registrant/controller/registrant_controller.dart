@@ -142,7 +142,7 @@ class RegistrantController extends StateNotifier<bool> {
       final res = await _registrantRepository.createRegistrant(registrant);
 
       // update forum
-      forum!.registrants.add(registrantId);
+      forum.registrants.add(registrantId);
       final resForum = await _forumRepository.updateForum(forum);
 
       // create new forum activity
@@ -180,12 +180,12 @@ class RegistrantController extends StateNotifier<bool> {
         .first;
 
     // get old registrant and unselect it
-    Registrant selectedRegistrant = await _ref
+    Registrant? selectedRegistrant = await _ref
         .read(registrantControllerProvider.notifier)
         .getUserSelectedRegistrant(registrant.forumId, registrant.serviceUid)
         .first;
 
-    selectedRegistrant = selectedRegistrant.copyWith(selected: false);
+    selectedRegistrant = selectedRegistrant!.copyWith(selected: false);
     await _registrantRepository.updateRegistrant(selectedRegistrant);
 
     registrant = registrant.copyWith(selected: true);
@@ -265,7 +265,7 @@ class RegistrantController extends StateNotifier<bool> {
     return _registrantRepository.getUserRegistrantCount(forumId, uid);
   }
 
-  Stream<Registrant> getUserSelectedRegistrant(String forumId, String uid) {
+  Stream<Registrant?> getUserSelectedRegistrant(String forumId, String uid) {
     return _registrantRepository.getUserSelectedRegistrant(forumId, uid);
   }
 

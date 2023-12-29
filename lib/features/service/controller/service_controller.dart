@@ -76,6 +76,7 @@ class ServiceController extends StateNotifier<bool> {
       banner: Constants.serviceBannerDefault,
       public: public,
       tags: [],
+      likes: [],
       policies: [],
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),

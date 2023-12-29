@@ -19,6 +19,10 @@ class ServiceScreen extends ConsumerWidget {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
   }
 
+  void navigateToLikes(BuildContext context) {
+    Routemaster.of(context).push('likes');
+  }
+
   void likeService(BuildContext context, WidgetRef ref, Service service) {
     UserModel userModel = ref.read(userProvider)!;
     var result =
@@ -26,7 +30,7 @@ class ServiceScreen extends ConsumerWidget {
     if (result.isEmpty) {
       ref
           .read(favoriteControllerProvider.notifier)
-          .createFavorite(serviceId, service.uid);
+          .createFavorite(serviceId, service.uid, context);
     } else {
       ref
           .read(favoriteControllerProvider.notifier)
@@ -132,11 +136,11 @@ class ServiceScreen extends ConsumerWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // tools button
-                                    user.uid == service.uid
+                                    // like button
+                                    service.uid == user.uid
                                         ? OutlinedButton(
                                             onPressed: () =>
-                                                navigateToServiceTools(context),
+                                                navigateToLikes(context),
                                             style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -145,15 +149,17 @@ class ServiceScreen extends ConsumerWidget {
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 25)),
-                                            child: const Text('Service Tools'),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text(
+                                                  'Likes(${service.likes.length})',
+                                                ),
+                                              ],
+                                            ),
                                           )
-                                        : const SizedBox(),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    // like button
-                                    user.uid != service.uid
-                                        ? OutlinedButton(
+                                        : OutlinedButton(
                                             onPressed: () => likeService(
                                                 context, ref, service),
                                             style: ElevatedButton.styleFrom(
@@ -171,6 +177,9 @@ class ServiceScreen extends ConsumerWidget {
                                                 const Text(
                                                   'Like',
                                                 ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
                                                 ref
                                                         .watch(userProvider)!
                                                         .favorites
@@ -187,6 +196,35 @@ class ServiceScreen extends ConsumerWidget {
                                                       ),
                                               ],
                                             ),
+                                          ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    // tools button
+                                    user.uid == service.uid
+                                        ? Row(
+                                            children: [
+                                              OutlinedButton(
+                                                onPressed: () =>
+                                                    navigateToServiceTools(
+                                                        context),
+                                                style: ElevatedButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 25)),
+                                                child:
+                                                    const Text('Service Tools'),
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                            ],
                                           )
                                         : const SizedBox(),
                                     // add to forum button

@@ -116,7 +116,7 @@ class ForumToolsScreen extends ConsumerWidget {
                       .when(
                         data: (registrant) {
                           return Column(children: [
-                            registrant.permissions.contains(
+                            registrant!.permissions.contains(
                                     RegistrantPermissions.editforum.name)
                                 ? ListTile(
                                     onTap: () => editForum(context),

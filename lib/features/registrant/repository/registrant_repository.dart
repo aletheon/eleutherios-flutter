@@ -80,18 +80,23 @@ class RegistrantRepository {
     });
   }
 
-  Stream<Registrant> getUserSelectedRegistrant(String forumId, String uid) {
+  Stream<Registrant?> getUserSelectedRegistrant(String forumId, String uid) {
     return _registrants
         .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .where('selected', isEqualTo: true)
         .snapshots()
         .map((event) {
-      List<Registrant> registrants = [];
-      for (var doc in event.docs) {
-        registrants.add(Registrant.fromMap(doc.data() as Map<String, dynamic>));
+      if (event.docs.isNotEmpty) {
+        List<Registrant> registrants = [];
+        for (var doc in event.docs) {
+          registrants
+              .add(Registrant.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return registrants.first;
+      } else {
+        return null;
       }
-      return registrants.first;
     });
   }
 

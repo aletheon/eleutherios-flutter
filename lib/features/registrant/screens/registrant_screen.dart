@@ -29,7 +29,7 @@ class RegistrantScreen extends ConsumerWidget {
     if (result.isEmpty) {
       ref
           .read(favoriteControllerProvider.notifier)
-          .createFavorite(service.serviceId, service.uid);
+          .createFavorite(service.serviceId, service.uid, context);
     } else {
       ref
           .read(favoriteControllerProvider.notifier)
