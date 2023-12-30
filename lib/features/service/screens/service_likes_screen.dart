@@ -6,16 +6,20 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 class ServiceLikesScreen extends ConsumerWidget {
   final String _serviceId;
   const ServiceLikesScreen({super.key, required String serviceId})
       : _serviceId = serviceId;
 
+  void navigateToUser(BuildContext context, String uid) {
+    Routemaster.of(context).push(uid);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentTheme = ref.watch(themeNotifierProvider);
-    final loggedInUser = ref.watch(userProvider)!;
 
     return ref.watch(getServiceByIdProvider(_serviceId)).when(
           data: (service) {
@@ -50,7 +54,7 @@ class ServiceLikesScreen extends ConsumerWidget {
                                           NetworkImage(user.profilePic),
                                     ),
                               title: Text(user.fullName),
-                              onTap: () => {},
+                              onTap: () => navigateToUser(context, user.uid),
                             );
                           },
                           error: (error, stackTrace) =>
