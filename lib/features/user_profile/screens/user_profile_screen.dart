@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileScreen extends ConsumerWidget {
   final String uid;
@@ -14,6 +15,14 @@ class UserProfileScreen extends ConsumerWidget {
 
   void navigateToEditUser(BuildContext context) {
     Routemaster.of(context).push('edit');
+  }
+
+  void showUrl({required String url}) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      print('cant launch');
+    }
   }
 
   Color getCertColor(UserModel user) {
@@ -154,9 +163,78 @@ class UserProfileScreen extends ConsumerWidget {
                     ),
                   ];
                 }),
-                body: const Padding(
-                  padding: EdgeInsets.only(top: 0, left: 20),
-                  child: Text('Displaying posts'),
+                body: Padding(
+                  padding: const EdgeInsets.only(top: 0, left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      user.businessName.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Text(user.businessName),
+                            )
+                          : const SizedBox(),
+                      user.businessDescription.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Text(user.businessDescription),
+                            )
+                          : const SizedBox(),
+                      user.businessWebsite.isNotEmpty
+                          ? Row(
+                              children: [
+                                const Text('Business'),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Wrap(
+                                  children: <Widget>[
+                                    InkWell(
+                                      onTap: () =>
+                                          showUrl(url: user.businessWebsite),
+                                      child: Text(
+                                        user.businessWebsite,
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      user.personalWebsite.isNotEmpty
+                          ? Row(
+                              children: [
+                                const Text('Personal'),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Wrap(
+                                  children: <Widget>[
+                                    InkWell(
+                                      onTap: () =>
+                                          showUrl(url: user.personalWebsite),
+                                      child: Text(
+                                        user.personalWebsite,
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ],
+                  ),
                 ),
               ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),

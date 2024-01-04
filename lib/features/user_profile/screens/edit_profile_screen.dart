@@ -23,6 +23,10 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final fullNameController = TextEditingController();
+  final personalWebsiteController = TextEditingController();
+  final businessNameController = TextEditingController();
+  final businessDescriptionController = TextEditingController();
+  final businessWebsiteController = TextEditingController();
   bool isChecked = false;
   var isLoaded = false;
 
@@ -51,7 +55,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   void save(UserModel userModel) {
     if (fullNameController.text.trim().isNotEmpty) {
-      userModel = userModel.copyWith(fullName: fullNameController.text.trim());
+      userModel = userModel.copyWith(
+        fullName: fullNameController.text.trim(),
+        businessName: businessNameController.text.trim(),
+        businessDescription: businessDescriptionController.text.trim(),
+        personalWebsite: personalWebsiteController.text.trim(),
+        businessWebsite: businessWebsiteController.text.trim(),
+      );
       ref.read(userProfileControllerProvider.notifier).updateUser(
           profileFile: profileFile,
           bannerFile: bannerFile,
@@ -64,6 +74,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void dispose() {
     super.dispose();
     fullNameController.dispose();
+    personalWebsiteController.dispose();
+    businessNameController.dispose();
+    businessDescriptionController.dispose();
+    businessWebsiteController.dispose();
   }
 
   @override
@@ -79,6 +93,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           data: (user) {
             if (isLoaded == false) {
               fullNameController.text = user.fullName;
+              personalWebsiteController.text = user.personalWebsite;
+              businessNameController.text = user.businessName;
+              businessDescriptionController.text = user.businessDescription;
+              businessWebsiteController.text = user.businessWebsite;
               isLoaded = true;
             }
 
@@ -199,6 +217,80 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               ),
                             ),
                             maxLength: 40,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: businessNameController,
+                            decoration: InputDecoration(
+                              hintText: 'Business name (Optional)',
+                              filled: true,
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            maxLength: 40,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: businessDescriptionController,
+                            decoration: InputDecoration(
+                              hintText: 'Business description (Optional)',
+                              filled: true,
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            maxLength: 280,
+                            maxLines: 5,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: personalWebsiteController,
+                            decoration: InputDecoration(
+                              hintText: 'Personal website (Optional)',
+                              filled: true,
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: businessWebsiteController,
+                            decoration: InputDecoration(
+                              hintText: 'Business website (Optional)',
+                              filled: true,
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                         ],
                       ),
