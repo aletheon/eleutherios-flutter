@@ -44,6 +44,19 @@ class ManagerRepository {
     });
   }
 
+  Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
+    return _managers
+        .where('policyId', isEqualTo: policyId)
+        .where('serviceId', isEqualTo: serviceId)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   Stream<List<Manager>> getManagers(String policyId) {
     return _managers
         .where('policyId', isEqualTo: policyId)
@@ -60,7 +73,7 @@ class ManagerRepository {
   Stream<List<Manager>> getUserManagers(String policyId, String uid) {
     return _managers
         .where('policyId', isEqualTo: policyId)
-        .where('uid', isEqualTo: uid)
+        .where('serviceUid', isEqualTo: uid)
         .snapshots()
         .map((event) {
       List<Manager> managers = [];
@@ -68,6 +81,16 @@ class ManagerRepository {
         managers.add(Manager.fromMap(doc.data() as Map<String, dynamic>));
       }
       return managers;
+    });
+  }
+
+  Stream<int> getUserManagerCount(String policyId, String uid) {
+    return _managers
+        .where('policyId', isEqualTo: policyId)
+        .where('serviceUid', isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      return event.docs.length;
     });
   }
 

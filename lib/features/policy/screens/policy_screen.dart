@@ -35,7 +35,7 @@ class PolicyScreen extends ConsumerWidget {
                         children: [
                           Positioned.fill(
                             child:
-                                policy.banner == Constants.policyBannerDefault
+                                policy!.banner == Constants.policyBannerDefault
                                     ? Image.asset(
                                         policy.banner,
                                         fit: BoxFit.cover,

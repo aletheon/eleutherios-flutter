@@ -94,11 +94,12 @@ class RuleController extends StateNotifier<bool> {
     final res = await _ruleRepository.createRule(rule);
 
     // update policy
-    Policy policy = await _ref
+    Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
         .getPolicyById(policyId)
         .first;
-    policy.rules.add(ruleId);
+
+    policy!.rules.add(ruleId);
     final resPolicy = await _policyRepository.updatePolicy(policy);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {

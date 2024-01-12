@@ -82,7 +82,7 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
         .when(
           data: (policy) {
             if (isLoaded == false) {
-              titleController.text = policy.title;
+              titleController.text = policy!.title;
               descriptionController.text = policy.description;
               isChecked = policy.public;
               isLoaded = true;
@@ -100,7 +100,7 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
                 centerTitle: false,
                 actions: [
                   TextButton(
-                    onPressed: () => save(policy),
+                    onPressed: () => save(policy!),
                     child: const Text('Save'),
                   ),
                 ],
@@ -135,7 +135,7 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
                                       ),
                                       child: bannerFile != null
                                           ? Image.file(bannerFile!)
-                                          : policy.banner.isEmpty ||
+                                          : policy!.banner.isEmpty ||
                                                   policy.banner ==
                                                       Constants
                                                           .policyBannerDefault
@@ -171,7 +171,7 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
                                                 FileImage(profileFile!),
                                             radius: 32,
                                           )
-                                        : policy.image ==
+                                        : policy!.image ==
                                                 Constants.avatarDefault
                                             ? CircleAvatar(
                                                 backgroundImage:

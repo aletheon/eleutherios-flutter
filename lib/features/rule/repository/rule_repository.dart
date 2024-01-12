@@ -29,6 +29,19 @@ class RuleRepository {
     });
   }
 
+  // Future<List<Rule>> getRulesFuture(String policyId) async {
+  //   return await _rules
+  //       .where('policyId', isEqualTo: policyId)
+  //       .snapshots()
+  //       .map((event) {
+  //     List<Rule> rules = [];
+  //     for (var doc in event.docs) {
+  //       rules.add(Rule.fromMap(doc.data() as Map<String, dynamic>));
+  //     }
+  //     return rules.toList();
+  //   });
+  // }
+
   Stream<List<Rule>> getRules(String policyId) {
     return _rules
         .where('policyId', isEqualTo: policyId)

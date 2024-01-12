@@ -76,7 +76,7 @@ class ActivityScreen extends ConsumerWidget {
                             .when(
                               data: (policy) {
                                 return ListTile(
-                                  leading: policy.image ==
+                                  leading: policy!.image ==
                                           Constants.avatarDefault
                                       ? CircleAvatar(
                                           backgroundImage:

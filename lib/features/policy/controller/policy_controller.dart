@@ -141,7 +141,7 @@ class PolicyController extends StateNotifier<bool> {
     return _policyRepository.getPolicies();
   }
 
-  Stream<Policy> getPolicyById(String policyId) {
+  Stream<Policy?> getPolicyById(String policyId) {
     return _policyRepository.getPolicyById(policyId);
   }
 

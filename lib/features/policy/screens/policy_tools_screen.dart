@@ -58,7 +58,7 @@ class PolicyToolsScreen extends ConsumerWidget {
       ),
       body: ref.watch(getPolicyByIdProvider(policyId)).when(
             data: (policy) {
-              if (policy.uid == user.uid) {
+              if (policy!.uid == user.uid) {
                 return Column(children: [
                   ListTile(
                     onTap: () => editPolicy(context),

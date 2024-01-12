@@ -6,8 +6,14 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
+import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
@@ -35,10 +41,12 @@ final serviceControllerProvider =
     StateNotifierProvider<ServiceController, bool>((ref) {
   final serviceRepository = ref.watch(serviceRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
+  final policyRepository = ref.watch(policyRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return ServiceController(
       serviceRepository: serviceRepository,
       userProfileRepository: userProfileRepository,
+      policyRepository: policyRepository,
       storageRepository: storageRepository,
       ref: ref);
 });
@@ -46,15 +54,18 @@ final serviceControllerProvider =
 class ServiceController extends StateNotifier<bool> {
   final ServiceRepository _serviceRepository;
   final UserProfileRepository _userProfileRepository;
+  final PolicyRepository _policyRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
   ServiceController(
       {required ServiceRepository serviceRepository,
       required UserProfileRepository userProfileRepository,
+      required PolicyRepository policyRepository,
       required StorageRepository storageRepository,
       required Ref ref})
-      : _userProfileRepository = userProfileRepository,
-        _serviceRepository = serviceRepository,
+      : _serviceRepository = serviceRepository,
+        _userProfileRepository = userProfileRepository,
+        _policyRepository = policyRepository,
         _storageRepository = storageRepository,
         _ref = ref,
         super(false);
@@ -89,6 +100,71 @@ class ServiceController extends StateNotifier<bool> {
       showSnackBar(context, 'Service created successfully!');
       Routemaster.of(context).replace('/user/service/list');
     });
+  }
+
+  void addPolicy(
+    String policyId,
+    String serviceId,
+    BuildContext context,
+  ) async {
+    state = true;
+
+    Policy? policy = await _ref
+        .read(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
+
+    if (policy != null && service != null) {
+      // ensure service is not already consuming this policy
+      if (service.policies.contains(policyId) == false) {
+        service.policies.add(policyId);
+        policy.consumers.add(serviceId);
+        final serviceRes = await _serviceRepository.updateService(service);
+        final policyRes = await _policyRepository.updatePolicy(policy);
+
+        // get the rules for this policy and turn them into forums associated to this service
+        _ref.read(ruleControllerProvider.notifier).getRules(policyId).listen(
+          (rules) {
+            for (Rule rule in rules) {
+              _ref.read(forumControllerProvider.notifier).createForumFromRule(
+                    rule,
+                    policy,
+                    service,
+                    context,
+                  );
+
+              // _ref.read(forumControllerProvider.notifier).createForum(
+              //       rule.ruleId,
+              //       rule.title,
+              //       rule.description,
+              //       rule.public,
+              //       context,
+              //     );
+            }
+          },
+        );
+      } else {
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'Service is already consuming policy');
+        }
+      }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy or service does not exist');
+      }
+    }
+
+    // state = false;
+    // res.fold((l) => showSnackBar(context, l.message), (r) {
+    //   showSnackBar(context, 'Policy added successfully!');
+    // });
   }
 
   void updateService({

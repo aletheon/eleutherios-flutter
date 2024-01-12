@@ -180,7 +180,7 @@ class ListDrawer extends ConsumerWidget {
                                             leading: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                policy.image ==
+                                                policy!.image ==
                                                         Constants.avatarDefault
                                                     ? CircleAvatar(
                                                         backgroundColor:
