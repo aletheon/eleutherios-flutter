@@ -93,6 +93,7 @@ flutter:
     - assets/images/forumBanner.jpeg
     - assets/images/userBanner.jpg
     - assets/images/avatar.jpg
+    - assets/images/under_construction.jpg
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see

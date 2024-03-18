@@ -19,14 +19,22 @@ class ManagerRepository {
   CollectionReference get _managers =>
       _firestore.collection(FirebaseConstants.managersCollection);
 
-  Stream<Manager> getManagerById(String managerId) {
-    final DocumentReference documentReference = _managers.doc(managerId);
+  Stream<Manager?> getManagerById(String managerId) {
+    if (managerId.isNotEmpty) {
+      final DocumentReference documentReference = _managers.doc(managerId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      return Manager.fromMap(event.data() as Map<String, dynamic>);
-    });
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Manager.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<Manager> getUserSelectedManager(String policyId, String uid) {

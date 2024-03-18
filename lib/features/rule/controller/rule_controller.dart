@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
+import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:routemaster/routemaster.dart';
@@ -64,47 +66,62 @@ class RuleController extends StateNotifier<bool> {
 
   void createRule(
       String policyId,
-      String policyUid,
       String managerId,
-      String managerUid,
       String title,
       String description,
       bool public,
+      String instantiationType,
+      DateTime instantiationDate,
       BuildContext context) async {
     state = true;
-    String ruleId = const Uuid().v1().replaceAll('-', '');
 
-    Rule rule = Rule(
-      ruleId: ruleId,
-      policyId: policyId,
-      policyUid: policyUid,
-      managerId: managerId,
-      managerUid: managerUid,
-      title: title,
-      titleLowercase: title.toLowerCase(),
-      description: description,
-      image: Constants.avatarDefault,
-      banner: Constants.ruleBannerDefault,
-      public: public,
-      services: [],
-      tags: [],
-      lastUpdateDate: DateTime.now(),
-      creationDate: DateTime.now(),
-    );
-    final res = await _ruleRepository.createRule(rule);
-
-    // update policy
     Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
         .getPolicyById(policyId)
         .first;
 
-    policy!.rules.add(ruleId);
-    final resPolicy = await _policyRepository.updatePolicy(policy);
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Rule added successfully!');
-    });
+    Manager? manager = await _ref
+        .read(managerControllerProvider.notifier)
+        .getManagerById(managerId)
+        .first;
+
+    if (policy != null) {
+      String ruleId = const Uuid().v1().replaceAll('-', '');
+
+      Rule rule = Rule(
+        ruleId: ruleId,
+        policyId: policyId,
+        policyUid: policy.uid,
+        managerId: managerId,
+        managerUid: manager != null ? manager.serviceUid : '',
+        title: title,
+        titleLowercase: title.toLowerCase(),
+        description: description,
+        image: Constants.avatarDefault,
+        banner: Constants.ruleBannerDefault,
+        public: public,
+        instantiationType: instantiationType,
+        instantiationDate: instantiationDate,
+        services: [],
+        tags: [],
+        lastUpdateDate: DateTime.now(),
+        creationDate: DateTime.now(),
+      );
+      final res = await _ruleRepository.createRule(rule);
+
+      // update policy
+      policy.rules.add(ruleId);
+      final resPolicy = await _policyRepository.updatePolicy(policy);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Rule added successfully!');
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy does not exist');
+      }
+    }
   }
 
   void updateRule({

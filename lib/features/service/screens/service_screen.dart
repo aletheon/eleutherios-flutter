@@ -131,6 +131,16 @@ class ServiceScreen extends ConsumerWidget {
                                     const SizedBox(
                                       height: 5,
                                     ),
+                                    service.description.isNotEmpty
+                                        ? Wrap(
+                                            children: [
+                                              Text(service.description),
+                                              const SizedBox(
+                                                height: 30,
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox(),
                                   ],
                                 ),
                                 Row(

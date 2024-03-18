@@ -80,12 +80,8 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
           forumId: widget.forumId, postId: postId, context: context);
     }
 
-    void editForum(BuildContext context) {
-      Routemaster.of(context).push('edit');
-    }
-
-    void showTools(BuildContext context) {
-      Routemaster.of(context).push('/forum/${widget.forumId}/forum-tools');
+    void showDetails(BuildContext context) {
+      Routemaster.of(context).push('/user/forum/list/detail/${widget.forumId}');
     }
 
     void viewForum(String forumId, BuildContext context) {
@@ -122,30 +118,15 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                   ],
                 ),
                 actions: [
-                  forum.uid == user.uid ||
-                          selectedRegistrant!.permissions
-                              .contains(RegistrantPermissions.editforum.name)
-                      ? TextButton(
-                          onPressed: () => editForum(context),
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                  forum.uid == user.uid
-                      ? TextButton(
-                          onPressed: () => showTools(context),
-                          child: const Text(
-                            'Tools',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
+                  TextButton(
+                    onPressed: () => showDetails(context),
+                    child: const Text(
+                      'Details',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               body: Column(

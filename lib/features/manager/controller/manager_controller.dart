@@ -225,7 +225,7 @@ class ManagerController extends StateNotifier<bool> {
     return _managerRepository.getUserManagers(policyId, uid);
   }
 
-  Stream<Manager> getManagerById(String managerId) {
+  Stream<Manager?> getManagerById(String managerId) {
     return _managerRepository.getManagerById(managerId);
   }
 

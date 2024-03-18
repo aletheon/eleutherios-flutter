@@ -19,7 +19,7 @@ class Forum {
   final List<String> registrants;
   final List<String> posts;
   final List<String> forums;
-  final List<String> breadcrumbs; // store forumIds up to the root
+  final List<String> breadcrumbs; // breadcrumb to store forumIds up to the root
   final List<String>
       breadcrumbReferences; // store the forumIds of other forums referencing this forum in their breadcrumb
   final String recentPostId;

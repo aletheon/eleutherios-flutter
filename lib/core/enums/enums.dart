@@ -11,6 +11,21 @@ extension ActivityTypeValue on ActivityType {
   }
 }
 
+enum InstantiationType<String> { consumption, date, order }
+
+extension InstantiationTypeValue on InstantiationType {
+  String get value {
+    switch (this) {
+      case InstantiationType.consumption:
+        return 'Consumption';
+      case InstantiationType.date:
+        return 'Date';
+      case InstantiationType.order:
+        return 'Order';
+    }
+  }
+}
+
 enum SearchType<String> { policy, forum, service }
 
 extension SearchTypeValue on SearchType {

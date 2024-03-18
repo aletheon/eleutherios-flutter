@@ -11,6 +11,7 @@ class Constants {
   static const registerPath = 'assets/images/register.png';
   static const eleutheriosLogoPath = 'assets/images/eleutheriosLogo.png';
   static const eleutheriosLogo2Path = 'assets/images/eleutheriosLogo2.png';
+  static const underConstructionPath = 'assets/images/under_construction.jpg';
 
   static const avatarDefault = 'assets/images/avatar.jpg';
   static const bannerDefault = 'assets/images/userBanner.jpg';

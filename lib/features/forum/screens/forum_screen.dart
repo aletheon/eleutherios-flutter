@@ -28,8 +28,12 @@ class ForumScreen extends ConsumerWidget {
     Routemaster.of(context).push('register');
   }
 
-  void viewForum(BuildContext context, WidgetRef ref) {
+  void viewForum(BuildContext context) {
     Routemaster.of(context).push('view');
+  }
+
+  void leaveForum(BuildContext context) {
+    Routemaster.of(context).push('leave');
   }
 
   @override
@@ -144,8 +148,18 @@ class ForumScreen extends ConsumerWidget {
                                               ],
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 5,
                                             ),
+                                            forum.description.isNotEmpty
+                                                ? Wrap(
+                                                    children: [
+                                                      Text(forum.description),
+                                                      const SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : const SizedBox(),
                                             Text(
                                                 '${forum.registrants.length} members'),
                                             const SizedBox(
@@ -225,7 +239,7 @@ class ForumScreen extends ConsumerWidget {
                                             ),
                                           ],
                                         ),
-                                        Row(
+                                        Wrap(
                                           children: [
                                             // view button
                                             user.activities.contains(forumId)
@@ -235,8 +249,7 @@ class ForumScreen extends ConsumerWidget {
                                                             right: 5),
                                                     child: OutlinedButton(
                                                       onPressed: () =>
-                                                          viewForum(
-                                                              context, ref),
+                                                          viewForum(context),
                                                       style: ElevatedButton
                                                           .styleFrom(
                                                         shape:
@@ -254,6 +267,7 @@ class ForumScreen extends ConsumerWidget {
                                                     ),
                                                   )
                                                 : const SizedBox(),
+                                            // forum tools button
                                             user.uid == forum.uid ||
                                                     (registrant != null &&
                                                         (registrant.permissions
@@ -302,30 +316,76 @@ class ForumScreen extends ConsumerWidget {
                                                     ),
                                                   )
                                                 : const SizedBox(),
+                                            // join button
                                             user.uid == forum.uid ||
                                                     forum.public
-                                                ?
-                                                // join button
-                                                OutlinedButton(
-                                                    onPressed: () =>
-                                                        joinForum(context),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        25)),
-                                                    child: const Text('Join'),
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: OutlinedButton(
+                                                      onPressed: () =>
+                                                          joinForum(context),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                      child: const Text('Join'),
+                                                    ),
                                                   )
                                                 : const SizedBox(),
+                                            // leave button
+                                            ref
+                                                .watch(
+                                                    getUserRegistrantCountProvider(
+                                                        Tuple2(
+                                                            forumId, user.uid)))
+                                                .when(
+                                                  data: (count) {
+                                                    if (count > 0) {
+                                                      return Container(
+                                                        margin: const EdgeInsets
+                                                            .only(right: 5),
+                                                        child: OutlinedButton(
+                                                          onPressed: () =>
+                                                              leaveForum(
+                                                                  context),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                          child: const Text(
+                                                              'Leave'),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return const SizedBox();
+                                                    }
+                                                  },
+                                                  error: (error, stackTrace) =>
+                                                      ErrorText(
+                                                          error:
+                                                              error.toString()),
+                                                  loading: () => const Loader(),
+                                                ),
                                           ],
                                         ),
                                       ],

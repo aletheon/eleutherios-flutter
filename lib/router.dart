@@ -13,6 +13,7 @@ import 'package:reddit_tutorial/features/forum/screens/remove_forum_screen.dart'
 import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
+import 'package:reddit_tutorial/features/registrant/screens/leave_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/registrant_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/add_rule_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
@@ -65,6 +66,21 @@ final loggedInRoute = RouteMap(routes: {
   '/forum/:forumid': (route) => MaterialPage(
         child: ForumScreen(
           forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/forum/:forumid/deregister': (route) => MaterialPage(
+        child: DeregisterScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/forum/:forumid/leave': (route) => MaterialPage(
+        child: LeaveScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/forum/:forumid/leave/service/:serviceid': (route) => MaterialPage(
+        child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   '/viewforum/:forumid': (route) => MaterialPage(
@@ -228,6 +244,22 @@ final loggedInRoute = RouteMap(routes: {
   '/user/forum/list/detail/:forumid': (route) => MaterialPage(
         child: ForumScreen(
           forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/user/forum/list/detail/:forumid/deregister': (route) => MaterialPage(
+        child: DeregisterScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/user/forum/list/detail/:forumid/leave': (route) => MaterialPage(
+        child: LeaveScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/user/forum/list/detail/:forumid/leave/service/:serviceid': (route) =>
+      MaterialPage(
+        child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   '/user/forum/list/detail/:forumid/forum-tools': (route) => MaterialPage(

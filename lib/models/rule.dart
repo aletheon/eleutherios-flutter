@@ -13,6 +13,8 @@ class Rule {
   final String image;
   final String banner;
   final bool public; // visibility of rule
+  final String instantiationType; // consumption, order, date
+  final DateTime instantiationDate;
   final List<String> services;
   final List<String> tags;
   final DateTime lastUpdateDate;
@@ -29,6 +31,8 @@ class Rule {
     required this.image,
     required this.banner,
     required this.public,
+    required this.instantiationType,
+    required this.instantiationDate,
     required this.services,
     required this.tags,
     required this.lastUpdateDate,
@@ -47,6 +51,8 @@ class Rule {
     String? image,
     String? banner,
     bool? public,
+    String? instantiationType,
+    DateTime? instantiationDate,
     List<String>? services,
     List<String>? tags,
     DateTime? lastUpdateDate,
@@ -64,6 +70,8 @@ class Rule {
       image: image ?? this.image,
       banner: banner ?? this.banner,
       public: public ?? this.public,
+      instantiationType: instantiationType ?? this.instantiationType,
+      instantiationDate: instantiationDate ?? this.instantiationDate,
       services: services ?? this.services,
       tags: tags ?? this.tags,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -84,6 +92,8 @@ class Rule {
       'image': image,
       'banner': banner,
       'public': public,
+      'instantiationType': instantiationType,
+      'instantiationDate': instantiationDate.millisecondsSinceEpoch,
       'services': services,
       'tags': tags,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
@@ -104,6 +114,9 @@ class Rule {
       image: map['image'] as String,
       banner: map['banner'] as String,
       public: map['public'] as bool,
+      instantiationType: map['instantiationType'] as String,
+      instantiationDate:
+          DateTime.fromMillisecondsSinceEpoch(map['instantiationDate'] as int),
       services: List<String>.from(map['services']),
       tags: List<String>.from(map['tags']),
       lastUpdateDate:
@@ -115,7 +128,7 @@ class Rule {
 
   @override
   String toString() {
-    return 'Rule(ruleId: $ruleId, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, services: $services, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Rule(ruleId: $ruleId, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, services: $services, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -133,6 +146,8 @@ class Rule {
         other.image == image &&
         other.banner == banner &&
         other.public == public &&
+        other.instantiationType == instantiationType &&
+        other.instantiationDate == instantiationDate &&
         listEquals(other.services, services) &&
         listEquals(other.tags, tags) &&
         other.lastUpdateDate == lastUpdateDate &&
@@ -152,6 +167,8 @@ class Rule {
         image.hashCode ^
         banner.hashCode ^
         public.hashCode ^
+        instantiationType.hashCode ^
+        instantiationDate.hashCode ^
         services.hashCode ^
         tags.hashCode ^
         lastUpdateDate.hashCode ^

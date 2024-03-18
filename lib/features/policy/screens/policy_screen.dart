@@ -108,6 +108,16 @@ class PolicyScreen extends ConsumerWidget {
                                     const SizedBox(
                                       height: 5,
                                     ),
+                                    policy.description.isNotEmpty
+                                        ? Wrap(
+                                            children: [
+                                              Text(policy.description),
+                                              const SizedBox(
+                                                height: 30,
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox(),
                                   ],
                                 ),
                                 Row(

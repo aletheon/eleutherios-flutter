@@ -6,7 +6,6 @@ import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
 import 'package:reddit_tutorial/models/service.dart';
-import 'package:reddit_tutorial/models/user_model.dart';
 
 final serviceRepositoryProvider = Provider((ref) {
   return ServiceRepository(firestore: ref.watch(firestoreProvider));
