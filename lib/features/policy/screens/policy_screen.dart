@@ -4,7 +4,9 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -23,6 +25,7 @@ class PolicyScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
+    final managersProv = ref.watch(getManagersProvider(policyId));
 
     return Scaffold(
       body: ref.watch(getPolicyByIdProvider(policyId)).when(
@@ -118,6 +121,82 @@ class PolicyScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
+                                    Text('${policy.managers.length} managers'),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    managersProv.when(
+                                      data: (managers) {
+                                        if (managers.isNotEmpty) {
+                                          return SizedBox(
+                                            height: 70,
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: managers.length,
+                                              itemBuilder: (
+                                                BuildContext context,
+                                                int index,
+                                              ) {
+                                                final manager = managers[index];
+                                                return ref
+                                                    .watch(
+                                                        getServiceByIdProvider(
+                                                            manager.serviceId))
+                                                    .when(
+                                                      data: (service) {
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 10),
+                                                          child: Column(
+                                                            children: [
+                                                              service!.image ==
+                                                                      Constants
+                                                                          .avatarDefault
+                                                                  ? CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image.asset(service.image)
+                                                                              .image,
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      backgroundImage:
+                                                                          NetworkImage(
+                                                                              service.image),
+                                                                    ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              service.title
+                                                                          .length >
+                                                                      20
+                                                                  ? Text(
+                                                                      '${service.title.substring(0, 20)}...')
+                                                                  : Text(service
+                                                                      .title),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                      error: (error,
+                                                              stackTrace) =>
+                                                          ErrorText(
+                                                              error: error
+                                                                  .toString()),
+                                                      loading: () =>
+                                                          const Loader(),
+                                                    );
+                                              },
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox();
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    ),
                                   ],
                                 ),
                                 Row(

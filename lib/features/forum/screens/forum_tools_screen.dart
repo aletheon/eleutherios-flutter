@@ -30,11 +30,11 @@ class ForumToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('remove-forum');
   }
 
-  void addService(BuildContext context) {
+  void addMember(BuildContext context) {
     Routemaster.of(context).push('register');
   }
 
-  void removeService(BuildContext context) {
+  void removeMember(BuildContext context) {
     Routemaster.of(context).push('deregister');
   }
 
@@ -98,14 +98,14 @@ class ForumToolsScreen extends ConsumerWidget {
                     title: const Text('Remove Forum'),
                   ),
                   ListTile(
-                    onTap: () => addService(context),
+                    onTap: () => addMember(context),
                     leading: const Icon(Icons.add_moderator_outlined),
-                    title: const Text('Add Service'),
+                    title: const Text('Add Member'),
                   ),
                   ListTile(
-                    onTap: () => removeService(context),
+                    onTap: () => removeMember(context),
                     leading: const Icon(Icons.remove_moderator_outlined),
-                    title: const Text('Remove Service'),
+                    title: const Text('Remove Member'),
                   ),
                 ]);
               } else {
@@ -146,19 +146,19 @@ class ForumToolsScreen extends ConsumerWidget {
                             registrant.permissions.contains(
                                     RegistrantPermissions.addservice.name)
                                 ? ListTile(
-                                    onTap: () => addService(context),
+                                    onTap: () => addMember(context),
                                     leading: const Icon(
                                         Icons.add_moderator_outlined),
-                                    title: const Text('Add Service'),
+                                    title: const Text('Add Member'),
                                   )
                                 : const SizedBox(),
                             registrant.permissions.contains(
                                     RegistrantPermissions.removeservice.name)
                                 ? ListTile(
-                                    onTap: () => removeService(context),
+                                    onTap: () => removeMember(context),
                                     leading: const Icon(
                                         Icons.remove_moderator_outlined),
-                                    title: const Text('Remove Service'),
+                                    title: const Text('Remove Member'),
                                   )
                                 : const SizedBox(),
                           ]);
@@ -171,9 +171,9 @@ class ForumToolsScreen extends ConsumerWidget {
                   if (forum.public) {
                     return Column(children: [
                       ListTile(
-                        onTap: () => addService(context),
+                        onTap: () => addMember(context),
                         leading: const Icon(Icons.add_moderator_outlined),
-                        title: const Text('Add Services'),
+                        title: const Text('Add Member'),
                       ),
                     ]);
                   } else {

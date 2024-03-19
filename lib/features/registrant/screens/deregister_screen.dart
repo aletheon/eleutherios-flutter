@@ -37,7 +37,7 @@ class DeregisterScreen extends ConsumerWidget {
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
             title: Text(
-              'Remove Services',
+              'Remove Member',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),

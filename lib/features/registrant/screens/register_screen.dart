@@ -275,7 +275,7 @@ class RegisterScreen extends ConsumerWidget {
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
             title: Text(
-              'Add Services',
+              'Add Member',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
