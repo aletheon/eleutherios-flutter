@@ -4,7 +4,7 @@ Eleutherios is a smart phone application that enables SMEs or stakeholders withi
 
 The current human sociopolitical or economic system is linear where stakeholders communicate with one another through a one-to-one or one-to-many network relationship.
 
-Eleutherios disrupts this behavior by digitizing the network and turning it into a forum or bidirectional, many-to-many network relationship.
+Eleutherios disrupts this behavior by digitizing the network layer and turning it into a forum or bidirectional, many-to-many network relationship.
 
 Eleutherios provides tools that enable people or businesses to:
 
