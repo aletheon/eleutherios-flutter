@@ -20,6 +20,6 @@ Eleutherios provides tools that enable people or both public and private busines
 Subsequent versions:
 
 - Enable stakeholders to charge customers or make payments to one another
-- Enable PAAS to allow for stakeholders to leverage their existing assets such as data and business logic on their own servers.
-- Enable IoT, application development and virtual services.
-- Enable ML to automate policy, forum and service creation.
+- Enable PAAS to allow for stakeholders to leverage their existing assets such as data and business logic on their own servers
+- Enable IoT, application development and virtual services
+- Enable ML to automate policy, forum and service creation
