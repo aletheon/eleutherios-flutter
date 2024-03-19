@@ -10,10 +10,10 @@ Eleutherios provides tools that enable people or businesses to:
 
 - Create policies together
 - Create rules for policies
-- Share information or data through forums
-- Join or leave forums
-- Create services
 - Consume policies
+- Serve in the same network or forum together
+- Share information or data through forums
+- Create services
 - Change the permissions of managers managing policies
 - Change the permissions of services serving in forums
 
