@@ -6,7 +6,7 @@ The current human sociopolitical or economic system is linear where stakeholders
 
 Eleutherios disrupts this behavior by digitizing the network layer and turning it into a forum or bidirectional, many-to-many network relationship.
 
-Eleutherios provides tools that enable people or businesses to:
+Eleutherios provides tools that enable people or both public and private businesses to:
 
 - Create policies together
 - Create rules for policies
