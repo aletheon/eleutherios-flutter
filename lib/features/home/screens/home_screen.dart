@@ -132,11 +132,23 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    policies[index].title,
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800),
+                                  Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.account_balance_outlined,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        policies[index].title,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 3,
@@ -209,11 +221,23 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    forums[index].title,
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800),
+                                  Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.sms_outlined,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        forums[index].title,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 3,
@@ -286,11 +310,23 @@ class HomeScreen extends ConsumerWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    services[index].title,
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800),
+                                  Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.construction_outlined,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        services[index].title,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 3,
