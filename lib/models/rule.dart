@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-// A rule gets converted to a forum at run-time (i.e. when the user saves their service with a policy)
+// A rule gets converted to a forum either when a user saves the policy to their service or
+// when another service orders the service or when a particular datetime is reached.
+// For example if patient orders a doctor to perform a physical exam, then the rule for a patient exam
+// will be instantiated.
 class Rule {
   final String ruleId;
   final String policyId; // policy this rule is associated to
-  final String policyUid;
+  final String policyUid; // owner / superuser of this policy
   final String managerId; // manager creating the rule
   final String managerUid;
   final String title;

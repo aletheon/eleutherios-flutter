@@ -1,32 +1,31 @@
-// Forum permission managed by the forum owner e.g.
-// - Edit Forum
-// - Add Service (implies adding other services to forum)
-// - Create Service (implies remove own service)
-// - Delete Service (implies remove other services serving in forum)
-// - Create Forum (implies remove own forum)
-// - Delete Forum (implies remove other service forums)
-// - Create Post (implies delete own post)
-// - Delete Post (implies delete other services posts)
+// Manager permission managed by the policy owner e.g.
+// - Edit Policy
+// - Create Rule
+// - Delete Rule
+// - Add Manager
+// - Remove Manager
+// - Add Consumer
+// - Remove Consumer
 
-class Permission {
+class ManagerPermission {
   final String permissionId;
   final String name;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
-  Permission({
+  ManagerPermission({
     required this.permissionId,
     required this.name,
     required this.lastUpdateDate,
     required this.creationDate,
   });
 
-  Permission copyWith({
+  ManagerPermission copyWith({
     String? permissionId,
     String? name,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
-    return Permission(
+    return ManagerPermission(
       permissionId: permissionId ?? this.permissionId,
       name: name ?? this.name,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -43,8 +42,8 @@ class Permission {
     };
   }
 
-  factory Permission.fromMap(Map<String, dynamic> map) {
-    return Permission(
+  factory ManagerPermission.fromMap(Map<String, dynamic> map) {
+    return ManagerPermission(
       permissionId: map['permissionId'] as String,
       name: map['name'] as String,
       lastUpdateDate:
@@ -56,11 +55,11 @@ class Permission {
 
   @override
   String toString() {
-    return 'Permission(permissionId: $permissionId, name: $name, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ManagerPermission(permissionId: $permissionId, name: $name, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
-  bool operator ==(covariant Permission other) {
+  bool operator ==(covariant ManagerPermission other) {
     if (identical(this, other)) return true;
 
     return other.permissionId == permissionId &&

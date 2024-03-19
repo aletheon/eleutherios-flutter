@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 // Abstract network for service providers to share their service or energy
 class Forum {
   final String forumId;
-  final String uid;
+  final String uid; // owner or superuser of this forum
   final String parentId; // id of the forum, that this forum belongs to
   final String parentUid; // id of the user who owns the parent forum
   final String policyId; // policy this forum is associated to

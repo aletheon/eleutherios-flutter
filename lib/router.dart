@@ -15,13 +15,13 @@ import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.d
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/leave_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/registrant_screen.dart';
-import 'package:reddit_tutorial/features/rule/screens/add_rule_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/create_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/edit_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/list_user_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/policy_tools_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/policy_screen.dart';
+import 'package:reddit_tutorial/features/rule/screens/create_rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/deregister_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/register_screen.dart';
@@ -470,8 +470,8 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/policy/:policyid/policy-tools/add-rule': (route) => MaterialPage(
-        child: AddRuleScreen(
+  '/policy/:policyid/policy-tools/create-rule': (route) => MaterialPage(
+        child: CreateRuleScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
@@ -538,9 +538,9 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/user/policy/list/detail/:policyid/policy-tools/add-rule': (route) =>
+  '/user/policy/list/detail/:policyid/policy-tools/create-rule': (route) =>
       MaterialPage(
-        child: AddRuleScreen(
+        child: CreateRuleScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),

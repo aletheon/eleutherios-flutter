@@ -34,8 +34,8 @@ class PolicyToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('remove-manager');
   }
 
-  void addRule(BuildContext context) {
-    Routemaster.of(context).push('add-rule');
+  void createRule(BuildContext context) {
+    Routemaster.of(context).push('create-rule');
   }
 
   void removeRule(BuildContext context) {
@@ -66,9 +66,9 @@ class PolicyToolsScreen extends ConsumerWidget {
                     title: const Text('Edit Policy'),
                   ),
                   ListTile(
-                    onTap: () => addRule(context),
+                    onTap: () => createRule(context),
                     leading: const Icon(Icons.add_circle_outline),
-                    title: const Text('Add Rule'),
+                    title: const Text('Create Rule'),
                   ),
                   ListTile(
                     onTap: () => removeRule(context),
@@ -116,10 +116,10 @@ class PolicyToolsScreen extends ConsumerWidget {
                             manager.permissions
                                     .contains(ManagerPermissions.addrule.name)
                                 ? ListTile(
-                                    onTap: () => addRule(context),
+                                    onTap: () => createRule(context),
                                     leading:
                                         const Icon(Icons.add_circle_outline),
-                                    title: const Text('Add Rule'),
+                                    title: const Text('Create Rule'),
                                   )
                                 : const SizedBox(),
                             manager.permissions
