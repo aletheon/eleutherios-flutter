@@ -17,9 +17,9 @@ Eleutherios provides tools that enable people or both public and private busines
 - Grant managers permissions to manage policies
 - Grant members permissions to manage forums
 
-Subsequent versions:
+Future versions will enable:
 
-- Enable stakeholders to charge customers or make payments to one another
-- Enable PAAS to allow for stakeholders to leverage their existing assets such as data and business logic on their own servers
-- Enable IoT, application development and virtual services
-- Enable ML to automate policy, forum and service creation
+- Stakeholders to charge customers or make payments to one another
+- PAAS to allow for stakeholders to leverage their existing assets such as data and business logic on their own servers
+- IoT, application development and virtual services
+- ML to automate policy, forum and service creation
