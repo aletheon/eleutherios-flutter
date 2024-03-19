@@ -1,22 +1,16 @@
 # Eleutherios
 
-Eleutherios is B2B / SAAS application or sociopolitical or economic website that can scale to include more than one person or business within the same policy, forum or service.
+Eleutherios is a smartphone application that enables SMEs or stakeholders within any industry to cooperate with one another through the same policy, forum and service layer.
 
-The current "human" sociopoltical or economic system is analogue, where the responsibility for managing polices, forums or services is delegated to a single person, tribe or organisation.
+The current human sociopolitical or economic system is linear where stakeholders communicate with one another through a one-to-one or one-to-many relationship.
 
-For example a politician creating a bill to enter into parliament. [Policy]
-
-A bank who provies a financial network to enable service providers to buy or sell goods or services from another. [Forum]
-
-Or a family bakery deciding to franchise their business to service more customers. [Service]
-
-Eleutherios breaks this pattern of a one-to-one or one-to-many type of relationship to a many-to-many relationship.
+Eleutherios disrupts this behavior by digitizing the network layer and turning it into a forum or bidirectional network or many-to-many relationship among stakeholders.
 
 Eleutherios provides tools that enable people or businesses to:
 
 - Create policies together
 - Create rules for policies
-- Communicate with one another through forums
+- Share information or data through forums
 - Join or leave forums
 - Create services
 - Consume policies
