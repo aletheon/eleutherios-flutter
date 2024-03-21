@@ -254,7 +254,7 @@ class HomeScreen extends ConsumerWidget {
                           );
                         },
                         options: CarouselOptions(
-                            height: 260,
+                            height: 270,
                             enlargeCenterPage: true,
                             enlargeFactor: 0.2,
                             viewportFraction: 0.6),

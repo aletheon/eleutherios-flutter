@@ -33,7 +33,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   String? dropdownValue;
   var tapPosition;
 
-  _getSelectedRegistrant() async {
+  getSelectedRegistrant() async {
     final user = ref.read(userProvider)!;
 
     selectedRegistrant = await ref
@@ -41,14 +41,16 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
             Tuple2(widget.forumId, user.uid)))
         .first;
 
-    setState(() {});
+    setState(() {
+      dropdownValue = selectedRegistrant!.registrantId;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getSelectedRegistrant();
+      getSelectedRegistrant();
     });
   }
 
@@ -81,7 +83,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
     }
 
     void showDetails(BuildContext context) {
-      Routemaster.of(context).push('/user/forum/list/detail/${widget.forumId}');
+      Routemaster.of(context).push('/forum/${widget.forumId}');
     }
 
     void viewForum(String forumId, BuildContext context) {

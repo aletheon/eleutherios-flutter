@@ -245,7 +245,10 @@ class PolicyScreen extends ConsumerWidget {
                     ),
                   ];
                 }),
-                body: const SizedBox(),
+                body: const Padding(
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
+                  child: Text('List rules for policy'),
+                ),
               ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader()),

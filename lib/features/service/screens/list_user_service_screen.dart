@@ -11,7 +11,7 @@ class ListUserServiceScreen extends ConsumerWidget {
   const ListUserServiceScreen({super.key});
 
   void showServiceDetails(BuildContext context, String serviceId) {
-    Routemaster.of(context).push('detail/$serviceId');
+    Routemaster.of(context).push(serviceId);
   }
 
   @override

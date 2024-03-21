@@ -14,19 +14,27 @@ import 'package:routemaster/routemaster.dart';
 class ListDrawer extends ConsumerWidget {
   const ListDrawer({super.key});
 
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+  // Here rob continue with routemaster.of and router.dart conversion
+  // ******************************************************************
+  // ******************************************************************
+  // ******************************************************************
+
   void navigateToCreateService(BuildContext context) {
-    Routemaster.of(context).push('create-service');
-    Scaffold.of(context).closeDrawer();
+    Routemaster.of(context).push('/create-service');
+    //Scaffold.of(context).closeDrawer();
   }
 
   void navigateToCreateForum(BuildContext context) {
     Routemaster.of(context).push('/create-forum');
-    Scaffold.of(context).closeDrawer();
+    //Scaffold.of(context).closeDrawer();
   }
 
   void navigateToCreatePolicy(BuildContext context) {
     Routemaster.of(context).push('/create-policy');
-    Scaffold.of(context).closeDrawer();
+    //Scaffold.of(context).closeDrawer();
   }
 
   void navigateToUserServices(BuildContext context) {

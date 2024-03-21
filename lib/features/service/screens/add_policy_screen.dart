@@ -27,7 +27,7 @@ class AddPolicyScreen extends ConsumerWidget {
   }
 
   void showPolicyDetails(BuildContext context, String policyId) {
-    Routemaster.of(context).push('policy/$policyId');
+    Routemaster.of(context).push('/policy/$policyId');
   }
 
   Widget showPolicyList(WidgetRef ref, List<Policy> policies) {

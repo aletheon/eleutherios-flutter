@@ -20,24 +20,26 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
   final descriptionController = TextEditingController();
   bool isChecked = false;
 
-  void createRule() {
-    if (titleController.text.trim().isNotEmpty) {
-      // String policyId,
-      // String managerId,
-      // String title,
-      // String description,
-      // bool public,
-      // String instantiationType,
-      // DateTime instantiationDate,
+  // String policyId,
+  // String managerId,
+  // String title,
+  // String description,
+  // bool public,
+  // String instantiationType,
+  // DateTime instantiationDate,
 
-      // ref.read(ruleControllerProvider.notifier).createRule(
-      //       widget.policyId,
-      //       titleController.text.trim(),
-      //       descriptionController.text.trim(),
-      //       isChecked,
-      //       context,
-      //     );
-    }
+  void createRule() {
+    // if (titleController.text.trim().isNotEmpty) {
+    //   if (titleController.text.trim().isNotEmpty) {
+    //     ref.read(ruleControllerProvider.notifier).createRule(
+    //           widget.policyId,
+    //           titleController.text.trim(),
+    //           descriptionController.text.trim(),
+    //           isChecked,
+    //           context,
+    //         );
+    //   }
+    // }
   }
 
   @override

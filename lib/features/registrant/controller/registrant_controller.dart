@@ -147,6 +147,7 @@ class RegistrantController extends StateNotifier<bool> {
 
       // create new forum activity
       if (user.activities.contains(forumId) == false) {
+        print('does not contain forum in activity');
         final activityController =
             _ref.read(activityControllerProvider.notifier);
         activityController.createActivity(
@@ -155,11 +156,17 @@ class RegistrantController extends StateNotifier<bool> {
         // add activity to users acitivity list
         user.activities.add(forumId);
         final resUser = await _userProfileRepository.updateUser(user);
+
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message), (r) {
+          showSnackBar(context, 'Registrant added successfully!');
+        });
+      } else {
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message), (r) {
+          showSnackBar(context, 'Registrant added successfully!');
+        });
       }
-      state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
-        showSnackBar(context, 'Registrant added successfully!');
-      });
     } else {
       state = false;
       if (context.mounted) {
@@ -218,14 +225,14 @@ class RegistrantController extends StateNotifier<bool> {
     forum!.registrants.remove(registrantId);
     await _forumRepository.updateForum(forum);
 
-    // get the rest of the users registrants
-    final userRegistrants = await _ref
+    // get this users registrant count
+    final registrantCount = await _ref
         .read(registrantControllerProvider.notifier)
-        .getUserRegistrants(forumId, user.uid)
+        .getUserRegistrantCount(forumId, user.uid)
         .first;
 
     // remove activity if no user registrants are left
-    if (userRegistrants.isEmpty) {
+    if (registrantCount - 1 <= 0) {
       user.activities.remove(forumId);
       await _userProfileRepository.updateUser(user);
 
@@ -238,7 +245,12 @@ class RegistrantController extends StateNotifier<bool> {
     } else {
       // set next available registrant as default
       if (registrant.selected) {
-        // get registrant
+        // get the rest of the users registrants
+        final userRegistrants = await _ref
+            .read(registrantControllerProvider.notifier)
+            .getUserRegistrants(forumId, user.uid)
+            .first;
+
         userRegistrants[0] = userRegistrants[0].copyWith(selected: true);
         await _registrantRepository.updateRegistrant(userRegistrants[0]);
       }

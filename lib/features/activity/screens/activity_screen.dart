@@ -14,11 +14,11 @@ class ActivityScreen extends ConsumerWidget {
   const ActivityScreen({super.key});
 
   void showForumDetails(BuildContext context, String forumId) {
-    Routemaster.of(context).push('/$forumId');
+    Routemaster.of(context).push('/forum/$forumId');
   }
 
   void showPolicyDetails(BuildContext context, String policyId) {
-    Routemaster.of(context).push('/$policyId');
+    Routemaster.of(context).push('/policy/$policyId');
   }
 
   @override

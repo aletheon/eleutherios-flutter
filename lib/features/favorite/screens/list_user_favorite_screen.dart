@@ -18,7 +18,7 @@ class ListUserFavoriteScreen extends ConsumerWidget {
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
-    Routemaster.of(context).push('detail/$serviceId');
+    Routemaster.of(context).push(serviceId);
   }
 
   @override

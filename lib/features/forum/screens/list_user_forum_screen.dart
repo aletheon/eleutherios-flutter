@@ -11,7 +11,7 @@ class ListUserForumScreen extends ConsumerWidget {
   const ListUserForumScreen({super.key});
 
   void showForumDetails(BuildContext context, String forumId) {
-    Routemaster.of(context).push('detail/$forumId');
+    Routemaster.of(context).push(forumId);
   }
 
   @override

@@ -27,7 +27,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
   }
 
   void showForumDetails(BuildContext context, String forumId) {
-    Routemaster.of(context).push('forum/$forumId');
+    Routemaster.of(context).push('/forum/$forumId');
   }
 
   Widget showForumList(WidgetRef ref, List<Forum> forums) {

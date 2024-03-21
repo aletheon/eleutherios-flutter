@@ -11,7 +11,7 @@ class ListUserPolicyScreen extends ConsumerWidget {
   const ListUserPolicyScreen({super.key});
 
   void showPolicyDetails(BuildContext context, String policyId) {
-    Routemaster.of(context).push('detail/$policyId');
+    Routemaster.of(context).push(policyId);
   }
 
   @override
