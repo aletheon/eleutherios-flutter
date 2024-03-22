@@ -27,14 +27,16 @@ class HomeScreen extends ConsumerWidget {
 
   void showPolicyDetails(String policyId, BuildContext context) {
     Routemaster.of(context).push('/policy/$policyId');
+    Scaffold.of(context).closeDrawer();
   }
 
   void showForumDetails(String forumId, BuildContext context) {
-    Routemaster.of(context).push('/forum/$forumId');
+    Routemaster.of(context).replace('/forum/$forumId');
   }
 
   void showServiceDetails(String serviceId, BuildContext context) {
     Routemaster.of(context).push('/service/$serviceId');
+    Scaffold.of(context).closeDrawer();
   }
 
   @override

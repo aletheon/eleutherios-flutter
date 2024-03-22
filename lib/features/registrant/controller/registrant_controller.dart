@@ -231,6 +231,14 @@ class RegistrantController extends StateNotifier<bool> {
         .getUserRegistrantCount(forumId, user.uid)
         .first;
 
+    // ******************************************************************
+    // ******************************************************************
+    // ******************************************************************
+    // HERE ROB VALIDATE THE ACTIVITY IS BEING ADDED + REMOVED PROPERLY
+    // ******************************************************************
+    // ******************************************************************
+    // ******************************************************************
+
     // remove activity if no user registrants are left
     if (registrantCount - 1 <= 0) {
       user.activities.remove(forumId);

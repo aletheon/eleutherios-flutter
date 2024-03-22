@@ -49,6 +49,10 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   @override
   void initState() {
     super.initState();
+    // Future.microtask(() => getSelectedRegistrant());
+    // Future.delayed(Duration.zero).then((_) {
+    //   getSelectedRegistrant();
+    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getSelectedRegistrant();
     });
@@ -621,13 +625,13 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                           items: registrants
                                               .map<DropdownMenuItem<String>>(
                                                   (Registrant registrant) {
-                                            return ref
-                                                .watch(getServiceByIdProvider(
-                                                    registrant.serviceId))
-                                                .when(data: (service) {
-                                              return DropdownMenuItem<String>(
-                                                value: registrant.registrantId,
-                                                child: Row(children: [
+                                            return DropdownMenuItem<String>(
+                                              value: registrant.registrantId,
+                                              child: ref
+                                                  .watch(getServiceByIdProvider(
+                                                      registrant.serviceId))
+                                                  .when(data: (service) {
+                                                return Row(children: [
                                                   service!.image ==
                                                           Constants
                                                               .avatarDefault
@@ -663,28 +667,13 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                             fontSize: 14,
                                                           ),
                                                         ),
-                                                ]),
-                                              );
-                                            },
-                                                    // *********************************
-                                                    // error
-                                                    // *********************************
-                                                    error: (error, stackTrace) {
-                                              return DropdownMenuItem<String>(
-                                                value: error.toString(),
-                                                child: Text(error.toString()),
-                                              );
-                                            },
-                                                    // *********************************
-                                                    // loading
-                                                    // *********************************
-                                                    loading: () {
-                                              return const DropdownMenuItem<
-                                                  String>(
-                                                value: 'Loader',
-                                                child: Loader(),
-                                              );
-                                            });
+                                                ]);
+                                              }, error: (error, stackTrace) {
+                                                return Text(error.toString());
+                                              }, loading: () {
+                                                return const Loader();
+                                              }),
+                                            );
                                           }).toList(),
                                         ),
                                       ),
