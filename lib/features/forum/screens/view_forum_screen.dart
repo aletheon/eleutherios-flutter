@@ -49,10 +49,6 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() => getSelectedRegistrant());
-    // Future.delayed(Duration.zero).then((_) {
-    //   getSelectedRegistrant();
-    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getSelectedRegistrant();
     });
