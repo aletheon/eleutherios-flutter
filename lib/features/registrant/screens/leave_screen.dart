@@ -59,7 +59,21 @@ class LeaveScreen extends ConsumerWidget {
                           .when(
                             data: (service) {
                               return ListTile(
-                                title: Text(service!.title),
+                                title: registrant.selected == false
+                                    ? Text(service!.title)
+                                    : Row(
+                                        children: [
+                                          Text(service!.title),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const Icon(
+                                            Icons.check,
+                                            color:
+                                                Color.fromARGB(255, 3, 233, 33),
+                                          )
+                                        ],
+                                      ),
                                 leading: service.image ==
                                         Constants.avatarDefault
                                     ? CircleAvatar(

@@ -147,7 +147,6 @@ class RegistrantController extends StateNotifier<bool> {
 
       // create new forum activity
       if (user.activities.contains(forumId) == false) {
-        print('does not contain forum in activity');
         final activityController =
             _ref.read(activityControllerProvider.notifier);
         activityController.createActivity(
@@ -232,16 +231,19 @@ class RegistrantController extends StateNotifier<bool> {
         .first;
 
     // remove activity if no user registrants are left
-    if (registrantCount - 1 <= 0) {
-      user.activities.remove(forumId);
-      await _userProfileRepository.updateUser(user);
-
+    if (registrantCount == 0) {
       // get activity
       final activity = await _ref
           .read(activityControllerProvider.notifier)
           .getUserActivityByPolicyForumId(forumId, registrant.serviceUid)
           .first;
+
+      // now remove it
       await _activityRepository.deleteActivity(activity.activityId);
+
+      // remove the activity from the users activity list
+      user.activities.remove(forumId);
+      await _userProfileRepository.updateUser(user);
     } else {
       // set next available registrant as default
       if (registrant.selected) {
