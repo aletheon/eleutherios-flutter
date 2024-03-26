@@ -47,9 +47,10 @@ enum RegistrantPermissions<String> {
   addservice, // - Add Service (implies adding other services to forum)
   removeservice, // - Remove Service (implies removing other services from forum)
   addforum, // - Add Forum (implies removing forum)
-  deleteforum, // - Delete Forum (implies removing other services forums)
-  createpost, // - Create Post (implies delete own post)
-  deletepost, // - Delete Post (implies delete other services posts)
+  removeforum, // - Remove Forum (implies removing other services forums)
+  createpost, // - Create Post (implies remove own post)
+  removepost, // - Remove Post (implies remove other services posts)
+  editpermissions, // - Edit Permissions (implies editing permissions for members)
 }
 
 extension RegistrantPermissionsTypeValue on RegistrantPermissions {
@@ -63,12 +64,14 @@ extension RegistrantPermissionsTypeValue on RegistrantPermissions {
         return 'Remove Service';
       case RegistrantPermissions.addforum:
         return 'Add Forum';
-      case RegistrantPermissions.deleteforum:
-        return 'Delete Forum';
+      case RegistrantPermissions.removeforum:
+        return 'Remove Forum';
       case RegistrantPermissions.createpost:
         return 'Create Post';
-      case RegistrantPermissions.deletepost:
-        return 'Delete Post';
+      case RegistrantPermissions.removepost:
+        return 'Remove Post';
+      case RegistrantPermissions.editpermissions:
+        return 'Edit Permissions';
     }
   }
 }
@@ -82,6 +85,7 @@ enum ManagerPermissions<String> {
   removeconsumer, // - Remove Service (implies removing other services serving in policy)
   addrule, // - Add Rule (implies remove own rule)
   removerule, // - Remove Rule (implies removing other managers rules)
+  editpermissions, // - Edit Permissions (implies editing permissions for managers)
 }
 
 extension ManagerPermissionsTypeValue on ManagerPermissions {
@@ -101,6 +105,8 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
         return 'Add Rule';
       case ManagerPermissions.removerule:
         return 'Remove Rule';
+      case ManagerPermissions.editpermissions:
+        return 'Edit Permissions';
     }
   }
 }

@@ -285,7 +285,7 @@ class ForumScreen extends ConsumerWidget {
                                                                     .name) ||
                                                             registrant.permissions.contains(
                                                                 RegistrantPermissions
-                                                                    .deleteforum
+                                                                    .removeforum
                                                                     .name) ||
                                                             registrant.permissions
                                                                 .contains(RegistrantPermissions.editforum.name)))

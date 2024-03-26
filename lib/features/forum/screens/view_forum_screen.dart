@@ -238,7 +238,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                           .permissions
                                                           .contains(
                                                               RegistrantPermissions
-                                                                  .deletepost
+                                                                  .removepost
                                                                   .name)) {
                                                     final RenderBox overlay =
                                                         Overlay.of(context)

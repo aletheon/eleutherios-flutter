@@ -13,7 +13,9 @@ import 'package:reddit_tutorial/features/forum/screens/remove_forum_screen.dart'
 import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
+import 'package:reddit_tutorial/features/permission/screens/edit_permissions_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/leave_screen.dart';
+import 'package:reddit_tutorial/features/permission/screens/member_permissions_screen.dart';
 import 'package:reddit_tutorial/features/registrant/screens/registrant_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/create_policy_screen.dart';
@@ -131,6 +133,24 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/member-permissions': (route) => MaterialPage(
+        child: MemberPermissionsScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/forum/:forumid/forum-tools/member-permissions/edit/:registrantId':
+      (route) => MaterialPage(
+            child: EditPermissionsScreen(
+              forumId: route.pathParameters['forumid']!,
+              registrantId: route.pathParameters['registrantId']!,
+            ),
+          ),
+  '/forum/:forumid/forum-tools/member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/forum/:forumid/forum-tools/register/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
@@ -284,6 +304,25 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/user/forum/list/:forumid/forum-tools/member-permissions': (route) =>
+      MaterialPage(
+        child: MemberPermissionsScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/user/forum/list/:forumid/forum-tools/member-permissions/edit/:registrantId':
+      (route) => MaterialPage(
+            child: EditPermissionsScreen(
+              forumId: route.pathParameters['forumid']!,
+              registrantId: route.pathParameters['registrantId']!,
+            ),
+          ),
+  '/user/forum/list/:forumid/forum-tools/member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/:forumid/forum-tools/register/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(

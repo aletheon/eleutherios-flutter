@@ -38,6 +38,10 @@ class ForumToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('deregister');
   }
 
+  void memberPermissions(BuildContext context) {
+    Routemaster.of(context).push('member-permissions');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
@@ -107,6 +111,11 @@ class ForumToolsScreen extends ConsumerWidget {
                     leading: const Icon(Icons.remove_moderator_outlined),
                     title: const Text('Remove Member'),
                   ),
+                  ListTile(
+                    onTap: () => memberPermissions(context),
+                    leading: const Icon(Icons.list_alt_outlined),
+                    title: const Text('Member Permissions'),
+                  ),
                 ]);
               } else {
                 if (user.activities.contains(forumId)) {
@@ -135,7 +144,7 @@ class ForumToolsScreen extends ConsumerWidget {
                                   )
                                 : const SizedBox(),
                             registrant.permissions.contains(
-                                    RegistrantPermissions.deleteforum.name)
+                                    RegistrantPermissions.removeforum.name)
                                 ? ListTile(
                                     onTap: () => removeForum(context),
                                     leading:
@@ -159,6 +168,15 @@ class ForumToolsScreen extends ConsumerWidget {
                                     leading: const Icon(
                                         Icons.remove_moderator_outlined),
                                     title: const Text('Remove Member'),
+                                  )
+                                : const SizedBox(),
+                            registrant.permissions.contains(
+                                    RegistrantPermissions.editpermissions.name)
+                                ? ListTile(
+                                    onTap: () => memberPermissions(context),
+                                    leading:
+                                        const Icon(Icons.list_alt_outlined),
+                                    title: const Text('Member Permissions'),
                                   )
                                 : const SizedBox(),
                           ]);
