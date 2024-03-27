@@ -18,7 +18,7 @@ class ForumToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('edit');
   }
 
-  void addForum(BuildContext context) {
+  void createForum(BuildContext context) {
     Routemaster.of(context).push('add-forum');
   }
 
@@ -92,9 +92,9 @@ class ForumToolsScreen extends ConsumerWidget {
                     ),
                   ),
                   ListTile(
-                    onTap: () => addForum(context),
+                    onTap: () => createForum(context),
                     leading: const Icon(Icons.add_circle_outline),
-                    title: const Text('Add Forum'),
+                    title: const Text('Create Forum'),
                   ),
                   ListTile(
                     onTap: () => removeForum(context),
@@ -135,12 +135,12 @@ class ForumToolsScreen extends ConsumerWidget {
                                   )
                                 : const SizedBox(),
                             registrant.permissions.contains(
-                                    RegistrantPermissions.addforum.name)
+                                    RegistrantPermissions.createforum.name)
                                 ? ListTile(
-                                    onTap: () => addForum(context),
+                                    onTap: () => createForum(context),
                                     leading:
                                         const Icon(Icons.add_circle_outline),
-                                    title: const Text('Add Forum'),
+                                    title: const Text('Create Forum'),
                                   )
                                 : const SizedBox(),
                             registrant.permissions.contains(

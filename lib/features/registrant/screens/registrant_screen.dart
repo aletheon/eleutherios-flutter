@@ -37,10 +37,11 @@ class RegistrantScreen extends ConsumerWidget {
     }
   }
 
-  void updateRegistrant(Registrant registrant, WidgetRef ref) async {
+  void updateRegistrant(
+      Registrant registrant, WidgetRef ref, BuildContext context) async {
     ref
         .read(registrantControllerProvider.notifier)
-        .updateRegistrant(registrant);
+        .updateRegistrant(registrant: registrant, context: context);
   }
 
   @override
@@ -251,7 +252,7 @@ class RegistrantScreen extends ConsumerWidget {
                                     } else {
                                       registrant.permissions.remove(name);
                                     }
-                                    updateRegistrant(registrant, ref);
+                                    updateRegistrant(registrant, ref, context);
                                   },
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,

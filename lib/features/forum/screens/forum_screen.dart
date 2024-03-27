@@ -273,7 +273,7 @@ class ForumScreen extends ConsumerWidget {
                                                         (registrant.permissions
                                                                 .contains(
                                                                     RegistrantPermissions
-                                                                        .addforum
+                                                                        .createforum
                                                                         .name) ||
                                                             registrant.permissions.contains(
                                                                 RegistrantPermissions

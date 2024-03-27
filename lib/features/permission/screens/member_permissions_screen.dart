@@ -4,6 +4,7 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -26,6 +27,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider)!;
     final forumProv = ref.watch(getForumByIdProvider(_forumId));
     final registrantsProv = ref.watch(getRegistrantsProvider(_forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -67,7 +69,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
                                                     .editforum.name) ==
-                                            false
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(
@@ -102,7 +104,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
                                                     .addservice.name) ==
-                                            false
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(
@@ -142,7 +144,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
                                                     .removeservice.name) ==
-                                            false
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(
@@ -181,8 +183,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                         : const SizedBox(),
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
-                                                    .addforum.name) ==
-                                            false
+                                                    .createforum.name) ==
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(
@@ -222,7 +224,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
                                                     .removeforum.name) ==
-                                            false
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(
@@ -301,7 +303,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                         : const SizedBox(),
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
-                                                    .createpost.name) ==
+                                                    .removepost.name) ==
                                             true
                                         ? const Row(
                                             children: [
@@ -342,7 +344,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                     registrant.permissions.contains(
                                                 RegistrantPermissions
                                                     .editpermissions.name) ==
-                                            false
+                                            true
                                         ? const Row(
                                             children: [
                                               CircleAvatar(

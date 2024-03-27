@@ -127,6 +127,16 @@ class RegistrantController extends StateNotifier<bool> {
       String registrantId = const Uuid().v1().replaceAll('-', '');
       List<String> defaultPermissions = [RegistrantPermissions.createpost.name];
 
+      if (forum.uid == service.uid) {
+        defaultPermissions.add(RegistrantPermissions.editforum.name);
+        defaultPermissions.add(RegistrantPermissions.addservice.name);
+        defaultPermissions.add(RegistrantPermissions.removeservice.name);
+        defaultPermissions.add(RegistrantPermissions.createforum.name);
+        defaultPermissions.add(RegistrantPermissions.removeforum.name);
+        defaultPermissions.add(RegistrantPermissions.removepost.name);
+        defaultPermissions.add(RegistrantPermissions.editpermissions.name);
+      }
+
       // create registrant
       Registrant registrant = Registrant(
         registrantId: registrantId,
@@ -174,8 +184,15 @@ class RegistrantController extends StateNotifier<bool> {
     }
   }
 
-  void updateRegistrant(Registrant registrant) async {
-    await _registrantRepository.updateRegistrant(registrant);
+  void updateRegistrant(
+      {required Registrant registrant, required BuildContext context}) async {
+    state = true;
+    final registrantRes =
+        await _registrantRepository.updateRegistrant(registrant);
+    state = false;
+    registrantRes.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Registrant updated successfully!');
+    });
   }
 
   void changedSelected(String registrantId) async {

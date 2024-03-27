@@ -126,7 +126,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
                   backgroundColor: currentTheme.backgroundColor,
                   appBar: AppBar(
                     title: Text(
-                      'Add Forum to ${forum!.title}',
+                      'Create Forum in ${forum!.title}',
                       style: TextStyle(
                         color: currentTheme.textTheme.bodyMedium!.color!,
                       ),

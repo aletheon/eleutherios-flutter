@@ -46,7 +46,7 @@ enum RegistrantPermissions<String> {
   editforum, // - Edit Forum
   addservice, // - Add Service (implies adding other services to forum)
   removeservice, // - Remove Service (implies removing other services from forum)
-  addforum, // - Add Forum (implies removing forum)
+  createforum, // - Create Forum (implies removing forum)
   removeforum, // - Remove Forum (implies removing other services forums)
   createpost, // - Create Post (implies remove own post)
   removepost, // - Remove Post (implies remove other services posts)
@@ -62,8 +62,8 @@ extension RegistrantPermissionsTypeValue on RegistrantPermissions {
         return 'Add Service';
       case RegistrantPermissions.removeservice:
         return 'Remove Service';
-      case RegistrantPermissions.addforum:
-        return 'Add Forum';
+      case RegistrantPermissions.createforum:
+        return 'Create Forum';
       case RegistrantPermissions.removeforum:
         return 'Remove Forum';
       case RegistrantPermissions.createpost:
