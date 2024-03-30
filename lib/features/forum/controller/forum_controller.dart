@@ -20,6 +20,14 @@ final getForumByIdProvider =
   return ref.watch(forumControllerProvider.notifier).getForumById(forumId);
 });
 
+final getForumByIdProvider2 = Provider.family((ref, String forumId) {
+  try {
+    return ref.watch(forumControllerProvider.notifier).getForumById(forumId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final userForumsProvider = StreamProvider.autoDispose((ref) {
   return ref.watch(forumControllerProvider.notifier).getUserForums();
 });

@@ -37,7 +37,7 @@ class ManagerRepository {
     }
   }
 
-  Stream<Manager> getUserSelectedManager(String policyId, String uid) {
+  Stream<Manager?> getUserSelectedManager(String policyId, String uid) {
     return _managers
         .where('policyId', isEqualTo: policyId)
         .where('serviceUid', isEqualTo: uid)
@@ -45,10 +45,15 @@ class ManagerRepository {
         .snapshots()
         .map((event) {
       List<Manager> managers = [];
-      for (var doc in event.docs) {
-        managers.add(Manager.fromMap(doc.data() as Map<String, dynamic>));
+
+      if (event.docs.isNotEmpty) {
+        for (var doc in event.docs) {
+          managers.add(Manager.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return managers.first;
+      } else {
+        return null;
       }
-      return managers.first;
     });
   }
 

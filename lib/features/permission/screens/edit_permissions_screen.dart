@@ -37,7 +37,7 @@ class _EditPermissionsScreenState extends ConsumerState<EditPermissionsScreen> {
 
     return ref.watch(getRegistrantByIdProvider(widget.registrantId)).when(
           data: (registrant) {
-            permissions = registrant.permissions;
+            permissions = registrant!.permissions;
             return ref.watch(getServiceByIdProvider(registrant.serviceId)).when(
                   data: (service) {
                     return Scaffold(

@@ -63,6 +63,16 @@ final getUserSelectedManagerProvider =
   }
 });
 
+final getUserSelectedManagerProvider2 = Provider.family((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(managerControllerProvider.notifier)
+        .getUserSelectedManager(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final managerControllerProvider =
     StateNotifierProvider<ManagerController, bool>((ref) {
   final managerRepository = ref.watch(managerRepositoryProvider);
@@ -117,14 +127,18 @@ class ManagerController extends StateNotifier<bool> {
             .getUserManagerCount(policy.policyId, service.uid)
             .first;
         String managerId = const Uuid().v1().replaceAll('-', '');
-        List<String> defaultPermissions = [
-          ManagerPermissions.addmanager.name,
-          ManagerPermissions.removemanager.name,
-          ManagerPermissions.addconsumer.name,
-          ManagerPermissions.removeconsumer.name,
-          ManagerPermissions.addrule.name,
-          ManagerPermissions.removerule.name,
-        ];
+        List<String> defaultPermissions = [ManagerPermissions.createrule.name];
+
+        if (policy.uid == service.uid) {
+          defaultPermissions.add(ManagerPermissions.editpolicy.name);
+          defaultPermissions.add(ManagerPermissions.createrule.name);
+          defaultPermissions.add(ManagerPermissions.removerule.name);
+          defaultPermissions.add(ManagerPermissions.addmanager.name);
+          defaultPermissions.add(ManagerPermissions.removemanager.name);
+          defaultPermissions.add(ManagerPermissions.addconsumer.name);
+          defaultPermissions.add(ManagerPermissions.removeconsumer.name);
+          defaultPermissions.add(ManagerPermissions.editpermissions.name);
+        }
 
         // create manager
         Manager manager = Manager(
@@ -233,7 +247,7 @@ class ManagerController extends StateNotifier<bool> {
     return _managerRepository.getUserManagerCount(policyId, uid);
   }
 
-  Stream<Manager> getUserSelectedManager(String policyId, String uid) {
+  Stream<Manager?> getUserSelectedManager(String policyId, String uid) {
     return _managerRepository.getUserSelectedManager(policyId, uid);
   }
 }

@@ -197,7 +197,7 @@ class RegistrantController extends StateNotifier<bool> {
 
   void changedSelected(String registrantId) async {
     // get registrant
-    Registrant registrant = await _ref
+    Registrant? registrant = await _ref
         .read(registrantControllerProvider.notifier)
         .getRegistrantById(registrantId)
         .first;
@@ -205,7 +205,7 @@ class RegistrantController extends StateNotifier<bool> {
     // get old registrant and unselect it
     Registrant? selectedRegistrant = await _ref
         .read(registrantControllerProvider.notifier)
-        .getUserSelectedRegistrant(registrant.forumId, registrant.serviceUid)
+        .getUserSelectedRegistrant(registrant!.forumId, registrant.serviceUid)
         .first;
 
     selectedRegistrant = selectedRegistrant!.copyWith(selected: false);
@@ -252,7 +252,7 @@ class RegistrantController extends StateNotifier<bool> {
       // get activity
       final activity = await _ref
           .read(activityControllerProvider.notifier)
-          .getUserActivityByPolicyForumId(forumId, registrant.serviceUid)
+          .getUserActivityByPolicyForumId(forumId, registrant!.serviceUid)
           .first;
 
       // now remove it
@@ -263,7 +263,7 @@ class RegistrantController extends StateNotifier<bool> {
       await _userProfileRepository.updateUser(user);
     } else {
       // set next available registrant as default
-      if (registrant.selected) {
+      if (registrant!.selected) {
         // get the rest of the users registrants
         final userRegistrants = await _ref
             .read(registrantControllerProvider.notifier)
@@ -300,7 +300,7 @@ class RegistrantController extends StateNotifier<bool> {
     return _registrantRepository.getUserSelectedRegistrant(forumId, uid);
   }
 
-  Stream<Registrant> getRegistrantById(String registrantId) {
+  Stream<Registrant?> getRegistrantById(String registrantId) {
     return _registrantRepository.getRegistrantById(registrantId);
   }
 }

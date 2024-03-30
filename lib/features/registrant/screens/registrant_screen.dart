@@ -51,7 +51,9 @@ class RegistrantScreen extends ConsumerWidget {
     return Scaffold(
       body: ref.watch(getRegistrantByIdProvider(registrantId)).when(
           data: (registrant) {
-            return ref.watch(getServiceByIdProvider(registrant.serviceId)).when(
+            return ref
+                .watch(getServiceByIdProvider(registrant!.serviceId))
+                .when(
                   data: (service) {
                     return NestedScrollView(
                       headerSliverBuilder: ((context, innerBoxIsScrolled) {
@@ -224,7 +226,7 @@ class RegistrantScreen extends ConsumerWidget {
                       // ****************************************************
                       // list permissions
                       // ****************************************************
-                      body: registrant.forumUid == user.uid &&
+                      body: registrant!.forumUid == user.uid &&
                               service!.uid != user.uid
                           ? ListView.builder(
                               shrinkWrap: true,

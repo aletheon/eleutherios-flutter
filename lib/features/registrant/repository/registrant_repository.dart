@@ -19,14 +19,23 @@ class RegistrantRepository {
   CollectionReference get _registrants =>
       _firestore.collection(FirebaseConstants.registrantsCollection);
 
-  Stream<Registrant> getRegistrantById(String registrantId) {
-    final DocumentReference documentReference = _registrants.doc(registrantId);
+  Stream<Registrant?> getRegistrantById(String registrantId) {
+    if (registrantId.isNotEmpty) {
+      final DocumentReference documentReference =
+          _registrants.doc(registrantId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      return Registrant.fromMap(event.data() as Map<String, dynamic>);
-    });
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Registrant.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {

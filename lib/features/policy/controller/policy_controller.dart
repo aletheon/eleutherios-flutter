@@ -17,6 +17,14 @@ final getPolicyByIdProvider =
   return ref.watch(policyControllerProvider.notifier).getPolicyById(policyId);
 });
 
+final getPolicyByIdProvider2 = Provider.family((ref, String policyId) {
+  try {
+    return ref.watch(policyControllerProvider.notifier).getPolicyById(policyId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final userPoliciesProvider = StreamProvider.autoDispose<List<Policy>>((ref) {
   return ref.watch(policyControllerProvider.notifier).getUserPolicies();
 });

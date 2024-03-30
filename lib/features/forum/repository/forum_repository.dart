@@ -20,17 +20,21 @@ class ForumRepository {
       _firestore.collection(FirebaseConstants.forumsCollection);
 
   Stream<Forum?> getForumById(String forumId) {
-    final DocumentReference documentReference = _forums.doc(forumId);
+    if (forumId.isNotEmpty) {
+      final DocumentReference documentReference = _forums.doc(forumId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      if (event.exists) {
-        return Forum.fromMap(event.data() as Map<String, dynamic>);
-      } else {
-        return null;
-      }
-    });
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Forum.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<List<Forum>> getForums() {

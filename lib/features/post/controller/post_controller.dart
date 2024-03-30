@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
@@ -81,7 +80,7 @@ class PostController extends StateNotifier<bool> {
         .read(forumControllerProvider.notifier)
         .getForumById(forumId)
         .first;
-    Registrant registrant = await _ref
+    Registrant? registrant = await _ref
         .read(registrantControllerProvider.notifier)
         .getRegistrantById(registrantId)
         .first;
@@ -92,7 +91,7 @@ class PostController extends StateNotifier<bool> {
       forumId: forumId,
       forumUid: forum!.uid,
       registrantId: registrantId,
-      serviceId: registrant.serviceId,
+      serviceId: registrant!.serviceId,
       serviceUid: registrant.serviceUid,
       message: message,
       messageLowercase: message.toLowerCase(),
