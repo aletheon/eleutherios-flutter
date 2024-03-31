@@ -10,9 +10,10 @@ import 'package:reddit_tutorial/features/service/controller/service_controller.d
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class LeaveScreen extends ConsumerWidget {
+class MemberLeaveScreen extends ConsumerWidget {
   final String _forumId;
-  const LeaveScreen({super.key, required String forumId}) : _forumId = forumId;
+  const MemberLeaveScreen({super.key, required String forumId})
+      : _forumId = forumId;
 
   void removeMemberService(
       BuildContext context, WidgetRef ref, String forumId, String memberId) {

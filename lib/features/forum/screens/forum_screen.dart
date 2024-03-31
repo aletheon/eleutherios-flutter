@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
-import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
@@ -33,7 +32,7 @@ class ForumScreen extends ConsumerWidget {
   }
 
   void leaveForum(BuildContext context) {
-    Routemaster.of(context).push('leave');
+    Routemaster.of(context).push('leave-forum');
   }
 
   @override
@@ -267,25 +266,8 @@ class ForumScreen extends ConsumerWidget {
                                                 : const SizedBox(),
                                             // forum tools button
                                             user.uid == forum.uid ||
-                                                    (member != null &&
-                                                        (member.permissions
-                                                                .contains(MemberPermissions
-                                                                    .createforum
-                                                                    .name) ||
-                                                            member.permissions.contains(
-                                                                MemberPermissions
-                                                                    .addservice
-                                                                    .name) ||
-                                                            member.permissions.contains(
-                                                                MemberPermissions
-                                                                    .removeservice
-                                                                    .name) ||
-                                                            member.permissions.contains(
-                                                                MemberPermissions
-                                                                    .removeforum
-                                                                    .name) ||
-                                                            member.permissions.contains(
-                                                                MemberPermissions.editforum.name)))
+                                                    user.activities
+                                                        .contains(forumId)
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

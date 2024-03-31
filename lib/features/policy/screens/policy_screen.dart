@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/features/policy/controller/policy_controller.dar
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class PolicyScreen extends ConsumerWidget {
   final String policyId;
@@ -24,6 +25,10 @@ class PolicyScreen extends ConsumerWidget {
 
   void consume(BuildContext context) {
     Routemaster.of(context).push('consume');
+  }
+
+  void leavePolicy(BuildContext context) {
+    Routemaster.of(context).push('leave-policy');
   }
 
   @override
@@ -203,42 +208,111 @@ class PolicyScreen extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
-                                Row(
+                                Wrap(
                                   children: [
+                                    // policy tools button
                                     policy.uid == user.uid ||
                                             user.activities.contains(policyId)
-                                        ? OutlinedButton(
-                                            onPressed: () =>
-                                                navigateToPolicyTools(context),
-                                            style: ElevatedButton.styleFrom(
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  navigateToPolicyTools(
+                                                      context),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child: const Text('Policy Tools'),
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    // consume button
+                                    policy.public
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () => consume(context),
+                                              style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
                                                 ),
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 25)),
-                                            child: const Text('Policy Tools'),
-                                          )
-                                        : const SizedBox(),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    policy.public
-                                        ? OutlinedButton(
-                                            onPressed: () => consume(context),
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                        horizontal: 25),
                                               ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 25),
+                                              child: const Text('Consume'),
                                             ),
-                                            child: const Text('Consume'),
                                           )
                                         : const SizedBox(),
+                                    // join button
+                                    user.uid == policy.uid || policy.public
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  joinPolicy(context),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child: const Text('Join'),
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    // leave button
+                                    ref
+                                        .watch(getUserManagerCountProvider(
+                                            Tuple2(policyId, user.uid)))
+                                        .when(
+                                          data: (count) {
+                                            if (count > 0) {
+                                              return Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: OutlinedButton(
+                                                  onPressed: () =>
+                                                      leavePolicy(context),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      25)),
+                                                  child: const Text('Leave'),
+                                                ),
+                                              );
+                                            } else {
+                                              return const SizedBox();
+                                            }
+                                          },
+                                          error: (error, stackTrace) =>
+                                              ErrorText(
+                                                  error: error.toString()),
+                                          loading: () => const Loader(),
+                                        ),
                                   ],
                                 )
                               ],

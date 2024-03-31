@@ -14,7 +14,7 @@ import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/edit_member_permissions_screen.dart';
-import 'package:reddit_tutorial/features/member/screens/leave_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/member_leave_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/member_permissions_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/member_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
@@ -98,12 +98,12 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/leave': (route) => MaterialPage(
-        child: LeaveScreen(
+  '/forum/:forumid/leave-forum': (route) => MaterialPage(
+        child: MemberLeaveScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/leave/service/:serviceid': (route) => MaterialPage(
+  '/forum/:forumid/leave-forum/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
@@ -269,12 +269,13 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/leave': (route) => MaterialPage(
-        child: LeaveScreen(
+  '/user/forum/list/:forumid/leave-forum': (route) => MaterialPage(
+        child: MemberLeaveScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/leave/service/:serviceid': (route) => MaterialPage(
+  '/user/forum/list/:forumid/leave-forum/service/:serviceid': (route) =>
+      MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),

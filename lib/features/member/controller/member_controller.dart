@@ -114,62 +114,70 @@ class MemberController extends StateNotifier<bool> {
         .first;
 
     if (forum != null && service != null) {
-      final user = await _ref.read(getUserByIdProvider(service.uid)).first;
-      final memberCount = await _ref
-          .read(memberControllerProvider.notifier)
-          .getUserMemberCount(forum.forumId, service.uid)
-          .first;
-      String memberId = const Uuid().v1().replaceAll('-', '');
-      List<String> defaultPermissions = [MemberPermissions.createpost.name];
+      // ensure service is not already a member
+      if (forum.members.contains(serviceId) == false) {
+        final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+        final memberCount = await _ref
+            .read(memberControllerProvider.notifier)
+            .getUserMemberCount(forum.forumId, service.uid)
+            .first;
+        String memberId = const Uuid().v1().replaceAll('-', '');
+        List<String> defaultPermissions = [MemberPermissions.createpost.name];
 
-      if (forum.uid == service.uid) {
-        defaultPermissions.add(MemberPermissions.editforum.name);
-        defaultPermissions.add(MemberPermissions.addservice.name);
-        defaultPermissions.add(MemberPermissions.removeservice.name);
-        defaultPermissions.add(MemberPermissions.createforum.name);
-        defaultPermissions.add(MemberPermissions.removeforum.name);
-        defaultPermissions.add(MemberPermissions.removepost.name);
-        defaultPermissions.add(MemberPermissions.editpermissions.name);
-      }
+        if (forum.uid == service.uid) {
+          defaultPermissions.add(MemberPermissions.editforum.name);
+          defaultPermissions.add(MemberPermissions.addservice.name);
+          defaultPermissions.add(MemberPermissions.removeservice.name);
+          defaultPermissions.add(MemberPermissions.createforum.name);
+          defaultPermissions.add(MemberPermissions.removeforum.name);
+          defaultPermissions.add(MemberPermissions.removepost.name);
+          defaultPermissions.add(MemberPermissions.editpermissions.name);
+        }
 
-      // create member
-      Member member = Member(
-        memberId: memberId,
-        forumId: forumId,
-        forumUid: forum.uid,
-        serviceId: serviceId,
-        serviceUid: service.uid,
-        selected: memberCount == 0 ? true : false,
-        permissions: defaultPermissions,
-        lastUpdateDate: DateTime.now(),
-        creationDate: DateTime.now(),
-      );
-      final res = await _memberRepository.createMember(member);
+        // create member
+        Member member = Member(
+          memberId: memberId,
+          forumId: forumId,
+          forumUid: forum.uid,
+          serviceId: serviceId,
+          serviceUid: service.uid,
+          selected: memberCount == 0 ? true : false,
+          permissions: defaultPermissions,
+          lastUpdateDate: DateTime.now(),
+          creationDate: DateTime.now(),
+        );
+        final res = await _memberRepository.createMember(member);
 
-      // update forum
-      forum.members.add(memberId);
-      final resForum = await _forumRepository.updateForum(forum);
+        // update forum
+        forum.members.add(memberId);
+        final resForum = await _forumRepository.updateForum(forum);
 
-      // create new forum activity
-      if (user!.activities.contains(forumId) == false) {
-        final activityController =
-            _ref.read(activityControllerProvider.notifier);
-        activityController.createActivity(
-            ActivityType.forum.name, user.uid, forumId, forum.uid);
+        // create new forum activity
+        if (user!.activities.contains(forumId) == false) {
+          final activityController =
+              _ref.read(activityControllerProvider.notifier);
+          activityController.createActivity(
+              ActivityType.forum.name, user.uid, forumId, forum.uid);
 
-        // add activity to users acitivity list
-        user.activities.add(forumId);
-        final resUser = await _userProfileRepository.updateUser(user);
+          // add activity to users acitivity list
+          user.activities.add(forumId);
+          final resUser = await _userProfileRepository.updateUser(user);
 
-        state = false;
-        res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Member added successfully!');
-        });
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message), (r) {
+            showSnackBar(context, 'Member added successfully!');
+          });
+        } else {
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message), (r) {
+            showSnackBar(context, 'Member added successfully!');
+          });
+        }
       } else {
         state = false;
-        res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Member added successfully!');
-        });
+        if (context.mounted) {
+          showSnackBar(context, 'Service is already a member of this forum');
+        }
       }
     } else {
       state = false;
