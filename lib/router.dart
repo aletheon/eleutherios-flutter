@@ -11,6 +11,8 @@ import 'package:reddit_tutorial/features/forum/screens/list_user_forum_screen.da
 import 'package:reddit_tutorial/features/forum/screens/forum_tools_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/remove_forum_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
+import 'package:reddit_tutorial/features/manager/screens/edit_manager_permissions_screen.dart';
+import 'package:reddit_tutorial/features/manager/screens/manager_permissions_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
@@ -119,6 +121,11 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/remove-member': (route) => MaterialPage(
+        child: RemoveMemberScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
   '/forum/:forumid/forum-tools/add-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
@@ -155,11 +162,6 @@ final loggedInRoute = RouteMap(routes: {
               uid: route.pathParameters['uid']!,
             ),
           ),
-  '/forum/:forumid/forum-tools/remove-member': (route) => MaterialPage(
-        child: RemoveMemberScreen(
-          forumId: route.pathParameters['forumid']!,
-        ),
-      ),
   '/forum/:forumid/forum-tools/add-forum': (route) => MaterialPage(
         child: CreateForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -210,6 +212,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/forum/:forumid/add-member': (route) => MaterialPage(
         child: AddMemberScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/forum/:forumid/remove-member': (route) => MaterialPage(
+        child: RemoveMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -291,6 +298,12 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/user/forum/list/:forumid/forum-tools/remove-member': (route) =>
+      MaterialPage(
+        child: RemoveMemberScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
   '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
@@ -327,12 +340,6 @@ final loggedInRoute = RouteMap(routes: {
               uid: route.pathParameters['uid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/remove-member': (route) =>
-      MaterialPage(
-        child: RemoveMemberScreen(
-          forumId: route.pathParameters['forumid']!,
-        ),
-      ),
   '/user/forum/list/:forumid/forum-tools/add-forum': (route) => MaterialPage(
         child: CreateForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -385,6 +392,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/user/forum/list/:forumid/add-member': (route) => MaterialPage(
         child: AddMemberScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
+  '/user/forum/list/:forumid/remove-member': (route) => MaterialPage(
+        child: RemoveMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -526,6 +538,11 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
+  '/policy/:policyid/remove-manager': (route) => MaterialPage(
+        child: RemoveManagerScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
   '/policy/:policyid/add-manager/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
@@ -571,6 +588,24 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
+  '/policy/:policyid/policy-tools/manager-permissions': (route) => MaterialPage(
+        child: ManagerPermissionsScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/policy/:policyid/policy-tools/manager-permissions/edit/:managerid':
+      (route) => MaterialPage(
+            child: EditManagerPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+              memberId: route.pathParameters['memberid']!,
+            ),
+          ),
+  '/policy/:policyid/policy-tools/manager-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list': (_) => const MaterialPage(
         child: ListUserPolicyScreen(),
       ),
@@ -586,12 +621,6 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/user/policy/list/:policyid/policy-tools': (route) => MaterialPage(
         child: PolicyToolsScreen(
-          policyId: route.pathParameters['policyid']!,
-        ),
-      ),
-  '/user/policy/list/:policyid/policy-tools/remove-manager': (route) =>
-      MaterialPage(
-        child: RemoveManagerScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
@@ -627,6 +656,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/policy-tools/add-manager': (route) =>
       MaterialPage(
         child: AddManagerScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/policy-tools/remove-manager': (route) =>
+      MaterialPage(
+        child: RemoveManagerScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
@@ -668,6 +703,11 @@ final loggedInRoute = RouteMap(routes: {
           ),
   '/user/policy/list/:policyid/add-manager': (route) => MaterialPage(
         child: AddManagerScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/remove-manager': (route) => MaterialPage(
+        child: RemoveManagerScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
