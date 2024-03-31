@@ -62,10 +62,10 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     final user = ref.read(userProvider)!;
     final policy =
         await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
-    final selectedManager = await ref
-        .read(
-            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
-        .first;
+    // final selectedManager = await ref
+    //     .read(
+    //         getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+    //     .first;
 
     if (policy!.uid != user.uid) {
       if (user.activities.contains(widget.policyId) == false) {
@@ -77,13 +77,20 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
       }
     }
 
-    if (selectedManager == null) {
-      Future.delayed(Duration.zero, () {
-        showSnackBar(context, 'You are not a manager of this policy');
-        Routemaster.of(context).pop();
-      });
-    }
+    // if (selectedManager == null) {
+    //   Future.delayed(Duration.zero, () {
+    //     showSnackBar(context, 'You are not a manager of this policy');
+    //     Routemaster.of(context).pop();
+    //   });
+    // }
   }
+
+  // ************************************************************************
+  // ************************************************************************
+  // HERE ROB HAVE TO ENABLE PERSON WHO CREATED POLICY THE ABILITY TO
+  // JOIN THE POLICY AS A MANAGER - I.E. ADD A JOIN BUTTON, LEAVE BUTTON
+  // ************************************************************************
+  // ************************************************************************
 
   @override
   void initState() {

@@ -62,7 +62,7 @@ class ActivityController extends StateNotifier<bool> {
     final res = await _activityRepository.createActivity(activity);
 
     // create an activity for this user
-    List result = user.activities.where((a) => a == policyForumId).toList();
+    List result = user!.activities.where((a) => a == policyForumId).toList();
     if (result.isEmpty) {
       // add the policyId or forumId not the activityId as the two are essentially the same and it
       // makes it easier to find out if a particular user is serving in a forum or not

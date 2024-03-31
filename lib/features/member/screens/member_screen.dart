@@ -6,17 +6,17 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class RegistrantScreen extends ConsumerWidget {
-  final String registrantId;
-  const RegistrantScreen({super.key, required this.registrantId});
+class MemberScreen extends ConsumerWidget {
+  final String memberId;
+  const MemberScreen({super.key, required this.memberId});
 
   void navigateToServiceTools(String serviceId, BuildContext context) {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
@@ -37,11 +37,10 @@ class RegistrantScreen extends ConsumerWidget {
     }
   }
 
-  void updateRegistrant(
-      Registrant registrant, WidgetRef ref, BuildContext context) async {
+  void updateMember(Member member, WidgetRef ref, BuildContext context) async {
     ref
-        .read(registrantControllerProvider.notifier)
-        .updateRegistrant(registrant: registrant, context: context);
+        .read(memberControllerProvider.notifier)
+        .updateMember(member: member, context: context);
   }
 
   @override
@@ -49,11 +48,9 @@ class RegistrantScreen extends ConsumerWidget {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
-      body: ref.watch(getRegistrantByIdProvider(registrantId)).when(
-          data: (registrant) {
-            return ref
-                .watch(getServiceByIdProvider(registrant!.serviceId))
-                .when(
+      body: ref.watch(getMemberByIdProvider(memberId)).when(
+          data: (member) {
+            return ref.watch(getServiceByIdProvider(member!.serviceId)).when(
                   data: (service) {
                     return NestedScrollView(
                       headerSliverBuilder: ((context, innerBoxIsScrolled) {
@@ -226,35 +223,34 @@ class RegistrantScreen extends ConsumerWidget {
                       // ****************************************************
                       // list permissions
                       // ****************************************************
-                      body: registrant!.forumUid == user.uid &&
+                      body: member!.forumUid == user.uid &&
                               service!.uid != user.uid
                           ? ListView.builder(
                               shrinkWrap: true,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 0, vertical: 0),
-                              itemCount: RegistrantPermissions.values.length,
+                              itemCount: MemberPermissions.values.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final name =
-                                    RegistrantPermissions.values[index].name;
+                                    MemberPermissions.values[index].name;
                                 final value =
-                                    RegistrantPermissions.values[index].value;
+                                    MemberPermissions.values[index].value;
                                 return CheckboxListTile(
                                   title: Text(
                                     value,
                                     style: const TextStyle(
                                         color: Pallete.greyColor),
                                   ),
-                                  value: registrant.permissions.contains(name),
+                                  value: member.permissions.contains(name),
                                   onChanged: (bool? selected) {
                                     if (selected!) {
-                                      if (!registrant.permissions
-                                          .contains(name)) {
-                                        registrant.permissions.add(name);
+                                      if (!member.permissions.contains(name)) {
+                                        member.permissions.add(name);
                                       }
                                     } else {
-                                      registrant.permissions.remove(name);
+                                      member.permissions.remove(name);
                                     }
-                                    updateRegistrant(registrant, ref, context);
+                                    updateMember(member, ref, context);
                                   },
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,

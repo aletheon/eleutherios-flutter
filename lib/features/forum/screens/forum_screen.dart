@@ -7,7 +7,7 @@ import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -25,7 +25,7 @@ class ForumScreen extends ConsumerWidget {
   }
 
   void joinForum(BuildContext context) {
-    Routemaster.of(context).push('register');
+    Routemaster.of(context).push('add-member');
   }
 
   void viewForum(BuildContext context) {
@@ -39,16 +39,15 @@ class ForumScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
-    final registrantsProv = ref.watch(getRegistrantsProvider(forumId));
+    final membersProv = ref.watch(getMembersProvider(forumId));
 
     return Scaffold(
       body: ref.watch(getForumByIdProvider(forumId)).when(
           data: (forum) {
             return ref
-                .watch(getUserSelectedRegistrantProvider(
-                    Tuple2(forumId, user.uid)))
+                .watch(getUserSelectedMemberProvider(Tuple2(forumId, user.uid)))
                 .when(
-                    data: (registrant) {
+                    data: (member) {
                       return NestedScrollView(
                         headerSliverBuilder: ((context, innerBoxIsScrolled) {
                           return [
@@ -161,29 +160,28 @@ class ForumScreen extends ConsumerWidget {
                                                   )
                                                 : const SizedBox(),
                                             Text(
-                                                '${forum.registrants.length} members'),
+                                                '${forum.members.length} members'),
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            registrantsProv.when(
-                                              data: (registrants) {
-                                                if (registrants.isNotEmpty) {
+                                            membersProv.when(
+                                              data: (members) {
+                                                if (members.isNotEmpty) {
                                                   return SizedBox(
                                                     height: 70,
                                                     child: ListView.builder(
                                                       scrollDirection:
                                                           Axis.horizontal,
-                                                      itemCount:
-                                                          registrants.length,
+                                                      itemCount: members.length,
                                                       itemBuilder: (
                                                         BuildContext context,
                                                         int index,
                                                       ) {
-                                                        final registrant =
-                                                            registrants[index];
+                                                        final member =
+                                                            members[index];
                                                         return ref
                                                             .watch(getServiceByIdProvider(
-                                                                registrant
+                                                                member
                                                                     .serviceId))
                                                             .when(
                                                               data: (service) {
@@ -269,26 +267,25 @@ class ForumScreen extends ConsumerWidget {
                                                 : const SizedBox(),
                                             // forum tools button
                                             user.uid == forum.uid ||
-                                                    (registrant != null &&
-                                                        (registrant.permissions
-                                                                .contains(
-                                                                    RegistrantPermissions
-                                                                        .createforum
-                                                                        .name) ||
-                                                            registrant.permissions.contains(
-                                                                RegistrantPermissions
+                                                    (member != null &&
+                                                        (member.permissions
+                                                                .contains(MemberPermissions
+                                                                    .createforum
+                                                                    .name) ||
+                                                            member.permissions.contains(
+                                                                MemberPermissions
                                                                     .addservice
                                                                     .name) ||
-                                                            registrant.permissions.contains(
-                                                                RegistrantPermissions
+                                                            member.permissions.contains(
+                                                                MemberPermissions
                                                                     .removeservice
                                                                     .name) ||
-                                                            registrant.permissions.contains(
-                                                                RegistrantPermissions
+                                                            member.permissions.contains(
+                                                                MemberPermissions
                                                                     .removeforum
                                                                     .name) ||
-                                                            registrant.permissions
-                                                                .contains(RegistrantPermissions.editforum.name)))
+                                                            member.permissions.contains(
+                                                                MemberPermissions.editforum.name)))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -347,7 +344,7 @@ class ForumScreen extends ConsumerWidget {
                                             // leave button
                                             ref
                                                 .watch(
-                                                    getUserRegistrantCountProvider(
+                                                    getUserMemberCountProvider(
                                                         Tuple2(
                                                             forumId, user.uid)))
                                                 .when(

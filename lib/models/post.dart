@@ -2,7 +2,7 @@ class Post {
   final String postId;
   final String forumId;
   final String forumUid;
-  final String registrantId;
+  final String memberId;
   final String serviceId;
   final String serviceUid;
   final String message;
@@ -14,7 +14,7 @@ class Post {
     required this.postId,
     required this.forumId,
     required this.forumUid,
-    required this.registrantId,
+    required this.memberId,
     required this.serviceId,
     required this.serviceUid,
     required this.message,
@@ -28,7 +28,7 @@ class Post {
     String? postId,
     String? forumId,
     String? forumUid,
-    String? registrantId,
+    String? memberId,
     String? serviceId,
     String? serviceUid,
     String? message,
@@ -41,7 +41,7 @@ class Post {
       postId: postId ?? this.postId,
       forumId: forumId ?? this.forumId,
       forumUid: forumUid ?? this.forumUid,
-      registrantId: registrantId ?? this.registrantId,
+      memberId: memberId ?? this.memberId,
       serviceId: serviceId ?? this.serviceId,
       serviceUid: serviceUid ?? this.serviceUid,
       message: message ?? this.message,
@@ -57,7 +57,7 @@ class Post {
       'postId': postId,
       'forumId': forumId,
       'forumUid': forumUid,
-      'registrantId': registrantId,
+      'memberId': memberId,
       'serviceId': serviceId,
       'serviceUid': serviceUid,
       'message': message,
@@ -73,7 +73,7 @@ class Post {
       postId: map['postId'] as String,
       forumId: map['forumId'] as String,
       forumUid: map['forumUid'] as String,
-      registrantId: map['registrantId'] as String,
+      memberId: map['memberId'] as String,
       serviceId: map['serviceId'] as String,
       serviceUid: map['serviceUid'] as String,
       message: map['message'] as String,
@@ -88,7 +88,7 @@ class Post {
 
   @override
   String toString() {
-    return 'Post(postId: $postId, forumId: $forumId, forumUid: $forumUid, registrantId: $registrantId, serviceId: $serviceId, serviceUid: $serviceUid, message: $message, messageLowercase: $messageLowercase, image: $image, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Post(postId: $postId, forumId: $forumId, forumUid: $forumUid, memberId: $memberId, serviceId: $serviceId, serviceUid: $serviceUid, message: $message, messageLowercase: $messageLowercase, image: $image, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -98,7 +98,7 @@ class Post {
     return other.postId == postId &&
         other.forumId == forumId &&
         other.forumUid == forumUid &&
-        other.registrantId == registrantId &&
+        other.memberId == memberId &&
         other.serviceId == serviceId &&
         other.serviceUid == serviceUid &&
         other.message == message &&
@@ -113,7 +113,7 @@ class Post {
     return postId.hashCode ^
         forumId.hashCode ^
         forumUid.hashCode ^
-        registrantId.hashCode ^
+        memberId.hashCode ^
         serviceId.hashCode ^
         serviceUid.hashCode ^
         message.hashCode ^

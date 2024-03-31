@@ -4,21 +4,21 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class DeregisterScreen extends ConsumerWidget {
+class RemoveMemberScreen extends ConsumerWidget {
   final String _forumId;
-  const DeregisterScreen({super.key, required String forumId})
+  const RemoveMemberScreen({super.key, required String forumId})
       : _forumId = forumId;
 
-  void deRegisterService(BuildContext context, WidgetRef ref, String forumId,
-      String registrantId) {
+  void removeMemberService(
+      BuildContext context, WidgetRef ref, String forumId, String memberId) {
     ref
-        .read(registrantControllerProvider.notifier)
-        .deleteRegistrant(forumId, registrantId, context);
+        .read(memberControllerProvider.notifier)
+        .deleteMember(forumId, memberId, context);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -28,7 +28,7 @@ class DeregisterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final forumProv = ref.watch(getForumByIdProvider(_forumId));
-    final registrantsProv = ref.watch(getRegistrantsProvider(_forumId));
+    final membersProv = ref.watch(getMembersProvider(_forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return forumProv.when(
@@ -43,17 +43,17 @@ class DeregisterScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: registrantsProv.when(
-            data: (registrants) {
+          body: membersProv.when(
+            data: (members) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListView.builder(
-                  itemCount: registrants.length,
+                  itemCount: members.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final registrant = registrants[index];
+                    final member = members[index];
 
                     return ref
-                        .watch(getServiceByIdProvider(registrant.serviceId))
+                        .watch(getServiceByIdProvider(member.serviceId))
                         .when(
                           data: (service) {
                             return ListTile(
@@ -68,11 +68,11 @@ class DeregisterScreen extends ConsumerWidget {
                                           NetworkImage(service.image),
                                     ),
                               trailing: TextButton(
-                                onPressed: () => deRegisterService(
+                                onPressed: () => removeMemberService(
                                   context,
                                   ref,
                                   forum!.forumId,
-                                  registrant.registrantId,
+                                  member.memberId,
                                 ),
                                 child: const Text(
                                   'Remove',

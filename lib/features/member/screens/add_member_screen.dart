@@ -6,27 +6,27 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/forum.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
-class RegisterScreen extends ConsumerWidget {
+class AddMemberScreen extends ConsumerWidget {
   final String _forumId;
-  const RegisterScreen({super.key, required String forumId})
+  const AddMemberScreen({super.key, required String forumId})
       : _forumId = forumId;
 
-  void registerService(BuildContext context, WidgetRef ref, String forumId,
+  void addMemberService(BuildContext context, WidgetRef ref, String forumId,
       String forumUid, String serviceId, String serviceUid) {
     ref
-        .read(registrantControllerProvider.notifier)
-        .createRegistrant(forumId, serviceId, context);
+        .read(memberControllerProvider.notifier)
+        .createMember(forumId, serviceId, context);
   }
 
   void viewForum(WidgetRef ref, BuildContext context) {
@@ -55,7 +55,7 @@ class RegisterScreen extends ConsumerWidget {
                       backgroundImage: NetworkImage(service.image),
                     ),
               trailing: TextButton(
-                onPressed: () => registerService(context, ref, forum.forumId,
+                onPressed: () => addMemberService(context, ref, forum.forumId,
                     forum.uid, service.serviceId, service.uid),
                 child: const Text(
                   'Add',
@@ -84,7 +84,7 @@ class RegisterScreen extends ConsumerWidget {
                               backgroundImage: NetworkImage(service.image),
                             ),
                       trailing: TextButton(
-                        onPressed: () => registerService(
+                        onPressed: () => addMemberService(
                             context,
                             ref,
                             forum.forumId,
@@ -114,7 +114,7 @@ class RegisterScreen extends ConsumerWidget {
     final userServicesProv = ref.watch(userServicesProvider);
     final servicesProv = ref.watch(servicesProvider);
     final user = ref.watch(userProvider)!;
-    final registrantsProv = ref.watch(getRegistrantsProvider(_forumId));
+    final membersProv = ref.watch(getMembersProvider(_forumId));
 
     if (searchType == "Private") {
       if (user.services.isEmpty) {
@@ -127,14 +127,14 @@ class RegisterScreen extends ConsumerWidget {
       } else {
         return userServicesProv.when(
           data: (services) {
-            if (forum.registrants.isEmpty) {
+            if (forum.members.isEmpty) {
               return showServiceList(ref, forum, services, null);
             } else {
-              return registrantsProv.when(
-                data: (registrants) {
+              return membersProv.when(
+                data: (members) {
                   List<Service> servicesNotInForum = [];
                   for (var service in services) {
-                    List<Registrant> result = registrants
+                    List<Member> result = members
                         .where((r) => r.serviceId == service.serviceId)
                         .toList();
                     if (result.isEmpty) {
@@ -175,14 +175,14 @@ class RegisterScreen extends ConsumerWidget {
               ),
             );
           } else {
-            if (forum.registrants.isEmpty) {
+            if (forum.members.isEmpty) {
               return showServiceList(ref, forum, services, null);
             } else {
-              return registrantsProv.when(
-                data: (registrants) {
+              return membersProv.when(
+                data: (members) {
                   List<Service> servicesNotInForum = [];
                   for (var service in services) {
-                    List<Registrant> result = registrants
+                    List<Member> result = members
                         .where((r) => r.serviceId == service.serviceId)
                         .toList();
                     if (result.isEmpty) {
@@ -223,14 +223,14 @@ class RegisterScreen extends ConsumerWidget {
       } else {
         return userFavoritesProv.when(
           data: (favorites) {
-            if (forum.registrants.isEmpty) {
+            if (forum.members.isEmpty) {
               return showServiceList(ref, forum, null, favorites);
             } else {
-              return registrantsProv.when(
-                data: (registrants) {
+              return membersProv.when(
+                data: (members) {
                   List<Favorite> favoritesNotInForum = [];
                   for (var favorite in favorites) {
-                    List<Registrant> result = registrants
+                    List<Member> result = members
                         .where((r) => r.serviceId == favorite.serviceId)
                         .toList();
                     if (result.isEmpty) {

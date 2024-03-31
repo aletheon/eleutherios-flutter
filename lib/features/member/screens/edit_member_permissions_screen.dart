@@ -5,28 +5,29 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
-class EditPermissionsScreen extends ConsumerStatefulWidget {
+class EditMemberPermissionsScreen extends ConsumerStatefulWidget {
   final String forumId;
-  final String registrantId;
-  const EditPermissionsScreen(
-      {super.key, required this.forumId, required this.registrantId});
+  final String memberId;
+  const EditMemberPermissionsScreen(
+      {super.key, required this.forumId, required this.memberId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _EditPermissionsScreenState();
+      _EditMemberPermissionsScreenState();
 }
 
-class _EditPermissionsScreenState extends ConsumerState<EditPermissionsScreen> {
-  void save(Registrant registrant, List<String> permissions) {
-    registrant = registrant.copyWith(permissions: permissions);
+class _EditMemberPermissionsScreenState
+    extends ConsumerState<EditMemberPermissionsScreen> {
+  void save(Member member, List<String> permissions) {
+    member = member.copyWith(permissions: permissions);
     ref
-        .read(registrantControllerProvider.notifier)
-        .updateRegistrant(registrant: registrant, context: context);
+        .read(memberControllerProvider.notifier)
+        .updateMember(member: member, context: context);
   }
 
   @override
@@ -35,10 +36,10 @@ class _EditPermissionsScreenState extends ConsumerState<EditPermissionsScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
     List<String> permissions = [];
 
-    return ref.watch(getRegistrantByIdProvider(widget.registrantId)).when(
-          data: (registrant) {
-            permissions = registrant!.permissions;
-            return ref.watch(getServiceByIdProvider(registrant.serviceId)).when(
+    return ref.watch(getMemberByIdProvider(widget.memberId)).when(
+          data: (member) {
+            permissions = member!.permissions;
+            return ref.watch(getServiceByIdProvider(member.serviceId)).when(
                   data: (service) {
                     return Scaffold(
                       appBar: AppBar(
@@ -51,7 +52,7 @@ class _EditPermissionsScreenState extends ConsumerState<EditPermissionsScreen> {
                         actions: [
                           TextButton(
                             onPressed: () => {
-                              save(registrant, permissions),
+                              save(member, permissions),
                             },
                             child: const Text('Save'),
                           ),
@@ -90,10 +91,10 @@ class _EditPermissionsScreenState extends ConsumerState<EditPermissionsScreen> {
                             ),
                             Expanded(
                               child: ListView.builder(
-                                itemCount: RegistrantPermissions.values.length,
+                                itemCount: MemberPermissions.values.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final permission =
-                                      RegistrantPermissions.values[index];
+                                      MemberPermissions.values[index];
                                   List<Widget> _icons = [];
 
                                   switch (permission.name) {

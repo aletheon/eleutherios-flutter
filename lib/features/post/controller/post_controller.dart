@@ -7,10 +7,10 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
 import 'package:reddit_tutorial/features/post/repository/post_repository.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/post.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -73,16 +73,16 @@ class PostController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
-  void createPost(String forumId, String registrantId, String message,
+  void createPost(String forumId, String memberId, String message,
       File? imageFile, BuildContext context) async {
     state = true;
     Forum? forum = await _ref
         .read(forumControllerProvider.notifier)
         .getForumById(forumId)
         .first;
-    Registrant? registrant = await _ref
-        .read(registrantControllerProvider.notifier)
-        .getRegistrantById(registrantId)
+    Member? member = await _ref
+        .read(memberControllerProvider.notifier)
+        .getMemberById(memberId)
         .first;
     String postId = const Uuid().v1().replaceAll('-', '');
 
@@ -90,9 +90,9 @@ class PostController extends StateNotifier<bool> {
       postId: postId,
       forumId: forumId,
       forumUid: forum!.uid,
-      registrantId: registrantId,
-      serviceId: registrant!.serviceId,
-      serviceUid: registrant.serviceUid,
+      memberId: memberId,
+      serviceId: member!.serviceId,
+      serviceUid: member.serviceUid,
       message: message,
       messageLowercase: message.toLowerCase(),
       image: '',

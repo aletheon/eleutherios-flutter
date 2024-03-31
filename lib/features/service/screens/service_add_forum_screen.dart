@@ -5,7 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/service.dart';
@@ -22,8 +22,8 @@ class ServiceAddForumScreen extends ConsumerWidget {
 
   void registerService(BuildContext context, WidgetRef ref, String forumId) {
     ref
-        .read(registrantControllerProvider.notifier)
-        .createRegistrant(forumId, _serviceId, context);
+        .read(memberControllerProvider.notifier)
+        .createMember(forumId, _serviceId, context);
   }
 
   void showForumDetails(BuildContext context, String forumId) {

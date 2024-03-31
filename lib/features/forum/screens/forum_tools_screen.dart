@@ -5,7 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -39,11 +39,11 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
   }
 
   void addMember(BuildContext context) {
-    Routemaster.of(context).push('register');
+    Routemaster.of(context).push('add-member');
   }
 
   void removeMember(BuildContext context) {
-    Routemaster.of(context).push('deregister');
+    Routemaster.of(context).push('remove-member');
   }
 
   void memberPermissions(BuildContext context) {
@@ -88,8 +88,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
         ),
         actions: [
           ref
-              .watch(getUserRegistrantCountProvider(
-                  Tuple2(widget.forumId, user.uid)))
+              .watch(
+                  getUserMemberCountProvider(Tuple2(widget.forumId, user.uid)))
               .when(
                 data: (count) {
                   if (count > 0) {
@@ -115,14 +115,14 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
       body: ref.watch(getForumByIdProvider(widget.forumId)).when(
             data: (forum) {
               return ref
-                  .watch(getUserSelectedRegistrantProvider(
+                  .watch(getUserSelectedMemberProvider(
                       Tuple2(widget.forumId, user.uid)))
                   .when(
-                    data: (registrant) {
+                    data: (member) {
                       return Column(children: [
                         user.uid == forum!.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.editforum.name)
+                                member!.permissions
+                                    .contains(MemberPermissions.editforum.name)
                             ? ListTile(
                                 onTap: () => editForum(context),
                                 leading: const Icon(Icons.edit_note_outlined),
@@ -130,8 +130,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.createforum.name)
+                                member!.permissions.contains(
+                                    MemberPermissions.createforum.name)
                             ? ListTile(
                                 onTap: () => createForum(context),
                                 leading: const Icon(Icons.add_circle_outline),
@@ -139,8 +139,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.removeforum.name)
+                                member!.permissions.contains(
+                                    MemberPermissions.removeforum.name)
                             ? ListTile(
                                 onTap: () => removeForum(context),
                                 leading:
@@ -149,8 +149,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.addservice.name)
+                                member!.permissions
+                                    .contains(MemberPermissions.addservice.name)
                             ? ListTile(
                                 onTap: () => addMember(context),
                                 leading:
@@ -159,8 +159,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.removeservice.name)
+                                member!.permissions.contains(
+                                    MemberPermissions.removeservice.name)
                             ? ListTile(
                                 onTap: () => removeMember(context),
                                 leading:
@@ -169,8 +169,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                registrant!.permissions.contains(
-                                    RegistrantPermissions.editpermissions.name)
+                                member!.permissions.contains(
+                                    MemberPermissions.editpermissions.name)
                             ? ListTile(
                                 onTap: () => memberPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

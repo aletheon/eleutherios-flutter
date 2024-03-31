@@ -6,7 +6,7 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -16,9 +16,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
   const MemberPermissionsScreen({super.key, required String forumId})
       : _forumId = forumId;
 
-  void editPermissions(
-      BuildContext context, WidgetRef ref, String registrantId) {
-    Routemaster.of(context).push('edit/$registrantId');
+  void editPermissions(BuildContext context, WidgetRef ref, String memberId) {
+    Routemaster.of(context).push('edit/$memberId');
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -29,7 +28,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
     final forumProv = ref.watch(getForumByIdProvider(_forumId));
-    final registrantsProv = ref.watch(getRegistrantsProvider(_forumId));
+    final membersProv = ref.watch(getMembersProvider(_forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return forumProv.when(
@@ -44,17 +43,17 @@ class MemberPermissionsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: registrantsProv.when(
-            data: (registrants) {
+          body: membersProv.when(
+            data: (members) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListView.builder(
-                  itemCount: registrants.length,
+                  itemCount: members.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final registrant = registrants[index];
+                    final member = members[index];
 
                     return ref
-                        .watch(getServiceByIdProvider(registrant.serviceId))
+                        .watch(getServiceByIdProvider(member.serviceId))
                         .when(
                           data: (service) {
                             return ListTile(
@@ -66,8 +65,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Row(
                                   children: [
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .editforum.name) ==
                                             true
                                         ? const Row(
@@ -101,8 +100,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .addservice.name) ==
                                             true
                                         ? const Row(
@@ -141,8 +140,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .removeservice.name) ==
                                             true
                                         ? const Row(
@@ -181,8 +180,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .createforum.name) ==
                                             true
                                         ? const Row(
@@ -221,8 +220,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .removeforum.name) ==
                                             true
                                         ? const Row(
@@ -261,8 +260,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .createpost.name) ==
                                             true
                                         ? const Row(
@@ -301,8 +300,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .removepost.name) ==
                                             true
                                         ? const Row(
@@ -341,8 +340,8 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                             ],
                                           )
                                         : const SizedBox(),
-                                    registrant.permissions.contains(
-                                                RegistrantPermissions
+                                    member.permissions.contains(
+                                                MemberPermissions
                                                     .editpermissions.name) ==
                                             true
                                         ? const Row(
@@ -389,7 +388,7 @@ class MemberPermissionsScreen extends ConsumerWidget {
                                 onPressed: () => editPermissions(
                                   context,
                                   ref,
-                                  registrant.registrantId,
+                                  member.memberId,
                                 ),
                                 child: const Text(
                                   'Edit',

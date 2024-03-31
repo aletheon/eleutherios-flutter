@@ -5,30 +5,29 @@ import 'package:reddit_tutorial/core/constants/firebase_constants.dart';
 import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 
-final registrantRepositoryProvider = Provider((ref) {
-  return RegistrantRepository(firestore: ref.watch(firestoreProvider));
+final memberRepositoryProvider = Provider((ref) {
+  return MemberRepository(firestore: ref.watch(firestoreProvider));
 });
 
-class RegistrantRepository {
+class MemberRepository {
   final FirebaseFirestore _firestore;
-  RegistrantRepository({required FirebaseFirestore firestore})
+  MemberRepository({required FirebaseFirestore firestore})
       : _firestore = firestore;
 
-  CollectionReference get _registrants =>
-      _firestore.collection(FirebaseConstants.registrantsCollection);
+  CollectionReference get _members =>
+      _firestore.collection(FirebaseConstants.membersCollection);
 
-  Stream<Registrant?> getRegistrantById(String registrantId) {
-    if (registrantId.isNotEmpty) {
-      final DocumentReference documentReference =
-          _registrants.doc(registrantId);
+  Stream<Member?> getMemberById(String memberId) {
+    if (memberId.isNotEmpty) {
+      final DocumentReference documentReference = _members.doc(memberId);
 
       Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
       return documentStream.map((event) {
         if (event.exists) {
-          return Registrant.fromMap(event.data() as Map<String, dynamic>);
+          return Member.fromMap(event.data() as Map<String, dynamic>);
         } else {
           return null;
         }
@@ -39,7 +38,7 @@ class RegistrantRepository {
   }
 
   Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {
-    return _registrants
+    return _members
         .where('forumId', isEqualTo: forumId)
         .where('serviceId', isEqualTo: serviceId)
         .snapshots()
@@ -51,36 +50,36 @@ class RegistrantRepository {
     });
   }
 
-  Stream<List<Registrant>> getRegistrants(String forumId) {
-    return _registrants
+  Stream<List<Member>> getMembers(String forumId) {
+    return _members
         .where('forumId', isEqualTo: forumId)
         .snapshots()
         .map((event) {
-      List<Registrant> registrants = [];
+      List<Member> members = [];
       for (var doc in event.docs) {
-        registrants.add(Registrant.fromMap(doc.data() as Map<String, dynamic>));
+        members.add(Member.fromMap(doc.data() as Map<String, dynamic>));
       }
-      return registrants;
+      return members;
     });
   }
 
-  Stream<List<Registrant>> getUserRegistrants(String forumId, String uid) {
-    return _registrants
+  Stream<List<Member>> getUserMembers(String forumId, String uid) {
+    return _members
         .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .snapshots()
         .map((event) {
-      List<Registrant> registrants = [];
+      List<Member> members = [];
       for (var doc in event.docs) {
-        registrants.add(Registrant.fromMap(doc.data() as Map<String, dynamic>));
+        members.add(Member.fromMap(doc.data() as Map<String, dynamic>));
       }
-      registrants.sort((a, b) => b.creationDate.compareTo(a.creationDate));
-      return registrants;
+      members.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      return members;
     });
   }
 
-  Stream<int> getUserRegistrantCount(String forumId, String uid) {
-    return _registrants
+  Stream<int> getUserMemberCount(String forumId, String uid) {
+    return _members
         .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .snapshots()
@@ -89,30 +88,28 @@ class RegistrantRepository {
     });
   }
 
-  Stream<Registrant?> getUserSelectedRegistrant(String forumId, String uid) {
-    return _registrants
+  Stream<Member?> getUserSelectedMember(String forumId, String uid) {
+    return _members
         .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .where('selected', isEqualTo: true)
         .snapshots()
         .map((event) {
       if (event.docs.isNotEmpty) {
-        List<Registrant> registrants = [];
+        List<Member> members = [];
         for (var doc in event.docs) {
-          registrants
-              .add(Registrant.fromMap(doc.data() as Map<String, dynamic>));
+          members.add(Member.fromMap(doc.data() as Map<String, dynamic>));
         }
-        return registrants.first;
+        return members.first;
       } else {
         return null;
       }
     });
   }
 
-  FutureVoid createRegistrant(Registrant registrant) async {
+  FutureVoid createMember(Member member) async {
     try {
-      return right(
-          _registrants.doc(registrant.registrantId).set(registrant.toMap()));
+      return right(_members.doc(member.memberId).set(member.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -122,10 +119,9 @@ class RegistrantRepository {
     }
   }
 
-  FutureVoid updateRegistrant(Registrant registrant) async {
+  FutureVoid updateMember(Member member) async {
     try {
-      return right(
-          _registrants.doc(registrant.registrantId).update(registrant.toMap()));
+      return right(_members.doc(member.memberId).update(member.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -135,9 +131,9 @@ class RegistrantRepository {
     }
   }
 
-  FutureVoid deleteRegistrant(String registrantId) async {
+  FutureVoid deleteMember(String memberId) async {
     try {
-      return right(_registrants.doc(registrantId).delete());
+      return right(_members.doc(memberId).delete());
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

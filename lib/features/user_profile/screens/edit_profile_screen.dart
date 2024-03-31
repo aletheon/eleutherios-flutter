@@ -92,7 +92,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         .when(
           data: (user) {
             if (isLoaded == false) {
-              fullNameController.text = user.fullName;
+              fullNameController.text = user!.fullName;
               personalWebsiteController.text = user.personalWebsite;
               businessNameController.text = user.businessName;
               businessDescriptionController.text = user.businessDescription;
@@ -115,7 +115,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 centerTitle: false,
                 actions: [
                   TextButton(
-                    onPressed: () => save(user),
+                    onPressed: () => save(user!),
                     child: const Text('Save'),
                   ),
                 ],
@@ -150,7 +150,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                       ),
                                       child: bannerFile != null
                                           ? Image.file(bannerFile!)
-                                          : user.banner.isEmpty ||
+                                          : user!.banner.isEmpty ||
                                                   user.banner ==
                                                       Constants.bannerDefault
                                               ? const Center(
@@ -185,7 +185,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                                 FileImage(profileFile!),
                                             radius: 32,
                                           )
-                                        : user.profilePic ==
+                                        : user!.profilePic ==
                                                 Constants.avatarDefault
                                             ? CircleAvatar(
                                                 backgroundImage:

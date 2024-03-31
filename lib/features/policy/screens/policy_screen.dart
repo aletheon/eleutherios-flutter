@@ -18,6 +18,10 @@ class PolicyScreen extends ConsumerWidget {
     Routemaster.of(context).push('policy-tools');
   }
 
+  void joinPolicy(BuildContext context) {
+    Routemaster.of(context).push('add-manager');
+  }
+
   void consume(BuildContext context) {
     Routemaster.of(context).push('consume');
   }

@@ -43,7 +43,7 @@ class ServiceLikesScreen extends ConsumerWidget {
                         .when(
                           data: (user) {
                             return ListTile(
-                              leading: user.profilePic ==
+                              leading: user!.profilePic ==
                                       Constants.avatarDefault
                                   ? CircleAvatar(
                                       backgroundImage:

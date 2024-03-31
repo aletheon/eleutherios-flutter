@@ -58,7 +58,7 @@ class UserProfileScreen extends ConsumerWidget {
                       flexibleSpace: Stack(
                         children: [
                           Positioned.fill(
-                            child: user.banner == Constants.bannerDefault
+                            child: user!.banner == Constants.bannerDefault
                                 ? Image.asset(
                                     user.banner,
                                     fit: BoxFit.cover,
@@ -168,7 +168,7 @@ class UserProfileScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      user.businessName.isNotEmpty
+                      user!.businessName.isNotEmpty
                           ? Container(
                               padding: const EdgeInsets.only(bottom: 15),
                               child: Text(user.businessName),

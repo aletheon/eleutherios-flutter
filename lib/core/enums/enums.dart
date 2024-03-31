@@ -41,8 +41,8 @@ extension SearchTypeValue on SearchType {
   }
 }
 
-// Registrant permissions managed by forum owner
-enum RegistrantPermissions<String> {
+// Member permissions managed by forum owner
+enum MemberPermissions<String> {
   editforum, // - Edit Forum
   addservice, // - Add Service (implies adding other services to forum)
   removeservice, // - Remove Service (implies removing other services from forum)
@@ -53,24 +53,24 @@ enum RegistrantPermissions<String> {
   editpermissions, // - Edit Permissions (implies editing permissions for members)
 }
 
-extension RegistrantPermissionsTypeValue on RegistrantPermissions {
+extension MemberPermissionsTypeValue on MemberPermissions {
   String get value {
     switch (this) {
-      case RegistrantPermissions.editforum:
+      case MemberPermissions.editforum:
         return 'Edit Forum';
-      case RegistrantPermissions.addservice:
+      case MemberPermissions.addservice:
         return 'Add Service';
-      case RegistrantPermissions.removeservice:
+      case MemberPermissions.removeservice:
         return 'Remove Service';
-      case RegistrantPermissions.createforum:
+      case MemberPermissions.createforum:
         return 'Create Forum';
-      case RegistrantPermissions.removeforum:
+      case MemberPermissions.removeforum:
         return 'Remove Forum';
-      case RegistrantPermissions.createpost:
+      case MemberPermissions.createpost:
         return 'Create Post';
-      case RegistrantPermissions.removepost:
+      case MemberPermissions.removepost:
         return 'Remove Post';
-      case RegistrantPermissions.editpermissions:
+      case MemberPermissions.editpermissions:
         return 'Edit Permissions';
     }
   }

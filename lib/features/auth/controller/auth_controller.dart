@@ -49,7 +49,7 @@ class AuthController extends StateNotifier<bool> {
             _ref.read(userProvider.notifier).update((state) => userModel));
   }
 
-  Stream<UserModel> getUserData(String uid) {
+  Stream<UserModel?> getUserData(String uid) {
     return _authRepository.getUserData(uid);
   }
 

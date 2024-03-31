@@ -49,7 +49,7 @@ class AuthRepository {
       UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      UserModel userModel;
+      UserModel? userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
@@ -79,7 +79,7 @@ class AuthRepository {
       } else {
         userModel = await getUserData(userCredential.user!.uid).first;
       }
-      return right(userModel);
+      return right(userModel!);
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -91,10 +91,25 @@ class AuthRepository {
     }
   }
 
-  Stream<UserModel> getUserData(String uid) {
-    return _users.doc(uid).snapshots().map(
-          (event) => UserModel.fromMap(event.data() as Map<String, dynamic>),
-        );
+  Stream<UserModel?> getUserData(String uid) {
+    if (uid.isNotEmpty) {
+      final DocumentReference documentReference = _users.doc(uid);
+
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+
+      return documentStream.map((event) {
+        if (event.exists) {
+          return UserModel.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+    // return _users.doc(uid).snapshots().map(
+    //       (event) => UserModel.fromMap(event.data() as Map<String, dynamic>),
+    //     );
   }
 
   void logout() async {

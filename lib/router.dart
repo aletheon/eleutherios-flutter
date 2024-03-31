@@ -13,10 +13,10 @@ import 'package:reddit_tutorial/features/forum/screens/remove_forum_screen.dart'
 import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/add_manager_screen.dart';
-import 'package:reddit_tutorial/features/permission/screens/edit_permissions_screen.dart';
-import 'package:reddit_tutorial/features/registrant/screens/leave_screen.dart';
-import 'package:reddit_tutorial/features/permission/screens/member_permissions_screen.dart';
-import 'package:reddit_tutorial/features/registrant/screens/registrant_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/edit_member_permissions_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/leave_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/member_permissions_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/member_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/create_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/edit_policy_screen.dart';
@@ -25,8 +25,8 @@ import 'package:reddit_tutorial/features/policy/screens/policy_tools_screen.dart
 import 'package:reddit_tutorial/features/policy/screens/policy_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/create_rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
-import 'package:reddit_tutorial/features/registrant/screens/deregister_screen.dart';
-import 'package:reddit_tutorial/features/registrant/screens/register_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/remove_member_screen.dart';
+import 'package:reddit_tutorial/features/member/screens/add_member_screen.dart';
 import 'package:reddit_tutorial/features/home/screens/home_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/add_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/create_service_screen.dart';
@@ -77,9 +77,9 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/viewforum/:forumid/registrant/:registrantid': (route) => MaterialPage(
-        child: RegistrantScreen(
-          registrantId: route.pathParameters['registrantid']!,
+  '/viewforum/:forumid/member/:memberid': (route) => MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
         ),
       ),
   '/viewforum/:forumid/edit': (route) => MaterialPage(
@@ -113,13 +113,13 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/register': (route) => MaterialPage(
-        child: RegisterScreen(
+  '/forum/:forumid/forum-tools/add-member': (route) => MaterialPage(
+        child: AddMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/deregister': (route) => MaterialPage(
-        child: DeregisterScreen(
+  '/forum/:forumid/forum-tools/remove-member': (route) => MaterialPage(
+        child: RemoveMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -138,50 +138,50 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/member-permissions/edit/:registrantId':
-      (route) => MaterialPage(
-            child: EditPermissionsScreen(
-              forumId: route.pathParameters['forumid']!,
-              registrantId: route.pathParameters['registrantId']!,
-            ),
-          ),
+  '/forum/:forumid/forum-tools/member-permissions/edit/:memberid': (route) =>
+      MaterialPage(
+        child: EditMemberPermissionsScreen(
+          forumId: route.pathParameters['forumid']!,
+          memberId: route.pathParameters['memberid']!,
+        ),
+      ),
   '/forum/:forumid/forum-tools/member-permissions/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/forum/:forumid/forum-tools/register/service/:serviceid': (route) =>
+  '/forum/:forumid/forum-tools/add-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/register/service/:serviceid/likes': (route) =>
+  '/forum/:forumid/forum-tools/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/register/service/:serviceid/likes/:uid':
+  '/forum/:forumid/forum-tools/add-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
             ),
           ),
-  '/forum/:forumid/forum-tools/deregister/service/:serviceid': (route) =>
+  '/forum/:forumid/forum-tools/remove-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/deregister/service/:serviceid/likes': (route) =>
-      MaterialPage(
-        child: ServiceLikesScreen(
-          serviceId: route.pathParameters['serviceid']!,
-        ),
-      ),
-  '/forum/:forumid/forum-tools/deregister/service/:serviceid/likes/:uid':
+  '/forum/:forumid/forum-tools/remove-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/forum/:forumid/forum-tools/remove-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -197,10 +197,9 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/forum-tools/view/registrant/:registrantid': (route) =>
-      MaterialPage(
-        child: RegistrantScreen(
-          registrantId: route.pathParameters['registrantid']!,
+  '/forum/:forumid/forum-tools/view/member/:memberid': (route) => MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
         ),
       ),
   '/forum/:forumid/forum-tools/view/edit': (route) => MaterialPage(
@@ -208,8 +207,8 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/register': (route) => MaterialPage(
-        child: RegisterScreen(
+  '/forum/:forumid/add-member': (route) => MaterialPage(
+        child: AddMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -218,9 +217,9 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/view/registrant/:registrantid': (route) => MaterialPage(
-        child: RegistrantScreen(
-          registrantId: route.pathParameters['registrantid']!,
+  '/forum/:forumid/view/member/:memberid': (route) => MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
         ),
       ),
   '/forum/:forumid/view/edit': (route) => MaterialPage(
@@ -228,34 +227,35 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/forum/:forumid/register/service/:serviceid': (route) => MaterialPage(
+  '/forum/:forumid/add-member/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/register/service/:serviceid/likes': (route) => MaterialPage(
+  '/forum/:forumid/add-member/service/:serviceid/likes': (route) =>
+      MaterialPage(
         child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/register/service/:serviceid/likes/:uid': (route) =>
+  '/forum/:forumid/add-member/service/:serviceid/likes/:uid': (route) =>
       MaterialPage(
         child: ServiceUserProfileScreen(
           uid: route.pathParameters['uid']!,
         ),
       ),
-  '/forum/:forumid/deregister/service/:serviceid': (route) => MaterialPage(
+  '/forum/:forumid/remove-member/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/deregister/service/:serviceid/likes': (route) =>
+  '/forum/:forumid/remove-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/forum/:forumid/deregister/service/:serviceid/likes/:uid': (route) =>
+  '/forum/:forumid/remove-member/service/:serviceid/likes/:uid': (route) =>
       MaterialPage(
         child: ServiceUserProfileScreen(
           uid: route.pathParameters['uid']!,
@@ -284,13 +284,14 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/forum-tools/register': (route) => MaterialPage(
-        child: RegisterScreen(
+  '/user/forum/list/:forumid/forum-tools/add-member': (route) => MaterialPage(
+        child: AddMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/forum-tools/deregister': (route) => MaterialPage(
-        child: DeregisterScreen(
+  '/user/forum/list/:forumid/forum-tools/remove-member': (route) =>
+      MaterialPage(
+        child: RemoveMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -310,11 +311,11 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/forum-tools/member-permissions/edit/:registrantId':
+  '/user/forum/list/:forumid/forum-tools/member-permissions/edit/:memberid':
       (route) => MaterialPage(
-            child: EditPermissionsScreen(
+            child: EditMemberPermissionsScreen(
               forumId: route.pathParameters['forumid']!,
-              registrantId: route.pathParameters['registrantId']!,
+              memberId: route.pathParameters['memberid']!,
             ),
           ),
   '/user/forum/list/:forumid/forum-tools/member-permissions/service/:serviceid':
@@ -323,37 +324,37 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/register/service/:serviceid':
+  '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/register/service/:serviceid/likes':
+  '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/register/service/:serviceid/likes/:uid':
+  '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/deregister/service/:serviceid':
+  '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/deregister/service/:serviceid/likes':
+  '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/forum/list/:forumid/forum-tools/deregister/service/:serviceid/likes/:uid':
+  '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -369,19 +370,19 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/forum-tools/view/registrant/:registrantid':
-      (route) => MaterialPage(
-            child: RegistrantScreen(
-              registrantId: route.pathParameters['registrantid']!,
-            ),
-          ),
+  '/user/forum/list/:forumid/forum-tools/view/member/:memberid': (route) =>
+      MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
+        ),
+      ),
   '/user/forum/list/:forumid/forum-tools/view/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/register': (route) => MaterialPage(
-        child: RegisterScreen(
+  '/user/forum/list/:forumid/add-member': (route) => MaterialPage(
+        child: AddMemberScreen(
           forumId: route.pathParameters['forumid']!,
         ),
       ),
@@ -390,10 +391,9 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/view/registrant/:registrantid': (route) =>
-      MaterialPage(
-        child: RegistrantScreen(
-          registrantId: route.pathParameters['registrantid']!,
+  '/user/forum/list/:forumid/view/member/:memberid': (route) => MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
         ),
       ),
   '/user/forum/list/:forumid/view/edit': (route) => MaterialPage(
@@ -401,37 +401,37 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
-  '/user/forum/list/:forumid/register/service/:serviceid': (route) =>
+  '/user/forum/list/:forumid/add-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/user/forum/list/:forumid/register/service/:serviceid/likes': (route) =>
+  '/user/forum/list/:forumid/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/user/forum/list/:forumid/register/service/:serviceid/likes/:uid': (route) =>
-      MaterialPage(
-        child: ServiceUserProfileScreen(
-          uid: route.pathParameters['uid']!,
-        ),
-      ),
-  '/user/forum/list/:forumid/deregister/service/:serviceid': (route) =>
+  '/user/forum/list/:forumid/add-member/service/:serviceid/likes/:uid':
+      (route) => MaterialPage(
+            child: ServiceUserProfileScreen(
+              uid: route.pathParameters['uid']!,
+            ),
+          ),
+  '/user/forum/list/:forumid/remove-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/user/forum/list/:forumid/deregister/service/:serviceid/likes': (route) =>
+  '/user/forum/list/:forumid/remove-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/user/forum/list/:forumid/deregister/service/:serviceid/likes/:uid':
+  '/user/forum/list/:forumid/remove-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -478,19 +478,19 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/policy/:policyid/policy-tools/register/service/:serviceid': (route) =>
+  '/policy/:policyid/policy-tools/add-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/policy/:policyid/policy-tools/register/service/:serviceid/likes': (route) =>
-      MaterialPage(
-        child: ServiceLikesScreen(
-          serviceId: route.pathParameters['serviceid']!,
-        ),
-      ),
-  '/policy/:policyid/policy-tools/register/service/:serviceid/likes/:uid':
+  '/policy/:policyid/policy-tools/add-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/policy-tools/add-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -580,19 +580,19 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/user/policy/list/:policyid/policy-tools/register/service/:serviceid':
+  '/user/policy/list/:policyid/policy-tools/add-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/register/service/:serviceid/likes':
+  '/user/policy/list/:policyid/policy-tools/add-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/register/service/:serviceid/likes/:uid':
+  '/user/policy/list/:policyid/policy-tools/add-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -702,11 +702,11 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   // **************************************************
-  // Registrant
+  // Member
   // **************************************************
-  '/registrant/:registrantid': (route) => MaterialPage(
-        child: RegistrantScreen(
-          registrantId: route.pathParameters['registrantid']!,
+  '/member/:memberid': (route) => MaterialPage(
+        child: MemberScreen(
+          memberId: route.pathParameters['memberid']!,
         ),
       ),
 });

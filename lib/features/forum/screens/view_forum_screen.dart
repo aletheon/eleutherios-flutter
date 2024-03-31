@@ -7,9 +7,9 @@ import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
-import 'package:reddit_tutorial/features/registrant/controller/registrant_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/registrant.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -29,20 +29,19 @@ class ViewForumScreen extends ConsumerStatefulWidget {
 
 class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   final messageController = TextEditingController();
-  Registrant? selectedRegistrant;
+  Member? selectedMember;
   String? dropdownValue;
   var tapPosition;
 
-  getSelectedRegistrant() async {
+  getSelectedMember() async {
     final user = ref.read(userProvider)!;
 
-    selectedRegistrant = await ref
-        .read(getUserSelectedRegistrantProvider2(
-            Tuple2(widget.forumId, user.uid)))
+    selectedMember = await ref
+        .read(getUserSelectedMemberProvider2(Tuple2(widget.forumId, user.uid)))
         .first;
 
     setState(() {
-      dropdownValue = selectedRegistrant!.registrantId;
+      dropdownValue = selectedMember!.memberId;
     });
   }
 
@@ -50,7 +49,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getSelectedRegistrant();
+      getSelectedMember();
     });
   }
 
@@ -90,17 +89,15 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
       Routemaster.of(context).push('/forum/$forumId/view');
     }
 
-    void showRegistrantDetails(String registrantId, BuildContext context) {
-      Routemaster.of(context).push('registrant/$registrantId');
+    void showMemberDetails(String memberId, BuildContext context) {
+      Routemaster.of(context).push('member/$memberId');
     }
 
-    void changeSelectedRegistrant(String registrantId) async {
-      ref
-          .read(registrantControllerProvider.notifier)
-          .changedSelected(registrantId);
+    void changeSelectedMember(String memberId) async {
+      ref.read(memberControllerProvider.notifier).changedSelected(memberId);
 
       setState(() {
-        dropdownValue = registrantId;
+        dropdownValue = memberId;
       });
     }
 
@@ -234,10 +231,10 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                       user.uid ==
                                                           posts[index]
                                                               .serviceUid ||
-                                                      selectedRegistrant!
+                                                      selectedMember!
                                                           .permissions
                                                           .contains(
-                                                              RegistrantPermissions
+                                                              MemberPermissions
                                                                   .removepost
                                                                   .name)) {
                                                     final RenderBox overlay =
@@ -468,32 +465,32 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                     ],
                   ),
                   // ************************************************************
-                  // Services / registrants
+                  // Services / members
                   // ************************************************************
                   ExpansionTile(
                     title: Text(
-                      'Services(${forum.registrants.length})',
+                      'Services(${forum.members.length})',
                       style: const TextStyle(
                         fontSize: 13,
                       ),
                     ),
                     children: [
-                      ref.watch(getRegistrantsProvider(widget.forumId)).when(
-                            data: (registrants) {
-                              if (registrants.isNotEmpty) {
+                      ref.watch(getMembersProvider(widget.forumId)).when(
+                            data: (members) {
+                              if (members.isNotEmpty) {
                                 return SizedBox(
                                   height: 80,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: registrants.length,
+                                    itemCount: members.length,
                                     itemBuilder: (
                                       BuildContext context,
                                       int index,
                                     ) {
-                                      final registrant = registrants[index];
+                                      final member = members[index];
                                       return ref
                                           .watch(getServiceByIdProvider(
-                                              registrant.serviceId))
+                                              member.serviceId))
                                           .when(
                                             data: (service) {
                                               return Padding(
@@ -527,9 +524,8 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                     ],
                                                   ),
                                                   onTap: () =>
-                                                      showRegistrantDetails(
-                                                          registrant
-                                                              .registrantId,
+                                                      showMemberDetails(
+                                                          member.memberId,
                                                           context),
                                                 ),
                                               );
@@ -599,33 +595,32 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                           Expanded(
                             flex: 41,
                             child: ref
-                                .watch(getUserRegistrantsProvider(
+                                .watch(getUserMembersProvider(
                                     Tuple2(widget.forumId, user.uid)))
                                 .when(
-                                  data: (registrants) {
+                                  data: (members) {
                                     return DropdownButtonHideUnderline(
                                       child: ButtonTheme(
                                         alignedDropdown: true,
                                         child: DropdownButton(
                                           isDense: true,
                                           value: dropdownValue,
-                                          onChanged: (String? registrantId) {
-                                            if (registrantId is String) {
-                                              changeSelectedRegistrant(
-                                                  registrantId);
+                                          onChanged: (String? memberId) {
+                                            if (memberId is String) {
+                                              changeSelectedMember(memberId);
                                             }
                                           },
                                           // *********************************
                                           // items
                                           // *********************************
-                                          items: registrants
+                                          items: members
                                               .map<DropdownMenuItem<String>>(
-                                                  (Registrant registrant) {
+                                                  (Member member) {
                                             return DropdownMenuItem<String>(
-                                              value: registrant.registrantId,
+                                              value: member.memberId,
                                               child: ref
                                                   .watch(getServiceByIdProvider(
-                                                      registrant.serviceId))
+                                                      member.serviceId))
                                                   .when(data: (service) {
                                                 return Row(children: [
                                                   service!.image ==

@@ -1,29 +1,29 @@
-// Registrant permission managed by the forum owner e.g.
+// Member permission managed by the forum owner e.g.
 // - Edit Forum
 // - Add Forum (implies adding sub-forum to forum)
 // - Remove Forum (implies removing sub-forum from forum)
 // - Add Member (implies adding a service to the forum)
 // - Remove Member (implies removing service from forum)
 
-class RegistrantPermission {
+class MemberPermission {
   final String permissionId;
   final String name;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
-  RegistrantPermission({
+  MemberPermission({
     required this.permissionId,
     required this.name,
     required this.lastUpdateDate,
     required this.creationDate,
   });
 
-  RegistrantPermission copyWith({
+  MemberPermission copyWith({
     String? permissionId,
     String? name,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
-    return RegistrantPermission(
+    return MemberPermission(
       permissionId: permissionId ?? this.permissionId,
       name: name ?? this.name,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -40,8 +40,8 @@ class RegistrantPermission {
     };
   }
 
-  factory RegistrantPermission.fromMap(Map<String, dynamic> map) {
-    return RegistrantPermission(
+  factory MemberPermission.fromMap(Map<String, dynamic> map) {
+    return MemberPermission(
       permissionId: map['permissionId'] as String,
       name: map['name'] as String,
       lastUpdateDate:
@@ -53,11 +53,11 @@ class RegistrantPermission {
 
   @override
   String toString() {
-    return 'RegistrantPermission(permissionId: $permissionId, name: $name, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'MemberPermission(permissionId: $permissionId, name: $name, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
-  bool operator ==(covariant RegistrantPermission other) {
+  bool operator ==(covariant MemberPermission other) {
     if (identical(this, other)) return true;
 
     return other.permissionId == permissionId &&

@@ -7,7 +7,7 @@ class FirebaseConstants {
   static const policyActivitiesCollection = 'policyactivities';
   static const policiesCollection = 'policies';
   static const postsCollection = 'posts';
-  static const registrantsCollection = 'registrants';
+  static const membersCollection = 'members';
   static const rulesCollection = 'rules';
   static const servicesCollection = 'services';
   static const tagsCollection = 'tags';

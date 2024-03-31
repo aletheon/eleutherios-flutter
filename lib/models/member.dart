@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-class Registrant {
-  final String registrantId;
+class Member {
+  final String memberId;
   final String forumId;
   final String forumUid;
   final String serviceId;
@@ -10,8 +10,8 @@ class Registrant {
   final List<String> permissions;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
-  Registrant({
-    required this.registrantId,
+  Member({
+    required this.memberId,
     required this.forumId,
     required this.forumUid,
     required this.serviceId,
@@ -22,8 +22,8 @@ class Registrant {
     required this.creationDate,
   });
 
-  Registrant copyWith({
-    String? registrantId,
+  Member copyWith({
+    String? memberId,
     String? forumId,
     String? forumUid,
     String? serviceId,
@@ -33,8 +33,8 @@ class Registrant {
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
-    return Registrant(
-      registrantId: registrantId ?? this.registrantId,
+    return Member(
+      memberId: memberId ?? this.memberId,
       forumId: forumId ?? this.forumId,
       forumUid: forumUid ?? this.forumUid,
       serviceId: serviceId ?? this.serviceId,
@@ -48,7 +48,7 @@ class Registrant {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'registrantId': registrantId,
+      'memberId': memberId,
       'forumId': forumId,
       'forumUid': forumUid,
       'serviceId': serviceId,
@@ -60,9 +60,9 @@ class Registrant {
     };
   }
 
-  factory Registrant.fromMap(Map<String, dynamic> map) {
-    return Registrant(
-      registrantId: map['registrantId'] as String,
+  factory Member.fromMap(Map<String, dynamic> map) {
+    return Member(
+      memberId: map['memberId'] as String,
       forumId: map['forumId'] as String,
       forumUid: map['forumUid'] as String,
       serviceId: map['serviceId'] as String,
@@ -78,14 +78,14 @@ class Registrant {
 
   @override
   String toString() {
-    return 'Registrant(registrantId: $registrantId, forumId: $forumId, forumUid: $forumUid, serviceId: $serviceId, serviceUid: $serviceUid, selected: $selected, permissions: $permissions, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Member(memberId: $memberId, forumId: $forumId, forumUid: $forumUid, serviceId: $serviceId, serviceUid: $serviceUid, selected: $selected, permissions: $permissions, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
-  bool operator ==(covariant Registrant other) {
+  bool operator ==(covariant Member other) {
     if (identical(this, other)) return true;
 
-    return other.registrantId == registrantId &&
+    return other.memberId == memberId &&
         other.forumId == forumId &&
         other.forumUid == forumUid &&
         other.serviceId == serviceId &&
@@ -98,7 +98,7 @@ class Registrant {
 
   @override
   int get hashCode {
-    return registrantId.hashCode ^
+    return memberId.hashCode ^
         forumId.hashCode ^
         forumUid.hashCode ^
         serviceId.hashCode ^

@@ -159,7 +159,7 @@ class ManagerController extends StateNotifier<bool> {
         final resPolicy = await _policyRepository.updatePolicy(policy);
 
         // create new forum activity
-        if (user.activities.contains(policyId) == false) {
+        if (user!.activities.contains(policyId) == false) {
           final activityController =
               _ref.read(activityControllerProvider.notifier);
           activityController.createActivity(

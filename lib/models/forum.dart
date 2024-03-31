@@ -16,7 +16,7 @@ class Forum {
   final String banner;
   final bool public;
   final List<String> tags;
-  final List<String> registrants;
+  final List<String> members;
   final List<String> posts;
   final List<String> forums;
   final List<String> breadcrumbs; // breadcrumb to store forumIds up to the root
@@ -40,7 +40,7 @@ class Forum {
     required this.banner,
     required this.public,
     required this.tags,
-    required this.registrants,
+    required this.members,
     required this.posts,
     required this.forums,
     required this.breadcrumbs,
@@ -65,7 +65,7 @@ class Forum {
     String? banner,
     bool? public,
     List<String>? tags,
-    List<String>? registrants,
+    List<String>? members,
     List<String>? posts,
     List<String>? forums,
     List<String>? breadcrumbs,
@@ -89,7 +89,7 @@ class Forum {
       banner: banner ?? this.banner,
       public: public ?? this.public,
       tags: tags ?? this.tags,
-      registrants: registrants ?? this.registrants,
+      members: members ?? this.members,
       posts: posts ?? this.posts,
       forums: forums ?? this.forums,
       breadcrumbs: breadcrumbs ?? this.breadcrumbs,
@@ -116,7 +116,7 @@ class Forum {
       'banner': banner,
       'public': public,
       'tags': tags,
-      'registrants': registrants,
+      'members': members,
       'posts': posts,
       'forums': forums,
       'breadcrumbs': breadcrumbs,
@@ -143,7 +143,7 @@ class Forum {
       banner: map['banner'] as String,
       public: map['public'] as bool,
       tags: List<String>.from(map['tags']),
-      registrants: List<String>.from(map['registrants']),
+      members: List<String>.from(map['members']),
       posts: List<String>.from(map['posts']),
       forums: List<String>.from(map['forums']),
       breadcrumbs: List<String>.from(map['breadcrumbs']),
@@ -158,7 +158,7 @@ class Forum {
 
   @override
   String toString() {
-    return 'Forum(forumId: $forumId, uid: $uid, parentId: $parentId, parentUid: $parentUid, policyId: $policyId, policyUid: $policyUid, ruleId: $ruleId, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, registrants: $registrants, posts: $posts, forums: $forums, breadcrumbs: $breadcrumbs, breadcrumbReferences: $breadcrumbReferences, recentPostId: $recentPostId, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Forum(forumId: $forumId, uid: $uid, parentId: $parentId, parentUid: $parentUid, policyId: $policyId, policyUid: $policyUid, ruleId: $ruleId, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, members: $members, posts: $posts, forums: $forums, breadcrumbs: $breadcrumbs, breadcrumbReferences: $breadcrumbReferences, recentPostId: $recentPostId, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -179,7 +179,7 @@ class Forum {
         other.banner == banner &&
         other.public == public &&
         listEquals(other.tags, tags) &&
-        listEquals(other.registrants, registrants) &&
+        listEquals(other.members, members) &&
         listEquals(other.posts, posts) &&
         listEquals(other.forums, forums) &&
         listEquals(other.breadcrumbs, breadcrumbs) &&
@@ -205,7 +205,7 @@ class Forum {
         banner.hashCode ^
         public.hashCode ^
         tags.hashCode ^
-        registrants.hashCode ^
+        members.hashCode ^
         posts.hashCode ^
         forums.hashCode ^
         breadcrumbs.hashCode ^
