@@ -6,17 +6,17 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
-import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/member.dart';
+import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class MemberScreen extends ConsumerWidget {
-  final String memberId;
-  const MemberScreen({super.key, required this.memberId});
+class ManagerScreen extends ConsumerWidget {
+  final String managerId;
+  const ManagerScreen({super.key, required this.managerId});
 
   void navigateToServiceTools(String serviceId, BuildContext context) {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
@@ -37,10 +37,11 @@ class MemberScreen extends ConsumerWidget {
     }
   }
 
-  void updateMember(Member member, WidgetRef ref, BuildContext context) async {
+  void updateManager(
+      Manager manager, WidgetRef ref, BuildContext context) async {
     ref
-        .read(memberControllerProvider.notifier)
-        .updateMember(member: member, context: context);
+        .read(managerControllerProvider.notifier)
+        .updateManager(manager: manager, context: context);
   }
 
   @override
@@ -48,9 +49,9 @@ class MemberScreen extends ConsumerWidget {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
-      body: ref.watch(getMemberByIdProvider(memberId)).when(
-          data: (member) {
-            return ref.watch(getServiceByIdProvider(member!.serviceId)).when(
+      body: ref.watch(getManagerByIdProvider(managerId)).when(
+          data: (manager) {
+            return ref.watch(getServiceByIdProvider(manager!.serviceId)).when(
                   data: (service) {
                     return NestedScrollView(
                       headerSliverBuilder: ((context, innerBoxIsScrolled) {
@@ -223,7 +224,7 @@ class MemberScreen extends ConsumerWidget {
                       // ****************************************************
                       // list permissions
                       // ****************************************************
-                      body: member.forumUid == user.uid &&
+                      body: manager.policyUid == user.uid &&
                               service!.uid != user.uid
                           ? ListView.builder(
                               shrinkWrap: true,
@@ -241,16 +242,16 @@ class MemberScreen extends ConsumerWidget {
                                     style: const TextStyle(
                                         color: Pallete.greyColor),
                                   ),
-                                  value: member.permissions.contains(name),
+                                  value: manager.permissions.contains(name),
                                   onChanged: (bool? selected) {
                                     if (selected!) {
-                                      if (!member.permissions.contains(name)) {
-                                        member.permissions.add(name);
+                                      if (!manager.permissions.contains(name)) {
+                                        manager.permissions.add(name);
                                       }
                                     } else {
-                                      member.permissions.remove(name);
+                                      manager.permissions.remove(name);
                                     }
-                                    updateMember(member, ref, context);
+                                    updateManager(manager, ref, context);
                                   },
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,
