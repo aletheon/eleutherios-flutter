@@ -9,11 +9,16 @@ import 'package:reddit_tutorial/features/service/controller/service_controller.d
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class RemoveMemberScreen extends ConsumerWidget {
-  final String _forumId;
-  const RemoveMemberScreen({super.key, required String forumId})
-      : _forumId = forumId;
+class RemoveMemberScreen extends ConsumerStatefulWidget {
+  final String forumId;
+  const RemoveMemberScreen({super.key, required this.forumId});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _RemoveMemberScreenState();
+}
+
+class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
   void removeMemberService(
       BuildContext context, WidgetRef ref, String forumId, String memberId) {
     ref
@@ -26,9 +31,9 @@ class RemoveMemberScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final forumProv = ref.watch(getForumByIdProvider(_forumId));
-    final membersProv = ref.watch(getMembersProvider(_forumId));
+  Widget build(BuildContext context) {
+    final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
+    final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return forumProv.when(

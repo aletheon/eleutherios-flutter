@@ -11,11 +11,17 @@ import 'package:reddit_tutorial/features/service/controller/service_controller.d
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class MemberPermissionsScreen extends ConsumerWidget {
-  final String _forumId;
-  const MemberPermissionsScreen({super.key, required String forumId})
-      : _forumId = forumId;
+class MemberPermissionsScreen extends ConsumerStatefulWidget {
+  final String forumId;
+  const MemberPermissionsScreen({super.key, required this.forumId});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _MemberPermissionsScreenState();
+}
+
+class _MemberPermissionsScreenState
+    extends ConsumerState<MemberPermissionsScreen> {
   void editPermissions(BuildContext context, WidgetRef ref, String memberId) {
     Routemaster.of(context).push('edit/$memberId');
   }
@@ -25,10 +31,10 @@ class MemberPermissionsScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
-    final forumProv = ref.watch(getForumByIdProvider(_forumId));
-    final membersProv = ref.watch(getMembersProvider(_forumId));
+    final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
+    final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return forumProv.when(

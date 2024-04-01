@@ -596,7 +596,7 @@ final loggedInRoute = RouteMap(routes: {
       (route) => MaterialPage(
             child: EditManagerPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
-              memberId: route.pathParameters['memberid']!,
+              managerId: route.pathParameters['managerid']!,
             ),
           ),
   '/policy/:policyid/policy-tools/manager-permissions/service/:serviceid':

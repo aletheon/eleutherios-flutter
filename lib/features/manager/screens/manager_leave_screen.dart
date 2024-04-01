@@ -4,27 +4,27 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class MemberLeaveScreen extends ConsumerStatefulWidget {
-  final String forumId;
-  const MemberLeaveScreen({super.key, required this.forumId});
+class ManagerLeaveScreen extends ConsumerStatefulWidget {
+  final String policyId;
+  const ManagerLeaveScreen({super.key, required this.policyId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _MemberLeaveScreenState();
+      _ManagerLeaveScreenState();
 }
 
-class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
-  void removeMemberService(
-      BuildContext context, WidgetRef ref, String forumId, String memberId) {
+class _ManagerLeaveScreenState extends ConsumerState<ManagerLeaveScreen> {
+  void removeManagerService(
+      BuildContext context, WidgetRef ref, String policyId, String managerId) {
     ref
-        .read(memberControllerProvider.notifier)
-        .deleteMember(forumId, memberId, context);
+        .read(managerControllerProvider.notifier)
+        .deleteManager(policyId, managerId, context);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -33,13 +33,13 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
-    final membersProv = ref.watch(getMembersProvider(widget.forumId));
+    final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
+    final managersProv = ref.watch(getManagersProvider(widget.policyId));
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
 
-    return forumProv.when(
-      data: (forum) {
+    return policyProv.when(
+      data: (policy) {
         return Scaffold(
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
@@ -50,22 +50,22 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
               ),
             ),
           ),
-          body: membersProv.when(
-            data: (members) {
+          body: managersProv.when(
+            data: (managers) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListView.builder(
-                  itemCount: members.length,
+                  itemCount: managers.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final member = members[index];
+                    final manager = managers[index];
 
-                    if (member.serviceUid == user.uid) {
+                    if (manager.serviceUid == user.uid) {
                       return ref
-                          .watch(getServiceByIdProvider(member.serviceId))
+                          .watch(getServiceByIdProvider(manager.serviceId))
                           .when(
                             data: (service) {
                               return ListTile(
-                                title: member.selected == false
+                                title: manager.selected == false
                                     ? Text(service!.title)
                                     : Row(
                                         children: [
@@ -91,11 +91,11 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                                             NetworkImage(service.image),
                                       ),
                                 trailing: TextButton(
-                                  onPressed: () => removeMemberService(
+                                  onPressed: () => removeManagerService(
                                     context,
                                     ref,
-                                    forum!.forumId,
-                                    member.memberId,
+                                    policy!.policyId,
+                                    manager.managerId,
                                   ),
                                   child: const Text(
                                     'Remove',

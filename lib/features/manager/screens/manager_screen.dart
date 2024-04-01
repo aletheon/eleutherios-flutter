@@ -230,12 +230,12 @@ class ManagerScreen extends ConsumerWidget {
                               shrinkWrap: true,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 0, vertical: 0),
-                              itemCount: MemberPermissions.values.length,
+                              itemCount: ManagerPermissions.values.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final name =
-                                    MemberPermissions.values[index].name;
+                                    ManagerPermissions.values[index].name;
                                 final value =
-                                    MemberPermissions.values[index].value;
+                                    ManagerPermissions.values[index].value;
                                 return CheckboxListTile(
                                   title: Text(
                                     value,
@@ -255,7 +255,7 @@ class ManagerScreen extends ConsumerWidget {
                                   },
                                   controlAffinity:
                                       ListTileControlAffinity.trailing,
-                                  activeColor: Pallete.forumColor,
+                                  activeColor: Pallete.policyColor,
                                 );
                               },
                             )

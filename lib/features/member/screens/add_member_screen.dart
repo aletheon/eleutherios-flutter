@@ -17,11 +17,16 @@ import 'package:routemaster/routemaster.dart';
 
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
-class AddMemberScreen extends ConsumerWidget {
-  final String _forumId;
-  const AddMemberScreen({super.key, required String forumId})
-      : _forumId = forumId;
+class AddMemberScreen extends ConsumerStatefulWidget {
+  final String forumId;
+  const AddMemberScreen({super.key, required this.forumId});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AddMemberScreenState();
+}
+
+class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
   void addMemberService(
       BuildContext context, WidgetRef ref, String forumId, String serviceId) {
     ref
@@ -109,7 +114,7 @@ class AddMemberScreen extends ConsumerWidget {
     final userServicesProv = ref.watch(userServicesProvider);
     final servicesProv = ref.watch(servicesProvider);
     final user = ref.watch(userProvider)!;
-    final membersProv = ref.watch(getMembersProvider(_forumId));
+    final membersProv = ref.watch(getMembersProvider(widget.forumId));
 
     if (searchType == "Private") {
       if (user.services.isEmpty) {
@@ -259,8 +264,8 @@ class AddMemberScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final forumProv = ref.watch(getForumByIdProvider(_forumId));
+  Widget build(BuildContext context) {
+    final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
 
