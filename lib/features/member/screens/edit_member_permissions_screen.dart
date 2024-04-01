@@ -139,7 +139,7 @@ class _EditMemberPermissionsScreenState
                                         ),
                                       );
                                       break;
-                                    case 'addforum':
+                                    case 'createforum':
                                       _icons.add(
                                         const Icon(
                                           Icons.forum,

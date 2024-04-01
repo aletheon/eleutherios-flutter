@@ -11,6 +11,17 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
+// HERE ROB CONTINUE BUILDING JOIN POLICY PAGE ETC
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
+
 class PolicyScreen extends ConsumerWidget {
   final String policyId;
   const PolicyScreen({super.key, required this.policyId});
@@ -24,7 +35,7 @@ class PolicyScreen extends ConsumerWidget {
   }
 
   void consume(BuildContext context) {
-    Routemaster.of(context).push('consume');
+    Routemaster.of(context).push('add-consumer');
   }
 
   void leavePolicy(BuildContext context) {

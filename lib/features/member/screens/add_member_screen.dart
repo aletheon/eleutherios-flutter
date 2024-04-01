@@ -22,8 +22,8 @@ class AddMemberScreen extends ConsumerWidget {
   const AddMemberScreen({super.key, required String forumId})
       : _forumId = forumId;
 
-  void addMemberService(BuildContext context, WidgetRef ref, String forumId,
-      String forumUid, String serviceId, String serviceUid) {
+  void addMemberService(
+      BuildContext context, WidgetRef ref, String forumId, String serviceId) {
     ref
         .read(memberControllerProvider.notifier)
         .createMember(forumId, serviceId, context);
@@ -55,8 +55,8 @@ class AddMemberScreen extends ConsumerWidget {
                       backgroundImage: NetworkImage(service.image),
                     ),
               trailing: TextButton(
-                onPressed: () => addMemberService(context, ref, forum.forumId,
-                    forum.uid, service.serviceId, service.uid),
+                onPressed: () => addMemberService(
+                    context, ref, forum.forumId, service.serviceId),
                 child: const Text(
                   'Add',
                 ),
@@ -85,12 +85,7 @@ class AddMemberScreen extends ConsumerWidget {
                             ),
                       trailing: TextButton(
                         onPressed: () => addMemberService(
-                            context,
-                            ref,
-                            forum.forumId,
-                            forum.uid,
-                            service.serviceId,
-                            service.uid),
+                            context, ref, forum.forumId, service.serviceId),
                         child: const Text(
                           'Add',
                         ),

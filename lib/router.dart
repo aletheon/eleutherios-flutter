@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_tutorial/features/activity/screens/activity_screen.dart';
 import 'package:reddit_tutorial/features/auth/screens/login_screen.dart';
-import 'package:reddit_tutorial/features/consumer/screens/add_consumer_screen.dart';
-import 'package:reddit_tutorial/features/consumer/screens/remove_consumer_screen.dart';
 import 'package:reddit_tutorial/features/favorite/screens/list_user_favorite_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/create_forum_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/edit_forum_screen.dart';
@@ -20,12 +18,13 @@ import 'package:reddit_tutorial/features/member/screens/edit_member_permissions_
 import 'package:reddit_tutorial/features/member/screens/member_leave_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/member_permissions_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/member_screen.dart';
-import 'package:reddit_tutorial/features/policy/screens/consume_policy_screen.dart';
+import 'package:reddit_tutorial/features/policy/screens/add_consumer_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/create_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/edit_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/list_user_policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/policy_tools_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/policy_screen.dart';
+import 'package:reddit_tutorial/features/policy/screens/remove_consumer_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/create_rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/remove_member_screen.dart';
@@ -462,8 +461,8 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/policy/:policyid/consume': (route) => MaterialPage(
-        child: ConsumePolicyScreen(
+  '/policy/:policyid/add-consumer': (route) => MaterialPage(
+        child: AddConsumerScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
@@ -614,8 +613,8 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/user/policy/list/:policyid/consume': (route) => MaterialPage(
-        child: ConsumePolicyScreen(
+  '/user/policy/list/:policyid/add-consumer': (route) => MaterialPage(
+        child: AddConsumerScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),

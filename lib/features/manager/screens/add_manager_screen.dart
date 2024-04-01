@@ -1,25 +1,328 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/common/error_text.dart';
+import 'package:reddit_tutorial/core/common/loader.dart';
+import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/models/favorite.dart';
+import 'package:reddit_tutorial/models/manager.dart';
+import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
-class AddManagerScreen extends ConsumerWidget {
-  final String _policyId;
-  const AddManagerScreen({super.key, required String policyId})
-      : _policyId = policyId;
+final searchRadioProvider = StateProvider<String>((ref) => 'Private');
+
+class AddManagerScreen extends ConsumerStatefulWidget {
+  final String policyId;
+  const AddManagerScreen({super.key, required this.policyId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AddManagerScreenState();
+}
+
+class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
+  void addManagerService(
+      BuildContext context, WidgetRef ref, String policyId, String serviceId) {
+    ref
+        .read(managerControllerProvider.notifier)
+        .createManager(policyId, serviceId, context);
+  }
+
+  void viewPolicy(WidgetRef ref, BuildContext context) {
+    Routemaster.of(context).push('view');
+  }
+
+  void showServiceDetails(BuildContext context, String serviceId) {
+    Routemaster.of(context).push('service/$serviceId');
+  }
+
+  Widget showServiceList(WidgetRef ref, Policy policy, List<Service>? services,
+      List<Favorite>? favorites) {
+    if (services != null) {
+      return Expanded(
+        child: ListView.builder(
+          itemCount: services.length,
+          itemBuilder: (BuildContext context, int index) {
+            final service = services[index];
+            return ListTile(
+              title: Text(service.title),
+              leading: service.image == Constants.avatarDefault
+                  ? CircleAvatar(
+                      backgroundImage: Image.asset(service.image).image,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(service.image),
+                    ),
+              trailing: TextButton(
+                onPressed: () => addManagerService(
+                    context, ref, policy.policyId, service.serviceId),
+                child: const Text(
+                  'Add',
+                ),
+              ),
+              onTap: () => showServiceDetails(context, service.serviceId),
+            );
+          },
+        ),
+      );
+    } else {
+      return Expanded(
+        child: ListView.builder(
+          itemCount: favorites!.length,
+          itemBuilder: (BuildContext context, int index) {
+            final favorite = favorites[index];
+            return ref.watch(getServiceByIdProvider(favorite.serviceId)).when(
+                  data: (service) {
+                    return ListTile(
+                      title: Text(service!.title),
+                      leading: service.image == Constants.avatarDefault
+                          ? CircleAvatar(
+                              backgroundImage: Image.asset(service.image).image,
+                            )
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(service.image),
+                            ),
+                      trailing: TextButton(
+                        onPressed: () => addManagerService(
+                            context, ref, policy.policyId, service.serviceId),
+                        child: const Text(
+                          'Add',
+                        ),
+                      ),
+                      onTap: () =>
+                          showServiceDetails(context, service.serviceId),
+                    );
+                  },
+                  error: (error, stackTrace) =>
+                      ErrorText(error: error.toString()),
+                  loading: () => const Loader(),
+                );
+          },
+        ),
+      );
+    }
+  }
+
+  Widget showServices(WidgetRef ref, Policy policy, String searchType) {
+    final userFavoritesProv = ref.watch(userFavoritesProvider);
+    final userServicesProv = ref.watch(userServicesProvider);
+    final servicesProv = ref.watch(servicesProvider);
+    final user = ref.watch(userProvider)!;
+    final managersProv = ref.watch(getManagersProvider(widget.policyId));
+
+    if (searchType == "Private") {
+      if (user.services.isEmpty) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("You haven't created any services"),
+          ),
+        );
+      } else {
+        return userServicesProv.when(
+          data: (services) {
+            if (policy.managers.isEmpty) {
+              return showServiceList(ref, policy, services, null);
+            } else {
+              return managersProv.when(
+                data: (managers) {
+                  List<Service> servicesNotInPolicy = [];
+                  for (var service in services) {
+                    List<Manager> result = managers
+                        .where((r) => r.serviceId == service.serviceId)
+                        .toList();
+                    if (result.isEmpty) {
+                      servicesNotInPolicy.add(service);
+                    }
+                  }
+
+                  if (servicesNotInPolicy.isNotEmpty) {
+                    return showServiceList(
+                        ref, policy, servicesNotInPolicy, null);
+                  } else {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('All of your services are in the policy'),
+                      ),
+                    );
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              );
+            }
+          },
+          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          loading: () => const Loader(),
+        );
+      }
+    } else if (searchType == "Public") {
+      return servicesProv.when(
+        data: (services) {
+          if (services.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text("There are no publc services"),
+              ),
+            );
+          } else {
+            if (policy.managers.isEmpty) {
+              return showServiceList(ref, policy, services, null);
+            } else {
+              return managersProv.when(
+                data: (managers) {
+                  List<Service> servicesNotInPolicy = [];
+                  for (var service in services) {
+                    List<Manager> result = managers
+                        .where((r) => r.serviceId == service.serviceId)
+                        .toList();
+                    if (result.isEmpty) {
+                      servicesNotInPolicy.add(service);
+                    }
+                  }
+
+                  if (servicesNotInPolicy.isNotEmpty) {
+                    return showServiceList(
+                        ref, policy, servicesNotInPolicy, null);
+                  } else {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('All public services are in the policy'),
+                      ),
+                    );
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              );
+            }
+          }
+        },
+        error: (error, stackTrace) => ErrorText(error: error.toString()),
+        loading: () => const Loader(),
+      );
+    } else {
+      if (user.favorites.isEmpty) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("You don't have any favorites"),
+          ),
+        );
+      } else {
+        return userFavoritesProv.when(
+          data: (favorites) {
+            if (policy.managers.isEmpty) {
+              return showServiceList(ref, policy, null, favorites);
+            } else {
+              return managersProv.when(
+                data: (managers) {
+                  List<Favorite> favoritesNotInPolicy = [];
+                  for (var favorite in favorites) {
+                    List<Manager> result = managers
+                        .where((r) => r.serviceId == favorite.serviceId)
+                        .toList();
+                    if (result.isEmpty) {
+                      favoritesNotInPolicy.add(favorite);
+                    }
+                  }
+
+                  if (favoritesNotInPolicy.isNotEmpty) {
+                    return showServiceList(
+                        ref, policy, null, favoritesNotInPolicy);
+                  } else {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('All of your favorites are in the policy'),
+                      ),
+                    );
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              );
+            }
+          },
+          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          loading: () => const Loader(),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
+    final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Add Manager',
-          style: TextStyle(
-            color: currentTheme.textTheme.bodyMedium!.color!,
+    return policyProv.when(
+      data: (policy) {
+        return Scaffold(
+          backgroundColor: currentTheme.backgroundColor,
+          appBar: AppBar(
+            title: Text(
+              'Add Manager',
+              style: TextStyle(
+                color: currentTheme.textTheme.bodyMedium!.color!,
+              ),
+            ),
           ),
-        ),
-      ),
+          body: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text("Private"),
+                  Radio(
+                      value: "Private",
+                      groupValue: searchRadioProv,
+                      onChanged: (newValue) {
+                        ref.read(searchRadioProvider.notifier).state =
+                            newValue.toString();
+                      }),
+                  const Text("Public"),
+                  Radio(
+                      value: "Public",
+                      groupValue: searchRadioProv,
+                      onChanged: (newValue) {
+                        ref.read(searchRadioProvider.notifier).state =
+                            newValue.toString();
+                      }),
+                  const Text("Favorite"),
+                  Radio(
+                      value: "Favorite",
+                      groupValue: searchRadioProv,
+                      onChanged: (newValue) {
+                        ref.read(searchRadioProvider.notifier).state =
+                            newValue.toString();
+                      }),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
+              ),
+              showServices(ref, policy!, searchRadioProv)
+            ],
+          ),
+        );
+      },
+      error: (error, stackTrace) => ErrorText(error: error.toString()),
+      loading: () => const Loader(),
     );
   }
 }
