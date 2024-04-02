@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/forum/screens/forum_tools_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/remove_forum_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/view_forum_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/edit_manager_permissions_screen.dart';
+import 'package:reddit_tutorial/features/manager/screens/manager_leave_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/manager_permissions_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/manager_screen.dart';
 import 'package:reddit_tutorial/features/manager/screens/remove_manager_screen.dart';
@@ -461,6 +462,16 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
+  '/policy/:policyid/leave-policy': (route) => MaterialPage(
+        child: ManagerLeaveScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/policy/:policyid/leave-policy/service/:serviceid': (route) => MaterialPage(
+        child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/policy/:policyid/add-consumer': (route) => MaterialPage(
         child: AddConsumerScreen(
           policyId: route.pathParameters['policyid']!,
@@ -611,6 +622,17 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid': (route) => MaterialPage(
         child: PolicyScreen(
           policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/leave-policy': (route) => MaterialPage(
+        child: ManagerLeaveScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/leave-policy/service/:serviceid': (route) =>
+      MaterialPage(
+        child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   '/user/policy/list/:policyid/add-consumer': (route) => MaterialPage(

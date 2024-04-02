@@ -20,17 +20,21 @@ class PolicyRepository {
       _firestore.collection(FirebaseConstants.policiesCollection);
 
   Stream<Policy?> getPolicyById(String policyId) {
-    final DocumentReference documentReference = _policies.doc(policyId);
+    if (policyId.isNotEmpty) {
+      final DocumentReference documentReference = _policies.doc(policyId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      if (event.exists) {
-        return Policy.fromMap(event.data() as Map<String, dynamic>);
-      } else {
-        return null;
-      }
-    });
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Policy.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<List<Policy>> getPolicies() {

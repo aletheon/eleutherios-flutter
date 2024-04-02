@@ -66,10 +66,28 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                             data: (service) {
                               return ListTile(
                                 title: member.selected == false
-                                    ? Text(service!.title)
+                                    ? Flexible(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            service!.title,
+                                            textWidthBasis:
+                                                TextWidthBasis.longestLine,
+                                          ),
+                                        ),
+                                      )
                                     : Row(
                                         children: [
-                                          Text(service!.title),
+                                          Flexible(
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                service!.title,
+                                                textWidthBasis:
+                                                    TextWidthBasis.longestLine,
+                                              ),
+                                            ),
+                                          ),
                                           const SizedBox(
                                             width: 5,
                                           ),

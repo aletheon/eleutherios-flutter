@@ -62,7 +62,10 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
                         .when(
                           data: (service) {
                             return ListTile(
-                              title: Text(service!.title),
+                              title: Text(
+                                service!.title,
+                                textWidthBasis: TextWidthBasis.longestLine,
+                              ),
                               leading: service.image == Constants.avatarDefault
                                   ? CircleAvatar(
                                       backgroundImage:
