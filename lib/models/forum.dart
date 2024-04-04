@@ -7,7 +7,7 @@ class Forum {
   final String parentId; // id of the forum, that this forum belongs to
   final String parentUid; // id of the user who owns the parent forum
   final String policyId; // policy this forum is associated to
-  final String policyUid;
+  final String policyUid; // // owner or superuser of this policy
   final String ruleId; // rule that this forum is derived from
   final String title;
   final String titleLowercase;

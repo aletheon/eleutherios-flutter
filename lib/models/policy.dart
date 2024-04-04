@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 // Abstract representation of a collective policy or rule based system managed by all services
 class Policy {
   final String policyId;
-  final String uid;
+  final String uid; // owner or superuser of the policy
   final String title;
   final String titleLowercase;
   final String description;

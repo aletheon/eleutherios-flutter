@@ -1,10 +1,10 @@
 class Post {
   final String postId;
-  final String forumId;
-  final String forumUid;
-  final String memberId;
-  final String serviceId;
-  final String serviceUid;
+  final String forumId; // forum this post is associated to
+  final String forumUid; // owner or superuser of the forum
+  final String memberId; // member making this post
+  final String serviceId; // service associated to this member
+  final String serviceUid; // owner or superuser of the service
   final String message;
   final String messageLowercase;
   final String image;

@@ -10,9 +10,9 @@ class Activity {
   Activity({
     required this.activityId,
     required this.activityType,
-    required this.uid,
-    required this.policyForumId,
-    required this.policyForumUid,
+    required this.uid, // owner or superuser of this activity
+    required this.policyForumId, // policy or forum id
+    required this.policyForumUid, // owner or superuser of this policy or forum
     required this.lastUpdateDate,
     required this.creationDate,
   });

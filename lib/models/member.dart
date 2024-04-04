@@ -24,10 +24,10 @@ class Member {
 
   Member copyWith({
     String? memberId,
-    String? forumId,
-    String? forumUid,
-    String? serviceId,
-    String? serviceUid,
+    String? forumId, // forum this member is associated to
+    String? forumUid, // owner or superuser of the forum
+    String? serviceId, // service associated to this member
+    String? serviceUid, // owner or superuser of the service
     bool? selected,
     List<String>? permissions,
     DateTime? lastUpdateDate,

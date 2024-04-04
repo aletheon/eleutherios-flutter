@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class Rule {
   final String ruleId;
   final String policyId; // policy this rule is associated to
-  final String policyUid; // owner / superuser of this policy
+  final String policyUid; // owner or superuser of this policy
   final String managerId; // manager creating the rule
   final String managerUid;
   final String title;

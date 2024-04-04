@@ -1,9 +1,9 @@
 // A service that a user has liked
 class Favorite {
   final String favoriteId;
-  final String uid;
-  final String serviceId;
-  final String serviceUid;
+  final String uid; // owner or superuser of this favorite
+  final String serviceId; // service this favorite is associated to
+  final String serviceUid; // owner or superuser of this service
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   Favorite({
