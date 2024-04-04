@@ -65,39 +65,34 @@ class _ManagerLeaveScreenState extends ConsumerState<ManagerLeaveScreen> {
                           .when(
                             data: (service) {
                               return ListTile(
-                                title: manager.selected == false
-                                    ? Flexible(
-                                        child: Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            service!.title,
-                                            textWidthBasis:
-                                                TextWidthBasis.longestLine,
-                                          ),
+                                title: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          service!.title,
+                                          textWidthBasis:
+                                              TextWidthBasis.longestLine,
                                         ),
-                                      )
-                                    : Row(
-                                        children: [
-                                          Flexible(
-                                            child: Container(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                service!.title,
-                                                textWidthBasis:
-                                                    TextWidthBasis.longestLine,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          const Icon(
-                                            Icons.check,
-                                            color:
-                                                Color.fromARGB(255, 3, 233, 33),
-                                          )
-                                        ],
                                       ),
+                                    ),
+                                    manager.selected == true
+                                        ? const Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Icon(
+                                                Icons.check,
+                                                color: Color.fromARGB(
+                                                    255, 3, 233, 33),
+                                              )
+                                            ],
+                                          )
+                                        : const SizedBox(),
+                                  ],
+                                ),
                                 leading: service.image ==
                                         Constants.avatarDefault
                                     ? CircleAvatar(
