@@ -14,7 +14,7 @@ class Rule {
   final String image;
   final String banner;
   final bool public; // visibility of rule
-  final String instantiationType; // consumption, order, date
+  final String instantiationType; // consume, order, date
   final DateTime instantiationDate;
   final List<String> services;
   final List<String> tags;

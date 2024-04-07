@@ -139,6 +139,15 @@ class _EditManagerPermissionsScreenState
                                         ),
                                       );
                                       break;
+                                    case 'editrule':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
                                     case 'createrule':
                                       _icons.add(
                                         const Icon(

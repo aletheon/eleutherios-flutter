@@ -66,24 +66,27 @@ class RuleController extends StateNotifier<bool> {
 
   void createRule(
       String policyId,
-      String managerId,
+      String? managerId,
       String title,
       String description,
       bool public,
-      String instantiationType,
-      DateTime instantiationDate,
+      String? instantiationType,
+      DateTime? instantiationDate,
       BuildContext context) async {
     state = true;
+    Manager? manager;
 
     Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
         .getPolicyById(policyId)
         .first;
 
-    Manager? manager = await _ref
-        .read(managerControllerProvider.notifier)
-        .getManagerById(managerId)
-        .first;
+    if (managerId!.isNotEmpty) {
+      manager = await _ref
+          .read(managerControllerProvider.notifier)
+          .getManagerById(managerId)
+          .first;
+    }
 
     if (policy != null) {
       String ruleId = const Uuid().v1().replaceAll('-', '');
@@ -92,7 +95,7 @@ class RuleController extends StateNotifier<bool> {
         ruleId: ruleId,
         policyId: policyId,
         policyUid: policy.uid,
-        managerId: managerId,
+        managerId: manager != null ? manager.managerId : '',
         managerUid: manager != null ? manager.serviceUid : '',
         title: title,
         titleLowercase: title.toLowerCase(),
@@ -100,8 +103,8 @@ class RuleController extends StateNotifier<bool> {
         image: Constants.avatarDefault,
         banner: Constants.ruleBannerDefault,
         public: public,
-        instantiationType: instantiationType,
-        instantiationDate: instantiationDate,
+        instantiationType: instantiationType ?? '',
+        instantiationDate: instantiationDate ?? DateTime.now(),
         services: [],
         tags: [],
         lastUpdateDate: DateTime.now(),
@@ -117,6 +120,7 @@ class RuleController extends StateNotifier<bool> {
         showSnackBar(context, 'Rule added successfully!');
       });
     } else {
+      print('here 2');
       state = false;
       if (context.mounted) {
         showSnackBar(context, 'Policy does not exist');

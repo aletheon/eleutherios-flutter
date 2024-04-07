@@ -2,9 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
-import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
+import 'package:reddit_tutorial/models/manager.dart';
+import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:tuple/tuple.dart';
+
+final instantiationTypeRadioProvider =
+    StateProvider<String>((ref) => InstantiationType.consume.value);
 
 class CreateRuleScreen extends ConsumerStatefulWidget {
   final String? policyId;
@@ -20,26 +29,19 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
   final descriptionController = TextEditingController();
   bool isChecked = false;
 
-  // String policyId,
-  // String managerId,
-  // String title,
-  // String description,
-  // bool public,
-  // String instantiationType,
-  // DateTime instantiationDate,
-
-  void createRule() {
-    // if (titleController.text.trim().isNotEmpty) {
-    //   if (titleController.text.trim().isNotEmpty) {
-    //     ref.read(ruleControllerProvider.notifier).createRule(
-    //           widget.policyId,
-    //           titleController.text.trim(),
-    //           descriptionController.text.trim(),
-    //           isChecked,
-    //           context,
-    //         );
-    //   }
-    // }
+  void createRule(String? managerId) {
+    if (titleController.text.trim().isNotEmpty) {
+      ref.read(ruleControllerProvider.notifier).createRule(
+            widget.policyId!,
+            managerId,
+            titleController.text.trim(),
+            descriptionController.text.trim(),
+            isChecked,
+            ref.read(instantiationTypeRadioProvider.notifier).state,
+            null,
+            context,
+          );
+    }
   }
 
   @override
@@ -49,7 +51,10 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
     descriptionController.dispose();
   }
 
-  Widget bodyOfScaffold() {
+  Widget bodyOfScaffold(Policy? policy, Manager? manager) {
+    final instantiationTypeRadioProv =
+        ref.watch(instantiationTypeRadioProvider.notifier).state;
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -103,11 +108,62 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             maxLines: 8,
             maxLength: 1000,
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Icon(Icons.build, size: 19, color: Colors.grey),
+              const SizedBox(
+                width: 5,
+              ),
+              Flexible(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: const Text(
+                    "Create the rule when the policy is consumed by a service",
+                    textWidthBasis: TextWidthBasis.longestLine,
+                  ),
+                ),
+              ),
+              Radio(
+                  value: "Consume",
+                  groupValue: instantiationTypeRadioProv,
+                  onChanged: (newValue) {
+                    ref.read(instantiationTypeRadioProvider.notifier).state =
+                        newValue.toString();
+                  }),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Icon(Icons.attach_money, size: 22, color: Colors.grey),
+              const SizedBox(
+                width: 5,
+              ),
+              Flexible(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: const Text(
+                    "Create the rule when the service consuming the policy has been ordered by another service",
+                    textWidthBasis: TextWidthBasis.longestLine,
+                  ),
+                ),
+              ),
+              Radio(
+                  value: "Order",
+                  groupValue: instantiationTypeRadioProv,
+                  onChanged: (newValue) {
+                    ref.read(instantiationTypeRadioProvider.notifier).state =
+                        newValue.toString();
+                  }),
+            ],
+          ),
           const SizedBox(
             height: 20,
           ),
           ElevatedButton(
-            onPressed: createRule,
+            onPressed: () =>
+                createRule(manager != null ? manager.managerId : ''),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
@@ -127,22 +183,40 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(forumControllerProvider);
+    final user = ref.watch(userProvider)!;
+    final isLoading = ref.watch(ruleControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
 
-    // HERE ROB HAVE TO GRAB THE DEFAULT SELECTED MANAGER OF THIS USER FOR THIS POLICY
-    // IF THEY ARE THE POLICY OWNER SKIP THE MANAGER AND USE THE POLICY UID INSTEAD
-
-    return Scaffold(
-        backgroundColor: currentTheme.backgroundColor,
-        appBar: AppBar(
-          title: Text(
-            'Create Rule',
-            style: TextStyle(
-              color: currentTheme.textTheme.bodyMedium!.color!,
-            ),
-          ),
-        ),
-        body: isLoading ? const Loader() : bodyOfScaffold());
+    return ref.watch(getPolicyByIdProvider(widget.policyId!)).when(
+          data: (policy) {
+            return ref
+                .watch(getUserSelectedManagerProvider(
+                    Tuple2(widget.policyId, user.uid)))
+                .when(
+                  data: (manager) {
+                    return Scaffold(
+                        backgroundColor: currentTheme.backgroundColor,
+                        appBar: AppBar(
+                          title: Text(
+                            'Create Rule for ${policy!.title}',
+                            softWrap: true,
+                            maxLines: 5,
+                            style: TextStyle(
+                              color: currentTheme.textTheme.bodyMedium!.color!,
+                            ),
+                          ),
+                        ),
+                        body: isLoading
+                            ? const Loader()
+                            : bodyOfScaffold(policy, manager));
+                  },
+                  error: (error, stackTrace) =>
+                      ErrorText(error: error.toString()),
+                  loading: () => const Loader(),
+                );
+          },
+          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          loading: () => const Loader(),
+        );
   }
 }

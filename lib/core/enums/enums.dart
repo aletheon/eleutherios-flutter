@@ -11,17 +11,17 @@ extension ActivityTypeValue on ActivityType {
   }
 }
 
-enum InstantiationType<String> { consumption, date, order }
+enum InstantiationType<String> { consume, order, date }
 
 extension InstantiationTypeValue on InstantiationType {
   String get value {
     switch (this) {
-      case InstantiationType.consumption:
-        return 'Consumption';
-      case InstantiationType.date:
-        return 'Date';
+      case InstantiationType.consume:
+        return 'Consume';
       case InstantiationType.order:
         return 'Order';
+      case InstantiationType.date:
+        return 'Date';
     }
   }
 }
@@ -82,6 +82,7 @@ enum ManagerPermissions<String> {
   addmanager, // - Add Service (implies adding other services to policy)
   removemanager, // - Remove Service (implies removing other services serving in policy)
   createrule, // - Create Rule (implies remove own rule)
+  editrule, // - Edit Rule (implies editing rule)
   removerule, // - Remove Rule (implies removing other managers rules)
   addconsumer, // - Add Service (implies adding other services to policy)
   removeconsumer, // - Remove Service (implies removing other services serving in policy)
@@ -99,6 +100,8 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
         return 'Remove Manager';
       case ManagerPermissions.createrule:
         return 'Create Rule';
+      case ManagerPermissions.editrule:
+        return 'Edit Rule';
       case ManagerPermissions.removerule:
         return 'Remove Rule';
       case ManagerPermissions.addconsumer:

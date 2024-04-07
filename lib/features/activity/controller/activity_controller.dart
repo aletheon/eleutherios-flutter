@@ -72,7 +72,7 @@ class ActivityController extends StateNotifier<bool> {
     state = false;
   }
 
-  Stream<Activity> getUserActivityByPolicyForumId(
+  Stream<Activity?> getUserActivityByPolicyForumId(
       String policyForumId, String uid) {
     return _activityRepository.getUserActivityByPolicyForumId(
         policyForumId, uid);

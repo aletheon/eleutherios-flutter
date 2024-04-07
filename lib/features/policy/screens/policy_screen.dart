@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -28,6 +30,10 @@ class PolicyScreen extends ConsumerWidget {
 
   void navigateToPolicyTools(BuildContext context) {
     Routemaster.of(context).push('policy-tools');
+  }
+
+  void navigateToRuleTools(String ruleId, BuildContext context) {
+    Routemaster.of(context).push('rule-tools/$ruleId');
   }
 
   void joinPolicy(BuildContext context) {
@@ -325,7 +331,125 @@ class PolicyScreen extends ConsumerWidget {
                                           loading: () => const Loader(),
                                         ),
                                   ],
-                                )
+                                ),
+                                ref.watch(getRulesProvider(policyId)).when(
+                                      data: (rules) {
+                                        if (rules.isEmpty) {
+                                          return const Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Text("There are no rules"),
+                                            ),
+                                          );
+                                        } else {
+                                          return MediaQuery.removePadding(
+                                            context: context,
+                                            removeTop: true,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: rules.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final rule = rules[index];
+
+                                                return ListTile(
+                                                    title: Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                              rule.title,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                              textWidthBasis:
+                                                                  TextWidthBasis
+                                                                      .longestLine,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    leading: rule.image ==
+                                                            Constants
+                                                                .avatarDefault
+                                                        ? CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.asset(rule
+                                                                        .image)
+                                                                    .image,
+                                                          )
+                                                        : CircleAvatar(
+                                                            backgroundImage:
+                                                                NetworkImage(
+                                                                    rule.image),
+                                                          ),
+                                                    trailing: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        rule.instantiationType ==
+                                                                InstantiationType
+                                                                    .consume
+                                                                    .value
+                                                            ? const Icon(
+                                                                Icons.build,
+                                                                size: 19,
+                                                                color:
+                                                                    Colors.grey)
+                                                            : rule.instantiationType ==
+                                                                    InstantiationType
+                                                                        .order
+                                                                        .value
+                                                                ? const Icon(
+                                                                    Icons
+                                                                        .attach_money,
+                                                                    size: 22,
+                                                                    color: Colors
+                                                                        .grey)
+                                                                : const SizedBox(),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        OutlinedButton(
+                                                          onPressed: () =>
+                                                              navigateToRuleTools(
+                                                                  rule.ruleId,
+                                                                  context),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          15)),
+                                                          child: const Text(
+                                                            'Rule Tools',
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ));
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    ),
                               ],
                             ),
                           ],
@@ -334,10 +458,7 @@ class PolicyScreen extends ConsumerWidget {
                     ),
                   ];
                 }),
-                body: const Padding(
-                  padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
-                  child: Text('List rules for policy'),
-                ),
+                body: const SizedBox(),
               ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader()),

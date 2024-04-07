@@ -11,17 +11,19 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
-class PolicyToolsScreen extends ConsumerStatefulWidget {
+class RuleToolsScreen extends ConsumerStatefulWidget {
   final String policyId;
-  const PolicyToolsScreen({super.key, required this.policyId});
+  final String ruleId;
+  const RuleToolsScreen(
+      {super.key, required this.policyId, required this.ruleId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _PolicyToolsScreenState();
+      _RuleToolsScreenState();
 }
 
-class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
-  void editPolicy(BuildContext context) {
+class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
+  void editRule(BuildContext context) {
     Routemaster.of(context).push('edit');
   }
 
@@ -29,28 +31,12 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     Routemaster.of(context).push('/policy/${widget.policyId}/view');
   }
 
-  void addManager(BuildContext context) {
-    Routemaster.of(context).push('add-manager');
+  void addMember(BuildContext context) {
+    Routemaster.of(context).push('add-member');
   }
 
-  void removeManager(BuildContext context) {
-    Routemaster.of(context).push('remove-manager');
-  }
-
-  void createRule(BuildContext context) {
-    Routemaster.of(context).push('create-rule');
-  }
-
-  void removeRule(BuildContext context) {
-    Routemaster.of(context).push('remove-rule');
-  }
-
-  void addConsumer(BuildContext context) {
-    Routemaster.of(context).push('add-consumer');
-  }
-
-  void removeConsumer(BuildContext context) {
-    Routemaster.of(context).push('remove-consumer');
+  void removeMember(BuildContext context) {
+    Routemaster.of(context).push('remove-member');
   }
 
   void managerPermissions(BuildContext context) {
@@ -73,13 +59,6 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     }
   }
 
-  // ************************************************************************
-  // ************************************************************************
-  // HERE ROB HAVE TO ENABLE PERSON WHO CREATED POLICY THE ABILITY TO
-  // JOIN THE POLICY AS A MANAGER - I.E. ADD A JOIN BUTTON, LEAVE BUTTON
-  // ************************************************************************
-  // ************************************************************************
-
   @override
   void initState() {
     super.initState();
@@ -96,7 +75,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Policy Tools',
+          'Rule Tools',
           style: TextStyle(
             color: currentTheme.textTheme.bodyMedium!.color!,
           ),
@@ -136,71 +115,31 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                     data: (manager) {
                       return Column(children: [
                         user.uid == policy!.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.editpolicy.name)
+                                manager!.permissions
+                                    .contains(ManagerPermissions.editrule.name)
                             ? ListTile(
-                                onTap: () => editPolicy(context),
+                                onTap: () => editRule(context),
                                 leading: const Icon(Icons.edit_note_outlined),
-                                title: const Text('Edit Policy'),
+                                title: const Text('Edit Rule'),
                               )
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
                                     ManagerPermissions.createrule.name)
                             ? ListTile(
-                                onTap: () => createRule(context),
+                                onTap: () => addMember(context),
                                 leading: const Icon(Icons.add_circle_outline),
-                                title: const Text('Create Rule'),
+                                title: const Text('Add Member'),
                               )
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
                                     ManagerPermissions.removerule.name)
                             ? ListTile(
-                                onTap: () => removeRule(context),
+                                onTap: () => removeMember(context),
                                 leading:
                                     const Icon(Icons.remove_circle_outline),
-                                title: const Text('Remove Rule'),
-                              )
-                            : const SizedBox(),
-                        user.uid == policy.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.addmanager.name)
-                            ? ListTile(
-                                onTap: () => addManager(context),
-                                leading:
-                                    const Icon(Icons.add_moderator_outlined),
-                                title: const Text('Add Manager'),
-                              )
-                            : const SizedBox(),
-                        user.uid == policy.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.removemanager.name)
-                            ? ListTile(
-                                onTap: () => removeManager(context),
-                                leading:
-                                    const Icon(Icons.remove_moderator_outlined),
-                                title: const Text('Remove Manager'),
-                              )
-                            : const SizedBox(),
-                        user.uid == policy.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.addconsumer.name)
-                            ? ListTile(
-                                onTap: () => addConsumer(context),
-                                leading:
-                                    const Icon(Icons.add_moderator_outlined),
-                                title: const Text('Add Consumer'),
-                              )
-                            : const SizedBox(),
-                        user.uid == policy.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.removeconsumer.name)
-                            ? ListTile(
-                                onTap: () => removeConsumer(context),
-                                leading:
-                                    const Icon(Icons.remove_moderator_outlined),
-                                title: const Text('Remove Consumer'),
+                                title: const Text('Remove Member'),
                               )
                             : const SizedBox(),
                         user.uid == policy.uid ||

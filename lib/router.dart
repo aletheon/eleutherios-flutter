@@ -31,6 +31,7 @@ import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/remove_member_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/add_member_screen.dart';
 import 'package:reddit_tutorial/features/home/screens/home_screen.dart';
+import 'package:reddit_tutorial/features/rule/screens/rule_tools_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/add_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/create_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/edit_service_screen.dart';
@@ -462,6 +463,12 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
+  '/policy/:policyid/rule-tools/:ruleid': (route) => MaterialPage(
+        child: RuleToolsScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
   '/policy/:policyid/leave-policy': (route) => MaterialPage(
         child: ManagerLeaveScreen(
           policyId: route.pathParameters['policyid']!,
@@ -622,6 +629,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid': (route) => MaterialPage(
         child: PolicyScreen(
           policyId: route.pathParameters['policyid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/rule-tools/:ruleid': (route) => MaterialPage(
+        child: RuleToolsScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
         ),
       ),
   '/user/policy/list/:policyid/leave-policy': (route) => MaterialPage(

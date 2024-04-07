@@ -127,6 +127,8 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
                   appBar: AppBar(
                     title: Text(
                       'Create Forum in ${forum!.title}',
+                      softWrap: true,
+                      maxLines: 5,
                       style: TextStyle(
                         color: currentTheme.textTheme.bodyMedium!.color!,
                       ),

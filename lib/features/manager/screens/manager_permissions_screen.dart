@@ -69,315 +69,308 @@ class _ManagerPermissionsScreenState
                               ),
                               subtitle: Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
-                                child: Row(
+                                child: Wrap(
                                   children: [
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .editpolicy.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .addmanager.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.construction,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.construction,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .removemanager.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.construction,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.remove,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.construction,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.remove,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .createrule.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.account_balance,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.account_balance,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    manager.permissions.contains(
+                                                ManagerPermissions
+                                                    .editrule.name) ==
+                                            true
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .removerule.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.account_balance,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.remove,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.account_balance,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.remove,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .addconsumer.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .miscellaneous_services,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .miscellaneous_services,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .removeconsumer.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .miscellaneous_services,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                      Icon(
-                                                        Icons.remove,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .miscellaneous_services,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                    Icon(
+                                                      Icons.remove,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                     manager.permissions.contains(
                                                 ManagerPermissions
                                                     .editpermissions.name) ==
                                             true
-                                        ? const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.lock,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
+                                        ? Container(
+                                            padding: const EdgeInsets.only(
+                                                right: 3, bottom: 2),
+                                            child: const CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor:
+                                                  Pallete.greyColor,
+                                              child: CircleAvatar(
+                                                radius: 13,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.lock,
+                                                      color: Colors.white,
+                                                      size: 10,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
+                                            ),
                                           )
                                         : const SizedBox(),
                                   ],

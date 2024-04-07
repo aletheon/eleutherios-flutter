@@ -258,7 +258,7 @@ class MemberController extends StateNotifier<bool> {
           .first;
 
       // now remove it
-      await _activityRepository.deleteActivity(activity.activityId);
+      await _activityRepository.deleteActivity(activity!.activityId);
 
       // remove the activity from the users activity list
       user.activities.remove(forumId);

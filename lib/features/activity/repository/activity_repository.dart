@@ -30,7 +30,7 @@ class ActivityRepository {
     });
   }
 
-  Stream<Activity> getUserActivityByPolicyForumId(
+  Stream<Activity?> getUserActivityByPolicyForumId(
       String policyForumId, String uid) {
     return _activities
         .where('policyForumId', isEqualTo: policyForumId)
@@ -38,10 +38,15 @@ class ActivityRepository {
         .snapshots()
         .map((event) {
       List<Activity> activities = [];
-      for (var doc in event.docs) {
-        activities.add(Activity.fromMap(doc.data() as Map<String, dynamic>));
+
+      if (event.docs.isNotEmpty) {
+        for (var doc in event.docs) {
+          activities.add(Activity.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return activities.first;
+      } else {
+        return null;
       }
-      return activities.first;
     });
   }
 

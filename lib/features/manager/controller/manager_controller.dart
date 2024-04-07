@@ -133,11 +133,13 @@ class ManagerController extends StateNotifier<bool> {
             .getUserManagerCount(policy.policyId, service.uid)
             .first;
         String managerId = const Uuid().v1().replaceAll('-', '');
-        List<String> defaultPermissions = [ManagerPermissions.createrule.name];
+        List<String> defaultPermissions = [
+          ManagerPermissions.createrule.name,
+          ManagerPermissions.editrule.name
+        ];
 
         if (policy.uid == service.uid) {
           defaultPermissions.add(ManagerPermissions.editpolicy.name);
-          defaultPermissions.add(ManagerPermissions.createrule.name);
           defaultPermissions.add(ManagerPermissions.removerule.name);
           defaultPermissions.add(ManagerPermissions.addmanager.name);
           defaultPermissions.add(ManagerPermissions.removemanager.name);
@@ -270,7 +272,7 @@ class ManagerController extends StateNotifier<bool> {
           .first;
 
       // now remove it
-      await _activityRepository.deleteActivity(activity.activityId);
+      await _activityRepository.deleteActivity(activity!.activityId);
 
       // remove the activity from the users activity list
       user.activities.remove(policyId);
