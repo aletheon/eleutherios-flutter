@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 // when another service orders the service or when a particular datetime for the rule is reached.
 class Rule {
   final String ruleId;
+  final String uid; // owner or superuser of this rule
   final String policyId; // policy this rule is associated to
   final String policyUid; // owner or superuser of this policy
   final String managerId; // manager creating the rule
@@ -16,12 +17,13 @@ class Rule {
   final bool public; // visibility of rule
   final String instantiationType; // consume, order, date
   final DateTime instantiationDate;
-  final List<String> services;
+  final List<String> members;
   final List<String> tags;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   Rule({
     required this.ruleId,
+    required this.uid,
     required this.policyId,
     required this.policyUid,
     required this.managerId,
@@ -34,7 +36,7 @@ class Rule {
     required this.public,
     required this.instantiationType,
     required this.instantiationDate,
-    required this.services,
+    required this.members,
     required this.tags,
     required this.lastUpdateDate,
     required this.creationDate,
@@ -42,6 +44,7 @@ class Rule {
 
   Rule copyWith({
     String? ruleId,
+    String? uid,
     String? policyId,
     String? policyUid,
     String? managerId,
@@ -54,13 +57,14 @@ class Rule {
     bool? public,
     String? instantiationType,
     DateTime? instantiationDate,
-    List<String>? services,
+    List<String>? members,
     List<String>? tags,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
     return Rule(
       ruleId: ruleId ?? this.ruleId,
+      uid: uid ?? this.uid,
       policyId: policyId ?? this.policyId,
       policyUid: policyUid ?? this.policyUid,
       managerId: managerId ?? this.managerId,
@@ -73,7 +77,7 @@ class Rule {
       public: public ?? this.public,
       instantiationType: instantiationType ?? this.instantiationType,
       instantiationDate: instantiationDate ?? this.instantiationDate,
-      services: services ?? this.services,
+      members: members ?? this.members,
       tags: tags ?? this.tags,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
@@ -83,6 +87,7 @@ class Rule {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'ruleId': ruleId,
+      'uid': uid,
       'policyId': policyId,
       'policyUid': policyUid,
       'managerId': managerId,
@@ -95,7 +100,7 @@ class Rule {
       'public': public,
       'instantiationType': instantiationType,
       'instantiationDate': instantiationDate.millisecondsSinceEpoch,
-      'services': services,
+      'members': members,
       'tags': tags,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
@@ -105,6 +110,7 @@ class Rule {
   factory Rule.fromMap(Map<String, dynamic> map) {
     return Rule(
       ruleId: map['ruleId'] as String,
+      uid: map['uid'] as String,
       policyId: map['policyId'] as String,
       policyUid: map['policyUid'] as String,
       managerId: map['managerId'] as String,
@@ -118,7 +124,7 @@ class Rule {
       instantiationType: map['instantiationType'] as String,
       instantiationDate:
           DateTime.fromMillisecondsSinceEpoch(map['instantiationDate'] as int),
-      services: List<String>.from(map['services']),
+      members: List<String>.from(map['members']),
       tags: List<String>.from(map['tags']),
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
@@ -129,7 +135,7 @@ class Rule {
 
   @override
   String toString() {
-    return 'Rule(ruleId: $ruleId, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, services: $services, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -137,6 +143,7 @@ class Rule {
     if (identical(this, other)) return true;
 
     return other.ruleId == ruleId &&
+        other.uid == uid &&
         other.policyId == policyId &&
         other.policyUid == policyUid &&
         other.managerId == managerId &&
@@ -149,7 +156,7 @@ class Rule {
         other.public == public &&
         other.instantiationType == instantiationType &&
         other.instantiationDate == instantiationDate &&
-        listEquals(other.services, services) &&
+        listEquals(other.members, members) &&
         listEquals(other.tags, tags) &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
@@ -158,6 +165,7 @@ class Rule {
   @override
   int get hashCode {
     return ruleId.hashCode ^
+        uid.hashCode ^
         policyId.hashCode ^
         policyUid.hashCode ^
         managerId.hashCode ^
@@ -170,7 +178,7 @@ class Rule {
         public.hashCode ^
         instantiationType.hashCode ^
         instantiationDate.hashCode ^
-        services.hashCode ^
+        members.hashCode ^
         tags.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;

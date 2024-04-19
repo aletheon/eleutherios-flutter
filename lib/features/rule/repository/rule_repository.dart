@@ -19,14 +19,32 @@ class RuleRepository {
   CollectionReference get _rules =>
       _firestore.collection(FirebaseConstants.rulesCollection);
 
-  Stream<Rule> getRuleById(String ruleId) {
-    final DocumentReference documentReference = _rules.doc(ruleId);
+  // Stream<Rule> getRuleById(String ruleId) {
+  //   final DocumentReference documentReference = _rules.doc(ruleId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+  //   Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      return Rule.fromMap(event.data() as Map<String, dynamic>);
-    });
+  //   return documentStream.map((event) {
+  //     return Rule.fromMap(event.data() as Map<String, dynamic>);
+  //   });
+  // }
+
+  Stream<Rule?> getRuleById(String ruleId) {
+    if (ruleId.isNotEmpty) {
+      final DocumentReference documentReference = _rules.doc(ruleId);
+
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Rule.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<List<Rule>> getRules(String policyId) {

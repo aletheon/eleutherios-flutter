@@ -135,12 +135,16 @@ class ManagerController extends StateNotifier<bool> {
         String managerId = const Uuid().v1().replaceAll('-', '');
         List<String> defaultPermissions = [
           ManagerPermissions.createrule.name,
+          ManagerPermissions.removerule.name,
           ManagerPermissions.editrule.name
         ];
 
         if (policy.uid == service.uid) {
+          defaultPermissions = [];
           defaultPermissions.add(ManagerPermissions.editpolicy.name);
+          defaultPermissions.add(ManagerPermissions.createrule.name);
           defaultPermissions.add(ManagerPermissions.removerule.name);
+          defaultPermissions.add(ManagerPermissions.editrule.name);
           defaultPermissions.add(ManagerPermissions.addmanager.name);
           defaultPermissions.add(ManagerPermissions.removemanager.name);
           defaultPermissions.add(ManagerPermissions.addconsumer.name);

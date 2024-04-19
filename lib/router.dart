@@ -27,7 +27,6 @@ import 'package:reddit_tutorial/features/policy/screens/policy_tools_screen.dart
 import 'package:reddit_tutorial/features/policy/screens/policy_screen.dart';
 import 'package:reddit_tutorial/features/policy/screens/remove_consumer_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/create_rule_screen.dart';
-import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/remove_member_screen.dart';
 import 'package:reddit_tutorial/features/member/screens/add_member_screen.dart';
 import 'package:reddit_tutorial/features/home/screens/home_screen.dart';
@@ -600,11 +599,6 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
-  '/policy/:policyid/policy-tools/remove-rule': (route) => MaterialPage(
-        child: RemoveRuleScreen(
-          policyId: route.pathParameters['policyid']!,
-        ),
-      ),
   '/policy/:policyid/policy-tools/manager-permissions': (route) => MaterialPage(
         child: ManagerPermissionsScreen(
           policyId: route.pathParameters['policyid']!,
@@ -678,12 +672,6 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/policy-tools/create-rule': (route) =>
       MaterialPage(
         child: CreateRuleScreen(
-          policyId: route.pathParameters['policyid']!,
-        ),
-      ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule': (route) =>
-      MaterialPage(
-        child: RemoveRuleScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),

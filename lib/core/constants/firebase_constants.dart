@@ -9,8 +9,8 @@ class FirebaseConstants {
   static const postsCollection = 'posts';
   static const membersCollection = 'members';
   static const rulesCollection = 'rules';
+  static const ruleMembersCollection = 'rulemembers';
   static const servicesCollection = 'services';
-  static const tagsCollection = 'tags';
   static const usersCollection = 'users';
   static const managersCollection = 'managers';
 }

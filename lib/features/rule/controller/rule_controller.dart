@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
@@ -16,8 +17,17 @@ import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
-final getRuleByIdProvider = Provider.family.autoDispose((ref, String ruleId) {
+final getRuleByIdProvider =
+    StreamProvider.family.autoDispose((ref, String ruleId) {
   return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
+});
+
+final getForumByIdProvider2 = Provider.family((ref, String ruleId) {
+  try {
+    return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
+  } catch (e) {
+    rethrow;
+  }
 });
 
 final getRulesProvider =
@@ -75,6 +85,7 @@ class RuleController extends StateNotifier<bool> {
       BuildContext context) async {
     state = true;
     Manager? manager;
+    final user = _ref.read(userProvider)!;
 
     Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
@@ -93,6 +104,7 @@ class RuleController extends StateNotifier<bool> {
 
       Rule rule = Rule(
         ruleId: ruleId,
+        uid: user.uid,
         policyId: policyId,
         policyUid: policy.uid,
         managerId: manager != null ? manager.managerId : '',
@@ -105,7 +117,7 @@ class RuleController extends StateNotifier<bool> {
         public: public,
         instantiationType: instantiationType ?? '',
         instantiationDate: instantiationDate ?? DateTime.now(),
-        services: [],
+        members: [],
         tags: [],
         lastUpdateDate: DateTime.now(),
         creationDate: DateTime.now(),
@@ -120,7 +132,6 @@ class RuleController extends StateNotifier<bool> {
         showSnackBar(context, 'Rule added successfully!');
       });
     } else {
-      print('here 2');
       state = false;
       if (context.mounted) {
         showSnackBar(context, 'Policy does not exist');
@@ -172,7 +183,7 @@ class RuleController extends StateNotifier<bool> {
     return _ruleRepository.getManagerRules(policyId, managerId);
   }
 
-  Stream<Rule> getRuleById(String ruleId) {
+  Stream<Rule?> getRuleById(String ruleId) {
     return _ruleRepository.getRuleById(ruleId);
   }
 

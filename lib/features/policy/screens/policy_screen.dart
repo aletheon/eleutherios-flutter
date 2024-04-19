@@ -415,30 +415,52 @@ class PolicyScreen extends ConsumerWidget {
                                                         const SizedBox(
                                                           width: 10,
                                                         ),
-                                                        OutlinedButton(
-                                                          onPressed: () =>
-                                                              navigateToRuleTools(
-                                                                  rule.ruleId,
-                                                                  context),
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                  ),
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          15)),
-                                                          child: const Text(
-                                                            'Rule Tools',
-                                                            style: TextStyle(
-                                                              fontSize: 13,
+                                                        ref
+                                                            .watch(getUserSelectedManagerProvider(
+                                                                Tuple2(policyId,
+                                                                    user.uid)))
+                                                            .when(
+                                                              data: (manager) {
+                                                                if (user.uid ==
+                                                                        policy
+                                                                            .uid ||
+                                                                    manager !=
+                                                                        null) {
+                                                                  return OutlinedButton(
+                                                                    onPressed: () =>
+                                                                        navigateToRuleTools(
+                                                                            rule.ruleId,
+                                                                            context),
+                                                                    style: ElevatedButton
+                                                                        .styleFrom(
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 15)),
+                                                                    child:
+                                                                        const Text(
+                                                                      'Rule Tools',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                } else {
+                                                                  return const SizedBox();
+                                                                }
+                                                              },
+                                                              error: (error,
+                                                                      stackTrace) =>
+                                                                  ErrorText(
+                                                                      error: error
+                                                                          .toString()),
+                                                              loading: () =>
+                                                                  const Loader(),
                                                             ),
-                                                          ),
-                                                        ),
                                                       ],
                                                     ));
                                               },
