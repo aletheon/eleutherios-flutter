@@ -5,14 +5,10 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
-import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
-import 'package:reddit_tutorial/models/forum.dart';
-import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
@@ -22,8 +18,10 @@ import 'package:routemaster/routemaster.dart';
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
 class AddRuleMemberScreen extends ConsumerStatefulWidget {
+  final String policyId;
   final String ruleId;
-  const AddRuleMemberScreen({super.key, required this.ruleId});
+  const AddRuleMemberScreen(
+      {super.key, required this.policyId, required this.ruleId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -37,16 +35,6 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
         .read(ruleMemberControllerProvider.notifier)
         .createRuleMember(ruleId, serviceId, context);
   }
-
-  // **************************************************
-  // **************************************************
-  // **************************************************
-  // **************************************************
-  // HERE ROB!
-  // **************************************************
-  // **************************************************
-  // **************************************************
-  // **************************************************
 
   void viewRule(WidgetRef ref, BuildContext context) {
     Routemaster.of(context).push('view');

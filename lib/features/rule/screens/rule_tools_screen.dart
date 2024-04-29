@@ -29,11 +29,11 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
   }
 
   void addMember(BuildContext context) {
-    Routemaster.of(context).push('add-member');
+    Routemaster.of(context).push('add-rule-member');
   }
 
   void removeMember(BuildContext context) {
-    Routemaster.of(context).push('remove-member');
+    Routemaster.of(context).push('remove-rule-member');
   }
 
   validateUser() async {

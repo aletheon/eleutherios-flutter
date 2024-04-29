@@ -171,7 +171,7 @@ class RuleController extends StateNotifier<bool> {
     state = false;
     ruleRes.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Rule updated successfully!');
-      Routemaster.of(context).pop();
+      // Routemaster.of(context).pop();
     });
   }
 

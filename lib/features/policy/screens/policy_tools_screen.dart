@@ -25,9 +25,9 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     Routemaster.of(context).push('edit');
   }
 
-  void viewPolicy(BuildContext context) {
-    Routemaster.of(context).push('/policy/${widget.policyId}/view');
-  }
+  // void viewPolicy(BuildContext context) {
+  //   Routemaster.of(context).push('/policy/${widget.policyId}/view');
+  // }
 
   void addManager(BuildContext context) {
     Routemaster.of(context).push('add-manager');
@@ -101,31 +101,31 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
             color: currentTheme.textTheme.bodyMedium!.color!,
           ),
         ),
-        actions: [
-          ref
-              .watch(getUserManagerCountProvider(
-                  Tuple2(widget.policyId, user.uid)))
-              .when(
-                data: (count) {
-                  if (count > 0) {
-                    return TextButton(
-                      onPressed: () => viewPolicy(context),
-                      child: const Text(
-                        'View',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              ),
-        ],
+        // actions: [
+        //   ref
+        //       .watch(getUserManagerCountProvider(
+        //           Tuple2(widget.policyId, user.uid)))
+        //       .when(
+        //         data: (count) {
+        //           if (count > 0) {
+        //             return TextButton(
+        //               onPressed: () => viewPolicy(context),
+        //               child: const Text(
+        //                 'View',
+        //                 style: TextStyle(
+        //                   fontWeight: FontWeight.bold,
+        //                 ),
+        //               ),
+        //             );
+        //           } else {
+        //             return const SizedBox();
+        //           }
+        //         },
+        //         error: (error, stackTrace) =>
+        //             ErrorText(error: error.toString()),
+        //         loading: () => const Loader(),
+        //       ),
+        // ],
       ),
       body: ref.watch(getPolicyByIdProvider(widget.policyId)).when(
             data: (policy) {

@@ -22,6 +22,7 @@ class Pallete {
 
   static var userColor = Colors.purple.shade300;
   static var policyColor = Colors.amber.shade300;
+  static var ruleColor = Colors.amber.shade300;
   static var forumColor = Colors.red.shade300;
   static var freeServiceColor = Colors.green.shade300;
   static var paidServiceColor = Colors.blue.shade300;

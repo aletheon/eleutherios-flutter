@@ -32,6 +32,10 @@ class PolicyScreen extends ConsumerWidget {
     Routemaster.of(context).push('policy-tools');
   }
 
+  void navigateToRule(String ruleId, BuildContext context) {
+    Routemaster.of(context).push('rule/$ruleId');
+  }
+
   void navigateToRuleTools(String ruleId, BuildContext context) {
     Routemaster.of(context).push('rule-tools/$ruleId');
   }
@@ -354,115 +358,121 @@ class PolicyScreen extends ConsumerWidget {
                                                 final rule = rules[index];
 
                                                 return ListTile(
-                                                    title: Row(
-                                                      children: [
-                                                        Flexible(
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Text(
-                                                              rule.title,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 14,
-                                                              ),
-                                                              textWidthBasis:
-                                                                  TextWidthBasis
-                                                                      .longestLine,
+                                                  title: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            rule.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 14,
                                                             ),
+                                                            textWidthBasis:
+                                                                TextWidthBasis
+                                                                    .longestLine,
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                    leading: rule.image ==
-                                                            Constants
-                                                                .avatarDefault
-                                                        ? CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.asset(rule
-                                                                        .image)
-                                                                    .image,
-                                                          )
-                                                        : CircleAvatar(
-                                                            backgroundImage:
-                                                                NetworkImage(
-                                                                    rule.image),
-                                                          ),
-                                                    trailing: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        rule.instantiationType ==
-                                                                InstantiationType
-                                                                    .consume
-                                                                    .value
-                                                            ? const Icon(
-                                                                Icons.build,
-                                                                size: 19,
-                                                                color:
-                                                                    Colors.grey)
-                                                            : rule.instantiationType ==
-                                                                    InstantiationType
-                                                                        .order
-                                                                        .value
-                                                                ? const Icon(
-                                                                    Icons
-                                                                        .attach_money,
-                                                                    size: 22,
-                                                                    color: Colors
-                                                                        .grey)
-                                                                : const SizedBox(),
-                                                        const SizedBox(
-                                                          width: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  leading: rule.image ==
+                                                          Constants
+                                                              .avatarDefault
+                                                      ? CircleAvatar(
+                                                          backgroundImage:
+                                                              Image.asset(rule
+                                                                      .image)
+                                                                  .image,
+                                                        )
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                                  rule.image),
                                                         ),
-                                                        ref
-                                                            .watch(getUserSelectedManagerProvider(
-                                                                Tuple2(policyId,
-                                                                    user.uid)))
-                                                            .when(
-                                                              data: (manager) {
-                                                                if (user.uid ==
-                                                                        policy
-                                                                            .uid ||
-                                                                    manager !=
-                                                                        null) {
-                                                                  return OutlinedButton(
-                                                                    onPressed: () =>
-                                                                        navigateToRuleTools(
-                                                                            rule.ruleId,
-                                                                            context),
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                            shape:
-                                                                                RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                            ),
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(horizontal: 15)),
-                                                                    child:
-                                                                        const Text(
-                                                                      'Rule Tools',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            13,
-                                                                      ),
+                                                  trailing: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      rule.instantiationType ==
+                                                              InstantiationType
+                                                                  .consume.value
+                                                          ? const Icon(
+                                                              Icons.build,
+                                                              size: 19,
+                                                              color:
+                                                                  Colors.grey)
+                                                          : rule.instantiationType ==
+                                                                  InstantiationType
+                                                                      .order
+                                                                      .value
+                                                              ? const Icon(
+                                                                  Icons
+                                                                      .attach_money,
+                                                                  size: 22,
+                                                                  color: Colors
+                                                                      .grey)
+                                                              : const SizedBox(),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      ref
+                                                          .watch(
+                                                              getUserSelectedManagerProvider(
+                                                                  Tuple2(
+                                                                      policyId,
+                                                                      user.uid)))
+                                                          .when(
+                                                            data: (manager) {
+                                                              if (user.uid ==
+                                                                      policy
+                                                                          .uid ||
+                                                                  manager !=
+                                                                      null) {
+                                                                return OutlinedButton(
+                                                                  onPressed: () =>
+                                                                      navigateToRuleTools(
+                                                                          rule.ruleId,
+                                                                          context),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 15)),
+                                                                  child:
+                                                                      const Text(
+                                                                    'Rule Tools',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          13,
                                                                     ),
-                                                                  );
-                                                                } else {
-                                                                  return const SizedBox();
-                                                                }
-                                                              },
-                                                              error: (error,
-                                                                      stackTrace) =>
-                                                                  ErrorText(
-                                                                      error: error
-                                                                          .toString()),
-                                                              loading: () =>
-                                                                  const Loader(),
-                                                            ),
-                                                      ],
-                                                    ));
+                                                                  ),
+                                                                );
+                                                              } else {
+                                                                return const SizedBox();
+                                                              }
+                                                            },
+                                                            error: (error,
+                                                                    stackTrace) =>
+                                                                ErrorText(
+                                                                    error: error
+                                                                        .toString()),
+                                                            loading: () =>
+                                                                const Loader(),
+                                                          ),
+                                                    ],
+                                                  ),
+                                                  onTap: () => navigateToRule(
+                                                      rule.ruleId, context),
+                                                );
                                               },
                                             ),
                                           );
