@@ -50,53 +50,67 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
           ),
           body: managersProv.when(
             data: (managers) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ListView.builder(
-                  itemCount: managers.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final manager = managers[index];
+              if (managers.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: const Text(
+                      'No managers',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ListView.builder(
+                    itemCount: managers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final manager = managers[index];
 
-                    return ref
-                        .watch(getServiceByIdProvider(manager.serviceId))
-                        .when(
-                          data: (service) {
-                            return ListTile(
-                              title: Text(
-                                service!.title,
-                                textWidthBasis: TextWidthBasis.longestLine,
-                              ),
-                              leading: service.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(service.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(service.image),
-                                    ),
-                              trailing: TextButton(
-                                onPressed: () => removeManagerService(
-                                  context,
-                                  ref,
-                                  policy!.policyId,
-                                  manager.managerId,
+                      return ref
+                          .watch(getServiceByIdProvider(manager.serviceId))
+                          .when(
+                            data: (service) {
+                              return ListTile(
+                                title: Text(
+                                  service!.title,
+                                  textWidthBasis: TextWidthBasis.longestLine,
                                 ),
-                                child: const Text(
-                                  'Remove',
+                                leading: service.image ==
+                                        Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(service.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(service.image),
+                                      ),
+                                trailing: TextButton(
+                                  onPressed: () => removeManagerService(
+                                    context,
+                                    ref,
+                                    policy!.policyId,
+                                    manager.managerId,
+                                  ),
+                                  child: const Text(
+                                    'Remove',
+                                  ),
                                 ),
-                              ),
-                              onTap: () => showServiceDetails(
-                                  context, service.serviceId),
-                            );
-                          },
-                          error: (error, stackTrace) =>
-                              ErrorText(error: error.toString()),
-                          loading: () => const Loader(),
-                        );
-                  },
-                ),
-              );
+                                onTap: () => showServiceDetails(
+                                    context, service.serviceId),
+                              );
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
+                    },
+                  ),
+                );
+              }
             },
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),

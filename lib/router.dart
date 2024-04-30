@@ -472,6 +472,68 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
+  '/policy/:policyid/rule/:ruleid/rule-tools': (route) => MaterialPage(
+        child: RuleToolsScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/edit': (route) => MaterialPage(
+        child: EditRuleScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member': (route) =>
+      MaterialPage(
+        child: AddRuleMemberScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member': (route) =>
+      MaterialPage(
+        child: RemoveRuleMemberScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes/:uid':
+      (route) => MaterialPage(
+            child: ServiceUserProfileScreen(
+              uid: route.pathParameters['uid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes/:uid':
+      (route) => MaterialPage(
+            child: ServiceUserProfileScreen(
+              uid: route.pathParameters['uid']!,
+            ),
+          ),
   '/policy/:policyid/rule-tools/:ruleid': (route) => MaterialPage(
         child: RuleToolsScreen(
           policyId: route.pathParameters['policyid']!,
@@ -697,6 +759,70 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools': (route) =>
+      MaterialPage(
+        child: RuleToolsScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/edit': (route) =>
+      MaterialPage(
+        child: EditRuleScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member':
+      (route) => MaterialPage(
+            child: AddRuleMemberScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member':
+      (route) => MaterialPage(
+            child: RemoveRuleMemberScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes/:uid':
+      (route) => MaterialPage(
+            child: ServiceUserProfileScreen(
+              uid: route.pathParameters['uid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
+      (route) => MaterialPage(
+            child: ServiceLikesScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes/:uid':
+      (route) => MaterialPage(
+            child: ServiceUserProfileScreen(
+              uid: route.pathParameters['uid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/rule-tools/:ruleid': (route) => MaterialPage(
         child: RuleToolsScreen(
           policyId: route.pathParameters['policyid']!,

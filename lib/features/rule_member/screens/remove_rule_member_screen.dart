@@ -53,53 +53,67 @@ class _RemoveRuleMemberScreenState
           ),
           body: ruleMembersProv.when(
             data: (ruleMembers) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ListView.builder(
-                  itemCount: ruleMembers.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final ruleMember = ruleMembers[index];
+              if (ruleMembers.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: const Text(
+                      'No members',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ListView.builder(
+                    itemCount: ruleMembers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final ruleMember = ruleMembers[index];
 
-                    return ref
-                        .watch(getServiceByIdProvider(ruleMember.serviceId))
-                        .when(
-                          data: (service) {
-                            return ListTile(
-                              title: Text(
-                                service!.title,
-                                textWidthBasis: TextWidthBasis.longestLine,
-                              ),
-                              leading: service.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(service.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(service.image),
-                                    ),
-                              trailing: TextButton(
-                                onPressed: () => removeRuleMemberService(
-                                  context,
-                                  ref,
-                                  rule!.ruleId,
-                                  ruleMember.ruleMemberId,
+                      return ref
+                          .watch(getServiceByIdProvider(ruleMember.serviceId))
+                          .when(
+                            data: (service) {
+                              return ListTile(
+                                title: Text(
+                                  service!.title,
+                                  textWidthBasis: TextWidthBasis.longestLine,
                                 ),
-                                child: const Text(
-                                  'Remove',
+                                leading: service.image ==
+                                        Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(service.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(service.image),
+                                      ),
+                                trailing: TextButton(
+                                  onPressed: () => removeRuleMemberService(
+                                    context,
+                                    ref,
+                                    rule!.ruleId,
+                                    ruleMember.ruleMemberId,
+                                  ),
+                                  child: const Text(
+                                    'Remove',
+                                  ),
                                 ),
-                              ),
-                              onTap: () => showServiceDetails(
-                                  context, service.serviceId),
-                            );
-                          },
-                          error: (error, stackTrace) =>
-                              ErrorText(error: error.toString()),
-                          loading: () => const Loader(),
-                        );
-                  },
-                ),
-              );
+                                onTap: () => showServiceDetails(
+                                    context, service.serviceId),
+                              );
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
+                    },
+                  ),
+                );
+              }
             },
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),
