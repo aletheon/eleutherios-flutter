@@ -147,7 +147,7 @@ class RuleMemberController extends StateNotifier<bool> {
         final res = await _ruleMemberRepository.createRuleMember(ruleMember);
 
         // update rule
-        rule.members.add(ruleId);
+        rule.members.add(ruleMemberId);
         final resRule = await _ruleRepository.updateRule(rule);
 
         // create new rule activity
