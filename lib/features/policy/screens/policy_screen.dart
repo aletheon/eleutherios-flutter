@@ -400,20 +400,21 @@ class PolicyScreen extends ConsumerWidget {
                                                               InstantiationType
                                                                   .consume.value
                                                           ? const Icon(
-                                                              Icons.build,
+                                                              Icons
+                                                                  .build_outlined,
                                                               size: 19,
-                                                              color:
-                                                                  Colors.grey)
+                                                              color: Pallete
+                                                                  .greyColor)
                                                           : rule.instantiationType ==
                                                                   InstantiationType
                                                                       .order
                                                                       .value
                                                               ? const Icon(
                                                                   Icons
-                                                                      .attach_money,
-                                                                  size: 22,
-                                                                  color: Colors
-                                                                      .grey)
+                                                                      .attach_money_outlined,
+                                                                  size: 19,
+                                                                  color: Pallete
+                                                                      .greyColor)
                                                               : const SizedBox(),
                                                       const SizedBox(
                                                         width: 10,

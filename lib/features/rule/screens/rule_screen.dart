@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
@@ -131,6 +132,25 @@ class RuleScreen extends ConsumerWidget {
                                                     ),
                                                   ),
                                                 ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                rule.instantiationType ==
+                                                        InstantiationType
+                                                            .consume.value
+                                                    ? const Icon(
+                                                        Icons.build_outlined,
+                                                        color:
+                                                            Pallete.greyColor)
+                                                    : rule.instantiationType ==
+                                                            InstantiationType
+                                                                .order.value
+                                                        ? const Icon(
+                                                            Icons
+                                                                .attach_money_outlined,
+                                                            color: Pallete
+                                                                .greyColor)
+                                                        : const SizedBox(),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
