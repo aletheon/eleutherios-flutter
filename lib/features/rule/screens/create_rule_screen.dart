@@ -119,7 +119,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 child: Container(
                   alignment: Alignment.centerRight,
                   child: const Text(
-                    "Create the rule when the policy is consumed by a service",
+                    "Create rule when policy is consumed by a service",
                     textWidthBasis: TextWidthBasis.longestLine,
                   ),
                 ),
@@ -144,7 +144,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 child: Container(
                   alignment: Alignment.centerRight,
                   child: const Text(
-                    "Create the rule when the service consuming the policy has been ordered by another service",
+                    "Create rule when service consuming policy has been ordered by another service",
                     textWidthBasis: TextWidthBasis.longestLine,
                   ),
                 ),
@@ -184,7 +184,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
-    final isLoading = ref.watch(ruleControllerProvider);
+    final isLoading = ref.watch(policyControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return ref.watch(getPolicyByIdProvider(widget.policyId!)).when(

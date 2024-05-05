@@ -6,10 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
+
+final instantiationTypeRadioProvider =
+    StateProvider<String>((ref) => InstantiationType.consume.value);
 
 class EditRuleScreen extends ConsumerStatefulWidget {
   final String policyId;
@@ -53,15 +62,47 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
   void save(Rule rule) {
     if (titleController.text.trim().isNotEmpty) {
       rule = rule.copyWith(
-          title: titleController.text.trim(),
-          description: descriptionController.text.trim(),
-          public: isChecked);
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        instantiationType:
+            ref.read(instantiationTypeRadioProvider.notifier).state,
+        public: isChecked,
+      );
       ref.read(ruleControllerProvider.notifier).updateRule(
           profileFile: profileFile,
           bannerFile: bannerFile,
           rule: rule,
           context: context);
     }
+  }
+
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final policy =
+        await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
+    final manager = await ref
+        .read(
+            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+        .first;
+
+    if (policy!.uid != user.uid) {
+      if (manager!.permissions.contains(ManagerPermissions.editrule.name) ==
+          false) {
+        Future.delayed(Duration.zero, () {
+          showSnackBar(context,
+              'You do not have permission to make changes to this rule');
+          Routemaster.of(context).pop();
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
   }
 
   @override
@@ -75,6 +116,8 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(ruleControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
+    final instantiationTypeRadioProv =
+        ref.watch(instantiationTypeRadioProvider.notifier).state;
 
     return ref
         .watch(
@@ -93,7 +136,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
               backgroundColor: currentTheme.backgroundColor,
               appBar: AppBar(
                 title: Text(
-                  'Edit Rule',
+                  'Edit Rule ${rule!.title}',
                   style: TextStyle(
                     color: currentTheme.textTheme.bodyMedium!.color!,
                   ),
@@ -101,7 +144,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                 centerTitle: false,
                 actions: [
                   TextButton(
-                    onPressed: () => save(rule!),
+                    onPressed: () => save(rule),
                     child: const Text('Save'),
                   ),
                 ],
@@ -236,6 +279,65 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                             ),
                             maxLines: 8,
                             maxLength: 1000,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.build,
+                                  size: 19, color: Colors.grey),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: const Text(
+                                    "Create rule when policy is consumed by a service",
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                  ),
+                                ),
+                              ),
+                              Radio(
+                                  value: "Consume",
+                                  groupValue: instantiationTypeRadioProv,
+                                  onChanged: (newValue) {
+                                    ref
+                                        .read(instantiationTypeRadioProvider
+                                            .notifier)
+                                        .state = newValue.toString();
+                                  }),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.attach_money,
+                                  size: 22, color: Colors.grey),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: const Text(
+                                    "Create rule when service consuming policy has been ordered by another service",
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                  ),
+                                ),
+                              ),
+                              Radio(
+                                  value: "Order",
+                                  groupValue: instantiationTypeRadioProv,
+                                  onChanged: (newValue) {
+                                    ref
+                                        .read(instantiationTypeRadioProvider
+                                            .notifier)
+                                        .state = newValue.toString();
+                                  }),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
                           ),
                         ],
                       ),
