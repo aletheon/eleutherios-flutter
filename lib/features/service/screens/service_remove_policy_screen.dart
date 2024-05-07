@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
-class RemovePolicyScreen extends ConsumerWidget {
+class ServiceRemovePolicyScreen extends ConsumerWidget {
   final String _serviceId;
-  const RemovePolicyScreen({super.key, required String serviceId})
+  const ServiceRemovePolicyScreen({super.key, required String serviceId})
       : _serviceId = serviceId;
 
   @override

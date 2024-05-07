@@ -63,6 +63,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
     if (titleController.text.trim().isNotEmpty) {
       rule = rule.copyWith(
         title: titleController.text.trim(),
+        titleLowercase: titleController.text.trim().toLowerCase(),
         description: descriptionController.text.trim(),
         instantiationType:
             ref.read(instantiationTypeRadioProvider.notifier).state,

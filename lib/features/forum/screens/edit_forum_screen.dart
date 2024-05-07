@@ -53,6 +53,7 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
     if (titleController.text.trim().isNotEmpty) {
       forum = forum.copyWith(
           title: titleController.text.trim(),
+          titleLowercase: titleController.text.trim().toLowerCase(),
           description: descriptionController.text.trim(),
           public: isChecked);
       ref.read(forumControllerProvider.notifier).updateForum(

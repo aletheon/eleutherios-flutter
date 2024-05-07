@@ -32,11 +32,11 @@ class PolicyScreen extends ConsumerWidget {
     Routemaster.of(context).push('policy-tools');
   }
 
-  void navigateToRule(String ruleId, BuildContext context) {
+  void navigateToRule(BuildContext context, String ruleId) {
     Routemaster.of(context).push('rule/$ruleId');
   }
 
-  void navigateToRuleTools(String ruleId, BuildContext context) {
+  void navigateToRuleTools(BuildContext context, String ruleId) {
     Routemaster.of(context).push('rule-tools/$ruleId');
   }
 
@@ -435,8 +435,8 @@ class PolicyScreen extends ConsumerWidget {
                                                                 return OutlinedButton(
                                                                   onPressed: () =>
                                                                       navigateToRuleTools(
-                                                                          rule.ruleId,
-                                                                          context),
+                                                                          context,
+                                                                          rule.ruleId),
                                                                   style: ElevatedButton
                                                                       .styleFrom(
                                                                           shape:
@@ -472,7 +472,7 @@ class PolicyScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                   onTap: () => navigateToRule(
-                                                      rule.ruleId, context),
+                                                      context, rule.ruleId),
                                                 );
                                               },
                                             ),

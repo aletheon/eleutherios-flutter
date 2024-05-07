@@ -86,6 +86,7 @@ flutter:
     - assets/images/policyBanner.jpeg
     - assets/images/serviceBanner.jpeg
     - assets/images/forumBanner.jpeg
+    - assets/images/ruleBanner.jpeg
     - assets/images/userBanner.jpg
     - assets/images/avatar.jpg
     - assets/images/under_construction.jpg

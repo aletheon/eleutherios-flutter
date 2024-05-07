@@ -175,6 +175,28 @@ class RuleController extends StateNotifier<bool> {
     });
   }
 
+  void deleteRule(String policyId, String ruleId, BuildContext context) async {
+    state = true;
+
+    // get policy
+    final policy = await _ref
+        .watch(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    // delete rule
+    final res = await _ruleRepository.deleteRule(ruleId);
+
+    // update policy
+    policy!.rules.remove(ruleId);
+    await _policyRepository.updatePolicy(policy);
+
+    state = false;
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Rule removed successfully!');
+    });
+  }
+
   Stream<List<Rule>> getRules(String policyId) {
     return _ruleRepository.getRules(policyId);
   }

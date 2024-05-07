@@ -53,6 +53,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
     if (titleController.text.trim().isNotEmpty) {
       service = service.copyWith(
           title: titleController.text.trim(),
+          titleLowercase: titleController.text.trim().toLowerCase(),
           description: descriptionController.text.trim(),
           public: isChecked);
       ref.read(serviceControllerProvider.notifier).updateService(

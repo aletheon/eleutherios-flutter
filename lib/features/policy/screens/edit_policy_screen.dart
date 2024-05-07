@@ -53,6 +53,7 @@ class _EditPolicyScreenState extends ConsumerState<EditPolicyScreen> {
     if (titleController.text.trim().isNotEmpty) {
       policy = policy.copyWith(
           title: titleController.text.trim(),
+          titleLowercase: titleController.text.trim().toLowerCase(),
           description: descriptionController.text.trim(),
           public: isChecked);
       ref.read(policyControllerProvider.notifier).updatePolicy(
