@@ -4,19 +4,16 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
-import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
-  final String policyId;
+  final String ruleId;
   final String ruleMemberId;
   const EditPotentialMemberPermissionsScreen(
-      {super.key, required this.policyId, required this.ruleMemberId});
+      {super.key, required this.ruleId, required this.ruleMemberId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>

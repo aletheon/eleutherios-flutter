@@ -4,16 +4,15 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
-import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class PotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
-  final String policyId;
-  const PotentialMemberPermissionsScreen({super.key, required this.policyId});
+  final String ruleId;
+  const PotentialMemberPermissionsScreen({super.key, required this.ruleId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -33,13 +32,12 @@ class _PotentialMemberPermissionsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider)!;
-    final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
-    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.policyId));
+    final ruleProv = ref.watch(getRuleByIdProvider(widget.ruleId));
+    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.ruleId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
-    return policyProv.when(
-      data: (forum) {
+    return ruleProv.when(
+      data: (rule) {
         return Scaffold(
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(

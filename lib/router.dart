@@ -490,14 +490,14 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
       (route) => MaterialPage(
             child: PotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
             child: EditPotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
-              ruleMemberId: route.pathParameters['ruleid']!,
+              ruleId: route.pathParameters['ruleid']!,
+              ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
@@ -777,14 +777,14 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
       (route) => MaterialPage(
             child: PotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
             child: EditPotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
-              ruleMemberId: route.pathParameters['ruleid']!,
+              ruleId: route.pathParameters['ruleid']!,
+              ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
@@ -892,14 +892,14 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
       (route) => MaterialPage(
             child: PotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
             child: EditPotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
-              ruleMemberId: route.pathParameters['ruleid']!,
+              ruleId: route.pathParameters['ruleid']!,
+              ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
@@ -1032,14 +1032,14 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
       (route) => MaterialPage(
             child: PotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
             child: EditPotentialMemberPermissionsScreen(
-              policyId: route.pathParameters['policyid']!,
-              ruleMemberId: route.pathParameters['ruleid']!,
+              ruleId: route.pathParameters['ruleid']!,
+              ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
