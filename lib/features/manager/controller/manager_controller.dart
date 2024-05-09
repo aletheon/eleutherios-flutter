@@ -149,7 +149,8 @@ class ManagerController extends StateNotifier<bool> {
           defaultPermissions.add(ManagerPermissions.removemanager.name);
           defaultPermissions.add(ManagerPermissions.addconsumer.name);
           defaultPermissions.add(ManagerPermissions.removeconsumer.name);
-          defaultPermissions.add(ManagerPermissions.editpermissions.name);
+          defaultPermissions
+              .add(ManagerPermissions.editmanagerpermissions.name);
         }
 
         // create manager

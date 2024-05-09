@@ -5,25 +5,26 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class ManagerPermissionsScreen extends ConsumerStatefulWidget {
+class PotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
   final String policyId;
-  const ManagerPermissionsScreen({super.key, required this.policyId});
+  const PotentialMemberPermissionsScreen({super.key, required this.policyId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ManagerPermissionsScreenState();
+      _PotentialMemberPermissionsScreenState();
 }
 
-class _ManagerPermissionsScreenState
-    extends ConsumerState<ManagerPermissionsScreen> {
-  void editPermissions(BuildContext context, WidgetRef ref, String managerId) {
-    Routemaster.of(context).push('edit/$managerId');
+class _PotentialMemberPermissionsScreenState
+    extends ConsumerState<PotentialMemberPermissionsScreen> {
+  void editPermissions(
+      BuildContext context, WidgetRef ref, String ruleMemberId) {
+    Routemaster.of(context).push('edit/$ruleMemberId');
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -34,30 +35,30 @@ class _ManagerPermissionsScreenState
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
     final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
-    final managersProv = ref.watch(getManagersProvider(widget.policyId));
+    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.policyId));
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return policyProv.when(
-      data: (policy) {
+      data: (forum) {
         return Scaffold(
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
             title: Text(
-              'Manager Permissions',
+              'Potential Member Permissions',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
             ),
           ),
-          body: managersProv.when(
-            data: (managers) {
-              if (managers.isEmpty) {
+          body: ruleMembersProv.when(
+            data: (ruleMembers) {
+              if (ruleMembers.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: const Text(
-                      'No managers',
+                      'No potential members',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -66,12 +67,12 @@ class _ManagerPermissionsScreenState
                 return Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: ListView.builder(
-                    itemCount: managers.length,
+                    itemCount: ruleMembers.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final manager = managers[index];
+                      final ruleMember = ruleMembers[index];
 
                       return ref
-                          .watch(getServiceByIdProvider(manager.serviceId))
+                          .watch(getServiceByIdProvider(ruleMember.serviceId))
                           .when(
                             data: (service) {
                               return ListTile(
@@ -83,9 +84,9 @@ class _ManagerPermissionsScreenState
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Wrap(
                                     children: [
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .editpolicy.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .editforum.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -115,9 +116,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .addmanager.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .addmember.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -152,9 +153,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .removemanager.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .removemember.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -189,9 +190,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .createrule.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .createforum.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -211,7 +212,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.account_balance,
+                                                        Icons.forum,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -226,9 +227,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .editrule.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .removeforum.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -248,39 +249,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                        size: 10,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .removerule.name) ==
-                                              true
-                                          ? Container(
-                                              padding: const EdgeInsets.only(
-                                                  right: 3, bottom: 2),
-                                              child: const CircleAvatar(
-                                                radius: 14,
-                                                backgroundColor:
-                                                    Pallete.greyColor,
-                                                child: CircleAvatar(
-                                                  radius: 13,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.account_balance,
+                                                        Icons.forum,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -295,9 +264,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .addconsumer.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .createpost.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -317,8 +286,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons
-                                                            .miscellaneous_services,
+                                                        Icons.article,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -333,9 +301,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .removeconsumer.name) ==
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .removepost.name) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -355,8 +323,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons
-                                                            .miscellaneous_services,
+                                                        Icons.article,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -371,9 +338,9 @@ class _ManagerPermissionsScreenState
                                               ),
                                             )
                                           : const SizedBox(),
-                                      manager.permissions.contains(
-                                                  ManagerPermissions
-                                                      .editmanagerpermissions
+                                      ruleMember.permissions.contains(
+                                                  MemberPermissions
+                                                      .editmemberpermissions
                                                       .name) ==
                                               true
                                           ? Container(
@@ -421,7 +388,7 @@ class _ManagerPermissionsScreenState
                                   onPressed: () => editPermissions(
                                     context,
                                     ref,
-                                    manager.managerId,
+                                    ruleMember.ruleMemberId,
                                   ),
                                   child: const Text(
                                     'Edit',

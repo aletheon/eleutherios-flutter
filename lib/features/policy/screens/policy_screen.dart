@@ -36,10 +36,6 @@ class PolicyScreen extends ConsumerWidget {
     Routemaster.of(context).push('rule/$ruleId');
   }
 
-  void navigateToRuleTools(BuildContext context, String ruleId) {
-    Routemaster.of(context).push('rule-tools/$ruleId');
-  }
-
   void joinPolicy(BuildContext context) {
     Routemaster.of(context).push('add-manager');
   }
@@ -416,59 +412,6 @@ class PolicyScreen extends ConsumerWidget {
                                                                   color: Pallete
                                                                       .greyColor)
                                                               : const SizedBox(),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      ref
-                                                          .watch(
-                                                              getUserSelectedManagerProvider(
-                                                                  Tuple2(
-                                                                      policyId,
-                                                                      user.uid)))
-                                                          .when(
-                                                            data: (manager) {
-                                                              if (user.uid ==
-                                                                      policy
-                                                                          .uid ||
-                                                                  manager !=
-                                                                      null) {
-                                                                return OutlinedButton(
-                                                                  onPressed: () =>
-                                                                      navigateToRuleTools(
-                                                                          context,
-                                                                          rule.ruleId),
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                          shape:
-                                                                              RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              horizontal: 15)),
-                                                                  child:
-                                                                      const Text(
-                                                                    'Rule Tools',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          13,
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              } else {
-                                                                return const SizedBox();
-                                                              }
-                                                            },
-                                                            error: (error,
-                                                                    stackTrace) =>
-                                                                ErrorText(
-                                                                    error: error
-                                                                        .toString()),
-                                                            loading: () =>
-                                                                const Loader(),
-                                                          ),
                                                     ],
                                                   ),
                                                   onTap: () => navigateToRule(

@@ -6,28 +6,30 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/member.dart';
+import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
-class EditMemberPermissionsScreen extends ConsumerStatefulWidget {
-  final String forumId;
-  final String memberId;
-  const EditMemberPermissionsScreen(
-      {super.key, required this.forumId, required this.memberId});
+class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
+  final String policyId;
+  final String ruleMemberId;
+  const EditPotentialMemberPermissionsScreen(
+      {super.key, required this.policyId, required this.ruleMemberId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _EditMemberPermissionsScreenState();
+      _EditPotentialMemberPermissionsScreenState();
 }
 
-class _EditMemberPermissionsScreenState
-    extends ConsumerState<EditMemberPermissionsScreen> {
-  void save(Member member, List<String> permissions) {
-    member = member.copyWith(permissions: permissions);
+class _EditPotentialMemberPermissionsScreenState
+    extends ConsumerState<EditPotentialMemberPermissionsScreen> {
+  void save(RuleMember ruleMember, List<String> permissions) {
+    ruleMember = ruleMember.copyWith(permissions: permissions);
     ref
-        .read(memberControllerProvider.notifier)
-        .updateMember(member: member, context: context);
+        .read(ruleMemberControllerProvider.notifier)
+        .updateRuleMember(ruleMember: ruleMember, context: context);
   }
 
   @override
@@ -35,10 +37,10 @@ class _EditMemberPermissionsScreenState
     final currentTheme = ref.watch(themeNotifierProvider);
     List<String> permissions = [];
 
-    return ref.watch(getMemberByIdProvider(widget.memberId)).when(
-          data: (member) {
-            permissions = member!.permissions;
-            return ref.watch(getServiceByIdProvider(member.serviceId)).when(
+    return ref.watch(getRuleMemberByIdProvider(widget.ruleMemberId)).when(
+          data: (ruleMember) {
+            permissions = ruleMember!.permissions;
+            return ref.watch(getServiceByIdProvider(ruleMember.serviceId)).when(
                   data: (service) {
                     return Scaffold(
                       appBar: AppBar(
@@ -51,7 +53,7 @@ class _EditMemberPermissionsScreenState
                         actions: [
                           TextButton(
                             onPressed: () => {
-                              save(member, permissions),
+                              save(ruleMember, permissions),
                             },
                             child: const Text('Save'),
                           ),

@@ -35,6 +35,8 @@ import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/rule_tools_screen.dart';
 import 'package:reddit_tutorial/features/rule_member/screens/add_rule_member_screen.dart';
+import 'package:reddit_tutorial/features/rule_member/screens/edit_potential_member_permissions_screen.dart';
+import 'package:reddit_tutorial/features/rule_member/screens/potential_member_permissions_screen.dart';
 import 'package:reddit_tutorial/features/rule_member/screens/remove_rule_member_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/add_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/create_service_screen.dart';
@@ -485,6 +487,25 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
+      (route) => MaterialPage(
+            child: PotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+      (route) => MaterialPage(
+            child: EditPotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleMemberId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member': (route) =>
       MaterialPage(
         child: AddRuleMemberScreen(
@@ -753,6 +774,25 @@ final loggedInRoute = RouteMap(routes: {
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
+      (route) => MaterialPage(
+            child: PotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+            ),
+          ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+      (route) => MaterialPage(
+            child: EditPotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleMemberId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
             child: AddRuleMemberScreen(
@@ -849,6 +889,25 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
+      (route) => MaterialPage(
+            child: PotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+      (route) => MaterialPage(
+            child: EditPotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleMemberId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
             child: AddRuleMemberScreen(
@@ -894,69 +953,6 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes/:uid':
-      (route) => MaterialPage(
-            child: ServiceUserProfileScreen(
-              uid: route.pathParameters['uid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid': (route) => MaterialPage(
-        child: RuleToolsScreen(
-          policyId: route.pathParameters['policyid']!,
-          ruleId: route.pathParameters['ruleid']!,
-        ),
-      ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/edit': (route) =>
-      MaterialPage(
-        child: EditRuleScreen(
-          policyId: route.pathParameters['policyid']!,
-          ruleId: route.pathParameters['ruleid']!,
-        ),
-      ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/add-rule-member': (route) =>
-      MaterialPage(
-        child: AddRuleMemberScreen(
-          policyId: route.pathParameters['policyid']!,
-          ruleId: route.pathParameters['ruleid']!,
-        ),
-      ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/remove-rule-member':
-      (route) => MaterialPage(
-            child: RemoveRuleMemberScreen(
-              policyId: route.pathParameters['policyid']!,
-              ruleId: route.pathParameters['ruleid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid':
-      (route) => MaterialPage(
-            child: ServiceScreen(
-              serviceId: route.pathParameters['serviceid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/likes':
-      (route) => MaterialPage(
-            child: ServiceLikesScreen(
-              serviceId: route.pathParameters['serviceid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/likes/:uid':
-      (route) => MaterialPage(
-            child: ServiceUserProfileScreen(
-              uid: route.pathParameters['uid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid':
-      (route) => MaterialPage(
-            child: ServiceScreen(
-              serviceId: route.pathParameters['serviceid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid/likes':
-      (route) => MaterialPage(
-            child: ServiceLikesScreen(
-              serviceId: route.pathParameters['serviceid']!,
-            ),
-          ),
-  '/user/policy/list/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid/likes/:uid':
       (route) => MaterialPage(
             child: ServiceUserProfileScreen(
               uid: route.pathParameters['uid']!,
@@ -1031,6 +1027,25 @@ final loggedInRoute = RouteMap(routes: {
             child: EditRuleScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
+      (route) => MaterialPage(
+            child: PotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:memberid':
+      (route) => MaterialPage(
+            child: EditPotentialMemberPermissionsScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleMemberId: route.pathParameters['ruleid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+      (route) => MaterialPage(
+            child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':

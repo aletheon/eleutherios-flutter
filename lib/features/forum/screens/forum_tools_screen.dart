@@ -150,7 +150,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions
-                                    .contains(MemberPermissions.addservice.name)
+                                    .contains(MemberPermissions.addmember.name)
                             ? ListTile(
                                 onTap: () => addMember(context),
                                 leading:
@@ -160,7 +160,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions.contains(
-                                    MemberPermissions.removeservice.name)
+                                    MemberPermissions.removemember.name)
                             ? ListTile(
                                 onTap: () => removeMember(context),
                                 leading:
@@ -169,8 +169,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                member!.permissions.contains(
-                                    MemberPermissions.editpermissions.name)
+                                member!.permissions.contains(MemberPermissions
+                                    .editmemberpermissions.name)
                             ? ListTile(
                                 onTap: () => memberPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

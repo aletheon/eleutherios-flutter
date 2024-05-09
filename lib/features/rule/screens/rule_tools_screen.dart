@@ -36,6 +36,10 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
     Routemaster.of(context).push('remove-rule-member');
   }
 
+  void potentialMemberPermissions(BuildContext context) {
+    Routemaster.of(context).push('potential-member-permissions');
+  }
+
   validateUser() async {
     final user = ref.read(userProvider)!;
     final policy =
@@ -86,33 +90,56 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                               Tuple2(widget.policyId, user.uid)))
                           .when(
                             data: (manager) {
-                              if (user.uid == policy!.uid ||
-                                  manager!.permissions.contains(
-                                      ManagerPermissions.editrule.name)) {
-                                return Column(children: [
-                                  ListTile(
-                                    onTap: () => editRule(context),
-                                    leading:
-                                        const Icon(Icons.edit_note_outlined),
-                                    title: const Text('Edit Rule'),
-                                  ),
-                                  ListTile(
-                                    onTap: () => addMember(context),
-                                    leading:
-                                        const Icon(Icons.add_circle_outline),
-                                    title: const Text('Add Potential Member'),
-                                  ),
-                                  ListTile(
-                                    onTap: () => removeMember(context),
-                                    leading:
-                                        const Icon(Icons.remove_circle_outline),
-                                    title:
-                                        const Text('Remove Potential Member'),
-                                  ),
-                                ]);
-                              } else {
-                                return const SizedBox();
-                              }
+                              return Column(children: [
+                                user.uid == policy!.uid ||
+                                        manager!.permissions.contains(
+                                            ManagerPermissions.editrule.name)
+                                    ? ListTile(
+                                        onTap: () => editRule(context),
+                                        leading: const Icon(
+                                            Icons.edit_note_outlined),
+                                        title: const Text('Edit Rule'),
+                                      )
+                                    : const SizedBox(),
+                                user.uid == policy.uid ||
+                                        manager!.permissions.contains(
+                                            ManagerPermissions
+                                                .addpotentialmember.name)
+                                    ? ListTile(
+                                        onTap: () => addMember(context),
+                                        leading: const Icon(
+                                            Icons.add_circle_outline),
+                                        title:
+                                            const Text('Add Potential Member'),
+                                      )
+                                    : const SizedBox(),
+                                user.uid == policy.uid ||
+                                        manager!.permissions.contains(
+                                            ManagerPermissions
+                                                .removepotentialmember.name)
+                                    ? ListTile(
+                                        onTap: () => removeMember(context),
+                                        leading: const Icon(
+                                            Icons.remove_circle_outline),
+                                        title: const Text(
+                                            'Remove Potential Member'),
+                                      )
+                                    : const SizedBox(),
+                                user.uid == policy.uid ||
+                                        manager!.permissions.contains(
+                                            ManagerPermissions
+                                                .editpotentialmemberpermissions
+                                                .name)
+                                    ? ListTile(
+                                        onTap: () =>
+                                            potentialMemberPermissions(context),
+                                        leading:
+                                            const Icon(Icons.list_alt_outlined),
+                                        title: const Text(
+                                            'Potential Member Permissions'),
+                                      )
+                                    : const SizedBox(),
+                              ]);
                             },
                             error: (error, stackTrace) =>
                                 ErrorText(error: error.toString()),

@@ -204,8 +204,8 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == policy.uid ||
-                                manager!.permissions.contains(
-                                    ManagerPermissions.editpermissions.name)
+                                manager!.permissions.contains(ManagerPermissions
+                                    .editmanagerpermissions.name)
                             ? ListTile(
                                 onTap: () => managerPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

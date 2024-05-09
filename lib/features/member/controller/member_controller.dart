@@ -126,12 +126,12 @@ class MemberController extends StateNotifier<bool> {
 
         if (forum.uid == service.uid) {
           defaultPermissions.add(MemberPermissions.editforum.name);
-          defaultPermissions.add(MemberPermissions.addservice.name);
-          defaultPermissions.add(MemberPermissions.removeservice.name);
+          defaultPermissions.add(MemberPermissions.addmember.name);
+          defaultPermissions.add(MemberPermissions.removemember.name);
           defaultPermissions.add(MemberPermissions.createforum.name);
           defaultPermissions.add(MemberPermissions.removeforum.name);
           defaultPermissions.add(MemberPermissions.removepost.name);
-          defaultPermissions.add(MemberPermissions.editpermissions.name);
+          defaultPermissions.add(MemberPermissions.editmemberpermissions.name);
         }
 
         // create member

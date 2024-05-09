@@ -44,13 +44,13 @@ extension SearchTypeValue on SearchType {
 // Member permissions managed by forum owner
 enum MemberPermissions<String> {
   editforum, // - Edit Forum
-  addservice, // - Add Service (implies adding other services to forum)
-  removeservice, // - Remove Service (implies removing other services from forum)
+  addmember, // - Add Member (implies adding other services to forum)
+  removemember, // - Remove Member (implies removing other services from forum)
   createforum, // - Create Forum (implies removing forum)
   removeforum, // - Remove Forum (implies removing other services forums)
   createpost, // - Create Post (implies remove own post)
   removepost, // - Remove Post (implies remove other services posts)
-  editpermissions, // - Edit Permissions (implies editing permissions for members)
+  editmemberpermissions, // - Edit Permissions (implies editing permissions for members)
 }
 
 extension MemberPermissionsTypeValue on MemberPermissions {
@@ -58,10 +58,10 @@ extension MemberPermissionsTypeValue on MemberPermissions {
     switch (this) {
       case MemberPermissions.editforum:
         return 'Edit Forum';
-      case MemberPermissions.addservice:
-        return 'Add Service';
-      case MemberPermissions.removeservice:
-        return 'Remove Service';
+      case MemberPermissions.addmember:
+        return 'Add Member';
+      case MemberPermissions.removemember:
+        return 'Remove Member';
       case MemberPermissions.createforum:
         return 'Create Forum';
       case MemberPermissions.removeforum:
@@ -70,7 +70,7 @@ extension MemberPermissionsTypeValue on MemberPermissions {
         return 'Create Post';
       case MemberPermissions.removepost:
         return 'Remove Post';
-      case MemberPermissions.editpermissions:
+      case MemberPermissions.editmemberpermissions:
         return 'Edit Permissions';
     }
   }
@@ -79,14 +79,17 @@ extension MemberPermissionsTypeValue on MemberPermissions {
 // Manager permissions managed by policy owner
 enum ManagerPermissions<String> {
   editpolicy, // - Edit Policy
-  addmanager, // - Add Service (implies adding other services to policy)
-  removemanager, // - Remove Service (implies removing other services serving in policy)
+  addmanager, // - Add Manager (implies adding other services to policy)
+  removemanager, // - Remove Manager (implies removing other services serving in policy)
   createrule, // - Create Rule (implies remove own rule)
   editrule, // - Edit Rule (implies editing rule)
   removerule, // - Remove Rule (implies removing other managers rules)
+  addpotentialmember, // - Add Member (implies adding other services to rule)
+  removepotentialmember, // - Remove Member (implies removing other services from rule)
+  editpotentialmemberpermissions, // - Edit Permissions (implies editing permissions for potential members)
   addconsumer, // - Add Service (implies adding other services to policy)
   removeconsumer, // - Remove Service (implies removing other services serving in policy)
-  editpermissions, // - Edit Permissions (implies editing permissions for managers)
+  editmanagerpermissions, // - Edit Permissions (implies editing permissions for managers)
 }
 
 extension ManagerPermissionsTypeValue on ManagerPermissions {
@@ -104,11 +107,17 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
         return 'Edit Rule';
       case ManagerPermissions.removerule:
         return 'Remove Rule';
+      case ManagerPermissions.addpotentialmember:
+        return 'Add Member';
+      case ManagerPermissions.removepotentialmember:
+        return 'Remove Member';
+      case ManagerPermissions.editpotentialmemberpermissions:
+        return 'Edit Permissions';
       case ManagerPermissions.addconsumer:
         return 'Add Consumer';
       case ManagerPermissions.removeconsumer:
         return 'Remove Consumer';
-      case ManagerPermissions.editpermissions:
+      case ManagerPermissions.editmanagerpermissions:
         return 'Edit Permissions';
     }
   }
