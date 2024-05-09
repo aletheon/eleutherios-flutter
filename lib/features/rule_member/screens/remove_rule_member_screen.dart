@@ -45,7 +45,7 @@ class _RemoveRuleMemberScreenState
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
             title: Text(
-              'Remove Member',
+              'Remove Potential Member',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
@@ -59,7 +59,7 @@ class _RemoveRuleMemberScreenState
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: const Text(
-                      'No members',
+                      'No potential members',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),

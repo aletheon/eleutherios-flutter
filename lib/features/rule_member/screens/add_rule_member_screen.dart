@@ -274,7 +274,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
           backgroundColor: currentTheme.backgroundColor,
           appBar: AppBar(
             title: Text(
-              'Add Member',
+              'Add Potential Member',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),

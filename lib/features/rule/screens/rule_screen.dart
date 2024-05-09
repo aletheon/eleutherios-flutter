@@ -177,7 +177,7 @@ class RuleScreen extends ConsumerWidget {
                                                   )
                                                 : const SizedBox(),
                                             Text(
-                                                '${rule.members.length} members'),
+                                                '${rule.members.length} potential members'),
                                             const SizedBox(
                                               height: 10,
                                             ),

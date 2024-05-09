@@ -100,13 +100,14 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                     onTap: () => addMember(context),
                                     leading:
                                         const Icon(Icons.add_circle_outline),
-                                    title: const Text('Add Member'),
+                                    title: const Text('Add Potential Member'),
                                   ),
                                   ListTile(
                                     onTap: () => removeMember(context),
                                     leading:
                                         const Icon(Icons.remove_circle_outline),
-                                    title: const Text('Remove Member'),
+                                    title:
+                                        const Text('Remove Potential Member'),
                                   ),
                                 ]);
                               } else {
