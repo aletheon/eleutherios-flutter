@@ -4,12 +4,14 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class MemberPermissionsScreen extends ConsumerStatefulWidget {
   final String forumId;
@@ -30,9 +32,36 @@ class _MemberPermissionsScreenState
     Routemaster.of(context).push('service/$serviceId');
   }
 
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final forum = await ref.read(getForumByIdProvider2(widget.forumId)).first;
+    final member = await ref
+        .read(getUserSelectedMemberProvider2(Tuple2(widget.forumId, user.uid)))
+        .first;
+
+    if (forum!.uid != user.uid) {
+      if (member!.permissions
+              .contains(MemberPermissions.editmemberpermissions.name) ==
+          false) {
+        Future.delayed(Duration.zero, () {
+          showSnackBar(context,
+              'You do not have permission to make changes to member permissions');
+          Routemaster.of(context).pop();
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider)!;
     final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
     final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final currentTheme = ref.watch(themeNotifierProvider);

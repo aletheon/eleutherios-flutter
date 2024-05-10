@@ -285,13 +285,13 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               const Icon(Icons.build,
-                                  size: 19, color: Colors.grey),
+                                  size: 21, color: Colors.grey),
                               const SizedBox(
-                                width: 5,
+                                width: 12,
                               ),
                               Flexible(
                                 child: Container(
-                                  alignment: Alignment.centerRight,
+                                  alignment: Alignment.centerLeft,
                                   child: const Text(
                                     "Create rule when policy is consumed by a service",
                                     textWidthBasis: TextWidthBasis.longestLine,
@@ -315,13 +315,13 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                               const Icon(Icons.attach_money,
                                   size: 22, color: Colors.grey),
                               const SizedBox(
-                                width: 5,
+                                width: 12,
                               ),
                               Flexible(
                                 child: Container(
-                                  alignment: Alignment.centerRight,
+                                  alignment: Alignment.centerLeft,
                                   child: const Text(
-                                    "Create rule when service consuming policy has been ordered by another service",
+                                    "Create rule when service consuming policy has been ordered by a service",
                                     textWidthBasis: TextWidthBasis.longestLine,
                                   ),
                                 ),

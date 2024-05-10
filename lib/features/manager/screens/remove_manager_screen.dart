@@ -3,11 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class RemoveManagerScreen extends ConsumerStatefulWidget {
   final String policyId;
@@ -28,6 +32,36 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
 
   void showServiceDetails(BuildContext context, String serviceId) {
     Routemaster.of(context).push('service/$serviceId');
+  }
+
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final policy =
+        await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
+    final manager = await ref
+        .read(
+            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+        .first;
+
+    if (policy!.uid != user.uid) {
+      if (manager!.permissions
+              .contains(ManagerPermissions.removemanager.name) ==
+          false) {
+        Future.delayed(Duration.zero, () {
+          showSnackBar(context,
+              'You do not have permission to remove a manager from this policy');
+          Routemaster.of(context).pop();
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
   }
 
   @override

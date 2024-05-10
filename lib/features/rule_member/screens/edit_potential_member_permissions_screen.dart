@@ -4,16 +4,26 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
+  final String policyId;
   final String ruleId;
   final String ruleMemberId;
   const EditPotentialMemberPermissionsScreen(
-      {super.key, required this.ruleId, required this.ruleMemberId});
+      {super.key,
+      required this.policyId,
+      required this.ruleId,
+      required this.ruleMemberId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -27,6 +37,35 @@ class _EditPotentialMemberPermissionsScreenState
     ref
         .read(ruleMemberControllerProvider.notifier)
         .updateRuleMember(ruleMember: ruleMember, context: context);
+  }
+
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final rule = await ref.read(getRuleByIdProvider2(widget.ruleId)).first;
+    final manager = await ref
+        .read(
+            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+        .first;
+
+    if (rule!.uid != user.uid) {
+      if (manager!.permissions.contains(
+              ManagerPermissions.editpotentialmemberpermissions.name) ==
+          false) {
+        Future.delayed(Duration.zero, () {
+          showSnackBar(context,
+              'You do not have permission to make changes to potential member permissions');
+          Routemaster.of(context).pop();
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
   }
 
   @override

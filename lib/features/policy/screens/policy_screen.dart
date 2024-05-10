@@ -396,8 +396,7 @@ class PolicyScreen extends ConsumerWidget {
                                                               InstantiationType
                                                                   .consume.value
                                                           ? const Icon(
-                                                              Icons
-                                                                  .build_outlined,
+                                                              Icons.build,
                                                               size: 19,
                                                               color: Pallete
                                                                   .greyColor)
@@ -407,8 +406,8 @@ class PolicyScreen extends ConsumerWidget {
                                                                       .value
                                                               ? const Icon(
                                                                   Icons
-                                                                      .attach_money_outlined,
-                                                                  size: 19,
+                                                                      .attach_money,
+                                                                  size: 21,
                                                                   color: Pallete
                                                                       .greyColor)
                                                               : const SizedBox(),

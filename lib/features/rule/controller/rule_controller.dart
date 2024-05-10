@@ -13,7 +13,6 @@ import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
 import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
-import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,7 +21,7 @@ final getRuleByIdProvider =
   return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
 });
 
-final getForumByIdProvider2 = Provider.family((ref, String ruleId) {
+final getRuleByIdProvider2 = Provider.family((ref, String ruleId) {
   try {
     return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
   } catch (e) {
