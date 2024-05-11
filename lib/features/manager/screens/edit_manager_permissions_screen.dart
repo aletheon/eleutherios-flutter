@@ -77,7 +77,7 @@ class _EditManagerPermissionsScreenState
                     return Scaffold(
                       appBar: AppBar(
                         title: Text(
-                          'Edit Permissions',
+                          'Edit Manager Permissions',
                           style: TextStyle(
                             color: currentTheme.textTheme.bodyMedium!.color!,
                           ),
@@ -143,7 +143,7 @@ class _EditManagerPermissionsScreenState
                                     case 'addmanager':
                                       _icons.add(
                                         const Icon(
-                                          Icons.construction,
+                                          Icons.handyman,
                                           color: Colors.white,
                                           size: 10,
                                         ),
@@ -159,7 +159,7 @@ class _EditManagerPermissionsScreenState
                                     case 'removemanager':
                                       _icons.add(
                                         const Icon(
-                                          Icons.construction,
+                                          Icons.handyman,
                                           color: Colors.white,
                                           size: 10,
                                         ),
@@ -167,15 +167,6 @@ class _EditManagerPermissionsScreenState
                                       _icons.add(
                                         const Icon(
                                           Icons.remove,
-                                          color: Colors.white,
-                                          size: 10,
-                                        ),
-                                      );
-                                      break;
-                                    case 'editrule':
-                                      _icons.add(
-                                        const Icon(
-                                          Icons.edit,
                                           color: Colors.white,
                                           size: 10,
                                         ),
@@ -197,6 +188,15 @@ class _EditManagerPermissionsScreenState
                                         ),
                                       );
                                       break;
+                                    case 'editrule':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
                                     case 'removerule':
                                       _icons.add(
                                         const Icon(
@@ -208,6 +208,47 @@ class _EditManagerPermissionsScreenState
                                       _icons.add(
                                         const Icon(
                                           Icons.remove,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
+                                    case 'addpotentialmember':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.construction,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
+                                    case 'removepotentialmember':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.construction,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.remove,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
+                                    case 'editpotentialmemberpermissions':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.auto_fix_high,
                                           color: Colors.white,
                                           size: 10,
                                         ),
@@ -240,6 +281,15 @@ class _EditManagerPermissionsScreenState
                                       _icons.add(
                                         const Icon(
                                           Icons.remove,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
+                                    case 'editmanagerpermissions':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.auto_fix_normal,
                                           color: Colors.white,
                                           size: 10,
                                         ),

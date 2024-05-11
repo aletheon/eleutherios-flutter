@@ -168,7 +168,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.construction,
+                                                        Icons.handyman,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -205,7 +205,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.construction,
+                                                        Icons.handyman,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
@@ -328,6 +328,115 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
+                                                      .addpotentialmember
+                                                      .name) ==
+                                              true
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 3, bottom: 2),
+                                              child: const CircleAvatar(
+                                                radius: 14,
+                                                backgroundColor:
+                                                    Pallete.greyColor,
+                                                child: CircleAvatar(
+                                                  radius: 13,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.construction,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                      Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      manager.permissions.contains(
+                                                  ManagerPermissions
+                                                      .removepotentialmember
+                                                      .name) ==
+                                              true
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 3, bottom: 2),
+                                              child: const CircleAvatar(
+                                                radius: 14,
+                                                backgroundColor:
+                                                    Pallete.greyColor,
+                                                child: CircleAvatar(
+                                                  radius: 13,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.construction,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                      Icon(
+                                                        Icons.remove,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      manager.permissions.contains(
+                                                  ManagerPermissions
+                                                      .editpotentialmemberpermissions
+                                                      .name) ==
+                                              true
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 3, bottom: 2),
+                                              child: const CircleAvatar(
+                                                radius: 14,
+                                                backgroundColor:
+                                                    Pallete.greyColor,
+                                                child: CircleAvatar(
+                                                  radius: 13,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.auto_fix_high,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      manager.permissions.contains(
+                                                  ManagerPermissions
                                                       .addconsumer.name) ==
                                               true
                                           ? Container(
@@ -425,7 +534,7 @@ class _ManagerPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.lock,
+                                                        Icons.auto_fix_normal,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),

@@ -357,7 +357,8 @@ class _MemberPermissionsScreenState
                                                       ),
                                                       Icon(
                                                         Icons.remove,
-                                                        color: Colors.white,
+                                                        color: Color.fromARGB(
+                                                            255, 237, 86, 86),
                                                         size: 10,
                                                       ),
                                                     ],
@@ -389,7 +390,7 @@ class _MemberPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.lock,
+                                                        Icons.auto_fix_normal,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),

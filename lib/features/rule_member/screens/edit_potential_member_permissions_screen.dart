@@ -81,7 +81,7 @@ class _EditPotentialMemberPermissionsScreenState
                     return Scaffold(
                       appBar: AppBar(
                         title: Text(
-                          'Edit Permissions',
+                          'Edit Potential Member Permissions',
                           style: TextStyle(
                             color: currentTheme.textTheme.bodyMedium!.color!,
                           ),
@@ -235,6 +235,15 @@ class _EditPotentialMemberPermissionsScreenState
                                       _icons.add(
                                         const Icon(
                                           Icons.remove,
+                                          color: Colors.white,
+                                          size: 10,
+                                        ),
+                                      );
+                                      break;
+                                    case 'editmemberpermissions':
+                                      _icons.add(
+                                        const Icon(
+                                          Icons.auto_fix_normal,
                                           color: Colors.white,
                                           size: 10,
                                         ),

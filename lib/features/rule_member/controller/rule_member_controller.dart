@@ -153,7 +153,7 @@ class RuleMemberController extends StateNotifier<bool> {
         // create new rule activity
         state = false;
         res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Member added successfully!');
+          showSnackBar(context, 'Potential member added successfully!');
         });
       } else {
         state = false;
@@ -176,7 +176,7 @@ class RuleMemberController extends StateNotifier<bool> {
         await _ruleMemberRepository.updateRuleMember(ruleMember);
     state = false;
     ruleMemberRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Member updated successfully!');
+      showSnackBar(context, 'Potential member updated successfully!');
     });
   }
 

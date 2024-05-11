@@ -108,17 +108,17 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
       case ManagerPermissions.removerule:
         return 'Remove Rule';
       case ManagerPermissions.addpotentialmember:
-        return 'Add Member';
+        return 'Add Potential Member';
       case ManagerPermissions.removepotentialmember:
-        return 'Remove Member';
+        return 'Remove Potential Member';
       case ManagerPermissions.editpotentialmemberpermissions:
-        return 'Edit Permissions';
+        return 'Edit Potential Member Permissions';
       case ManagerPermissions.addconsumer:
         return 'Add Consumer';
       case ManagerPermissions.removeconsumer:
         return 'Remove Consumer';
       case ManagerPermissions.editmanagerpermissions:
-        return 'Edit Permissions';
+        return 'Edit Manager Permissions';
     }
   }
 }

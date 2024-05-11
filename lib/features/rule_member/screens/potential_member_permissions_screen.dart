@@ -394,7 +394,7 @@ class _PotentialMemberPermissionsScreenState
                                                             .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.lock,
+                                                        Icons.auto_fix_normal,
                                                         color: Colors.white,
                                                         size: 10,
                                                       ),
