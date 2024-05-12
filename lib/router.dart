@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_tutorial/features/activity/screens/activity_screen.dart';
 import 'package:reddit_tutorial/features/auth/screens/login_screen.dart';
 import 'package:reddit_tutorial/features/favorite/screens/list_user_favorite_screen.dart';
 import 'package:reddit_tutorial/features/forum/screens/create_forum_screen.dart';
@@ -62,9 +61,6 @@ final loggedOutRoute = RouteMap(routes: {
 final loggedInRoute = RouteMap(routes: {
   '/': (_) => const MaterialPage(
         child: HomeScreen(),
-      ),
-  '/activity': (_) => const MaterialPage(
-        child: ActivityScreen(),
       ),
   '/favorite': (_) => const MaterialPage(
         child: ListUserFavoriteScreen(),

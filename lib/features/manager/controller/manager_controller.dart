@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/utils.dart';
-import 'package:reddit_tutorial/features/activity/controller/activity_controller.dart';
-import 'package:reddit_tutorial/features/activity/repository/activity_repository.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/manager/repository/manager_repository.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
+import 'package:reddit_tutorial/features/policy_activity/controller/policy_activity_controller.dart';
+import 'package:reddit_tutorial/features/policy_activity/repository/policy_activity_repository.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/manager.dart';
@@ -79,12 +79,12 @@ final managerControllerProvider =
   final managerRepository = ref.watch(managerRepositoryProvider);
   final policyRepository = ref.watch(policyRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
-  final activityRepository = ref.watch(activityRepositoryProvider);
+  final policyActivityRepository = ref.watch(policyActivityRepositoryProvider);
   return ManagerController(
       managerRepository: managerRepository,
       policyRepository: policyRepository,
       userProfileRepository: userProfileRepository,
-      activityRepository: activityRepository,
+      policyActivityRepository: policyActivityRepository,
       ref: ref);
 });
 
@@ -92,18 +92,18 @@ class ManagerController extends StateNotifier<bool> {
   final ManagerRepository _managerRepository;
   final PolicyRepository _policyRepository;
   final UserProfileRepository _userProfileRepository;
-  final ActivityRepository _activityRepository;
+  final PolicyActivityRepository _policyActivityRepository;
   final Ref _ref;
   ManagerController(
       {required ManagerRepository managerRepository,
       required PolicyRepository policyRepository,
       required UserProfileRepository userProfileRepository,
-      required ActivityRepository activityRepository,
+      required PolicyActivityRepository policyActivityRepository,
       required Ref ref})
       : _policyRepository = policyRepository,
         _managerRepository = managerRepository,
         _userProfileRepository = userProfileRepository,
-        _activityRepository = activityRepository,
+        _policyActivityRepository = policyActivityRepository,
         _ref = ref,
         super(false);
 
@@ -172,14 +172,14 @@ class ManagerController extends StateNotifier<bool> {
         final resPolicy = await _policyRepository.updatePolicy(policy);
 
         // create new policy activity
-        if (user!.activities.contains(policyId) == false) {
-          final activityController =
-              _ref.read(activityControllerProvider.notifier);
-          activityController.createActivity(
-              ActivityType.policy.name, user.uid, policyId, policy.uid);
+        if (user!.policyActivities.contains(policyId) == false) {
+          final policyActivityController =
+              _ref.read(policyActivityControllerProvider.notifier);
+          policyActivityController.createPolicyActivity(
+              user.uid, policyId, policy.uid);
 
-          // add activity to users acitivity list
-          user.activities.add(policyId);
+          // add activity to users policy activity list
+          user.policyActivities.add(policyId);
           final resUser = await _userProfileRepository.updateUser(user);
 
           state = false;
@@ -268,19 +268,20 @@ class ManagerController extends StateNotifier<bool> {
         .getUserManagerCount(policyId, user.uid)
         .first;
 
-    // remove activity if no user managers are left
+    // remove policy activity if no user managers are left
     if (managerCount == 0) {
-      // get activity
-      final activity = await _ref
-          .read(activityControllerProvider.notifier)
-          .getUserActivityByPolicyForumId(policyId, manager!.serviceUid)
+      // get policy activity
+      final policyActivity = await _ref
+          .read(policyActivityControllerProvider.notifier)
+          .getUserPolicyActivityByPolicyId(policyId, manager!.serviceUid)
           .first;
 
       // now remove it
-      await _activityRepository.deleteActivity(activity!.activityId);
+      await _policyActivityRepository
+          .deletePolicyActivity(policyActivity!.policyActivityId);
 
-      // remove the activity from the users activity list
-      user.activities.remove(policyId);
+      // remove the activity from the users policy activity list
+      user.policyActivities.remove(policyId);
       await _userProfileRepository.updateUser(user);
     } else {
       // set next available manager as default

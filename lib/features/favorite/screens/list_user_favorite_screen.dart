@@ -36,10 +36,14 @@ class ListUserFavoriteScreen extends ConsumerWidget {
               ),
             ),
             body: favorites.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("You don't have any favorites"),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      child: const Text(
+                        'No favorites',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                   )
                 : Padding(

@@ -239,7 +239,8 @@ class ForumScreen extends ConsumerWidget {
                                         Wrap(
                                           children: [
                                             // view button
-                                            user.activities.contains(forumId)
+                                            user.forumActivities
+                                                    .contains(forumId)
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -266,7 +267,7 @@ class ForumScreen extends ConsumerWidget {
                                                 : const SizedBox(),
                                             // forum tools button
                                             user.uid == forum.uid ||
-                                                    user.activities
+                                                    user.forumActivities
                                                         .contains(forumId)
                                                 ? Container(
                                                     margin:

@@ -93,7 +93,16 @@ class HomeScreen extends ConsumerWidget {
           // *********************************
           ref.watch(policiesProvider).when(
                 data: (policies) => policies.isEmpty
-                    ? const SizedBox()
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 12.0, bottom: 10),
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text(
+                            'No policies',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      )
                     : CarouselSlider.builder(
                         itemCount: policies.length,
                         itemBuilder: (context, index, realIndex) {
@@ -107,61 +116,63 @@ class HomeScreen extends ConsumerWidget {
                               width: MediaQuery.of(context).size.width,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(5.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                      child: policies[index].banner ==
+                                              Constants.policyBannerDefault
+                                          ? Image.asset(
+                                              policies[index].banner,
+                                            )
+                                          : Image.network(
+                                              policies[index].banner,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                return loadingProgress
+                                                            ?.cumulativeBytesLoaded ==
+                                                        loadingProgress
+                                                            ?.expectedTotalBytes
+                                                    ? child
+                                                    : const CircularProgressIndicator();
+                                              },
+                                            ),
                                     ),
-                                    child: policies[index].banner ==
-                                            Constants.policyBannerDefault
-                                        ? Image.asset(
-                                            policies[index].banner,
-                                          )
-                                        : Image.network(
-                                            policies[index].banner,
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              return loadingProgress
-                                                          ?.cumulativeBytesLoaded ==
-                                                      loadingProgress
-                                                          ?.expectedTotalBytes
-                                                  ? child
-                                                  : const CircularProgressIndicator();
-                                            },
-                                          ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Wrap(
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.account_balance_outlined,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        policies[index].title,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    policies[index].description,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                ],
+                                    Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.account_balance_outlined,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          policies[index].title,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      policies[index].description,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -182,7 +193,16 @@ class HomeScreen extends ConsumerWidget {
           // *********************************
           ref.watch(forumsProvider).when(
                 data: (forums) => forums.isEmpty
-                    ? const SizedBox()
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 12.0, bottom: 10),
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text(
+                            'No forums',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      )
                     : CarouselSlider.builder(
                         itemCount: forums.length,
                         itemBuilder: (context, index, realIndex) {
@@ -196,61 +216,63 @@ class HomeScreen extends ConsumerWidget {
                               width: MediaQuery.of(context).size.width,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(5.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                      child: forums[index].banner ==
+                                              Constants.forumBannerDefault
+                                          ? Image.asset(
+                                              forums[index].banner,
+                                            )
+                                          : Image.network(
+                                              forums[index].banner,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                return loadingProgress
+                                                            ?.cumulativeBytesLoaded ==
+                                                        loadingProgress
+                                                            ?.expectedTotalBytes
+                                                    ? child
+                                                    : const CircularProgressIndicator();
+                                              },
+                                            ),
                                     ),
-                                    child: forums[index].banner ==
-                                            Constants.forumBannerDefault
-                                        ? Image.asset(
-                                            forums[index].banner,
-                                          )
-                                        : Image.network(
-                                            forums[index].banner,
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              return loadingProgress
-                                                          ?.cumulativeBytesLoaded ==
-                                                      loadingProgress
-                                                          ?.expectedTotalBytes
-                                                  ? child
-                                                  : const CircularProgressIndicator();
-                                            },
-                                          ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Wrap(
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.sms_outlined,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        forums[index].title,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    forums[index].description,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                ],
+                                    Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.sms_outlined,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          forums[index].title,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      forums[index].description,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -270,7 +292,16 @@ class HomeScreen extends ConsumerWidget {
           // *********************************
           ref.watch(servicesProvider).when(
                 data: (services) => services.isEmpty
-                    ? const SizedBox()
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text(
+                            'No services',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      )
                     : CarouselSlider.builder(
                         itemCount: services.length,
                         itemBuilder: (context, index, realIndex) {
@@ -285,61 +316,63 @@ class HomeScreen extends ConsumerWidget {
                               width: MediaQuery.of(context).size.width,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(5.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                      child: services[index].banner ==
+                                              Constants.serviceBannerDefault
+                                          ? Image.asset(
+                                              services[index].banner,
+                                            )
+                                          : Image.network(
+                                              services[index].banner,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                return loadingProgress
+                                                            ?.cumulativeBytesLoaded ==
+                                                        loadingProgress
+                                                            ?.expectedTotalBytes
+                                                    ? child
+                                                    : const CircularProgressIndicator();
+                                              },
+                                            ),
                                     ),
-                                    child: services[index].banner ==
-                                            Constants.serviceBannerDefault
-                                        ? Image.asset(
-                                            services[index].banner,
-                                          )
-                                        : Image.network(
-                                            services[index].banner,
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              return loadingProgress
-                                                          ?.cumulativeBytesLoaded ==
-                                                      loadingProgress
-                                                          ?.expectedTotalBytes
-                                                  ? child
-                                                  : const CircularProgressIndicator();
-                                            },
-                                          ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Wrap(
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.construction_outlined,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        services[index].title,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    services[index].description,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                ],
+                                    Wrap(
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.construction_outlined,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          services[index].title,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      services[index].description,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

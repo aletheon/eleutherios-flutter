@@ -63,7 +63,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
         await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
 
     if (policy!.uid != user.uid) {
-      if (user.activities.contains(widget.policyId) == false) {
+      if (user.policyActivities.contains(widget.policyId) == false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
               'You do not have permission to make changes to this policy');

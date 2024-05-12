@@ -258,9 +258,7 @@ class RuleScreen extends ConsumerWidget {
                                         Wrap(
                                           children: [
                                             // rule tools button
-                                            user.uid == rule.uid ||
-                                                    user.activities
-                                                        .contains(ruleId)
+                                            user.uid == rule.uid
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

@@ -55,7 +55,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
     final forum = await ref.read(getForumByIdProvider2(widget.forumId)).first;
 
     if (forum!.uid != user.uid) {
-      if (user.activities.contains(widget.forumId) == false) {
+      if (user.forumActivities.contains(widget.forumId) == false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
               'You do not have permission to make changes to this forum');

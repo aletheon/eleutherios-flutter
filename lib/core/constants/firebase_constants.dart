@@ -1,6 +1,5 @@
 class FirebaseConstants {
   static const forumActivitiesCollection = 'forumactivities';
-  static const activitiesCollection = 'activities';
   static const favoritesCollection = 'favorites';
   static const forumsCollection = 'forums';
   static const permissionsCollection = 'permissions';

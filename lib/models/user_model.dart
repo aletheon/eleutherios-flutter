@@ -13,7 +13,8 @@ class UserModel {
   final bool isAuthenticated;
   final String banner;
   final int cert;
-  final List<String> activities;
+  final List<String> forumActivities;
+  final List<String> policyActivities;
   final List<String> policies;
   final List<String> forums;
   final List<String> services;
@@ -35,7 +36,8 @@ class UserModel {
     required this.isAuthenticated,
     required this.banner,
     required this.cert,
-    required this.activities,
+    required this.forumActivities,
+    required this.policyActivities,
     required this.policies,
     required this.forums,
     required this.services,
@@ -59,7 +61,8 @@ class UserModel {
     bool? isAuthenticated,
     String? banner,
     int? cert,
-    List<String>? activities,
+    List<String>? forumActivities,
+    List<String>? policyActivities,
     List<String>? policies,
     List<String>? forums,
     List<String>? services,
@@ -82,7 +85,8 @@ class UserModel {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       banner: banner ?? this.banner,
       cert: cert ?? this.cert,
-      activities: activities ?? this.activities,
+      forumActivities: forumActivities ?? this.forumActivities,
+      policyActivities: policyActivities ?? this.policyActivities,
       policies: policies ?? this.policies,
       forums: forums ?? this.forums,
       services: services ?? this.services,
@@ -108,7 +112,8 @@ class UserModel {
       'isAuthenticated': isAuthenticated,
       'banner': banner,
       'cert': cert,
-      'activities': activities,
+      'forumActivities': forumActivities,
+      'policyActivities': policyActivities,
       'policies': policies,
       'forums': forums,
       'services': services,
@@ -134,7 +139,8 @@ class UserModel {
       isAuthenticated: map['isAuthenticated'] as bool,
       banner: map['banner'] as String,
       cert: map['cert'] as int,
-      activities: List<String>.from(map['activities']),
+      forumActivities: List<String>.from(map['forumActivities']),
+      policyActivities: List<String>.from(map['policyActivities']),
       policies: List<String>.from(map['policies']),
       forums: List<String>.from(map['forums']),
       services: List<String>.from(map['services']),
@@ -150,7 +156,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, activities: $activities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -169,7 +175,8 @@ class UserModel {
         other.isAuthenticated == isAuthenticated &&
         other.banner == banner &&
         other.cert == cert &&
-        listEquals(other.activities, activities) &&
+        listEquals(other.forumActivities, forumActivities) &&
+        listEquals(other.policyActivities, policyActivities) &&
         listEquals(other.policies, policies) &&
         listEquals(other.forums, forums) &&
         listEquals(other.services, services) &&
@@ -194,7 +201,8 @@ class UserModel {
         isAuthenticated.hashCode ^
         banner.hashCode ^
         cert.hashCode ^
-        activities.hashCode ^
+        forumActivities.hashCode ^
+        policyActivities.hashCode ^
         policies.hashCode ^
         forums.hashCode ^
         services.hashCode ^

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/utils.dart';
-import 'package:reddit_tutorial/features/activity/controller/activity_controller.dart';
-import 'package:reddit_tutorial/features/activity/repository/activity_repository.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
+import 'package:reddit_tutorial/features/forum_activity/controller/forum_activity_controller.dart';
+import 'package:reddit_tutorial/features/forum_activity/repository/forum_activity_repository.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
@@ -73,12 +73,12 @@ final memberControllerProvider =
   final memberRepository = ref.watch(memberRepositoryProvider);
   final forumRepository = ref.watch(forumRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
-  final activityRepository = ref.watch(activityRepositoryProvider);
+  final forumActivityRepository = ref.watch(forumActivityRepositoryProvider);
   return MemberController(
       memberRepository: memberRepository,
       forumRepository: forumRepository,
       userProfileRepository: userProfileRepository,
-      activityRepository: activityRepository,
+      forumActivityRepository: forumActivityRepository,
       ref: ref);
 });
 
@@ -86,18 +86,18 @@ class MemberController extends StateNotifier<bool> {
   final MemberRepository _memberRepository;
   final ForumRepository _forumRepository;
   final UserProfileRepository _userProfileRepository;
-  final ActivityRepository _activityRepository;
+  final ForumActivityRepository _forumActivityRepository;
   final Ref _ref;
   MemberController(
       {required MemberRepository memberRepository,
       required ForumRepository forumRepository,
       required UserProfileRepository userProfileRepository,
-      required ActivityRepository activityRepository,
+      required ForumActivityRepository forumActivityRepository,
       required Ref ref})
       : _forumRepository = forumRepository,
         _memberRepository = memberRepository,
         _userProfileRepository = userProfileRepository,
-        _activityRepository = activityRepository,
+        _forumActivityRepository = forumActivityRepository,
         _ref = ref,
         super(false);
 
@@ -153,14 +153,14 @@ class MemberController extends StateNotifier<bool> {
         final resForum = await _forumRepository.updateForum(forum);
 
         // create new forum activity
-        if (user!.activities.contains(forumId) == false) {
-          final activityController =
-              _ref.read(activityControllerProvider.notifier);
-          activityController.createActivity(
-              ActivityType.forum.name, user.uid, forumId, forum.uid);
+        if (user!.forumActivities.contains(forumId) == false) {
+          final forumActivityController =
+              _ref.read(forumActivityControllerProvider.notifier);
+          forumActivityController.createForumActivity(
+              user.uid, forumId, forum.uid);
 
-          // add activity to users acitivity list
-          user.activities.add(forumId);
+          // add activity to users forum activity list
+          user.forumActivities.add(forumId);
           final resUser = await _userProfileRepository.updateUser(user);
 
           state = false;
@@ -249,19 +249,20 @@ class MemberController extends StateNotifier<bool> {
         .getUserMemberCount(forumId, user.uid)
         .first;
 
-    // remove activity if no user members are left
+    // remove forum activity if no user members are left
     if (memberCount == 0) {
-      // get activity
-      final activity = await _ref
-          .read(activityControllerProvider.notifier)
-          .getUserActivityByPolicyForumId(forumId, member!.serviceUid)
+      // get forum activity
+      final forumActivity = await _ref
+          .read(forumActivityControllerProvider.notifier)
+          .getUserForumActivityByForumId(forumId, member!.serviceUid)
           .first;
 
       // now remove it
-      await _activityRepository.deleteActivity(activity!.activityId);
+      await _forumActivityRepository
+          .deleteForumActivity(forumActivity!.forumActivityId);
 
-      // remove the activity from the users activity list
-      user.activities.remove(forumId);
+      // remove the activity from the users forum activity list
+      user.forumActivities.remove(forumId);
       await _userProfileRepository.updateUser(user);
     } else {
       // set next available member as default
