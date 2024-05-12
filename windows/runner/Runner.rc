@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "reddit_tutorial" "\0"
+            VALUE "FileDescription", "eleutherios" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "reddit_tutorial" "\0"
+            VALUE "InternalName", "eleutherios" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "reddit_tutorial.exe" "\0"
-            VALUE "ProductName", "reddit_tutorial" "\0"
+            VALUE "OriginalFilename", "eleutherios.exe" "\0"
+            VALUE "ProductName", "eleutherios" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
