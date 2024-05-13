@@ -52,82 +52,95 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
           ),
           body: membersProv.when(
             data: (members) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ListView.builder(
-                  itemCount: members.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final member = members[index];
+              if (members.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: const Text(
+                      'No members',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ListView.builder(
+                    itemCount: members.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final member = members[index];
 
-                    if (member.serviceUid == user.uid) {
-                      return ref
-                          .watch(getServiceByIdProvider(member.serviceId))
-                          .when(
-                            data: (service) {
-                              return ListTile(
-                                title: Row(
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          service!.title,
-                                          textWidthBasis:
-                                              TextWidthBasis.longestLine,
+                      if (member.serviceUid == user.uid) {
+                        return ref
+                            .watch(getServiceByIdProvider(member.serviceId))
+                            .when(
+                              data: (service) {
+                                return ListTile(
+                                  title: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            service!.title,
+                                            textWidthBasis:
+                                                TextWidthBasis.longestLine,
+                                          ),
                                         ),
                                       ),
+                                      member.selected == true
+                                          ? const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: Color.fromARGB(
+                                                      255, 3, 233, 33),
+                                                )
+                                              ],
+                                            )
+                                          : const SizedBox(),
+                                    ],
+                                  ),
+                                  leading: service.image ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(service.image).image,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(service.image),
+                                        ),
+                                  trailing: TextButton(
+                                    onPressed: () => removeMemberService(
+                                      context,
+                                      ref,
+                                      forum!.forumId,
+                                      member.memberId,
                                     ),
-                                    member.selected == true
-                                        ? const Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Icon(
-                                                Icons.check,
-                                                color: Color.fromARGB(
-                                                    255, 3, 233, 33),
-                                              )
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                                leading: service.image ==
-                                        Constants.avatarDefault
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            Image.asset(service.image).image,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(service.image),
-                                      ),
-                                trailing: TextButton(
-                                  onPressed: () => removeMemberService(
-                                    context,
-                                    ref,
-                                    forum!.forumId,
-                                    member.memberId,
+                                    child: const Text(
+                                      'Remove',
+                                    ),
                                   ),
-                                  child: const Text(
-                                    'Remove',
-                                  ),
-                                ),
-                                onTap: () => showServiceDetails(
-                                    context, service.serviceId),
-                              );
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-              );
+                                  onTap: () => showServiceDetails(
+                                      context, service.serviceId),
+                                );
+                              },
+                              error: (error, stackTrace) =>
+                                  ErrorText(error: error.toString()),
+                              loading: () => const Loader(),
+                            );
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                );
+              }
             },
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),

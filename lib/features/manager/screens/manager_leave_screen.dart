@@ -52,82 +52,95 @@ class _ManagerLeaveScreenState extends ConsumerState<ManagerLeaveScreen> {
           ),
           body: managersProv.when(
             data: (managers) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ListView.builder(
-                  itemCount: managers.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final manager = managers[index];
+              if (managers.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    child: const Text(
+                      'No managers',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ListView.builder(
+                    itemCount: managers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final manager = managers[index];
 
-                    if (manager.serviceUid == user.uid) {
-                      return ref
-                          .watch(getServiceByIdProvider(manager.serviceId))
-                          .when(
-                            data: (service) {
-                              return ListTile(
-                                title: Row(
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          service!.title,
-                                          textWidthBasis:
-                                              TextWidthBasis.longestLine,
+                      if (manager.serviceUid == user.uid) {
+                        return ref
+                            .watch(getServiceByIdProvider(manager.serviceId))
+                            .when(
+                              data: (service) {
+                                return ListTile(
+                                  title: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            service!.title,
+                                            textWidthBasis:
+                                                TextWidthBasis.longestLine,
+                                          ),
                                         ),
                                       ),
+                                      manager.selected == true
+                                          ? const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: Color.fromARGB(
+                                                      255, 3, 233, 33),
+                                                )
+                                              ],
+                                            )
+                                          : const SizedBox(),
+                                    ],
+                                  ),
+                                  leading: service.image ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(service.image).image,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(service.image),
+                                        ),
+                                  trailing: TextButton(
+                                    onPressed: () => removeManagerService(
+                                      context,
+                                      ref,
+                                      policy!.policyId,
+                                      manager.managerId,
                                     ),
-                                    manager.selected == true
-                                        ? const Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Icon(
-                                                Icons.check,
-                                                color: Color.fromARGB(
-                                                    255, 3, 233, 33),
-                                              )
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                                leading: service.image ==
-                                        Constants.avatarDefault
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            Image.asset(service.image).image,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(service.image),
-                                      ),
-                                trailing: TextButton(
-                                  onPressed: () => removeManagerService(
-                                    context,
-                                    ref,
-                                    policy!.policyId,
-                                    manager.managerId,
+                                    child: const Text(
+                                      'Remove',
+                                    ),
                                   ),
-                                  child: const Text(
-                                    'Remove',
-                                  ),
-                                ),
-                                onTap: () => showServiceDetails(
-                                    context, service.serviceId),
-                              );
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-              );
+                                  onTap: () => showServiceDetails(
+                                      context, service.serviceId),
+                                );
+                              },
+                              error: (error, stackTrace) =>
+                                  ErrorText(error: error.toString()),
+                              loading: () => const Loader(),
+                            );
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                );
+              }
             },
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),
