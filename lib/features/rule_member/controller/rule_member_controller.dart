@@ -153,7 +153,7 @@ class RuleMemberController extends StateNotifier<bool> {
         // create new rule activity
         state = false;
         res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Potential member added successfully!');
+          showSnackBar(context, 'Potential member added!');
         });
       } else {
         state = false;

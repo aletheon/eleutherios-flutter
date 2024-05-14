@@ -102,70 +102,70 @@ class ServiceController extends StateNotifier<bool> {
     });
   }
 
-  void addPolicy(
-    String policyId,
-    String serviceId,
-    BuildContext context,
-  ) async {
-    state = true;
+  // void addPolicy(
+  //   String policyId,
+  //   String serviceId,
+  //   BuildContext context,
+  // ) async {
+  //   state = true;
 
-    Policy? policy = await _ref
-        .read(policyControllerProvider.notifier)
-        .getPolicyById(policyId)
-        .first;
+  //   Policy? policy = await _ref
+  //       .read(policyControllerProvider.notifier)
+  //       .getPolicyById(policyId)
+  //       .first;
 
-    Service? service = await _ref
-        .read(serviceControllerProvider.notifier)
-        .getServiceById(serviceId)
-        .first;
+  //   Service? service = await _ref
+  //       .read(serviceControllerProvider.notifier)
+  //       .getServiceById(serviceId)
+  //       .first;
 
-    if (policy != null && service != null) {
-      // ensure service is not already consuming this policy
-      if (service.policies.contains(policyId) == false) {
-        service.policies.add(policyId);
-        policy.consumers.add(serviceId);
-        final serviceRes = await _serviceRepository.updateService(service);
-        final policyRes = await _policyRepository.updatePolicy(policy);
+  //   if (policy != null && service != null) {
+  //     // ensure service is not already consuming this policy
+  //     if (service.policies.contains(policyId) == false) {
+  //       service.policies.add(policyId);
+  //       policy.consumers.add(serviceId);
+  //       final serviceRes = await _serviceRepository.updateService(service);
+  //       final policyRes = await _policyRepository.updatePolicy(policy);
 
-        // get the rules for this policy and turn them into forums associated to this service
-        _ref.read(ruleControllerProvider.notifier).getRules(policyId).listen(
-          (rules) {
-            for (Rule rule in rules) {
-              _ref.read(forumControllerProvider.notifier).createForumFromRule(
-                    rule,
-                    policy,
-                    service,
-                    context,
-                  );
+  //       // get the rules for this policy and turn them into forums associated to this service
+  //       _ref.read(ruleControllerProvider.notifier).getRules(policyId).listen(
+  //         (rules) {
+  //           for (Rule rule in rules) {
+  //             _ref.read(forumControllerProvider.notifier).createForumFromRule(
+  //                   rule,
+  //                   policy,
+  //                   service,
+  //                   context,
+  //                 );
 
-              // _ref.read(forumControllerProvider.notifier).createForum(
-              //       rule.ruleId,
-              //       rule.title,
-              //       rule.description,
-              //       rule.public,
-              //       context,
-              //     );
-            }
-          },
-        );
-      } else {
-        state = false;
-        if (context.mounted) {
-          showSnackBar(context, 'Service is already consuming policy');
-        }
-      }
-    } else {
-      state = false;
-      if (context.mounted) {
-        showSnackBar(context, 'Policy or service does not exist');
-      }
-    }
+  //             // _ref.read(forumControllerProvider.notifier).createForum(
+  //             //       rule.ruleId,
+  //             //       rule.title,
+  //             //       rule.description,
+  //             //       rule.public,
+  //             //       context,
+  //             //     );
+  //           }
+  //         },
+  //       );
+  //     } else {
+  //       state = false;
+  //       if (context.mounted) {
+  //         showSnackBar(context, 'Service is already consuming policy');
+  //       }
+  //     }
+  //   } else {
+  //     state = false;
+  //     if (context.mounted) {
+  //       showSnackBar(context, 'Policy or service does not exist');
+  //     }
+  //   }
 
-    // state = false;
-    // res.fold((l) => showSnackBar(context, l.message), (r) {
-    //   showSnackBar(context, 'Policy added successfully!');
-    // });
-  }
+  //   // state = false;
+  //   // res.fold((l) => showSnackBar(context, l.message), (r) {
+  //   //   showSnackBar(context, 'Policy added successfully!');
+  //   // });
+  // }
 
   void updateService({
     required File? profileFile,

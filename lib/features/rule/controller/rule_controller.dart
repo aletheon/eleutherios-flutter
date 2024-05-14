@@ -34,6 +34,14 @@ final getRulesProvider =
   return ref.watch(ruleControllerProvider.notifier).getRules(policyId);
 });
 
+final getRulesProvider2 = Provider.family((ref, String policyId) {
+  try {
+    return ref.watch(ruleControllerProvider.notifier).getRules(policyId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final getManagerRulesProvider =
     Provider.family.autoDispose((ref, Tuple2 params) {
   try {

@@ -20,10 +20,11 @@ class AddPolicyScreen extends ConsumerWidget {
   const AddPolicyScreen({super.key, required String serviceId})
       : _serviceId = serviceId;
 
-  void addPolicy(BuildContext context, WidgetRef ref, String policyId) {
+  void addPolicyToService(
+      BuildContext context, WidgetRef ref, String policyId) {
     ref
-        .read(serviceControllerProvider.notifier)
-        .addPolicy(_serviceId, policyId, context);
+        .read(policyControllerProvider.notifier)
+        .addPolicyToService(_serviceId, policyId, context);
   }
 
   void showPolicyDetails(BuildContext context, String policyId) {
@@ -56,7 +57,7 @@ class AddPolicyScreen extends ConsumerWidget {
                             ),
                       trailing: TextButton(
                         onPressed: () =>
-                            addPolicy(context, ref, policy.policyId),
+                            addPolicyToService(context, ref, policy.policyId),
                         child: const Text(
                           'Add',
                         ),

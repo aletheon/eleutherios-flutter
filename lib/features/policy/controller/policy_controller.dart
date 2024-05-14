@@ -7,8 +7,13 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/rule.dart';
+import 'package:reddit_tutorial/models/service.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,10 +46,12 @@ final policyControllerProvider =
     StateNotifierProvider<PolicyController, bool>((ref) {
   final policyRepository = ref.watch(policyRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
+  final serviceRepository = ref.watch(serviceRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return PolicyController(
       policyRepository: policyRepository,
       userProfileRepository: userProfileRepository,
+      serviceRepository: serviceRepository,
       storageRepository: storageRepository,
       ref: ref);
 });
@@ -52,15 +59,18 @@ final policyControllerProvider =
 class PolicyController extends StateNotifier<bool> {
   final PolicyRepository _policyRepository;
   final UserProfileRepository _userProfileRepository;
+  final ServiceRepository _serviceRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
   PolicyController(
       {required PolicyRepository policyRepository,
       required UserProfileRepository userProfileRepository,
+      required ServiceRepository serviceRepository,
       required StorageRepository storageRepository,
       required Ref ref})
       : _policyRepository = policyRepository,
         _userProfileRepository = userProfileRepository,
+        _serviceRepository = serviceRepository,
         _storageRepository = storageRepository,
         _ref = ref,
         super(false);
@@ -138,6 +148,76 @@ class PolicyController extends StateNotifier<bool> {
       //   return false;
       // });
     });
+  }
+
+  void addPolicyToService(
+      String serviceId, String policyId, BuildContext context) async {
+    state = true;
+    final user = _ref.read(userProvider);
+    // String policyId = const Uuid().v1().replaceAll('-', '');
+
+    // 1) add policy to service
+    // 2) add service to policy (consumers list)
+    // 3) get rules for policy
+    // 4) create forum rules based on instantionType
+
+    Policy? policy = await _ref
+        .read(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
+
+    if (policy != null && service != null) {
+      service.policies.add(policyId);
+      final resService = await _serviceRepository.updateService(service);
+
+      policy.consumers.add(serviceId);
+      final resPolicy = await _policyRepository.updatePolicy(policy);
+
+      List<Rule>? rules = await _ref.read(getRulesProvider2(policyId)).first;
+
+      if (rules.isNotEmpty) {
+      } else {
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'Policy added successfully');
+        }
+      }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy or service does not exist');
+      }
+    }
+
+    // Policy policy = Policy(
+    //   policyId: policyId,
+    //   uid: uid,
+    //   title: title,
+    //   titleLowercase: title.toLowerCase(),
+    //   description: description,
+    //   image: Constants.avatarDefault,
+    //   banner: Constants.policyBannerDefault,
+    //   public: public,
+    //   tags: [],
+    //   managers: [],
+    //   consumers: [],
+    //   rules: [],
+    //   lastUpdateDate: DateTime.now(),
+    //   creationDate: DateTime.now(),
+    // );
+    // final res = await _policyRepository.createPolicy(policy);
+    // user!.policies.add(policyId);
+    // final resUser = await _userProfileRepository.updateUser(user);
+    // state = false;
+    // res.fold((l) => showSnackBar(context, l.message), (r) {
+    //   showSnackBar(context, 'Policy created successfully!');
+    //   Routemaster.of(context).replace('/user/policy/list');
+    // });
   }
 
   Stream<List<Policy>> getUserPolicies() {
