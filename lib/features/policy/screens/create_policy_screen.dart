@@ -40,7 +40,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
-      backgroundColor: currentTheme.backgroundColor,
+      backgroundColor: currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Create Policy',

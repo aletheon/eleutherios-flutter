@@ -125,7 +125,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 ),
               ),
               Radio(
-                  value: "Consume",
+                  value: InstantiationType.consume.value,
                   groupValue: instantiationTypeRadioProv,
                   onChanged: (newValue) {
                     ref.read(instantiationTypeRadioProvider.notifier).state =
@@ -150,7 +150,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 ),
               ),
               Radio(
-                  value: "Order",
+                  value: InstantiationType.order.value,
                   groupValue: instantiationTypeRadioProv,
                   onChanged: (newValue) {
                     ref.read(instantiationTypeRadioProvider.notifier).state =
@@ -173,7 +173,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             ),
             child: const Text(
               'Create Rule',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
           ),
         ],
@@ -195,7 +195,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 .when(
                   data: (manager) {
                     return Scaffold(
-                        backgroundColor: currentTheme.backgroundColor,
+                        backgroundColor: currentTheme.scaffoldBackgroundColor,
                         appBar: AppBar(
                           title: Text(
                             'Create Rule for ${policy!.title}',

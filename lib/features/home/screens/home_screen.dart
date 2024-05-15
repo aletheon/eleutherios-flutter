@@ -99,7 +99,7 @@ class HomeScreen extends ConsumerWidget {
                           alignment: Alignment.topCenter,
                           child: const Text(
                             'No policies',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ),
                       )
@@ -199,7 +199,7 @@ class HomeScreen extends ConsumerWidget {
                           alignment: Alignment.topCenter,
                           child: const Text(
                             'No forums',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ),
                       )
@@ -298,7 +298,7 @@ class HomeScreen extends ConsumerWidget {
                           alignment: Alignment.topCenter,
                           child: const Text(
                             'No services',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ),
                       )

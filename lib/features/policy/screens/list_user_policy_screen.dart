@@ -29,10 +29,14 @@ class ListUserPolicyScreen extends ConsumerWidget {
               ),
             ),
             body: policies.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("You haven't created any policies"),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      child: const Text(
+                        "No policies",
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
                   )
                 : Padding(

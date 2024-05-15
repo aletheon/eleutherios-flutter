@@ -76,7 +76,7 @@ class _RemoveRuleMemberScreenState
     return ruleProv.when(
       data: (rule) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Remove Potential Member',
@@ -94,7 +94,7 @@ class _RemoveRuleMemberScreenState
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No potential members',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

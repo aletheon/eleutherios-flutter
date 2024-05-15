@@ -106,7 +106,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
             ),
             child: const Text(
               'Create Forum',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
           ),
         ],
@@ -123,7 +123,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
       return ref.watch(getForumByIdProvider(widget.forumId!)).when(
             data: (forum) {
               return Scaffold(
-                  backgroundColor: currentTheme.backgroundColor,
+                  backgroundColor: currentTheme.scaffoldBackgroundColor,
                   appBar: AppBar(
                     title: Text(
                       'Create Forum in ${forum!.title}',
@@ -141,7 +141,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
           );
     } else {
       return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Create Forum',

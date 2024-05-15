@@ -304,7 +304,7 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
     return policyProv.when(
       data: (policy) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Add Manager',

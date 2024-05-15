@@ -46,7 +46,7 @@ class UserProfileScreen extends ConsumerWidget {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
-      backgroundColor: currentTheme.backgroundColor,
+      backgroundColor: currentTheme.scaffoldBackgroundColor,
       body: ref.watch(getUserDataProvider(uid)).when(
           data: (user) => NestedScrollView(
                 headerSliverBuilder: ((context, innerBoxIsScrolled) {
@@ -58,7 +58,7 @@ class UserProfileScreen extends ConsumerWidget {
                       flexibleSpace: Stack(
                         children: [
                           Positioned.fill(
-                            child: user!.banner == Constants.bannerDefault
+                            child: user.banner == Constants.bannerDefault
                                 ? Image.asset(
                                     user.banner,
                                     fit: BoxFit.cover,

@@ -1,16 +1,3 @@
-enum ActivityType<String> { policy, forum }
-
-extension ActivityTypeValue on ActivityType {
-  String get value {
-    switch (this) {
-      case ActivityType.policy:
-        return 'Policy';
-      case ActivityType.forum:
-        return 'Forum';
-    }
-  }
-}
-
 enum InstantiationType<String> { consume, order, date }
 
 extension InstantiationTypeValue on InstantiationType {

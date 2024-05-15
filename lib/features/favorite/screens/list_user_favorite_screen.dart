@@ -42,7 +42,7 @@ class ListUserFavoriteScreen extends ConsumerWidget {
                       alignment: Alignment.topCenter,
                       child: const Text(
                         'No favorites',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
                   )

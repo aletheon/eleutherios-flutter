@@ -101,7 +101,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             }
 
             return Scaffold(
-              backgroundColor: currentTheme.backgroundColor,
+              backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(
                   'Edit User',

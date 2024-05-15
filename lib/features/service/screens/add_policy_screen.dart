@@ -22,6 +22,8 @@ class AddPolicyScreen extends ConsumerWidget {
 
   void addPolicyToService(
       BuildContext context, WidgetRef ref, String policyId) {
+    print('addPolicyToService 1');
+
     ref
         .read(policyControllerProvider.notifier)
         .addPolicyToService(_serviceId, policyId, context);
@@ -128,7 +130,7 @@ class AddPolicyScreen extends ConsumerWidget {
     return serviceProv.when(
       data: (service) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Add Policy',

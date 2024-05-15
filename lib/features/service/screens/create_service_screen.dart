@@ -40,7 +40,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
-      backgroundColor: currentTheme.backgroundColor,
+      backgroundColor: currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Create Service',
@@ -118,7 +118,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
                     ),
                     child: const Text(
                       'Create Service',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 ],

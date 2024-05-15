@@ -37,7 +37,7 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
     return policyProv.when(
       data: (forum) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Remove Rule',
@@ -55,7 +55,7 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No rules',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

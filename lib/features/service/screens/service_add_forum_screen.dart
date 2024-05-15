@@ -127,7 +127,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
     return serviceProv.when(
       data: (service) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Add Forum',

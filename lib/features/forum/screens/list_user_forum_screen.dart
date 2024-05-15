@@ -29,10 +29,14 @@ class ListUserForumScreen extends ConsumerWidget {
               ),
             ),
             body: forums.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("You haven't created any forums"),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      child: const Text(
+                        "No forums",
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
                   )
                 : Padding(

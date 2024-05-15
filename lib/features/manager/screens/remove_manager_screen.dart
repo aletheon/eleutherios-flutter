@@ -73,7 +73,7 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
     return policyProv.when(
       data: (policy) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Remove Manager',
@@ -91,7 +91,7 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No managers',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

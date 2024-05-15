@@ -134,7 +134,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
             }
 
             return Scaffold(
-              backgroundColor: currentTheme.backgroundColor,
+              backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(
                   'Edit Rule ${rule!.title}',
@@ -180,7 +180,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                       ),
                                       child: bannerFile != null
                                           ? Image.file(bannerFile!)
-                                          : rule!.banner.isEmpty ||
+                                          : rule.banner.isEmpty ||
                                                   rule.banner ==
                                                       Constants
                                                           .ruleBannerDefault
@@ -216,7 +216,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                                 FileImage(profileFile!),
                                             radius: 32,
                                           )
-                                        : rule!.image == Constants.avatarDefault
+                                        : rule.image == Constants.avatarDefault
                                             ? CircleAvatar(
                                                 backgroundImage:
                                                     Image.asset(rule.image)
@@ -299,7 +299,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                 ),
                               ),
                               Radio(
-                                  value: "Consume",
+                                  value: InstantiationType.consume.value,
                                   groupValue: instantiationTypeRadioProv,
                                   onChanged: (newValue) {
                                     ref
@@ -327,7 +327,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                 ),
                               ),
                               Radio(
-                                  value: "Order",
+                                  value: InstantiationType.order.value,
                                   groupValue: instantiationTypeRadioProv,
                                   onChanged: (newValue) {
                                     ref

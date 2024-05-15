@@ -71,7 +71,7 @@ class _ManagerPermissionsScreenState
     return policyProv.when(
       data: (policy) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Manager Permissions',
@@ -89,7 +89,7 @@ class _ManagerPermissionsScreenState
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No managers',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

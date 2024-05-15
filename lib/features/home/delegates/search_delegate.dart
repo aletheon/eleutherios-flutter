@@ -14,18 +14,18 @@ class SearchHomeDelegate extends SearchDelegate {
   final WidgetRef ref;
   SearchHomeDelegate(this.ref);
 
-  String _searchType = SearchType.forum.name;
+  String _searchType = SearchType.forum.value;
 
   void showPolicyDetails(BuildContext context, String policyId) {
     Routemaster.of(context).push('/policy/$policyId');
   }
 
-  void showServiceDetails(BuildContext context, String serviceId) {
-    Routemaster.of(context).push('/service/$serviceId');
-  }
-
   void showForumDetails(BuildContext context, String forumId) {
     Routemaster.of(context).push('/forum/$forumId');
+  }
+
+  void showServiceDetails(BuildContext context, String serviceId) {
+    Routemaster.of(context).push('/service/$serviceId');
   }
 
   void changeSearchType(String searchType) {
@@ -36,8 +36,8 @@ class SearchHomeDelegate extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        onPressed: () => changeSearchType(SearchType.policy.name),
-        icon: _searchType == SearchType.policy.name
+        onPressed: () => changeSearchType(SearchType.policy.value),
+        icon: _searchType == SearchType.policy.value
             ? Icon(
                 Icons.account_balance,
                 color: Pallete.policyColor,
@@ -45,22 +45,22 @@ class SearchHomeDelegate extends SearchDelegate {
             : const Icon(Icons.account_balance),
       ),
       IconButton(
-        onPressed: () => changeSearchType(SearchType.service.name),
-        icon: _searchType == SearchType.service.name
-            ? Icon(
-                Icons.construction,
-                color: Pallete.freeServiceColor,
-              )
-            : const Icon(Icons.construction),
-      ),
-      IconButton(
-        onPressed: () => changeSearchType(SearchType.forum.name),
-        icon: _searchType == SearchType.forum.name
+        onPressed: () => changeSearchType(SearchType.forum.value),
+        icon: _searchType == SearchType.forum.value
             ? Icon(
                 Icons.sms,
                 color: Pallete.forumColor,
               )
             : const Icon(Icons.sms),
+      ),
+      IconButton(
+        onPressed: () => changeSearchType(SearchType.service.value),
+        icon: _searchType == SearchType.service.value
+            ? Icon(
+                Icons.construction,
+                color: Pallete.freeServiceColor,
+              )
+            : const Icon(Icons.construction),
       ),
       IconButton(
           onPressed: () {
@@ -82,7 +82,7 @@ class SearchHomeDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    if (_searchType == SearchType.policy.name) {
+    if (_searchType == SearchType.policy.value) {
       return ref.watch(searchPoliciesProvider(query.toLowerCase())).when(
             data: (policies) {
               return Padding(
@@ -112,7 +112,7 @@ class SearchHomeDelegate extends SearchDelegate {
             },
             loading: () => const Loader(),
           );
-    } else if (_searchType == SearchType.forum.name) {
+    } else if (_searchType == SearchType.forum.value) {
       return ref.watch(searchForumsProvider(query.toLowerCase())).when(
             data: (forums) {
               return Padding(

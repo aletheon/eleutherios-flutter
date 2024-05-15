@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +11,6 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
-import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
@@ -182,6 +184,8 @@ class PolicyController extends StateNotifier<bool> {
         .getServiceById(serviceId)
         .first;
 
+    print('addPolicyToService 2');
+
     if (policy != null && service != null) {
       service.policies.add(policyId);
       final resService = await _serviceRepository.updateService(service);
@@ -192,8 +196,10 @@ class PolicyController extends StateNotifier<bool> {
       List<Rule>? rules = await _ref.read(getRulesProvider2(policyId)).first;
 
       if (rules.isNotEmpty) {
+        print('addPolicyToService got rules');
         for (Rule rule in rules) {
-          if (rule.instantiationType == InstantiationType.consume.name) {
+          if (rule.instantiationType == InstantiationType.consume.value) {
+            print('addPolicyToService got consume rule');
             String forumId = const Uuid().v1().replaceAll('-', '');
 
             Forum forum = Forum(
@@ -222,28 +228,38 @@ class PolicyController extends StateNotifier<bool> {
             );
 
             if (rule.image != Constants.avatarDefault) {
-              File profileFile = File(rule.image);
+              print('addPolicyToService creating profileFile image');
+              final profileGetResponse = await http.get(Uri.parse(rule.image));
+              final profileDocumentDirectory =
+                  await getApplicationDocumentsDirectory();
+              final profileFile = File(join(profileDocumentDirectory.path));
+              profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
 
               // forums/profile/123456
-              final profileRes = await _storageRepository.storeFile(
+              final profileStorageResponse = await _storageRepository.storeFile(
                   path: 'forums/profile', id: forum.forumId, file: profileFile);
 
-              profileRes.fold(
+              profileStorageResponse.fold(
                 (l) => showSnackBar(context, l.message),
                 (r) => forum = forum.copyWith(image: r),
               );
             }
 
             if (rule.banner != Constants.ruleBannerDefault) {
-              File bannerFile = File(rule.banner);
+              print('addPolicyToService creating bannerFile image');
+              final bannerGetResponse = await http.get(Uri.parse(rule.banner));
+              final bannerDocumentDirectory =
+                  await getApplicationDocumentsDirectory();
+              final bannerFile = File(join(bannerDocumentDirectory.path));
+              bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
 
               // forums/banner/123456
-              final bannerRes = await _storageRepository.storeFile(
+              final bannerStorageResponse = await _storageRepository.storeFile(
                   path: 'forums/banner', id: forum.forumId, file: bannerFile);
 
-              bannerRes.fold(
+              bannerStorageResponse.fold(
                 (l) => showSnackBar(context, l.message),
-                (r) => forum = forum.copyWith(banner: r),
+                (r) => forum = forum.copyWith(image: r),
               );
             }
 
@@ -274,12 +290,13 @@ class PolicyController extends StateNotifier<bool> {
               }
             }
             final resForum = await _forumRepository.createForum(forum);
-
-            state = false;
-            resForum.fold((l) => showSnackBar(context, l.message), (r) {
-              showSnackBar(context, 'Policy added successfully!');
-            });
+            user.forums.add(forumId);
           }
+        }
+        final resUser = await _userProfileRepository.updateUser(user!);
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'Policy added successfully');
         }
       } else {
         state = false;
@@ -288,6 +305,8 @@ class PolicyController extends StateNotifier<bool> {
         }
       }
     } else {
+      print('addPolicyToService no rules');
+
       state = false;
       if (context.mounted) {
         showSnackBar(context, 'Policy or service does not exist');

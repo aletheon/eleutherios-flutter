@@ -74,7 +74,7 @@ class _PotentialMemberPermissionsScreenState
     return ruleProv.when(
       data: (rule) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Potential Member Permissions',
@@ -92,7 +92,7 @@ class _PotentialMemberPermissionsScreenState
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No potential members',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

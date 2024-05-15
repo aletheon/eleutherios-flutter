@@ -304,7 +304,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
     return ruleProv.when(
       data: (rule) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Add Potential Member',

@@ -90,7 +90,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
             }
 
             return Scaffold(
-              backgroundColor: currentTheme.backgroundColor,
+              backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(
                   'Edit Service',

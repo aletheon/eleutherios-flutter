@@ -77,22 +77,6 @@ class ListDrawer extends ConsumerWidget {
               onTap: () => navigateToCreatePolicy(context),
             ),
             ListTile(
-              title: const Text('Create service'),
-              leading: const Icon(
-                Icons.construction_outlined,
-              ),
-              trailing: TextButton(
-                onPressed: () => navigateToUserServices(context),
-                child: Text(
-                  'Services(${user.services.length})',
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              onTap: () => navigateToCreateService(context),
-            ),
-            ListTile(
               title: const Text('Create forum'),
               leading: const Icon(
                 Icons.sms_outlined,
@@ -107,6 +91,22 @@ class ListDrawer extends ConsumerWidget {
                 ),
               ),
               onTap: () => navigateToCreateForum(context),
+            ),
+            ListTile(
+              title: const Text('Create service'),
+              leading: const Icon(
+                Icons.construction_outlined,
+              ),
+              trailing: TextButton(
+                onPressed: () => navigateToUserServices(context),
+                child: Text(
+                  'Services(${user.services.length})',
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              onTap: () => navigateToCreateService(context),
             ),
             // forum activities
             user.forumActivities.isNotEmpty

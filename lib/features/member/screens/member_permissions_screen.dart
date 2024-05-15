@@ -69,7 +69,7 @@ class _MemberPermissionsScreenState
     return forumProv.when(
       data: (forum) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Member Permissions',
@@ -87,7 +87,7 @@ class _MemberPermissionsScreenState
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No members',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

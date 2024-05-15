@@ -90,7 +90,7 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
             }
 
             return Scaffold(
-              backgroundColor: currentTheme.backgroundColor,
+              backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(
                   'Edit Forum',

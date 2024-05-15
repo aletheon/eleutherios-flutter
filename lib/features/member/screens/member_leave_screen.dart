@@ -41,7 +41,7 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
     return forumProv.when(
       data: (forum) {
         return Scaffold(
-          backgroundColor: currentTheme.backgroundColor,
+          backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
               'Remove Services',
@@ -59,7 +59,7 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                     alignment: Alignment.topCenter,
                     child: const Text(
                       'No members',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 );

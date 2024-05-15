@@ -72,7 +72,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
     return ref.watch(getRuleByIdProvider(widget.ruleId)).when(
           data: (rule) {
             return Scaffold(
-              backgroundColor: currentTheme.backgroundColor,
+              backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(
                   'Tools for ${rule!.title}',

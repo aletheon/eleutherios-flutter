@@ -32,45 +32,50 @@ class ServiceLikesScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              body: ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                itemCount: service.likes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (service.likes.isNotEmpty) {
-                    return ref
-                        .watch(getUserDataProvider(service.likes[index]))
-                        .when(
-                          data: (user) {
-                            return ListTile(
-                              leading: user!.profilePic ==
-                                      Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(user.profilePic).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(user.profilePic),
-                                    ),
-                              title: Text(user.fullName),
-                              onTap: () => navigateToUser(context, user.uid),
-                            );
-                          },
-                          error: (error, stackTrace) =>
-                              ErrorText(error: error.toString()),
-                          loading: () => const Loader(),
-                        );
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('There are no likes for this service'),
+              body: service.likes.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          'No likes',
+                          style: TextStyle(fontSize: 14),
+                        ),
                       ),
-                    );
-                  }
-                },
-              ),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 0),
+                      itemCount: service.likes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ref
+                            .watch(getUserDataProvider(service.likes[index]))
+                            .when(
+                              data: (user) {
+                                return ListTile(
+                                  leading: user!.profilePic ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(user.profilePic)
+                                                  .image,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(user.profilePic),
+                                        ),
+                                  title: Text(user.fullName),
+                                  onTap: () =>
+                                      navigateToUser(context, user.uid),
+                                );
+                              },
+                              error: (error, stackTrace) =>
+                                  ErrorText(error: error.toString()),
+                              loading: () => const Loader(),
+                            );
+                      },
+                    ),
             );
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
