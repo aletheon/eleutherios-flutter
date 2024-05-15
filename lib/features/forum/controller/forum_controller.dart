@@ -199,54 +199,6 @@ class ForumController extends StateNotifier<bool> {
     });
   }
 
-  // *************************************************************
-  // *************************************************************
-  // *************************************************************
-  // *************************************************************
-  // HERE ROB BUILD THIS ROUTINE OUT
-  // *************************************************************
-  // *************************************************************
-  // *************************************************************
-  // *************************************************************
-  // *************************************************************
-  // void createForumFromRule(
-  //     Rule rule, Policy policy, Service service, BuildContext context) async {
-  //   state = true;
-  //   final user = _ref.read(userProvider)!;
-  //   String forumId = const Uuid().v1().replaceAll('-', '');
-
-  //   Forum forum = Forum(
-  //     forumId: forumId,
-  //     uid: service.uid,
-  //     parentId: '',
-  //     parentUid: '',
-  //     policyId: policy.policyId,
-  //     policyUid: policy.uid,
-  //     ruleId: rule.ruleId,
-  //     title: rule.title,
-  //     titleLowercase: rule.titleLowercase,
-  //     description: rule.description,
-
-  //     // HERE ROB HAVE TO MOVE IMAGE TO FORUM/
-
-  //     image: rule.image,
-  //     banner: rule.banner,
-  //     public: rule.public,
-  //     tags: rule.tags,
-  //     members: [],
-  //     posts: [],
-  //     forums: [],
-  //     breadcrumbs: [],
-  //     breadcrumbReferences: [],
-  //     recentPostId: '',
-  //     lastUpdateDate: DateTime.now(),
-  //     creationDate: DateTime.now(),
-  //   );
-  //   final res = await _forumRepository.createForum(forum);
-
-  //   state = false;
-  // }
-
   void updateForum({
     required File? profileFile,
     required File? bannerFile,

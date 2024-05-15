@@ -3,16 +3,24 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
+import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
+import 'package:reddit_tutorial/models/forum.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
+import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
@@ -46,12 +54,16 @@ final policyControllerProvider =
     StateNotifierProvider<PolicyController, bool>((ref) {
   final policyRepository = ref.watch(policyRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
+  final forumRepository = ref.watch(forumRepositoryProvider);
   final serviceRepository = ref.watch(serviceRepositoryProvider);
+  final memberRepository = ref.watch(memberRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return PolicyController(
       policyRepository: policyRepository,
       userProfileRepository: userProfileRepository,
+      forumRepository: forumRepository,
       serviceRepository: serviceRepository,
+      memberRepository: memberRepository,
       storageRepository: storageRepository,
       ref: ref);
 });
@@ -59,18 +71,24 @@ final policyControllerProvider =
 class PolicyController extends StateNotifier<bool> {
   final PolicyRepository _policyRepository;
   final UserProfileRepository _userProfileRepository;
+  final ForumRepository _forumRepository;
   final ServiceRepository _serviceRepository;
+  final MemberRepository _memberRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
   PolicyController(
       {required PolicyRepository policyRepository,
       required UserProfileRepository userProfileRepository,
+      required ForumRepository forumRepository,
       required ServiceRepository serviceRepository,
+      required MemberRepository memberRepository,
       required StorageRepository storageRepository,
       required Ref ref})
       : _policyRepository = policyRepository,
         _userProfileRepository = userProfileRepository,
+        _forumRepository = forumRepository,
         _serviceRepository = serviceRepository,
+        _memberRepository = memberRepository,
         _storageRepository = storageRepository,
         _ref = ref,
         super(false);
@@ -154,13 +172,6 @@ class PolicyController extends StateNotifier<bool> {
       String serviceId, String policyId, BuildContext context) async {
     state = true;
     final user = _ref.read(userProvider);
-    // String policyId = const Uuid().v1().replaceAll('-', '');
-
-    // 1) add policy to service
-    // 2) add service to policy (consumers list)
-    // 3) get rules for policy
-    // 4) create forum rules based on instantionType
-
     Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
         .getPolicyById(policyId)
@@ -181,6 +192,95 @@ class PolicyController extends StateNotifier<bool> {
       List<Rule>? rules = await _ref.read(getRulesProvider2(policyId)).first;
 
       if (rules.isNotEmpty) {
+        for (Rule rule in rules) {
+          if (rule.instantiationType == InstantiationType.consume.name) {
+            String forumId = const Uuid().v1().replaceAll('-', '');
+
+            Forum forum = Forum(
+              forumId: forumId,
+              uid: user!.uid,
+              parentId: '',
+              parentUid: '',
+              policyId: policy.policyId,
+              policyUid: policy.uid,
+              ruleId: rule.ruleId,
+              title: rule.title,
+              titleLowercase: rule.title.toLowerCase(),
+              description: rule.description,
+              image: Constants.avatarDefault,
+              banner: Constants.forumBannerDefault,
+              public: rule.public,
+              tags: [],
+              members: [],
+              posts: [],
+              forums: [],
+              breadcrumbs: [],
+              breadcrumbReferences: [],
+              recentPostId: '',
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
+
+            if (rule.image != Constants.avatarDefault) {
+              File profileFile = File(rule.image);
+
+              // forums/profile/123456
+              final profileRes = await _storageRepository.storeFile(
+                  path: 'forums/profile', id: forum.forumId, file: profileFile);
+
+              profileRes.fold(
+                (l) => showSnackBar(context, l.message),
+                (r) => forum = forum.copyWith(image: r),
+              );
+            }
+
+            if (rule.banner != Constants.ruleBannerDefault) {
+              File bannerFile = File(rule.banner);
+
+              // forums/banner/123456
+              final bannerRes = await _storageRepository.storeFile(
+                  path: 'forums/banner', id: forum.forumId, file: bannerFile);
+
+              bannerRes.fold(
+                (l) => showSnackBar(context, l.message),
+                (r) => forum = forum.copyWith(banner: r),
+              );
+            }
+
+            // Convert rule members into actual members for this forum
+            if (rule.members.isNotEmpty) {
+              List<RuleMember>? ruleMembers =
+                  await _ref.read(getRuleMembersProvider2(rule.ruleId)).first;
+
+              for (RuleMember ruleMember in ruleMembers) {
+                String memberId = const Uuid().v1().replaceAll('-', '');
+
+                // create member
+                Member member = Member(
+                  memberId: memberId,
+                  forumId: forum.forumId,
+                  forumUid: forum.uid,
+                  serviceId: ruleMember.serviceId,
+                  serviceUid: ruleMember.serviceUid,
+                  selected: ruleMember.selected,
+                  permissions: ruleMember.permissions,
+                  lastUpdateDate: DateTime.now(),
+                  creationDate: DateTime.now(),
+                );
+                final resMember = await _memberRepository.createMember(member);
+
+                // add member to forums member list
+                forum.members.add(memberId);
+              }
+            }
+            final resForum = await _forumRepository.createForum(forum);
+
+            state = false;
+            resForum.fold((l) => showSnackBar(context, l.message), (r) {
+              showSnackBar(context, 'Policy added successfully!');
+            });
+          }
+        }
       } else {
         state = false;
         if (context.mounted) {
@@ -193,31 +293,6 @@ class PolicyController extends StateNotifier<bool> {
         showSnackBar(context, 'Policy or service does not exist');
       }
     }
-
-    // Policy policy = Policy(
-    //   policyId: policyId,
-    //   uid: uid,
-    //   title: title,
-    //   titleLowercase: title.toLowerCase(),
-    //   description: description,
-    //   image: Constants.avatarDefault,
-    //   banner: Constants.policyBannerDefault,
-    //   public: public,
-    //   tags: [],
-    //   managers: [],
-    //   consumers: [],
-    //   rules: [],
-    //   lastUpdateDate: DateTime.now(),
-    //   creationDate: DateTime.now(),
-    // );
-    // final res = await _policyRepository.createPolicy(policy);
-    // user!.policies.add(policyId);
-    // final resUser = await _userProfileRepository.updateUser(user);
-    // state = false;
-    // res.fold((l) => showSnackBar(context, l.message), (r) {
-    //   showSnackBar(context, 'Policy created successfully!');
-    //   Routemaster.of(context).replace('/user/policy/list');
-    // });
   }
 
   Stream<List<Policy>> getUserPolicies() {

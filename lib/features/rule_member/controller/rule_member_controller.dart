@@ -35,6 +35,16 @@ final getRuleMembersProvider =
       .getRuleMembers(ruleId);
 });
 
+final getRuleMembersProvider2 = Provider.family((ref, String ruleId) {
+  try {
+    return ref
+        .watch(ruleMemberControllerProvider.notifier)
+        .getRuleMembers(ruleId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final getUserRuleMembersProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
