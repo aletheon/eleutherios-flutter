@@ -13,7 +13,11 @@ class Forum {
   final String titleLowercase;
   final String description;
   final String image;
+  final String imageFileType;
+  final String imageFileName;
   final String banner;
+  final String bannerFileType;
+  final String bannerFileName;
   final bool public;
   final List<String> tags;
   final List<String> members;
@@ -37,7 +41,11 @@ class Forum {
     required this.titleLowercase,
     required this.description,
     required this.image,
+    required this.imageFileType,
+    required this.imageFileName,
     required this.banner,
+    required this.bannerFileType,
+    required this.bannerFileName,
     required this.public,
     required this.tags,
     required this.members,
@@ -62,7 +70,11 @@ class Forum {
     String? titleLowercase,
     String? description,
     String? image,
+    String? imageFileType,
+    String? imageFileName,
     String? banner,
+    String? bannerFileType,
+    String? bannerFileName,
     bool? public,
     List<String>? tags,
     List<String>? members,
@@ -86,7 +98,11 @@ class Forum {
       titleLowercase: titleLowercase ?? this.titleLowercase,
       description: description ?? this.description,
       image: image ?? this.image,
+      imageFileType: imageFileType ?? this.imageFileType,
+      imageFileName: imageFileName ?? this.imageFileName,
       banner: banner ?? this.banner,
+      bannerFileType: bannerFileType ?? this.bannerFileType,
+      bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
       tags: tags ?? this.tags,
       members: members ?? this.members,
@@ -113,7 +129,11 @@ class Forum {
       'titleLowercase': titleLowercase,
       'description': description,
       'image': image,
+      'imageFileType': imageFileType,
+      'imageFileName': imageFileName,
       'banner': banner,
+      'bannerFileType': bannerFileType,
+      'bannerFileName': bannerFileName,
       'public': public,
       'tags': tags,
       'members': members,
@@ -140,7 +160,11 @@ class Forum {
       titleLowercase: map['titleLowercase'] as String,
       description: map['description'] as String,
       image: map['image'] as String,
+      imageFileType: map['imageFileType'] as String,
+      imageFileName: map['imageFileName'] as String,
       banner: map['banner'] as String,
+      bannerFileType: map['bannerFileType'] as String,
+      bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
       tags: List<String>.from(map['tags']),
       members: List<String>.from(map['members']),
@@ -158,7 +182,7 @@ class Forum {
 
   @override
   String toString() {
-    return 'Forum(forumId: $forumId, uid: $uid, parentId: $parentId, parentUid: $parentUid, policyId: $policyId, policyUid: $policyUid, ruleId: $ruleId, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, members: $members, posts: $posts, forums: $forums, breadcrumbs: $breadcrumbs, breadcrumbReferences: $breadcrumbReferences, recentPostId: $recentPostId, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Forum(forumId: $forumId, uid: $uid, parentId: $parentId, parentUid: $parentUid, policyId: $policyId, policyUid: $policyUid, ruleId: $ruleId, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, tags: $tags, members: $members, posts: $posts, forums: $forums, breadcrumbs: $breadcrumbs, breadcrumbReferences: $breadcrumbReferences, recentPostId: $recentPostId, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -176,14 +200,18 @@ class Forum {
         other.titleLowercase == titleLowercase &&
         other.description == description &&
         other.image == image &&
+        other.imageFileType == imageFileType &&
+        other.imageFileName == imageFileName &&
         other.banner == banner &&
+        other.bannerFileType == bannerFileType &&
+        other.bannerFileName == bannerFileName &&
         other.public == public &&
         listEquals(other.tags, tags) &&
         listEquals(other.members, members) &&
         listEquals(other.posts, posts) &&
         listEquals(other.forums, forums) &&
         listEquals(other.breadcrumbs, breadcrumbs) &&
-        listEquals(other.breadcrumbReferences, breadcrumbReferences) &&
+        other.breadcrumbReferences == breadcrumbReferences &&
         other.recentPostId == recentPostId &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
@@ -202,7 +230,11 @@ class Forum {
         titleLowercase.hashCode ^
         description.hashCode ^
         image.hashCode ^
+        imageFileType.hashCode ^
+        imageFileName.hashCode ^
         banner.hashCode ^
+        bannerFileType.hashCode ^
+        bannerFileName.hashCode ^
         public.hashCode ^
         tags.hashCode ^
         members.hashCode ^

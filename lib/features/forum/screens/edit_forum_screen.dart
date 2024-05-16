@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mime/mime.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
@@ -28,6 +29,10 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
 
   File? bannerFile;
   File? profileFile;
+  String? bannerFileName;
+  String? profileFileName;
+  String? profileFileType;
+  String? bannerFileType;
 
   void selectBannerImage() async {
     final res = await pickImage();
@@ -35,6 +40,8 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
     if (res != null) {
       setState(() {
         bannerFile = File(res.files.first.path!);
+        bannerFileName = bannerFile!.path.split('/').last;
+        bannerFileType = lookupMimeType(bannerFile!.path);
       });
     }
   }
@@ -45,6 +52,8 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
     if (res != null) {
       setState(() {
         profileFile = File(res.files.first.path!);
+        profileFileName = profileFile!.path.split('/').last;
+        profileFileType = lookupMimeType(profileFile!.path);
       });
     }
   }
@@ -52,10 +61,15 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
   void save(Forum forum) {
     if (titleController.text.trim().isNotEmpty) {
       forum = forum.copyWith(
-          title: titleController.text.trim(),
-          titleLowercase: titleController.text.trim().toLowerCase(),
-          description: descriptionController.text.trim(),
-          public: isChecked);
+        title: titleController.text.trim(),
+        titleLowercase: titleController.text.trim().toLowerCase(),
+        description: descriptionController.text.trim(),
+        public: isChecked,
+        imageFileName: profileFileName,
+        imageFileType: profileFileType,
+        bannerFileName: bannerFileName,
+        bannerFileType: bannerFileType,
+      );
       ref.read(forumControllerProvider.notifier).updateForum(
           profileFile: profileFile,
           bannerFile: bannerFile,

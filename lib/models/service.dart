@@ -8,7 +8,11 @@ class Service {
   final String titleLowercase;
   final String description;
   final String image;
+  final String imageFileType;
+  final String imageFileName;
   final String banner;
+  final String bannerFileType;
+  final String bannerFileName;
   final bool public;
   final List<String> tags;
   final List<String> likes;
@@ -22,7 +26,11 @@ class Service {
     required this.titleLowercase,
     required this.description,
     required this.image,
+    required this.imageFileType,
+    required this.imageFileName,
     required this.banner,
+    required this.bannerFileType,
+    required this.bannerFileName,
     required this.public,
     required this.tags,
     required this.likes,
@@ -38,7 +46,11 @@ class Service {
     String? titleLowercase,
     String? description,
     String? image,
+    String? imageFileType,
+    String? imageFileName,
     String? banner,
+    String? bannerFileType,
+    String? bannerFileName,
     bool? public,
     List<String>? tags,
     List<String>? likes,
@@ -53,7 +65,11 @@ class Service {
       titleLowercase: titleLowercase ?? this.titleLowercase,
       description: description ?? this.description,
       image: image ?? this.image,
+      imageFileType: imageFileType ?? this.imageFileType,
+      imageFileName: imageFileName ?? this.imageFileName,
       banner: banner ?? this.banner,
+      bannerFileType: bannerFileType ?? this.bannerFileType,
+      bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
       tags: tags ?? this.tags,
       likes: likes ?? this.likes,
@@ -71,7 +87,11 @@ class Service {
       'titleLowercase': titleLowercase,
       'description': description,
       'image': image,
+      'imageFileType': imageFileType,
+      'imageFileName': imageFileName,
       'banner': banner,
+      'bannerFileType': bannerFileType,
+      'bannerFileName': bannerFileName,
       'public': public,
       'tags': tags,
       'likes': likes,
@@ -89,7 +109,11 @@ class Service {
       titleLowercase: map['titleLowercase'] as String,
       description: map['description'] as String,
       image: map['image'] as String,
+      imageFileType: map['imageFileType'] as String,
+      imageFileName: map['imageFileName'] as String,
       banner: map['banner'] as String,
+      bannerFileType: map['bannerFileType'] as String,
+      bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
       tags: List<String>.from(map['tags']),
       likes: List<String>.from(map['likes']),
@@ -103,7 +127,7 @@ class Service {
 
   @override
   String toString() {
-    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -116,7 +140,11 @@ class Service {
         other.titleLowercase == titleLowercase &&
         other.description == description &&
         other.image == image &&
+        other.imageFileType == imageFileType &&
+        other.imageFileName == imageFileName &&
         other.banner == banner &&
+        other.bannerFileType == bannerFileType &&
+        other.bannerFileName == bannerFileName &&
         other.public == public &&
         listEquals(other.tags, tags) &&
         listEquals(other.likes, likes) &&
@@ -133,7 +161,11 @@ class Service {
         titleLowercase.hashCode ^
         description.hashCode ^
         image.hashCode ^
+        imageFileType.hashCode ^
+        imageFileName.hashCode ^
         banner.hashCode ^
+        bannerFileType.hashCode ^
+        bannerFileName.hashCode ^
         public.hashCode ^
         tags.hashCode ^
         likes.hashCode ^

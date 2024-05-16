@@ -13,7 +13,11 @@ class Rule {
   final String titleLowercase;
   final String description;
   final String image;
+  final String imageFileType;
+  final String imageFileName;
   final String banner;
+  final String bannerFileType;
+  final String bannerFileName;
   final bool public; // visibility of rule
   final String instantiationType; // consume, order, date
   final DateTime instantiationDate;
@@ -32,7 +36,11 @@ class Rule {
     required this.titleLowercase,
     required this.description,
     required this.image,
+    required this.imageFileType,
+    required this.imageFileName,
     required this.banner,
+    required this.bannerFileType,
+    required this.bannerFileName,
     required this.public,
     required this.instantiationType,
     required this.instantiationDate,
@@ -53,7 +61,11 @@ class Rule {
     String? titleLowercase,
     String? description,
     String? image,
+    String? imageFileType,
+    String? imageFileName,
     String? banner,
+    String? bannerFileType,
+    String? bannerFileName,
     bool? public,
     String? instantiationType,
     DateTime? instantiationDate,
@@ -73,7 +85,11 @@ class Rule {
       titleLowercase: titleLowercase ?? this.titleLowercase,
       description: description ?? this.description,
       image: image ?? this.image,
+      imageFileType: imageFileType ?? this.imageFileType,
+      imageFileName: imageFileName ?? this.imageFileName,
       banner: banner ?? this.banner,
+      bannerFileType: bannerFileType ?? this.bannerFileType,
+      bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
       instantiationType: instantiationType ?? this.instantiationType,
       instantiationDate: instantiationDate ?? this.instantiationDate,
@@ -96,7 +112,11 @@ class Rule {
       'titleLowercase': titleLowercase,
       'description': description,
       'image': image,
+      'imageFileType': imageFileType,
+      'imageFileName': imageFileName,
       'banner': banner,
+      'bannerFileType': bannerFileType,
+      'bannerFileName': bannerFileName,
       'public': public,
       'instantiationType': instantiationType,
       'instantiationDate': instantiationDate.millisecondsSinceEpoch,
@@ -119,7 +139,11 @@ class Rule {
       titleLowercase: map['titleLowercase'] as String,
       description: map['description'] as String,
       image: map['image'] as String,
+      imageFileType: map['imageFileType'] as String,
+      imageFileName: map['imageFileName'] as String,
       banner: map['banner'] as String,
+      bannerFileType: map['bannerFileType'] as String,
+      bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
       instantiationType: map['instantiationType'] as String,
       instantiationDate:
@@ -135,7 +159,7 @@ class Rule {
 
   @override
   String toString() {
-    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, banner: $banner, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -152,7 +176,11 @@ class Rule {
         other.titleLowercase == titleLowercase &&
         other.description == description &&
         other.image == image &&
+        other.imageFileType == imageFileType &&
+        other.imageFileName == imageFileName &&
         other.banner == banner &&
+        other.bannerFileType == bannerFileType &&
+        other.bannerFileName == bannerFileName &&
         other.public == public &&
         other.instantiationType == instantiationType &&
         other.instantiationDate == instantiationDate &&
@@ -174,7 +202,11 @@ class Rule {
         titleLowercase.hashCode ^
         description.hashCode ^
         image.hashCode ^
+        imageFileType.hashCode ^
+        imageFileName.hashCode ^
         banner.hashCode ^
+        bannerFileType.hashCode ^
+        bannerFileName.hashCode ^
         public.hashCode ^
         instantiationType.hashCode ^
         instantiationDate.hashCode ^
