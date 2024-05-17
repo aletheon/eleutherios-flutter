@@ -164,13 +164,6 @@ class PolicyController extends StateNotifier<bool> {
     state = false;
     policyRes.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Policy updated successfully!');
-      // Routemaster.of(context).popUntil((routeData) {
-      //   if (routeData.toString().split("/").last ==
-      //       routeData.pathParameters['id']) {
-      //     return true;
-      //   }
-      //   return false;
-      // });
     });
   }
 
@@ -188,8 +181,6 @@ class PolicyController extends StateNotifier<bool> {
         .getServiceById(serviceId)
         .first;
 
-    print('addPolicyToService 2');
-
     if (policy != null && service != null) {
       service.policies.add(policyId);
       final resService = await _serviceRepository.updateService(service);
@@ -200,10 +191,8 @@ class PolicyController extends StateNotifier<bool> {
       List<Rule>? rules = await _ref.read(getRulesProvider2(policyId)).first;
 
       if (rules.isNotEmpty) {
-        print('addPolicyToService got rules');
         for (Rule rule in rules) {
           if (rule.instantiationType == InstantiationType.consume.value) {
-            print('addPolicyToService got consume rule');
             String forumId = const Uuid().v1().replaceAll('-', '');
 
             Forum forum = Forum(
@@ -236,7 +225,6 @@ class PolicyController extends StateNotifier<bool> {
             );
 
             if (rule.image != Constants.avatarDefault) {
-              print('addPolicyToService creating profileFile image');
               final profileGetResponse = await http.get(Uri.parse(rule.image));
               Directory profileTempDir = await getTemporaryDirectory();
               final profileFile = File(join(profileTempDir.path,
@@ -258,7 +246,6 @@ class PolicyController extends StateNotifier<bool> {
             }
 
             if (rule.banner != Constants.ruleBannerDefault) {
-              print('addPolicyToService creating bannerFile image');
               final bannerGetResponse = await http.get(Uri.parse(rule.banner));
               Directory bannerTempDir = await getTemporaryDirectory();
               final bannerFile = File(join(bannerTempDir.path,
@@ -321,8 +308,6 @@ class PolicyController extends StateNotifier<bool> {
         }
       }
     } else {
-      print('addPolicyToService no rules');
-
       state = false;
       if (context.mounted) {
         showSnackBar(context, 'Policy or service does not exist');
