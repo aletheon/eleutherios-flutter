@@ -61,7 +61,12 @@ class ListDrawer extends ConsumerWidget {
         child: Column(
           children: [
             ListTile(
-              title: const Text('Create policy'),
+              title: const Text(
+                'Create policy',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
               leading: const Icon(
                 Icons.account_balance_outlined,
               ),
@@ -77,7 +82,12 @@ class ListDrawer extends ConsumerWidget {
               onTap: () => navigateToCreatePolicy(context),
             ),
             ListTile(
-              title: const Text('Create forum'),
+              title: const Text(
+                'Create forum',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
               leading: const Icon(
                 Icons.sms_outlined,
               ),
@@ -93,7 +103,12 @@ class ListDrawer extends ConsumerWidget {
               onTap: () => navigateToCreateForum(context),
             ),
             ListTile(
-              title: const Text('Create service'),
+              title: const Text(
+                'Create service',
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
               leading: const Icon(
                 Icons.construction_outlined,
               ),
