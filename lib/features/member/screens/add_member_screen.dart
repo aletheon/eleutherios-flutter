@@ -136,7 +136,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
               return membersProv.when(
                 data: (members) {
                   List<Service> servicesNotInForum = [];
-                  for (var service in services) {
+                  for (Service service in services) {
                     List<Member> result = members
                         .where((r) => r.serviceId == service.serviceId)
                         .toList();

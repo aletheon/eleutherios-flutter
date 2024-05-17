@@ -239,8 +239,8 @@ class PolicyController extends StateNotifier<bool> {
               print('addPolicyToService creating profileFile image');
               final profileGetResponse = await http.get(Uri.parse(rule.image));
               Directory profileTempDir = await getTemporaryDirectory();
-              final profileFile =
-                  File(join(profileTempDir.path, rule.imageFileName));
+              final profileFile = File(join(profileTempDir.path,
+                  const Uuid().v1().replaceAll('-', '') + rule.imageFileName));
               profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
 
               // forums/profile/123456
@@ -259,10 +259,10 @@ class PolicyController extends StateNotifier<bool> {
 
             if (rule.banner != Constants.ruleBannerDefault) {
               print('addPolicyToService creating bannerFile image');
-              final bannerGetResponse = await http.get(Uri.parse(rule.image));
+              final bannerGetResponse = await http.get(Uri.parse(rule.banner));
               Directory bannerTempDir = await getTemporaryDirectory();
-              final bannerFile =
-                  File(join(bannerTempDir.path, rule.bannerFileName));
+              final bannerFile = File(join(bannerTempDir.path,
+                  const Uuid().v1().replaceAll('-', '') + rule.bannerFileName));
               bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
 
               // forums/banner/123456
@@ -272,7 +272,7 @@ class PolicyController extends StateNotifier<bool> {
               bannerStorageResponse.fold(
                 (l) => showSnackBar(context, l.message),
                 (r) => forum = forum.copyWith(
-                  image: r,
+                  banner: r,
                   bannerFileName: rule.bannerFileName,
                   bannerFileType: rule.bannerFileType,
                 ),

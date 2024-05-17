@@ -22,8 +22,6 @@ class AddPolicyScreen extends ConsumerWidget {
 
   void addPolicyToService(
       BuildContext context, WidgetRef ref, String policyId) {
-    print('addPolicyToService 1');
-
     ref
         .read(policyControllerProvider.notifier)
         .addPolicyToService(_serviceId, policyId, context);
@@ -94,8 +92,35 @@ class AddPolicyScreen extends ConsumerWidget {
         );
       } else {
         return userPoliciesProv.when(
-          data: (policies) {
-            return showPolicyList(ref, policies);
+          data: (userPolicies) {
+            if (service.policies.isEmpty) {
+              return showPolicyList(ref, userPolicies);
+            } else {
+              List<Policy> policesNotInService = [];
+              for (Policy p in userPolicies) {
+                bool result = false;
+                for (String s in p.consumers) {
+                  if (s == service.serviceId) {
+                    result = true;
+                    break;
+                  }
+                }
+                if (result == false) {
+                  policesNotInService.add(p);
+                }
+              }
+
+              if (policesNotInService.isNotEmpty) {
+                return showPolicyList(ref, policesNotInService);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your policies are in the service'),
+                  ),
+                );
+              }
+            }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader(),
@@ -112,7 +137,30 @@ class AddPolicyScreen extends ConsumerWidget {
               ),
             );
           } else {
-            return showPolicyList(ref, policies);
+            List<Policy> policesNotInService = [];
+            for (Policy p in policies) {
+              bool result = false;
+              for (String s in p.consumers) {
+                if (s == service.serviceId) {
+                  result = true;
+                  break;
+                }
+              }
+              if (result == false) {
+                policesNotInService.add(p);
+              }
+            }
+
+            if (policesNotInService.isNotEmpty) {
+              return showPolicyList(ref, policesNotInService);
+            } else {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('All public policies are in the service'),
+                ),
+              );
+            }
           }
         },
         error: (error, stackTrace) => ErrorText(error: error.toString()),
@@ -123,6 +171,7 @@ class AddPolicyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(policyControllerProvider);
     final serviceProv = ref.watch(getServiceByIdProvider(_serviceId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -139,36 +188,38 @@ class AddPolicyScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text("Private"),
-                  Radio(
-                      value: "Private",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  const Text("Public"),
-                  Radio(
-                      value: "Public",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
-                  ),
-                ],
-              ),
-              showPolicies(ref, service!, searchRadioProv)
-            ],
-          ),
+          body: isLoading
+              ? const Loader()
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text("Private"),
+                        Radio(
+                            value: "Private",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        const Text("Public"),
+                        Radio(
+                            value: "Public",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.search),
+                        ),
+                      ],
+                    ),
+                    showPolicies(ref, service!, searchRadioProv)
+                  ],
+                ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),
