@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
@@ -17,6 +18,10 @@ class ServiceScreen extends ConsumerWidget {
 
   void navigateToServiceTools(BuildContext context) {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
+  }
+
+  void navigateToPolicy(BuildContext context, String policyId) {
+    Routemaster.of(context).push('/policy/$policyId');
   }
 
   void navigateToLikes(BuildContext context) {
@@ -254,6 +259,82 @@ class ServiceScreen extends ConsumerWidget {
                                     )
                                   ],
                                 ),
+                                // #####################################################
+                                // #####################################################
+                                // Show services here
+                                // #####################################################
+                                // #####################################################
+                                ref
+                                    .watch(servicePoliciesProvider(serviceId))
+                                    .when(
+                                      data: (policies) {
+                                        if (policies.isEmpty) {
+                                          return const Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child:
+                                                  Text("There are no policies"),
+                                            ),
+                                          );
+                                        } else {
+                                          return MediaQuery.removePadding(
+                                            context: context,
+                                            removeTop: true,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: policies.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                final policy = policies[index];
+
+                                                return ListTile(
+                                                  title: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            policy.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                            ),
+                                                            textWidthBasis:
+                                                                TextWidthBasis
+                                                                    .longestLine,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  leading: policy.image ==
+                                                          Constants
+                                                              .avatarDefault
+                                                      ? CircleAvatar(
+                                                          backgroundImage:
+                                                              Image.asset(policy
+                                                                      .image)
+                                                                  .image,
+                                                        )
+                                                      : CircleAvatar(
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                                  policy.image),
+                                                        ),
+                                                  onTap: () => navigateToPolicy(
+                                                      context, policy.policyId),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    ),
                               ],
                             ),
                           ],

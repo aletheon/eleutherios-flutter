@@ -94,6 +94,20 @@ class PolicyRepository {
     }
   }
 
+  Stream<List<Policy>> getServicePolicies(String serviceId) {
+    return _policies
+        .where('consumers', arrayContains: serviceId)
+        .snapshots()
+        .map((event) {
+      List<Policy> policies = [];
+      for (var doc in event.docs) {
+        policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      policies.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      return policies;
+    });
+  }
+
   FutureVoid createPolicy(Policy policy) async {
     try {
       return right(_policies.doc(policy.policyId).set(policy.toMap()));

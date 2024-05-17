@@ -52,6 +52,12 @@ final searchPoliciesProvider = StreamProvider.family((ref, String query) {
   return ref.watch(policyControllerProvider.notifier).searchPolicies(query);
 });
 
+final servicePoliciesProvider = StreamProvider.family((ref, String serviceId) {
+  return ref
+      .watch(policyControllerProvider.notifier)
+      .getServicePolicies(serviceId);
+});
+
 final policyControllerProvider =
     StateNotifierProvider<PolicyController, bool>((ref) {
   final policyRepository = ref.watch(policyRepositoryProvider);
@@ -330,5 +336,9 @@ class PolicyController extends StateNotifier<bool> {
 
   Stream<List<Policy>> searchPolicies(String query) {
     return _policyRepository.searchPolicies(query);
+  }
+
+  Stream<List<Policy>> getServicePolicies(String serviceId) {
+    return _policyRepository.getServicePolicies(serviceId);
   }
 }
