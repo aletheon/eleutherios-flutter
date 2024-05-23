@@ -130,25 +130,6 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                member!.permissions.contains(
-                                    MemberPermissions.createforum.name)
-                            ? ListTile(
-                                onTap: () => createForum(context),
-                                leading: const Icon(Icons.add_circle_outline),
-                                title: const Text('Create Forum'),
-                              )
-                            : const SizedBox(),
-                        user.uid == forum.uid ||
-                                member!.permissions.contains(
-                                    MemberPermissions.removeforum.name)
-                            ? ListTile(
-                                onTap: () => removeForum(context),
-                                leading:
-                                    const Icon(Icons.remove_circle_outline),
-                                title: const Text('Remove Forum'),
-                              )
-                            : const SizedBox(),
-                        user.uid == forum.uid ||
                                 member!.permissions
                                     .contains(MemberPermissions.addmember.name)
                             ? ListTile(
@@ -166,6 +147,25 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                                 leading:
                                     const Icon(Icons.remove_moderator_outlined),
                                 title: const Text('Remove Member'),
+                              )
+                            : const SizedBox(),
+                        user.uid == forum.uid ||
+                                member!.permissions.contains(
+                                    MemberPermissions.createforum.name)
+                            ? ListTile(
+                                onTap: () => createForum(context),
+                                leading: const Icon(Icons.add_circle_outline),
+                                title: const Text('Create Forum'),
+                              )
+                            : const SizedBox(),
+                        user.uid == forum.uid ||
+                                member!.permissions.contains(
+                                    MemberPermissions.removeforum.name)
+                            ? ListTile(
+                                onTap: () => removeForum(context),
+                                leading:
+                                    const Icon(Icons.remove_circle_outline),
+                                title: const Text('Remove Forum'),
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||

@@ -362,7 +362,10 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                             user,
                             forum!,
                             membersProv,
-                            ref.read(searchRadioProvider.notifier).state),
+                            ref.read(searchRadioProvider.notifier).state ==
+                                    "Favorite"
+                                ? "Private"
+                                : ref.read(searchRadioProvider.notifier).state),
                       );
                     },
                     icon: const Icon(Icons.search),

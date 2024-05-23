@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/favorite/controller/favorite_controller
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
+import 'package:reddit_tutorial/features/rule_member/delegates/search_rule_member_delegate.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/rule.dart';
@@ -137,10 +138,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               return showServiceList(ref, rule, services, null);
             } else {
               return ruleMembersProv.when(
-                data: (members) {
+                data: (ruleMembers) {
                   List<Service> servicesNotInRule = [];
                   for (var service in services) {
-                    List<RuleMember> result = members
+                    List<RuleMember> result = ruleMembers
                         .where((r) => r.serviceId == service.serviceId)
                         .toList();
                     if (result.isEmpty) {
@@ -184,10 +185,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               return showServiceList(ref, rule, services, null);
             } else {
               return ruleMembersProv.when(
-                data: (members) {
+                data: (ruleMembers) {
                   List<Service> servicesNotInRule = [];
                   for (var service in services) {
-                    List<RuleMember> result = members
+                    List<RuleMember> result = ruleMembers
                         .where((r) => r.serviceId == service.serviceId)
                         .toList();
                     if (result.isEmpty) {
@@ -231,10 +232,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               return showServiceList(ref, rule, null, favorites);
             } else {
               return ruleMembersProv.when(
-                data: (members) {
+                data: (ruleMembers) {
                   List<Favorite> favoritesNotInRule = [];
                   for (var favorite in favorites) {
-                    List<RuleMember> result = members
+                    List<RuleMember> result = ruleMembers
                         .where((r) => r.serviceId == favorite.serviceId)
                         .toList();
                     if (result.isEmpty) {
@@ -298,8 +299,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
   @override
   Widget build(BuildContext context) {
     final ruleProv = ref.watch(getRuleByIdProvider(widget.ruleId));
+    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.ruleId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
+    final user = ref.watch(userProvider)!;
 
     return ruleProv.when(
       data: (rule) {
@@ -353,7 +356,20 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                             newValue.toString();
                       }),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: SearchRuleMemberDelegate(
+                            ref,
+                            user,
+                            rule!,
+                            ruleMembersProv,
+                            ref.read(searchRadioProvider.notifier).state ==
+                                    "Favorite"
+                                ? "Private"
+                                : ref.read(searchRadioProvider.notifier).state),
+                      );
+                    },
                     icon: const Icon(Icons.search),
                   ),
                 ],
