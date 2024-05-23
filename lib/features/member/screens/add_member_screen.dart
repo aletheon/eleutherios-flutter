@@ -297,7 +297,6 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
   @override
   Widget build(BuildContext context) {
     final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
-    final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
@@ -361,7 +360,6 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                             ref,
                             user,
                             forum!,
-                            membersProv,
                             ref.read(searchRadioProvider.notifier).state ==
                                     "Favorite"
                                 ? "Private"

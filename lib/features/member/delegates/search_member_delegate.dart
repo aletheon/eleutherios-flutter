@@ -16,10 +16,8 @@ class SearchMemberDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
   final Forum forum;
-  final AsyncValue<List<Member>> membersProv;
   final String searchType;
-  SearchMemberDelegate(
-      this.ref, this.user, this.forum, this.membersProv, this.searchType);
+  SearchMemberDelegate(this.ref, this.user, this.forum, this.searchType);
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
@@ -95,6 +93,8 @@ class SearchMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final membersProv = ref.watch(getMembersProvider(forum.forumId));
+
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {

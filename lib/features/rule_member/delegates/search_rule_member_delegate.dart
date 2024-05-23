@@ -16,10 +16,8 @@ class SearchRuleMemberDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
   final Rule rule;
-  final AsyncValue<List<RuleMember>> ruleMembersProv;
   final String searchType;
-  SearchRuleMemberDelegate(
-      this.ref, this.user, this.rule, this.ruleMembersProv, this.searchType);
+  SearchRuleMemberDelegate(this.ref, this.user, this.rule, this.searchType);
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
@@ -96,6 +94,8 @@ class SearchRuleMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final ruleMembersProv = ref.watch(getRuleMembersProvider(rule.ruleId));
+
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {

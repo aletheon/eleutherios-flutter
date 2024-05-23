@@ -299,7 +299,6 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
   @override
   Widget build(BuildContext context) {
     final ruleProv = ref.watch(getRuleByIdProvider(widget.ruleId));
-    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.ruleId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
@@ -363,7 +362,6 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                             ref,
                             user,
                             rule!,
-                            ruleMembersProv,
                             ref.read(searchRadioProvider.notifier).state ==
                                     "Favorite"
                                 ? "Private"

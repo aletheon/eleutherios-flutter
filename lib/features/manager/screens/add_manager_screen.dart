@@ -8,6 +8,7 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/manager/delegates/search_manager_delegate.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
@@ -300,6 +301,7 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
     final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
+    final user = ref.watch(userProvider)!;
 
     return policyProv.when(
       data: (policy) {
@@ -343,7 +345,19 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
                             newValue.toString();
                       }),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: SearchManagerDelegate(
+                            ref,
+                            user,
+                            policy!,
+                            ref.read(searchRadioProvider.notifier).state ==
+                                    "Favorite"
+                                ? "Private"
+                                : ref.read(searchRadioProvider.notifier).state),
+                      );
+                    },
                     icon: const Icon(Icons.search),
                   ),
                 ],
