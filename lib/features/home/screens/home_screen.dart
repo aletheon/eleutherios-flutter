@@ -6,7 +6,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/home/delegates/search_delegate.dart';
+import 'package:reddit_tutorial/features/home/delegates/search_home_delegate.dart';
 import 'package:reddit_tutorial/features/home/drawers/list_drawer.dart';
 import 'package:reddit_tutorial/features/home/drawers/profile_drawer.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';

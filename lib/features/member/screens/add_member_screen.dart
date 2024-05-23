@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/features/member/delegates/search_member_delegate.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/forum.dart';
@@ -296,8 +297,10 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
   @override
   Widget build(BuildContext context) {
     final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
+    final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
+    final user = ref.watch(userProvider)!;
 
     return forumProv.when(
       data: (forum) {
@@ -351,7 +354,17 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                             newValue.toString();
                       }),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: SearchMemberDelegate(
+                            ref,
+                            user,
+                            forum!,
+                            membersProv,
+                            ref.read(searchRadioProvider.notifier).state),
+                      );
+                    },
                     icon: const Icon(Icons.search),
                   ),
                 ],

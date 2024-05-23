@@ -143,7 +143,7 @@ class SearchHomeDelegate extends SearchDelegate {
             loading: () => const Loader(),
           );
     } else {
-      return ref.watch(searchServicesProvider(query.toLowerCase())).when(
+      return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
             data: (services) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),

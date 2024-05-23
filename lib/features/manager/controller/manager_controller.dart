@@ -23,12 +23,12 @@ final getManagerByIdProvider =
       .getManagerById(managerId);
 });
 
-final policyIsRegisteredInServiceProvider =
-    StreamProvider.family.autoDispose((ref, Tuple2 params) {
-  return ref
-      .watch(managerControllerProvider.notifier)
-      .policyIsRegisteredInService(params.item1, params.item2);
-});
+// final policyIsRegisteredInServiceProvider =
+//     StreamProvider.family.autoDispose((ref, Tuple2 params) {
+//   return ref
+//       .watch(managerControllerProvider.notifier)
+//       .policyIsRegisteredInService(params.item1, params.item2);
+// });
 
 final getManagersProvider =
     StreamProvider.family.autoDispose((ref, String policyId) {
@@ -306,9 +306,9 @@ class ManagerController extends StateNotifier<bool> {
     return _managerRepository.getManagers(policyId);
   }
 
-  Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
-    return _managerRepository.policyIsRegisteredInService(policyId, serviceId);
-  }
+  // Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
+  //   return _managerRepository.policyIsRegisteredInService(policyId, serviceId);
+  // }
 
   Stream<List<Manager>> getUserManagers(String policyId, String uid) {
     return _managerRepository.getUserManagers(policyId, uid);

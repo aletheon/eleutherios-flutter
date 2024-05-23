@@ -4,14 +4,12 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
@@ -38,40 +36,42 @@ class AddPolicyScreen extends ConsumerWidget {
         itemBuilder: (BuildContext context, int index) {
           final policy = policies[index];
 
-          return ref
-              .watch(policyIsRegisteredInServiceProvider(Tuple2(
-                _serviceId,
-                policy.policyId,
-              )))
-              .when(
-                data: (isRegistered) {
-                  if (isRegistered == false) {
-                    return ListTile(
-                      title: Text(policy.title),
-                      leading: policy.image == Constants.avatarDefault
-                          ? CircleAvatar(
-                              backgroundImage: Image.asset(policy.image).image,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(policy.image),
-                            ),
-                      trailing: TextButton(
-                        onPressed: () =>
-                            addPolicyToService(context, ref, policy.policyId),
-                        child: const Text(
-                          'Add',
-                        ),
-                      ),
-                      onTap: () => showPolicyDetails(context, policy.policyId),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+          return ListTile(
+            title: Text(policy.title),
+            leading: policy.image == Constants.avatarDefault
+                ? CircleAvatar(
+                    backgroundImage: Image.asset(policy.image).image,
+                  )
+                : CircleAvatar(
+                    backgroundImage: NetworkImage(policy.image),
+                  ),
+            trailing: TextButton(
+              onPressed: () =>
+                  addPolicyToService(context, ref, policy.policyId),
+              child: const Text(
+                'Add',
+              ),
+            ),
+            onTap: () => showPolicyDetails(context, policy.policyId),
+          );
+
+          // return ref
+          //     .watch(policyIsRegisteredInServiceProvider(Tuple2(
+          //       _serviceId,
+          //       policy.policyId,
+          //     )))
+          //     .when(
+          //       data: (isRegistered) {
+          //         if (isRegistered == false) {
+
+          //         } else {
+          //           return const SizedBox();
+          //         }
+          //       },
+          //       error: (error, stackTrace) =>
+          //           ErrorText(error: error.toString()),
+          //       loading: () => const Loader(),
+          //     );
         },
       ),
     );

@@ -57,18 +57,18 @@ class ManagerRepository {
     });
   }
 
-  Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
-    return _managers
-        .where('policyId', isEqualTo: policyId)
-        .where('serviceId', isEqualTo: serviceId)
-        .snapshots()
-        .map((event) {
-      if (event.docs.isNotEmpty) {
-        return true;
-      }
-      return false;
-    });
-  }
+  // Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
+  //   return _managers
+  //       .where('policyId', isEqualTo: policyId)
+  //       .where('serviceId', isEqualTo: serviceId)
+  //       .snapshots()
+  //       .map((event) {
+  //     if (event.docs.isNotEmpty) {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  // }
 
   Stream<List<Manager>> getManagers(String policyId) {
     return _managers

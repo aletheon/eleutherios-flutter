@@ -54,7 +54,40 @@ class ServiceRepository {
     });
   }
 
-  Stream<List<Service>> searchServices(String query) {
+  Stream<List<Service>> searchPrivateServices(String uid, String query) {
+    if (query.isNotEmpty) {
+      return _services
+          .where('uid', isEqualTo: uid)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    } else {
+      return _services.where('uid', isEqualTo: uid).snapshots().map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    }
+  }
+
+  Stream<List<Service>> searchPublicServices(String query) {
     if (query.isNotEmpty) {
       return _services
           .where('public', isEqualTo: true)

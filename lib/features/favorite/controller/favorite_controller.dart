@@ -10,14 +10,18 @@ import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:uuid/uuid.dart';
 
-final getFavoriteByIdProvider = Provider.family((ref, String favoriteId) {
-  final favoriteRepository = ref.watch(favoriteRepositoryProvider);
-  return favoriteRepository.getFavoriteById(favoriteId);
-});
+final getFavoriteByIdProvider = Provider.family(
+  (ref, String favoriteId) {
+    final favoriteRepository = ref.watch(favoriteRepositoryProvider);
+    return favoriteRepository.getFavoriteById(favoriteId);
+  },
+);
 
-final userFavoritesProvider = StreamProvider.autoDispose((ref) {
-  return ref.watch(favoriteControllerProvider.notifier).getFavorites();
-});
+final userFavoritesProvider = StreamProvider.autoDispose(
+  (ref) {
+    return ref.watch(favoriteControllerProvider.notifier).getFavorites();
+  },
+);
 
 final favoriteControllerProvider =
     StateNotifierProvider<FavoriteController, bool>((ref) {
