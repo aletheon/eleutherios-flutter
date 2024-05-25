@@ -58,7 +58,40 @@ class PolicyRepository {
     });
   }
 
-  Stream<List<Policy>> searchPolicies(String query) {
+  Stream<List<Policy>> searchPrivatePolicies(String uid, String query) {
+    if (query.isNotEmpty) {
+      return _policies
+          .where('uid', isEqualTo: uid)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Policy> policies = [];
+        for (var doc in event.docs) {
+          policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return policies;
+      });
+    } else {
+      return _policies.where('uid', isEqualTo: uid).snapshots().map((event) {
+        List<Policy> policies = [];
+        for (var doc in event.docs) {
+          policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return policies;
+      });
+    }
+  }
+
+  Stream<List<Policy>> searchPublicPolicies(String query) {
     if (query.isNotEmpty) {
       return _policies
           .where('public', isEqualTo: true)

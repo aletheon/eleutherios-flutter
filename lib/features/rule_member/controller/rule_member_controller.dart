@@ -158,6 +158,7 @@ class RuleMemberController extends StateNotifier<bool> {
 
         // update rule
         rule.members.add(ruleMemberId);
+        rule.services.add(serviceId);
         final resRule = await _ruleRepository.updateRule(rule);
 
         // create new rule activity
@@ -234,6 +235,7 @@ class RuleMemberController extends StateNotifier<bool> {
 
     // update rule
     rule!.members.remove(ruleMemberId);
+    rule.services.remove(ruleMember!.serviceId);
     await _ruleRepository.updateRule(rule);
 
     // get this users member count

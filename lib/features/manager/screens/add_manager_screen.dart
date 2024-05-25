@@ -118,7 +118,6 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
     final userServicesProv = ref.watch(userServicesProvider);
     final servicesProv = ref.watch(servicesProvider);
     final user = ref.watch(userProvider)!;
-    final managersProv = ref.watch(getManagersProvider(widget.policyId));
 
     if (searchType == "Private") {
       if (user.services.isEmpty) {
@@ -134,34 +133,31 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
             if (policy.managers.isEmpty) {
               return showServiceList(ref, policy, services, null);
             } else {
-              return managersProv.when(
-                data: (managers) {
-                  List<Service> servicesNotInPolicy = [];
-                  for (var service in services) {
-                    List<Manager> result = managers
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInPolicy.add(service);
-                    }
+              List<Service> servicesNotInPolicy = [];
+              for (var service in services) {
+                bool foundService = false;
+                for (String serviceId in policy.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInPolicy.isNotEmpty) {
-                    return showServiceList(
-                        ref, policy, servicesNotInPolicy, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your services are in the policy'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInPolicy.add(service);
+                }
+              }
+
+              if (servicesNotInPolicy.isNotEmpty) {
+                return showServiceList(ref, policy, servicesNotInPolicy, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your services are in the policy'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
@@ -182,34 +178,31 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
             if (policy.managers.isEmpty) {
               return showServiceList(ref, policy, services, null);
             } else {
-              return managersProv.when(
-                data: (managers) {
-                  List<Service> servicesNotInPolicy = [];
-                  for (var service in services) {
-                    List<Manager> result = managers
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInPolicy.add(service);
-                    }
+              List<Service> servicesNotInPolicy = [];
+              for (var service in services) {
+                bool foundService = false;
+                for (String serviceId in policy.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInPolicy.isNotEmpty) {
-                    return showServiceList(
-                        ref, policy, servicesNotInPolicy, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All public services are in the policy'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInPolicy.add(service);
+                }
+              }
+
+              if (servicesNotInPolicy.isNotEmpty) {
+                return showServiceList(ref, policy, servicesNotInPolicy, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All public services are in the policy'),
+                  ),
+                );
+              }
             }
           }
         },
@@ -230,34 +223,31 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
             if (policy.managers.isEmpty) {
               return showServiceList(ref, policy, null, favorites);
             } else {
-              return managersProv.when(
-                data: (managers) {
-                  List<Favorite> favoritesNotInPolicy = [];
-                  for (var favorite in favorites) {
-                    List<Manager> result = managers
-                        .where((r) => r.serviceId == favorite.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      favoritesNotInPolicy.add(favorite);
-                    }
+              List<Favorite> favoritesNotInPolicy = [];
+              for (var favorite in favorites) {
+                bool foundService = false;
+                for (String serviceId in policy.services) {
+                  if (favorite.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (favoritesNotInPolicy.isNotEmpty) {
-                    return showServiceList(
-                        ref, policy, null, favoritesNotInPolicy);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your favorites are in the policy'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  favoritesNotInPolicy.add(favorite);
+                }
+              }
+
+              if (favoritesNotInPolicy.isNotEmpty) {
+                return showServiceList(ref, policy, null, favoritesNotInPolicy);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your favorites are in the policy'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),

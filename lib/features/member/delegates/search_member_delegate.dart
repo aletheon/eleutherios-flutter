@@ -93,8 +93,6 @@ class SearchMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final membersProv = ref.watch(getMembersProvider(forum.forumId));
-
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -110,33 +108,31 @@ class SearchMemberDelegate extends SearchDelegate {
           .when(
             data: (services) {
               if (services.isNotEmpty) {
-                return membersProv.when(
-                  data: (members) {
-                    List<Service> servicesNotInForum = [];
-                    for (Service service in services) {
-                      List<Member> result = members
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInForum.add(service);
-                      }
+                List<Service> servicesNotInForum = [];
+                for (Service service in services) {
+                  bool foundService = false;
+                  for (String serviceId in forum.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInForum.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInForum);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All of your services are in the forum'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInForum.add(service);
+                  }
+                }
+
+                if (servicesNotInForum.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInForum);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All of your services are in the forum'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }
@@ -151,33 +147,31 @@ class SearchMemberDelegate extends SearchDelegate {
       return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
             data: (services) {
               if (services.isNotEmpty) {
-                return membersProv.when(
-                  data: (members) {
-                    List<Service> servicesNotInForum = [];
-                    for (Service service in services) {
-                      List<Member> result = members
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInForum.add(service);
-                      }
+                List<Service> servicesNotInForum = [];
+                for (Service service in services) {
+                  bool foundService = false;
+                  for (String serviceId in forum.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInForum.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInForum);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All public services are in the forum'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInForum.add(service);
+                  }
+                }
+
+                if (servicesNotInForum.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInForum);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All public services are in the forum'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }

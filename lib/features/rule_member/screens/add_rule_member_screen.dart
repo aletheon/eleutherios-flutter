@@ -121,7 +121,6 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
     final userServicesProv = ref.watch(userServicesProvider);
     final servicesProv = ref.watch(servicesProvider);
     final user = ref.watch(userProvider)!;
-    final ruleMembersProv = ref.watch(getRuleMembersProvider(widget.ruleId));
 
     if (searchType == "Private") {
       if (user.services.isEmpty) {
@@ -137,33 +136,31 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
             if (rule.members.isEmpty) {
               return showServiceList(ref, rule, services, null);
             } else {
-              return ruleMembersProv.when(
-                data: (ruleMembers) {
-                  List<Service> servicesNotInRule = [];
-                  for (var service in services) {
-                    List<RuleMember> result = ruleMembers
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInRule.add(service);
-                    }
+              List<Service> servicesNotInRule = [];
+              for (var service in services) {
+                bool foundService = false;
+                for (String serviceId in rule.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInRule.isNotEmpty) {
-                    return showServiceList(ref, rule, servicesNotInRule, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your services are in the rule'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInRule.add(service);
+                }
+              }
+
+              if (servicesNotInRule.isNotEmpty) {
+                return showServiceList(ref, rule, servicesNotInRule, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your services are in the rule'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
@@ -184,33 +181,31 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
             if (rule.members.isEmpty) {
               return showServiceList(ref, rule, services, null);
             } else {
-              return ruleMembersProv.when(
-                data: (ruleMembers) {
-                  List<Service> servicesNotInRule = [];
-                  for (var service in services) {
-                    List<RuleMember> result = ruleMembers
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInRule.add(service);
-                    }
+              List<Service> servicesNotInRule = [];
+              for (var service in services) {
+                bool foundService = false;
+                for (String serviceId in rule.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInRule.isNotEmpty) {
-                    return showServiceList(ref, rule, servicesNotInRule, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All public services are in the rule'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInRule.add(service);
+                }
+              }
+
+              if (servicesNotInRule.isNotEmpty) {
+                return showServiceList(ref, rule, servicesNotInRule, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All public services are in the rule'),
+                  ),
+                );
+              }
             }
           }
         },
@@ -231,33 +226,31 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
             if (rule.members.isEmpty) {
               return showServiceList(ref, rule, null, favorites);
             } else {
-              return ruleMembersProv.when(
-                data: (ruleMembers) {
-                  List<Favorite> favoritesNotInRule = [];
-                  for (var favorite in favorites) {
-                    List<RuleMember> result = ruleMembers
-                        .where((r) => r.serviceId == favorite.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      favoritesNotInRule.add(favorite);
-                    }
+              List<Favorite> favoritesNotInRule = [];
+              for (var favorite in favorites) {
+                bool foundService = false;
+                for (String serviceId in rule.services) {
+                  if (favorite.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (favoritesNotInRule.isNotEmpty) {
-                    return showServiceList(ref, rule, null, favoritesNotInRule);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your favorites are in the forum'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  favoritesNotInRule.add(favorite);
+                }
+              }
+
+              if (favoritesNotInRule.isNotEmpty) {
+                return showServiceList(ref, rule, null, favoritesNotInRule);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your favorites are in the forum'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),

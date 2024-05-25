@@ -128,6 +128,7 @@ class RuleController extends StateNotifier<bool> {
         public: public,
         instantiationType: instantiationType ?? '',
         instantiationDate: instantiationDate ?? DateTime.now(),
+        services: [],
         members: [],
         tags: [],
         lastUpdateDate: DateTime.now(),

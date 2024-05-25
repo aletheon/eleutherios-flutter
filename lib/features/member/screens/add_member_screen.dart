@@ -118,7 +118,6 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
     final userServicesProv = ref.watch(userServicesProvider);
     final servicesProv = ref.watch(servicesProvider);
     final user = ref.watch(userProvider)!;
-    final membersProv = ref.watch(getMembersProvider(widget.forumId));
 
     if (searchType == "Private") {
       if (user.services.isEmpty) {
@@ -134,34 +133,31 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
             if (forum.members.isEmpty) {
               return showServiceList(ref, forum, services, null);
             } else {
-              return membersProv.when(
-                data: (members) {
-                  List<Service> servicesNotInForum = [];
-                  for (Service service in services) {
-                    List<Member> result = members
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInForum.add(service);
-                    }
+              List<Service> servicesNotInForum = [];
+              for (Service service in services) {
+                bool foundService = false;
+                for (String serviceId in forum.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInForum.isNotEmpty) {
-                    return showServiceList(
-                        ref, forum, servicesNotInForum, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your services are in the forum'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInForum.add(service);
+                }
+              }
+
+              if (servicesNotInForum.isNotEmpty) {
+                return showServiceList(ref, forum, servicesNotInForum, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your services are in the forum'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
@@ -182,34 +178,31 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
             if (forum.members.isEmpty) {
               return showServiceList(ref, forum, services, null);
             } else {
-              return membersProv.when(
-                data: (members) {
-                  List<Service> servicesNotInForum = [];
-                  for (var service in services) {
-                    List<Member> result = members
-                        .where((r) => r.serviceId == service.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      servicesNotInForum.add(service);
-                    }
+              List<Service> servicesNotInForum = [];
+              for (var service in services) {
+                bool foundService = false;
+                for (String serviceId in forum.services) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (servicesNotInForum.isNotEmpty) {
-                    return showServiceList(
-                        ref, forum, servicesNotInForum, null);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All public services are in the forum'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  servicesNotInForum.add(service);
+                }
+              }
+
+              if (servicesNotInForum.isNotEmpty) {
+                return showServiceList(ref, forum, servicesNotInForum, null);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All public services are in the forum'),
+                  ),
+                );
+              }
             }
           }
         },
@@ -230,34 +223,31 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
             if (forum.members.isEmpty) {
               return showServiceList(ref, forum, null, favorites);
             } else {
-              return membersProv.when(
-                data: (members) {
-                  List<Favorite> favoritesNotInForum = [];
-                  for (var favorite in favorites) {
-                    List<Member> result = members
-                        .where((r) => r.serviceId == favorite.serviceId)
-                        .toList();
-                    if (result.isEmpty) {
-                      favoritesNotInForum.add(favorite);
-                    }
+              List<Favorite> favoritesNotInForum = [];
+              for (var favorite in favorites) {
+                bool foundService = false;
+                for (String serviceId in forum.services) {
+                  if (favorite.serviceId == serviceId) {
+                    foundService = true;
+                    break;
                   }
+                }
 
-                  if (favoritesNotInForum.isNotEmpty) {
-                    return showServiceList(
-                        ref, forum, null, favoritesNotInForum);
-                  } else {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('All of your favorites are in the forum'),
-                      ),
-                    );
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+                if (foundService == false) {
+                  favoritesNotInForum.add(favorite);
+                }
+              }
+
+              if (favoritesNotInForum.isNotEmpty) {
+                return showServiceList(ref, forum, null, favoritesNotInForum);
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('All of your favorites are in the forum'),
+                  ),
+                );
+              }
             }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),

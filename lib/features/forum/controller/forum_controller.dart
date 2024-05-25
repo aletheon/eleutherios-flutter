@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart'
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getForumByIdProvider =
@@ -38,8 +39,16 @@ final getChildrenProvider =
   return ref.watch(forumControllerProvider.notifier).getChildren(parentId);
 });
 
-final searchForumsProvider = StreamProvider.family((ref, String query) {
-  return ref.watch(forumControllerProvider.notifier).searchForums(query);
+final searchPrivateForumsProvider = StreamProvider.family.autoDispose(
+  (ref, Tuple2 params) {
+    return ref
+        .watch(forumControllerProvider.notifier)
+        .searchPrivateForums(params.item1, params.item2);
+  },
+);
+
+final searchPublicForumsProvider = StreamProvider.family((ref, String query) {
+  return ref.watch(forumControllerProvider.notifier).searchPublicForums(query);
 });
 
 final forumControllerProvider =
@@ -103,6 +112,7 @@ class ForumController extends StateNotifier<bool> {
       bannerFileName: Constants.forumBannerDefault.split('/').last,
       public: public,
       tags: [],
+      services: [],
       members: [],
       posts: [],
       forums: [],
@@ -262,7 +272,11 @@ class ForumController extends StateNotifier<bool> {
     return _forumRepository.getForumById(forumId);
   }
 
-  Stream<List<Forum>> searchForums(String query) {
-    return _forumRepository.searchForums(query);
+  Stream<List<Forum>> searchPrivateForums(String uid, String query) {
+    return _forumRepository.searchPrivateForums(uid, query);
+  }
+
+  Stream<List<Forum>> searchPublicForums(String query) {
+    return _forumRepository.searchPublicForums(query);
   }
 }

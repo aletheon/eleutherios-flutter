@@ -25,6 +25,7 @@ import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getPolicyByIdProvider =
@@ -48,8 +49,18 @@ final policiesProvider = StreamProvider.autoDispose<List<Policy>>((ref) {
   return ref.watch(policyControllerProvider.notifier).getPolicies();
 });
 
-final searchPoliciesProvider = StreamProvider.family((ref, String query) {
-  return ref.watch(policyControllerProvider.notifier).searchPolicies(query);
+final searchPrivatePoliciesProvider = StreamProvider.family.autoDispose(
+  (ref, Tuple2 params) {
+    return ref
+        .watch(policyControllerProvider.notifier)
+        .searchPrivatePolicies(params.item1, params.item2);
+  },
+);
+
+final searchPublicPoliciesProvider = StreamProvider.family((ref, String query) {
+  return ref
+      .watch(policyControllerProvider.notifier)
+      .searchPublicPolicies(query);
 });
 
 final servicePoliciesProvider = StreamProvider.family((ref, String serviceId) {
@@ -122,6 +133,7 @@ class PolicyController extends StateNotifier<bool> {
       bannerFileName: Constants.policyBannerDefault.split('/').last,
       public: public,
       tags: [],
+      services: [],
       managers: [],
       consumers: [],
       rules: [],
@@ -220,6 +232,7 @@ class PolicyController extends StateNotifier<bool> {
               bannerFileName: Constants.forumBannerDefault.split('/').last,
               public: rule.public,
               tags: [],
+              services: [],
               members: [],
               posts: [],
               forums: [],
@@ -334,11 +347,15 @@ class PolicyController extends StateNotifier<bool> {
     return _policyRepository.getPolicyById(policyId);
   }
 
-  Stream<List<Policy>> searchPolicies(String query) {
-    return _policyRepository.searchPolicies(query);
-  }
-
   Stream<List<Policy>> getServicePolicies(String serviceId) {
     return _policyRepository.getServicePolicies(serviceId);
+  }
+
+  Stream<List<Policy>> searchPrivatePolicies(String uid, String query) {
+    return _policyRepository.searchPrivatePolicies(uid, query);
+  }
+
+  Stream<List<Policy>> searchPublicPolicies(String query) {
+    return _policyRepository.searchPublicPolicies(query);
   }
 }

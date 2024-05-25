@@ -6,6 +6,7 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/service/delegates/search_policy_delegate.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
@@ -54,24 +55,6 @@ class AddPolicyScreen extends ConsumerWidget {
             ),
             onTap: () => showPolicyDetails(context, policy.policyId),
           );
-
-          // return ref
-          //     .watch(policyIsRegisteredInServiceProvider(Tuple2(
-          //       _serviceId,
-          //       policy.policyId,
-          //     )))
-          //     .when(
-          //       data: (isRegistered) {
-          //         if (isRegistered == false) {
-
-          //         } else {
-          //           return const SizedBox();
-          //         }
-          //       },
-          //       error: (error, stackTrace) =>
-          //           ErrorText(error: error.toString()),
-          //       loading: () => const Loader(),
-          //     );
         },
       ),
     );
@@ -98,14 +81,14 @@ class AddPolicyScreen extends ConsumerWidget {
             } else {
               List<Policy> policesNotInService = [];
               for (Policy p in userPolicies) {
-                bool result = false;
-                for (String s in p.consumers) {
-                  if (s == service.serviceId) {
-                    result = true;
+                bool foundService = false;
+                for (String serviceId in p.consumers) {
+                  if (service.serviceId == serviceId) {
+                    foundService = true;
                     break;
                   }
                 }
-                if (result == false) {
+                if (foundService == false) {
                   policesNotInService.add(p);
                 }
               }
@@ -139,14 +122,14 @@ class AddPolicyScreen extends ConsumerWidget {
           } else {
             List<Policy> policesNotInService = [];
             for (Policy p in policies) {
-              bool result = false;
-              for (String s in p.consumers) {
-                if (s == service.serviceId) {
-                  result = true;
+              bool foundService = false;
+              for (String serviceId in p.consumers) {
+                if (service.serviceId == serviceId) {
+                  foundService = true;
                   break;
                 }
               }
-              if (result == false) {
+              if (foundService == false) {
                 policesNotInService.add(p);
               }
             }
@@ -175,6 +158,7 @@ class AddPolicyScreen extends ConsumerWidget {
     final serviceProv = ref.watch(getServiceByIdProvider(_serviceId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
+    final user = ref.watch(userProvider)!;
 
     return serviceProv.when(
       data: (service) {
@@ -212,7 +196,16 @@ class AddPolicyScreen extends ConsumerWidget {
                                   newValue.toString();
                             }),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showSearch(
+                              context: context,
+                              delegate: SearchPolicyDelegate(
+                                  ref,
+                                  user,
+                                  service!,
+                                  ref.read(searchRadioProvider.notifier).state),
+                            );
+                          },
                           icon: const Icon(Icons.search),
                         ),
                       ],

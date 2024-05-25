@@ -21,7 +21,9 @@ class Rule {
   final bool public; // visibility of rule
   final String instantiationType; // consume, order, date
   final DateTime instantiationDate;
-  final List<String> members;
+  final List<String> services; // copy of member services for redundancy sake
+  final List<String>
+      members; // potential members (i.e. services) that will serve in this rule
   final List<String> tags;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
@@ -44,6 +46,7 @@ class Rule {
     required this.public,
     required this.instantiationType,
     required this.instantiationDate,
+    required this.services,
     required this.members,
     required this.tags,
     required this.lastUpdateDate,
@@ -69,6 +72,7 @@ class Rule {
     bool? public,
     String? instantiationType,
     DateTime? instantiationDate,
+    List<String>? services,
     List<String>? members,
     List<String>? tags,
     DateTime? lastUpdateDate,
@@ -93,6 +97,7 @@ class Rule {
       public: public ?? this.public,
       instantiationType: instantiationType ?? this.instantiationType,
       instantiationDate: instantiationDate ?? this.instantiationDate,
+      services: services ?? this.services,
       members: members ?? this.members,
       tags: tags ?? this.tags,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -120,6 +125,7 @@ class Rule {
       'public': public,
       'instantiationType': instantiationType,
       'instantiationDate': instantiationDate.millisecondsSinceEpoch,
+      'services': services,
       'members': members,
       'tags': tags,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
@@ -148,6 +154,7 @@ class Rule {
       instantiationType: map['instantiationType'] as String,
       instantiationDate:
           DateTime.fromMillisecondsSinceEpoch(map['instantiationDate'] as int),
+      services: List<String>.from(map['services']),
       members: List<String>.from(map['members']),
       tags: List<String>.from(map['tags']),
       lastUpdateDate:
@@ -159,7 +166,7 @@ class Rule {
 
   @override
   String toString() {
-    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, services: $services, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -184,6 +191,7 @@ class Rule {
         other.public == public &&
         other.instantiationType == instantiationType &&
         other.instantiationDate == instantiationDate &&
+        listEquals(other.services, services) &&
         listEquals(other.members, members) &&
         listEquals(other.tags, tags) &&
         other.lastUpdateDate == lastUpdateDate &&
@@ -210,6 +218,7 @@ class Rule {
         public.hashCode ^
         instantiationType.hashCode ^
         instantiationDate.hashCode ^
+        services.hashCode ^
         members.hashCode ^
         tags.hashCode ^
         lastUpdateDate.hashCode ^

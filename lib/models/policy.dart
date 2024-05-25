@@ -15,7 +15,8 @@ class Policy {
   final String bannerFileName;
   final bool public; // visibility of policy
   final List<String> tags; // tags identifying policy
-  final List<String> managers; // services managing this policy
+  final List<String> services; // copy of manager services for redundancy sake
+  final List<String> managers; // managers (i.e. services) managing this policy
   final List<String> consumers; // services consuming this policy
   final List<String> rules; // rules associated with the policy
   final DateTime lastUpdateDate;
@@ -34,6 +35,7 @@ class Policy {
     required this.bannerFileName,
     required this.public,
     required this.tags,
+    required this.services,
     required this.managers,
     required this.consumers,
     required this.rules,
@@ -55,6 +57,7 @@ class Policy {
     String? bannerFileName,
     bool? public,
     List<String>? tags,
+    List<String>? services,
     List<String>? managers,
     List<String>? consumers,
     List<String>? rules,
@@ -75,6 +78,7 @@ class Policy {
       bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
       tags: tags ?? this.tags,
+      services: services ?? this.services,
       managers: managers ?? this.managers,
       consumers: consumers ?? this.consumers,
       rules: rules ?? this.rules,
@@ -98,6 +102,7 @@ class Policy {
       'bannerFileName': bannerFileName,
       'public': public,
       'tags': tags,
+      'services': services,
       'managers': managers,
       'consumers': consumers,
       'rules': rules,
@@ -121,6 +126,7 @@ class Policy {
       bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
       tags: List<String>.from(map['tags']),
+      services: List<String>.from(map['services']),
       managers: List<String>.from(map['managers']),
       consumers: List<String>.from(map['consumers']),
       rules: List<String>.from(map['rules']),
@@ -133,7 +139,7 @@ class Policy {
 
   @override
   String toString() {
-    return 'Policy(policyId: $policyId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, tags: $tags, managers: $managers, consumers: $consumers, rules: $rules, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Policy(policyId: $policyId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, tags: $tags, services: $services, managers: $managers, consumers: $consumers, rules: $rules, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -153,6 +159,7 @@ class Policy {
         other.bannerFileName == bannerFileName &&
         other.public == public &&
         listEquals(other.tags, tags) &&
+        listEquals(other.services, services) &&
         listEquals(other.managers, managers) &&
         listEquals(other.consumers, consumers) &&
         listEquals(other.rules, rules) &&
@@ -175,6 +182,7 @@ class Policy {
         bannerFileName.hashCode ^
         public.hashCode ^
         tags.hashCode ^
+        services.hashCode ^
         managers.hashCode ^
         consumers.hashCode ^
         rules.hashCode ^

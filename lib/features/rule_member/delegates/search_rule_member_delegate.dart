@@ -94,8 +94,6 @@ class SearchRuleMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final ruleMembersProv = ref.watch(getRuleMembersProvider(rule.ruleId));
-
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -111,33 +109,31 @@ class SearchRuleMemberDelegate extends SearchDelegate {
           .when(
             data: (services) {
               if (services.isNotEmpty) {
-                return ruleMembersProv.when(
-                  data: (ruleMembers) {
-                    List<Service> servicesNotInRule = [];
-                    for (var service in services) {
-                      List<RuleMember> result = ruleMembers
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInRule.add(service);
-                      }
+                List<Service> servicesNotInRule = [];
+                for (var service in services) {
+                  bool foundService = false;
+                  for (String serviceId in rule.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInRule.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInRule);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All of your services are in the rule'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInRule.add(service);
+                  }
+                }
+
+                if (servicesNotInRule.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInRule);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All of your services are in the rule'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }
@@ -152,33 +148,31 @@ class SearchRuleMemberDelegate extends SearchDelegate {
       return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
             data: (services) {
               if (services.isNotEmpty) {
-                return ruleMembersProv.when(
-                  data: (ruleMembers) {
-                    List<Service> servicesNotInRule = [];
-                    for (var service in services) {
-                      List<RuleMember> result = ruleMembers
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInRule.add(service);
-                      }
+                List<Service> servicesNotInRule = [];
+                for (var service in services) {
+                  bool foundService = false;
+                  for (String serviceId in rule.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInRule.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInRule);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All public services are in the rule'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInRule.add(service);
+                  }
+                }
+
+                if (servicesNotInRule.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInRule);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All public services are in the rule'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }

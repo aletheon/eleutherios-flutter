@@ -167,8 +167,9 @@ class ManagerController extends StateNotifier<bool> {
         );
         final res = await _managerRepository.createManager(manager);
 
-        // add service to policy managers list
+        // add service to policy managers and service list
         policy.managers.add(managerId);
+        policy.services.add(serviceId);
         final resPolicy = await _policyRepository.updatePolicy(policy);
 
         // create new policy activity
@@ -260,6 +261,7 @@ class ManagerController extends StateNotifier<bool> {
 
     // update policy
     policy!.managers.remove(managerId);
+    policy.services.remove(manager!.serviceId);
     await _policyRepository.updatePolicy(policy);
 
     // get this users manager count

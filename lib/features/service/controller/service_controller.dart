@@ -232,6 +232,7 @@ class ServiceController extends StateNotifier<bool> {
               bannerFileName: Constants.forumBannerDefault.split('/').last,
               public: rule.public,
               tags: [],
+              services: [],
               members: [],
               posts: [],
               forums: [],

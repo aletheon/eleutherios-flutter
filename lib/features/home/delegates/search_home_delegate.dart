@@ -83,7 +83,7 @@ class SearchHomeDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (_searchType == SearchType.policy.value) {
-      return ref.watch(searchPoliciesProvider(query.toLowerCase())).when(
+      return ref.watch(searchPublicPoliciesProvider(query.toLowerCase())).when(
             data: (policies) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -113,7 +113,7 @@ class SearchHomeDelegate extends SearchDelegate {
             loading: () => const Loader(),
           );
     } else if (_searchType == SearchType.forum.value) {
-      return ref.watch(searchForumsProvider(query.toLowerCase())).when(
+      return ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
             data: (forums) {
               return Padding(
                 padding: const EdgeInsets.only(top: 8.0),

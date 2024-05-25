@@ -37,40 +37,41 @@ class ServiceAddForumScreen extends ConsumerWidget {
         itemBuilder: (BuildContext context, int index) {
           final forum = forums[index];
 
-          return ref
-              .watch(serviceIsRegisteredInForumProvider(Tuple2(
-                forum.forumId,
-                _serviceId,
-              )))
-              .when(
-                data: (isRegistered) {
-                  if (isRegistered == false) {
-                    return ListTile(
-                      title: Text(forum.title),
-                      leading: forum.image == Constants.avatarDefault
-                          ? CircleAvatar(
-                              backgroundImage: Image.asset(forum.image).image,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(forum.image),
-                            ),
-                      trailing: TextButton(
-                        onPressed: () =>
-                            registerService(context, ref, forum.forumId),
-                        child: const Text(
-                          'Add',
-                        ),
-                      ),
-                      onTap: () => showForumDetails(context, forum.forumId),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
+          return ListTile(
+            title: Text(forum.title),
+            leading: forum.image == Constants.avatarDefault
+                ? CircleAvatar(
+                    backgroundImage: Image.asset(forum.image).image,
+                  )
+                : CircleAvatar(
+                    backgroundImage: NetworkImage(forum.image),
+                  ),
+            trailing: TextButton(
+              onPressed: () => registerService(context, ref, forum.forumId),
+              child: const Text(
+                'Add',
+              ),
+            ),
+            onTap: () => showForumDetails(context, forum.forumId),
+          );
+
+          // return ref
+          //     .watch(serviceIsRegisteredInForumProvider(Tuple2(
+          //       forum.forumId,
+          //       _serviceId,
+          //     )))
+          //     .when(
+          //       data: (isRegistered) {
+          //         if (isRegistered == false) {
+
+          //         } else {
+          //           return const SizedBox();
+          //         }
+          //       },
+          //       error: (error, stackTrace) =>
+          //           ErrorText(error: error.toString()),
+          //       loading: () => const Loader(),
+          //     );
         },
       ),
     );
@@ -92,7 +93,31 @@ class ServiceAddForumScreen extends ConsumerWidget {
       } else {
         return userForumsProv.when(
           data: (forums) {
-            return showForumList(ref, forums);
+            List<Forum> forumsNotContainingService = [];
+            for (Forum f in forums) {
+              bool foundService = false;
+              for (String s in f.services) {
+                if (s == _serviceId) {
+                  foundService = true;
+                  break;
+                }
+              }
+
+              if (foundService == false) {
+                forumsNotContainingService.add(f);
+              }
+            }
+
+            if (forumsNotContainingService.isNotEmpty) {
+              return showForumList(ref, forumsNotContainingService);
+            } else {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('All of your forums are in the service'),
+                ),
+              );
+            }
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader(),
@@ -109,7 +134,31 @@ class ServiceAddForumScreen extends ConsumerWidget {
               ),
             );
           } else {
-            return showForumList(ref, forums);
+            List<Forum> forumsNotContainingService = [];
+            for (Forum f in forums) {
+              bool foundService = false;
+              for (String s in f.services) {
+                if (s == _serviceId) {
+                  foundService = true;
+                  break;
+                }
+              }
+
+              if (foundService == false) {
+                forumsNotContainingService.add(f);
+              }
+            }
+
+            if (forumsNotContainingService.isNotEmpty) {
+              return showForumList(ref, forumsNotContainingService);
+            } else {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('All public forums are in the service'),
+                ),
+              );
+            }
           }
         },
         error: (error, stackTrace) => ErrorText(error: error.toString()),

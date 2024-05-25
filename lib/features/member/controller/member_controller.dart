@@ -28,6 +28,17 @@ final serviceIsRegisteredInForumProvider =
       .serviceIsRegisteredInForum(params.item1, params.item2);
 });
 
+final serviceIsRegisteredInForumProvider2 =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(memberControllerProvider.notifier)
+        .serviceIsRegisteredInForum(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final getMembersProvider =
     StreamProvider.family.autoDispose((ref, String forumId) {
   return ref.watch(memberControllerProvider.notifier).getMembers(forumId);
@@ -150,6 +161,7 @@ class MemberController extends StateNotifier<bool> {
 
         // update forum
         forum.members.add(memberId);
+        forum.services.add(serviceId);
         final resForum = await _forumRepository.updateForum(forum);
 
         // create new forum activity
@@ -241,6 +253,7 @@ class MemberController extends StateNotifier<bool> {
 
     // update forum
     forum!.members.remove(memberId);
+    forum.services.remove(member!.serviceId);
     await _forumRepository.updateForum(forum);
 
     // get this users member count

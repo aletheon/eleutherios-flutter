@@ -94,8 +94,6 @@ class SearchManagerDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final managersProv = ref.watch(getManagersProvider(policy.policyId));
-
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -111,33 +109,31 @@ class SearchManagerDelegate extends SearchDelegate {
           .when(
             data: (services) {
               if (services.isNotEmpty) {
-                return managersProv.when(
-                  data: (managers) {
-                    List<Service> servicesNotInPolicy = [];
-                    for (Service service in services) {
-                      List<Manager> result = managers
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInPolicy.add(service);
-                      }
+                List<Service> servicesNotInPolicy = [];
+                for (Service service in services) {
+                  bool foundService = false;
+                  for (String serviceId in policy.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInPolicy.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInPolicy);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All of your services are in the policy'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInPolicy.add(service);
+                  }
+                }
+
+                if (servicesNotInPolicy.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInPolicy);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All of your services are in the policy'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }
@@ -152,33 +148,31 @@ class SearchManagerDelegate extends SearchDelegate {
       return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
             data: (services) {
               if (services.isNotEmpty) {
-                return managersProv.when(
-                  data: (managers) {
-                    List<Service> servicesNotInPolicy = [];
-                    for (Service service in services) {
-                      List<Manager> result = managers
-                          .where((r) => r.serviceId == service.serviceId)
-                          .toList();
-                      if (result.isEmpty) {
-                        servicesNotInPolicy.add(service);
-                      }
+                List<Service> servicesNotInPolicy = [];
+                for (Service service in services) {
+                  bool foundService = false;
+                  for (String serviceId in policy.services) {
+                    if (service.serviceId == serviceId) {
+                      foundService = true;
+                      break;
                     }
+                  }
 
-                    if (servicesNotInPolicy.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInPolicy);
-                    } else {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('All public services are in the policy'),
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                );
+                  if (foundService == false) {
+                    servicesNotInPolicy.add(service);
+                  }
+                }
+
+                if (servicesNotInPolicy.isNotEmpty) {
+                  return showServiceList(ref, servicesNotInPolicy);
+                } else {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('All public services are in the policy'),
+                    ),
+                  );
+                }
               } else {
                 return const SizedBox();
               }
