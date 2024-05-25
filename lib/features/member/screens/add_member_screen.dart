@@ -151,9 +151,10 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
               if (servicesNotInForum.isNotEmpty) {
                 return showServiceList(ref, forum, servicesNotInForum, null);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All of your services are in the forum'),
                   ),
                 );
@@ -196,9 +197,10 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
               if (servicesNotInForum.isNotEmpty) {
                 return showServiceList(ref, forum, servicesNotInForum, null);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All public services are in the forum'),
                   ),
                 );
@@ -241,9 +243,10 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
               if (favoritesNotInForum.isNotEmpty) {
                 return showServiceList(ref, forum, null, favoritesNotInForum);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All of your favorites are in the forum'),
                   ),
                 );

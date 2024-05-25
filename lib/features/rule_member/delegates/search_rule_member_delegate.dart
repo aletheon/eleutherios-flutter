@@ -6,7 +6,6 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/rule.dart';
-import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -127,9 +126,10 @@ class SearchRuleMemberDelegate extends SearchDelegate {
                 if (servicesNotInRule.isNotEmpty) {
                   return showServiceList(ref, servicesNotInRule);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
                       child: Text('All of your services are in the rule'),
                     ),
                   );
@@ -166,10 +166,11 @@ class SearchRuleMemberDelegate extends SearchDelegate {
                 if (servicesNotInRule.isNotEmpty) {
                   return showServiceList(ref, servicesNotInRule);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('All public services are in the rule'),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text('All pulic services are in the rule'),
                     ),
                   );
                 }

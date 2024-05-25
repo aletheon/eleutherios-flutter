@@ -127,9 +127,10 @@ class SearchManagerDelegate extends SearchDelegate {
                 if (servicesNotInPolicy.isNotEmpty) {
                   return showServiceList(ref, servicesNotInPolicy);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
                       child: Text('All of your services are in the policy'),
                     ),
                   );
@@ -166,9 +167,10 @@ class SearchManagerDelegate extends SearchDelegate {
                 if (servicesNotInPolicy.isNotEmpty) {
                   return showServiceList(ref, servicesNotInPolicy);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
                       child: Text('All public services are in the policy'),
                     ),
                   );

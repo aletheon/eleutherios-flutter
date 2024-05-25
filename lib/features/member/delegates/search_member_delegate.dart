@@ -126,9 +126,10 @@ class SearchMemberDelegate extends SearchDelegate {
                 if (servicesNotInForum.isNotEmpty) {
                   return showServiceList(ref, servicesNotInForum);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
                       child: Text('All of your services are in the forum'),
                     ),
                   );
@@ -165,9 +166,10 @@ class SearchMemberDelegate extends SearchDelegate {
                 if (servicesNotInForum.isNotEmpty) {
                   return showServiceList(ref, servicesNotInForum);
                 } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
                       child: Text('All public services are in the forum'),
                     ),
                   );

@@ -96,9 +96,10 @@ class AddPolicyScreen extends ConsumerWidget {
               if (policesNotInService.isNotEmpty) {
                 return showPolicyList(ref, policesNotInService);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All of your policies are in the service'),
                   ),
                 );
@@ -137,9 +138,10 @@ class AddPolicyScreen extends ConsumerWidget {
             if (policesNotInService.isNotEmpty) {
               return showPolicyList(ref, policesNotInService);
             } else {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+              return Container(
+                alignment: Alignment.topCenter,
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 15),
                   child: Text('All public policies are in the service'),
                 ),
               );

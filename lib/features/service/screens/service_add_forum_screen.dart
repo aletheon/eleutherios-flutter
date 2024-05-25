@@ -54,24 +54,6 @@ class ServiceAddForumScreen extends ConsumerWidget {
             ),
             onTap: () => showForumDetails(context, forum.forumId),
           );
-
-          // return ref
-          //     .watch(serviceIsRegisteredInForumProvider(Tuple2(
-          //       forum.forumId,
-          //       _serviceId,
-          //     )))
-          //     .when(
-          //       data: (isRegistered) {
-          //         if (isRegistered == false) {
-
-          //         } else {
-          //           return const SizedBox();
-          //         }
-          //       },
-          //       error: (error, stackTrace) =>
-          //           ErrorText(error: error.toString()),
-          //       loading: () => const Loader(),
-          //     );
         },
       ),
     );
@@ -111,9 +93,10 @@ class ServiceAddForumScreen extends ConsumerWidget {
             if (forumsNotContainingService.isNotEmpty) {
               return showForumList(ref, forumsNotContainingService);
             } else {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+              return Container(
+                alignment: Alignment.topCenter,
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 15),
                   child: Text('All of your forums are in the service'),
                 ),
               );
@@ -152,9 +135,10 @@ class ServiceAddForumScreen extends ConsumerWidget {
             if (forumsNotContainingService.isNotEmpty) {
               return showForumList(ref, forumsNotContainingService);
             } else {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+              return Container(
+                alignment: Alignment.topCenter,
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 15),
                   child: Text('All public forums are in the service'),
                 ),
               );

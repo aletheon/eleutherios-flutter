@@ -154,9 +154,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               if (servicesNotInRule.isNotEmpty) {
                 return showServiceList(ref, rule, servicesNotInRule, null);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All of your services are in the rule'),
                   ),
                 );
@@ -199,9 +200,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               if (servicesNotInRule.isNotEmpty) {
                 return showServiceList(ref, rule, servicesNotInRule, null);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
                     child: Text('All public services are in the rule'),
                   ),
                 );
@@ -244,10 +246,11 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
               if (favoritesNotInRule.isNotEmpty) {
                 return showServiceList(ref, rule, null, favoritesNotInRule);
               } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('All of your favorites are in the forum'),
+                return Container(
+                  alignment: Alignment.topCenter,
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Text('All of your favorites are in the rule'),
                   ),
                 );
               }
