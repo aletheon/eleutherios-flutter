@@ -4,6 +4,7 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
@@ -15,9 +16,9 @@ import 'package:tuple/tuple.dart';
 class SearchManagerDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
-  final Policy policy;
+  final String policyId;
   final String searchType;
-  SearchManagerDelegate(this.ref, this.user, this.policy, this.searchType);
+  SearchManagerDelegate(this.ref, this.user, this.policyId, this.searchType);
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
@@ -30,7 +31,7 @@ class SearchManagerDelegate extends SearchDelegate {
       BuildContext context, WidgetRef ref, String serviceId) {
     ref
         .read(managerControllerProvider.notifier)
-        .createManager(policy.policyId, serviceId, context);
+        .createManager(policyId, serviceId, context);
   }
 
   @override
@@ -94,6 +95,8 @@ class SearchManagerDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final policyProv = ref.watch(getPolicyByIdProvider(policyId));
+
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -102,90 +105,98 @@ class SearchManagerDelegate extends SearchDelegate {
       }
     });
 
-    if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-      return ref
-          .watch(searchPrivateServicesProvider(
-              Tuple2(user.uid, query.toLowerCase())))
-          .when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInPolicy = [];
-                for (Service service in services) {
-                  bool foundService = false;
-                  for (String serviceId in policy.services) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+    return policyProv.when(
+      data: (policy) {
+        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
+          return ref
+              .watch(searchPrivateServicesProvider(
+                  Tuple2(user.uid, query.toLowerCase())))
+              .when(
+                data: (services) {
+                  if (services.isNotEmpty) {
+                    List<Service> servicesNotInPolicy = [];
+                    for (Service service in services) {
+                      bool foundService = false;
+                      for (String serviceId in policy!.services) {
+                        if (service.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
+
+                      if (foundService == false) {
+                        servicesNotInPolicy.add(service);
+                      }
                     }
-                  }
 
-                  if (foundService == false) {
-                    servicesNotInPolicy.add(service);
-                  }
-                }
-
-                if (servicesNotInPolicy.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInPolicy);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All of your services are in the policy'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    } else {
-      return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInPolicy = [];
-                for (Service service in services) {
-                  bool foundService = false;
-                  for (String serviceId in policy.services) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+                    if (servicesNotInPolicy.isNotEmpty) {
+                      return showServiceList(ref, servicesNotInPolicy);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('All of your services are in the policy'),
+                        ),
+                      );
                     }
+                  } else {
+                    return const SizedBox();
                   }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        } else {
+          return ref
+              .watch(searchPublicServicesProvider(query.toLowerCase()))
+              .when(
+                data: (services) {
+                  if (services.isNotEmpty) {
+                    List<Service> servicesNotInPolicy = [];
+                    for (Service service in services) {
+                      bool foundService = false;
+                      for (String serviceId in policy!.services) {
+                        if (service.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
 
-                  if (foundService == false) {
-                    servicesNotInPolicy.add(service);
+                      if (foundService == false) {
+                        servicesNotInPolicy.add(service);
+                      }
+                    }
+
+                    if (servicesNotInPolicy.isNotEmpty) {
+                      return showServiceList(ref, servicesNotInPolicy);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('All public services are in the policy'),
+                        ),
+                      );
+                    }
+                  } else {
+                    return const SizedBox();
                   }
-                }
-
-                if (servicesNotInPolicy.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInPolicy);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All public services are in the policy'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        }
+      },
+      error: (error, stackTrace) => ErrorText(error: error.toString()),
+      loading: () => const Loader(),
+    );
   }
 
   Widget showServiceList(WidgetRef ref, List<Service> services) {

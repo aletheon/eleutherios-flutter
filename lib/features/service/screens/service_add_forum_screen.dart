@@ -7,11 +7,11 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/service/delegates/search_forum_delegate.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
@@ -156,6 +156,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
     final serviceProv = ref.watch(getServiceByIdProvider(_serviceId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
+    final user = ref.watch(userProvider)!;
 
     return serviceProv.when(
       data: (service) {
@@ -191,7 +192,17 @@ class ServiceAddForumScreen extends ConsumerWidget {
                             newValue.toString();
                       }),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: SearchForumDelegate(
+                          ref,
+                          user,
+                          _serviceId,
+                          ref.read(searchRadioProvider.notifier).state,
+                        ),
+                      );
+                    },
                     icon: const Icon(Icons.search),
                   ),
                 ],

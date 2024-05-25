@@ -357,7 +357,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                         delegate: SearchRuleMemberDelegate(
                             ref,
                             user,
-                            rule!,
+                            widget.ruleId,
                             ref.read(searchRadioProvider.notifier).state ==
                                     "Favorite"
                                 ? "Private"

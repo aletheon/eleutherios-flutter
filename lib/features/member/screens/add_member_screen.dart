@@ -13,7 +13,6 @@ import 'package:reddit_tutorial/features/member/delegates/search_member_delegate
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/forum.dart';
-import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -352,7 +351,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                         delegate: SearchMemberDelegate(
                             ref,
                             user,
-                            forum!,
+                            widget.forumId,
                             ref.read(searchRadioProvider.notifier).state ==
                                     "Favorite"
                                 ? "Private"

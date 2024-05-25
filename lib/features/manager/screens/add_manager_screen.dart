@@ -341,7 +341,7 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
                         delegate: SearchManagerDelegate(
                             ref,
                             user,
-                            policy!,
+                            widget.policyId,
                             ref.read(searchRadioProvider.notifier).state ==
                                     "Favorite"
                                 ? "Private"

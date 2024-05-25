@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -14,9 +14,9 @@ import 'package:tuple/tuple.dart';
 class SearchRuleMemberDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
-  final Rule rule;
+  final String ruleId;
   final String searchType;
-  SearchRuleMemberDelegate(this.ref, this.user, this.rule, this.searchType);
+  SearchRuleMemberDelegate(this.ref, this.user, this.ruleId, this.searchType);
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
@@ -29,7 +29,7 @@ class SearchRuleMemberDelegate extends SearchDelegate {
       BuildContext context, WidgetRef ref, String serviceId) {
     ref
         .read(ruleMemberControllerProvider.notifier)
-        .createRuleMember(rule.ruleId, serviceId, context);
+        .createRuleMember(ruleId, serviceId, context);
   }
 
   @override
@@ -93,6 +93,8 @@ class SearchRuleMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final ruleProv = ref.watch(getRuleByIdProvider(ruleId));
+
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -101,90 +103,98 @@ class SearchRuleMemberDelegate extends SearchDelegate {
       }
     });
 
-    if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-      return ref
-          .watch(searchPrivateServicesProvider(
-              Tuple2(user.uid, query.toLowerCase())))
-          .when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInRule = [];
-                for (var service in services) {
-                  bool foundService = false;
-                  for (String serviceId in rule.services) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+    return ruleProv.when(
+      data: (rule) {
+        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
+          return ref
+              .watch(searchPrivateServicesProvider(
+                  Tuple2(user.uid, query.toLowerCase())))
+              .when(
+                data: (services) {
+                  if (services.isNotEmpty) {
+                    List<Service> servicesNotInRule = [];
+                    for (var service in services) {
+                      bool foundService = false;
+                      for (String serviceId in rule!.services) {
+                        if (service.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
+
+                      if (foundService == false) {
+                        servicesNotInRule.add(service);
+                      }
                     }
-                  }
 
-                  if (foundService == false) {
-                    servicesNotInRule.add(service);
-                  }
-                }
-
-                if (servicesNotInRule.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInRule);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All of your services are in the rule'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    } else {
-      return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInRule = [];
-                for (var service in services) {
-                  bool foundService = false;
-                  for (String serviceId in rule.services) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+                    if (servicesNotInRule.isNotEmpty) {
+                      return showServiceList(ref, servicesNotInRule);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('All of your services are in the rule'),
+                        ),
+                      );
                     }
+                  } else {
+                    return const SizedBox();
                   }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        } else {
+          return ref
+              .watch(searchPublicServicesProvider(query.toLowerCase()))
+              .when(
+                data: (services) {
+                  if (services.isNotEmpty) {
+                    List<Service> servicesNotInRule = [];
+                    for (var service in services) {
+                      bool foundService = false;
+                      for (String serviceId in rule!.services) {
+                        if (service.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
 
-                  if (foundService == false) {
-                    servicesNotInRule.add(service);
+                      if (foundService == false) {
+                        servicesNotInRule.add(service);
+                      }
+                    }
+
+                    if (servicesNotInRule.isNotEmpty) {
+                      return showServiceList(ref, servicesNotInRule);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('All pulic services are in the rule'),
+                        ),
+                      );
+                    }
+                  } else {
+                    return const SizedBox();
                   }
-                }
-
-                if (servicesNotInRule.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInRule);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All pulic services are in the rule'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        }
+      },
+      error: (error, stackTrace) => ErrorText(error: error.toString()),
+      loading: () => const Loader(),
+    );
   }
 
   Widget showServiceList(WidgetRef ref, List<Service> services) {

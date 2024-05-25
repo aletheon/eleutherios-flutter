@@ -292,7 +292,9 @@ class MemberController extends StateNotifier<bool> {
     }
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Member removed successfully!');
+      if (context.mounted) {
+        showSnackBar(context, 'Member removed successfully!');
+      }
     });
   }
 

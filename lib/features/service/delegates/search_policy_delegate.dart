@@ -4,8 +4,8 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
-import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -13,9 +13,9 @@ import 'package:tuple/tuple.dart';
 class SearchPolicyDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
-  final Service service;
+  final String serviceId;
   final String searchType;
-  SearchPolicyDelegate(this.ref, this.user, this.service, this.searchType);
+  SearchPolicyDelegate(this.ref, this.user, this.serviceId, this.searchType);
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
@@ -28,7 +28,7 @@ class SearchPolicyDelegate extends SearchDelegate {
       BuildContext context, WidgetRef ref, String policyId) {
     ref
         .read(policyControllerProvider.notifier)
-        .addPolicyToService(service.serviceId, policyId, context);
+        .addPolicyToService(serviceId, policyId, context);
   }
 
   @override
@@ -92,6 +92,8 @@ class SearchPolicyDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final serviceProv = ref.watch(getServiceByIdProvider(serviceId));
+
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (initializedSearch == false) {
@@ -100,88 +102,97 @@ class SearchPolicyDelegate extends SearchDelegate {
       }
     });
 
-    if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-      return ref
-          .watch(searchPrivatePoliciesProvider(
-              Tuple2(user.uid, query.toLowerCase())))
-          .when(
-            data: (policies) {
-              if (policies.isNotEmpty) {
-                List<Policy> policesNotInService = [];
-                for (Policy p in policies) {
-                  bool foundService = false;
-                  for (String serviceId in p.consumers) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+    return serviceProv.when(
+      data: (service) {
+        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
+          return ref
+              .watch(searchPrivatePoliciesProvider(
+                  Tuple2(user.uid, query.toLowerCase())))
+              .when(
+                data: (policies) {
+                  if (policies.isNotEmpty) {
+                    List<Policy> policesNotInService = [];
+                    for (Policy p in policies) {
+                      bool foundService = false;
+                      for (String serviceId in p.consumers) {
+                        if (service!.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
+                      if (foundService == false) {
+                        policesNotInService.add(p);
+                      }
                     }
-                  }
-                  if (foundService == false) {
-                    policesNotInService.add(p);
-                  }
-                }
 
-                if (policesNotInService.isNotEmpty) {
-                  return showPolicyList(ref, policesNotInService);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All of your policies are in the service'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    } else {
-      return ref.watch(searchPublicPoliciesProvider(query.toLowerCase())).when(
-            data: (policies) {
-              if (policies.isNotEmpty) {
-                List<Policy> policesNotInService = [];
-                for (Policy p in policies) {
-                  bool foundService = false;
-                  for (String serviceId in p.consumers) {
-                    if (service.serviceId == serviceId) {
-                      foundService = true;
-                      break;
+                    if (policesNotInService.isNotEmpty) {
+                      return showPolicyList(ref, policesNotInService);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child:
+                              Text('All of your policies are in the service'),
+                        ),
+                      );
                     }
+                  } else {
+                    return const SizedBox();
                   }
-                  if (foundService == false) {
-                    policesNotInService.add(p);
-                  }
-                }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        } else {
+          return ref
+              .watch(searchPublicPoliciesProvider(query.toLowerCase()))
+              .when(
+                data: (policies) {
+                  if (policies.isNotEmpty) {
+                    List<Policy> policesNotInService = [];
+                    for (Policy p in policies) {
+                      bool foundService = false;
+                      for (String serviceId in p.consumers) {
+                        if (service!.serviceId == serviceId) {
+                          foundService = true;
+                          break;
+                        }
+                      }
+                      if (foundService == false) {
+                        policesNotInService.add(p);
+                      }
+                    }
 
-                if (policesNotInService.isNotEmpty) {
-                  return showPolicyList(ref, policesNotInService);
-                } else {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text('All public policies are in the service'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
-    }
+                    if (policesNotInService.isNotEmpty) {
+                      return showPolicyList(ref, policesNotInService);
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('All public policies are in the service'),
+                        ),
+                      );
+                    }
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+                error: (error, stackTrace) {
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+              );
+        }
+      },
+      error: (error, stackTrace) => ErrorText(error: error.toString()),
+      loading: () => const Loader(),
+    );
   }
 
   Widget showPolicyList(WidgetRef ref, List<Policy> policies) {
