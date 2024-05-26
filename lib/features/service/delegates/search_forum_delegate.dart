@@ -5,7 +5,6 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
-import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -92,7 +91,7 @@ class SearchForumDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final serviceProv = ref.watch(getServiceByIdProvider(serviceId));
+    // final serviceProv = ref.watch(getServiceByIdProvider(serviceId));
 
     // set the search type [Private, Public]
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -102,102 +101,95 @@ class SearchForumDelegate extends SearchDelegate {
       }
     });
 
-    return serviceProv.when(
-      data: (service) {
-        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-          return ref
-              .watch(searchPrivateForumsProvider(
-                  Tuple2(user.uid, query.toLowerCase())))
-              .when(
-                data: (forums) {
-                  if (forums.isNotEmpty) {
-                    List<Forum> forumsNotContainingService = [];
-                    for (Forum f in forums) {
-                      bool foundService = false;
-                      for (String s in f.services) {
-                        if (s == service!.serviceId) {
-                          foundService = true;
-                          break;
-                        }
-                      }
-
-                      if (foundService == false) {
-                        forumsNotContainingService.add(f);
-                      }
+    if (ref.watch(searchRadioProvider.notifier).state == "Private") {
+      return ref
+          .watch(searchPrivateForumsProvider(
+              Tuple2(user.uid, query.toLowerCase())))
+          .when(
+            data: (forums) {
+              if (forums.isNotEmpty) {
+                List<Forum> forumsNotContainingService = [];
+                for (Forum f in forums) {
+                  bool foundService = false;
+                  for (String s in f.services) {
+                    if (s == serviceId) {
+                      foundService = true;
+                      break;
                     }
-
-                    if (forumsNotContainingService.isNotEmpty) {
-                      return showForumList(ref, forumsNotContainingService);
-                    } else {
-                      return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text('All of your forums are in the service'),
-                        ),
-                      );
-                    }
-                  } else {
-                    return const SizedBox();
                   }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        } else {
-          return ref
-              .watch(searchPublicForumsProvider(query.toLowerCase()))
-              .when(
-                data: (forums) {
-                  if (forums.isNotEmpty) {
-                    List<Forum> forumsNotContainingService = [];
-                    for (Forum f in forums) {
-                      bool foundService = false;
-                      for (String s in f.services) {
-                        if (s == service!.serviceId) {
-                          foundService = true;
-                          break;
-                        }
-                      }
 
-                      if (foundService == false) {
-                        forumsNotContainingService.add(f);
-                      }
-                    }
-
-                    if (forumsNotContainingService.isNotEmpty) {
-                      return showForumList(ref, forumsNotContainingService);
-                    } else {
-                      return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text('All public services are in the service'),
-                        ),
-                      );
-                    }
-                  } else {
-                    return const SizedBox();
+                  if (foundService == false) {
+                    forumsNotContainingService.add(f);
                   }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        }
-      },
-      error: (error, stackTrace) => ErrorText(error: error.toString()),
-      loading: () => const Loader(),
-    );
+                }
+
+                if (forumsNotContainingService.isNotEmpty) {
+                  return showForumList(ref, forumsNotContainingService);
+                } else {
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text('All of your forums are in the service'),
+                    ),
+                  );
+                }
+              } else {
+                return const SizedBox();
+              }
+            },
+            error: (error, stackTrace) {
+              print(error.toString());
+              return ErrorText(error: error.toString());
+            },
+            loading: () => const Loader(),
+          );
+    } else {
+      return ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
+            data: (forums) {
+              if (forums.isNotEmpty) {
+                List<Forum> forumsNotContainingService = [];
+                for (Forum f in forums) {
+                  bool foundService = false;
+                  for (String s in f.services) {
+                    if (s == serviceId) {
+                      foundService = true;
+                      break;
+                    }
+                  }
+
+                  if (foundService == false) {
+                    forumsNotContainingService.add(f);
+                  }
+                }
+
+                if (forumsNotContainingService.isNotEmpty) {
+                  return showForumList(ref, forumsNotContainingService);
+                } else {
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text('All public services are in the service'),
+                    ),
+                  );
+                }
+              } else {
+                return const SizedBox();
+              }
+            },
+            error: (error, stackTrace) {
+              print(error.toString());
+              return ErrorText(error: error.toString());
+            },
+            loading: () => const Loader(),
+          );
+    }
   }
 
   Widget showForumList(WidgetRef ref, List<Forum> forums) {
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
       child: ListView.builder(
         itemCount: forums.length,
         itemBuilder: (BuildContext context, int index) {
