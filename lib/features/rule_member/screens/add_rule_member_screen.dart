@@ -14,7 +14,6 @@ import 'package:reddit_tutorial/features/rule_member/delegates/search_rule_membe
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/rule.dart';
-import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -34,11 +33,12 @@ class AddRuleMemberScreen extends ConsumerStatefulWidget {
 }
 
 class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
-  void addRuleMemberService(
-      BuildContext context, WidgetRef ref, String ruleId, String serviceId) {
+  final GlobalKey _scaffold = GlobalKey();
+
+  void addRuleMemberService(WidgetRef ref, String ruleId, String serviceId) {
     ref
         .read(ruleMemberControllerProvider.notifier)
-        .createRuleMember(ruleId, serviceId, context);
+        .createRuleMember(ruleId, serviceId, _scaffold.currentContext!);
   }
 
   void viewRule(WidgetRef ref, BuildContext context) {
@@ -67,8 +67,8 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                       backgroundImage: NetworkImage(service.image),
                     ),
               trailing: TextButton(
-                onPressed: () => addRuleMemberService(
-                    context, ref, rule.ruleId, service.serviceId),
+                onPressed: () =>
+                    addRuleMemberService(ref, rule.ruleId, service.serviceId),
                 child: const Text(
                   'Add',
                 ),
@@ -97,7 +97,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                             ),
                       trailing: TextButton(
                         onPressed: () => addRuleMemberService(
-                            context, ref, rule.ruleId, service.serviceId),
+                            ref, rule.ruleId, service.serviceId),
                         child: const Text(
                           'Add',
                         ),
@@ -302,6 +302,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
     return ruleProv.when(
       data: (rule) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

@@ -27,11 +27,13 @@ class RemoveRuleMemberScreen extends ConsumerStatefulWidget {
 
 class _RemoveRuleMemberScreenState
     extends ConsumerState<RemoveRuleMemberScreen> {
+  final GlobalKey _scaffold = GlobalKey();
+
   void removeRuleMemberService(
-      BuildContext context, WidgetRef ref, String ruleId, String ruleMemberId) {
+      WidgetRef ref, String ruleId, String ruleMemberId) {
     ref
         .read(ruleMemberControllerProvider.notifier)
-        .deleteRuleMember(ruleId, ruleMemberId, context);
+        .deleteRuleMember(ruleId, ruleMemberId, _scaffold.currentContext!);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -76,6 +78,7 @@ class _RemoveRuleMemberScreenState
     return ruleProv.when(
       data: (rule) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
@@ -127,7 +130,6 @@ class _RemoveRuleMemberScreenState
                                       ),
                                 trailing: TextButton(
                                   onPressed: () => removeRuleMemberService(
-                                    context,
                                     ref,
                                     rule!.ruleId,
                                     ruleMember.ruleMemberId,

@@ -22,8 +22,7 @@ class MemberLeaveScreen extends ConsumerStatefulWidget {
 class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
   final GlobalKey _scaffold = GlobalKey();
 
-  void removeMemberService(
-      BuildContext context, WidgetRef ref, String forumId, String memberId) {
+  void removeMemberService(WidgetRef ref, String forumId, String memberId) {
     ref
         .read(memberControllerProvider.notifier)
         .deleteMember(forumId, memberId, _scaffold.currentContext!);
@@ -120,7 +119,6 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                                         ),
                                   trailing: TextButton(
                                     onPressed: () => removeMemberService(
-                                      context,
                                       ref,
                                       forum!.forumId,
                                       member.memberId,

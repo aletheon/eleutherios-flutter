@@ -23,11 +23,12 @@ class RemoveManagerScreen extends ConsumerStatefulWidget {
 }
 
 class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
-  void removeManagerService(
-      BuildContext context, WidgetRef ref, String policyId, String managerId) {
+  final GlobalKey _scaffold = GlobalKey();
+
+  void removeManagerService(WidgetRef ref, String policyId, String managerId) {
     ref
         .read(managerControllerProvider.notifier)
-        .deleteManager(policyId, managerId, context);
+        .deleteManager(policyId, managerId, _scaffold.currentContext!);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -73,6 +74,7 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
     return policyProv.when(
       data: (policy) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
@@ -124,7 +126,6 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
                                       ),
                                 trailing: TextButton(
                                   onPressed: () => removeManagerService(
-                                    context,
                                     ref,
                                     policy!.policyId,
                                     manager.managerId,

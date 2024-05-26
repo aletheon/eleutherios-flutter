@@ -30,11 +30,12 @@ class AddMemberScreen extends ConsumerStatefulWidget {
 }
 
 class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
-  void addMemberService(
-      BuildContext context, WidgetRef ref, String forumId, String serviceId) {
+  final GlobalKey _scaffold = GlobalKey();
+
+  void addMemberService(WidgetRef ref, String forumId, String serviceId) {
     ref
         .read(memberControllerProvider.notifier)
-        .createMember(forumId, serviceId, context);
+        .createMember(forumId, serviceId, _scaffold.currentContext!);
   }
 
   void viewForum(WidgetRef ref, BuildContext context) {
@@ -63,8 +64,8 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                       backgroundImage: NetworkImage(service.image),
                     ),
               trailing: TextButton(
-                onPressed: () => addMemberService(
-                    context, ref, forum.forumId, service.serviceId),
+                onPressed: () =>
+                    addMemberService(ref, forum.forumId, service.serviceId),
                 child: const Text(
                   'Add',
                 ),
@@ -93,7 +94,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                             ),
                       trailing: TextButton(
                         onPressed: () => addMemberService(
-                            context, ref, forum.forumId, service.serviceId),
+                            ref, forum.forumId, service.serviceId),
                         child: const Text(
                           'Add',
                         ),
@@ -296,6 +297,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
     return forumProv.when(
       data: (forum) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

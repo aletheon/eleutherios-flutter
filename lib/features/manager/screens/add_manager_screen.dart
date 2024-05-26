@@ -12,7 +12,6 @@ import 'package:reddit_tutorial/features/manager/delegates/search_manager_delega
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/favorite.dart';
-import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
@@ -31,11 +30,12 @@ class AddManagerScreen extends ConsumerStatefulWidget {
 }
 
 class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
-  void addManagerService(
-      BuildContext context, WidgetRef ref, String policyId, String serviceId) {
+  final GlobalKey _scaffold = GlobalKey();
+
+  void addManagerService(WidgetRef ref, String policyId, String serviceId) {
     ref
         .read(managerControllerProvider.notifier)
-        .createManager(policyId, serviceId, context);
+        .createManager(policyId, serviceId, _scaffold.currentContext!);
   }
 
   void viewPolicy(WidgetRef ref, BuildContext context) {
@@ -64,8 +64,8 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
                       backgroundImage: NetworkImage(service.image),
                     ),
               trailing: TextButton(
-                onPressed: () => addManagerService(
-                    context, ref, policy.policyId, service.serviceId),
+                onPressed: () =>
+                    addManagerService(ref, policy.policyId, service.serviceId),
                 child: const Text(
                   'Add',
                 ),
@@ -94,7 +94,7 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
                             ),
                       trailing: TextButton(
                         onPressed: () => addManagerService(
-                            context, ref, policy.policyId, service.serviceId),
+                            ref, policy.policyId, service.serviceId),
                         child: const Text(
                           'Add',
                         ),
@@ -296,6 +296,7 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
     return policyProv.when(
       data: (policy) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

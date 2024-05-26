@@ -259,7 +259,7 @@ class RuleMemberController extends StateNotifier<bool> {
     }
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Member removed successfully!');
+      showSnackBar(context, 'Potential member removed successfully!');
     });
   }
 
