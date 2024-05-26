@@ -23,11 +23,13 @@ class RemoveMemberScreen extends ConsumerStatefulWidget {
 }
 
 class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
+  final GlobalKey _scaffold = GlobalKey();
+
   void removeMemberService(
       BuildContext context, WidgetRef ref, String forumId, String memberId) {
     ref
         .read(memberControllerProvider.notifier)
-        .deleteMember(forumId, memberId, context);
+        .deleteMember(forumId, memberId, _scaffold.currentContext!);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -70,6 +72,7 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
     return forumProv.when(
       data: (forum) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

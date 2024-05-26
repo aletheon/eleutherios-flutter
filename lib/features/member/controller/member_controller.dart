@@ -162,7 +162,7 @@ class MemberController extends StateNotifier<bool> {
         // update forum
         forum.members.add(memberId);
         forum.services.add(serviceId);
-        final resForum = await _forumRepository.updateForum(forum);
+        await _forumRepository.updateForum(forum);
 
         // create new forum activity
         if (user!.forumActivities.contains(forumId) == false) {
@@ -176,7 +176,7 @@ class MemberController extends StateNotifier<bool> {
           final resUser = await _userProfileRepository.updateUser(user);
 
           state = false;
-          res.fold((l) => showSnackBar(context, l.message), (r) {
+          resUser.fold((l) => showSnackBar(context, l.message), (r) {
             showSnackBar(context, 'Member added successfully!');
           });
         } else {
@@ -249,7 +249,7 @@ class MemberController extends StateNotifier<bool> {
         .first;
 
     // delete member
-    final res = await _memberRepository.deleteMember(memberId);
+    await _memberRepository.deleteMember(memberId);
 
     // update forum
     forum!.members.remove(memberId);
@@ -276,10 +276,15 @@ class MemberController extends StateNotifier<bool> {
 
       // remove the activity from the users forum activity list
       user.forumActivities.remove(forumId);
-      await _userProfileRepository.updateUser(user);
+      final userRes = await _userProfileRepository.updateUser(user);
+
+      state = false;
+      userRes.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Member removed successfully!');
+      });
     } else {
       // set next available member as default
-      if (member!.selected) {
+      if (member.selected) {
         // get the rest of the users members
         final userMembers = await _ref
             .read(memberControllerProvider.notifier)
@@ -287,15 +292,19 @@ class MemberController extends StateNotifier<bool> {
             .first;
 
         userMembers[0] = userMembers[0].copyWith(selected: true);
-        await _memberRepository.updateMember(userMembers[0]);
+        final memberRes = await _memberRepository.updateMember(userMembers[0]);
+
+        state = false;
+        memberRes.fold((l) => showSnackBar(context, l.message), (r) {
+          showSnackBar(context, 'Member removed successfully!');
+        });
+      } else {
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'Member removed successfully!');
+        }
       }
     }
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      if (context.mounted) {
-        showSnackBar(context, 'Member removed successfully!');
-      }
-    });
   }
 
   Stream<List<Member>> getMembers(String forumId) {
