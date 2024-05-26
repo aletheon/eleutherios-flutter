@@ -25,10 +25,6 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     Routemaster.of(context).push('edit');
   }
 
-  // void viewPolicy(BuildContext context) {
-  //   Routemaster.of(context).push('/policy/${widget.policyId}/view');
-  // }
-
   void addManager(BuildContext context) {
     Routemaster.of(context).push('add-manager');
   }

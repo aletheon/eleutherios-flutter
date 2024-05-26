@@ -22,6 +22,7 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final fullNameController = TextEditingController();
   final personalWebsiteController = TextEditingController();
   final businessNameController = TextEditingController();
@@ -66,7 +67,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           profileFile: profileFile,
           bannerFile: bannerFile,
           userModel: userModel,
-          context: context);
+          context: _scaffold.currentContext!);
     }
   }
 
@@ -101,6 +102,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             }
 
             return Scaffold(
+              key: _scaffold,
               backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(

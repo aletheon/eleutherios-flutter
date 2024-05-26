@@ -12,6 +12,7 @@ import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
+final GlobalKey _scaffold = GlobalKey();
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
 class AddPolicyScreen extends ConsumerWidget {
@@ -19,11 +20,10 @@ class AddPolicyScreen extends ConsumerWidget {
   const AddPolicyScreen({super.key, required String serviceId})
       : _serviceId = serviceId;
 
-  void addPolicyToService(
-      BuildContext context, WidgetRef ref, String policyId) {
+  void addPolicyToService(WidgetRef ref, String policyId) {
     ref
         .read(policyControllerProvider.notifier)
-        .addPolicyToService(_serviceId, policyId, context);
+        .addPolicyToService(_serviceId, policyId, _scaffold.currentContext!);
   }
 
   void showPolicyDetails(BuildContext context, String policyId) {
@@ -47,8 +47,7 @@ class AddPolicyScreen extends ConsumerWidget {
                     backgroundImage: NetworkImage(policy.image),
                   ),
             trailing: TextButton(
-              onPressed: () =>
-                  addPolicyToService(context, ref, policy.policyId),
+              onPressed: () => addPolicyToService(ref, policy.policyId),
               child: const Text(
                 'Add',
               ),
@@ -165,6 +164,7 @@ class AddPolicyScreen extends ConsumerWidget {
     return serviceProv.when(
       data: (service) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

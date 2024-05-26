@@ -15,6 +15,7 @@ class CreateForumScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -22,12 +23,11 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
   void createForum() {
     if (titleController.text.trim().isNotEmpty) {
       ref.read(forumControllerProvider.notifier).createForum(
-            widget.forumId,
-            titleController.text.trim(),
-            descriptionController.text.trim(),
-            isChecked,
-            context,
-          );
+          widget.forumId,
+          titleController.text.trim(),
+          descriptionController.text.trim(),
+          isChecked,
+          _scaffold.currentContext!);
     }
   }
 
@@ -123,6 +123,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
       return ref.watch(getForumByIdProvider(widget.forumId!)).when(
             data: (forum) {
               return Scaffold(
+                  key: _scaffold,
                   backgroundColor: currentTheme.scaffoldBackgroundColor,
                   appBar: AppBar(
                     title: Text(

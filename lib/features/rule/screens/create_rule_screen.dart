@@ -25,6 +25,7 @@ class CreateRuleScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -39,7 +40,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             isChecked,
             ref.read(instantiationTypeRadioProvider.notifier).state,
             null,
-            context,
+            _scaffold.currentContext!,
           );
     }
   }
@@ -195,6 +196,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 .when(
                   data: (manager) {
                     return Scaffold(
+                        key: _scaffold,
                         backgroundColor: currentTheme.scaffoldBackgroundColor,
                         appBar: AppBar(
                           title: Text(

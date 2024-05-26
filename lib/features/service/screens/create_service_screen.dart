@@ -13,6 +13,7 @@ class CreateServiceScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -23,7 +24,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
           titleController.text.trim(),
           descriptionController.text.trim(),
           isChecked,
-          context);
+          _scaffold.currentContext!);
     }
   }
 
@@ -40,6 +41,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
+      key: _scaffold,
       backgroundColor: currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(

@@ -32,11 +32,11 @@ class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
 
 class _EditPotentialMemberPermissionsScreenState
     extends ConsumerState<EditPotentialMemberPermissionsScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   void save(RuleMember ruleMember, List<String> permissions) {
     ruleMember = ruleMember.copyWith(permissions: permissions);
-    ref
-        .read(ruleMemberControllerProvider.notifier)
-        .updateRuleMember(ruleMember: ruleMember, context: context);
+    ref.read(ruleMemberControllerProvider.notifier).updateRuleMember(
+        ruleMember: ruleMember, context: _scaffold.currentContext!);
   }
 
   validateUser() async {
@@ -79,6 +79,7 @@ class _EditPotentialMemberPermissionsScreenState
             return ref.watch(getServiceByIdProvider(ruleMember.serviceId)).when(
                   data: (service) {
                     return Scaffold(
+                      key: _scaffold,
                       appBar: AppBar(
                         title: Text(
                           'Edit Potential Member Permissions',

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
+final GlobalKey _scaffold = GlobalKey();
+
 class ServiceRemovePolicyScreen extends ConsumerWidget {
   final String _serviceId;
   const ServiceRemovePolicyScreen({super.key, required String serviceId})
@@ -12,6 +14,7 @@ class ServiceRemovePolicyScreen extends ConsumerWidget {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
+      key: _scaffold,
       appBar: AppBar(
         title: Text(
           'Remove Policy',

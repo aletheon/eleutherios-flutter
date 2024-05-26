@@ -22,6 +22,7 @@ class EditServiceScreen extends ConsumerStatefulWidget {
 }
 
 class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -74,7 +75,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
           profileFile: profileFile,
           bannerFile: bannerFile,
           service: service,
-          context: context);
+          context: _scaffold.currentContext!);
     }
   }
 
@@ -104,6 +105,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
             }
 
             return Scaffold(
+              key: _scaffold,
               backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(

@@ -13,6 +13,7 @@ class CreatePolicyScreen extends ConsumerStatefulWidget {
 }
 
 class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -23,7 +24,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
           titleController.text.trim(),
           descriptionController.text.trim(),
           isChecked,
-          context);
+          _scaffold.currentContext!);
     }
   }
 
@@ -40,6 +41,7 @@ class _CreatePolicyScreenState extends ConsumerState<CreatePolicyScreen> {
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
+      key: _scaffold,
       backgroundColor: currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(

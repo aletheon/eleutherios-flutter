@@ -27,11 +27,12 @@ class EditMemberPermissionsScreen extends ConsumerStatefulWidget {
 
 class _EditMemberPermissionsScreenState
     extends ConsumerState<EditMemberPermissionsScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   void save(Member member, List<String> permissions) {
     member = member.copyWith(permissions: permissions);
     ref
         .read(memberControllerProvider.notifier)
-        .updateMember(member: member, context: context);
+        .updateMember(member: member, context: _scaffold.currentContext!);
   }
 
   validateUser() async {
@@ -73,6 +74,7 @@ class _EditMemberPermissionsScreenState
             return ref.watch(getServiceByIdProvider(member.serviceId)).when(
                   data: (service) {
                     return Scaffold(
+                      key: _scaffold,
                       appBar: AppBar(
                         title: Text(
                           'Edit Member Permissions',

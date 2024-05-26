@@ -27,11 +27,12 @@ class EditManagerPermissionsScreen extends ConsumerStatefulWidget {
 
 class _EditManagerPermissionsScreenState
     extends ConsumerState<EditManagerPermissionsScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   void save(Manager manager, List<String> permissions) {
     manager = manager.copyWith(permissions: permissions);
     ref
         .read(managerControllerProvider.notifier)
-        .updateManager(manager: manager, context: context);
+        .updateManager(manager: manager, context: _scaffold.currentContext!);
   }
 
   validateUser() async {
@@ -75,6 +76,7 @@ class _EditManagerPermissionsScreenState
             return ref.watch(getServiceByIdProvider(manager.serviceId)).when(
                   data: (service) {
                     return Scaffold(
+                      key: _scaffold,
                       appBar: AppBar(
                         title: Text(
                           'Edit Manager Permissions',

@@ -32,6 +32,7 @@ class EditRuleScreen extends ConsumerStatefulWidget {
 }
 
 class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -86,7 +87,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
           profileFile: profileFile,
           bannerFile: bannerFile,
           rule: rule,
-          context: context);
+          context: _scaffold.currentContext!);
     }
   }
 
@@ -147,6 +148,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
             }
 
             return Scaffold(
+              key: _scaffold,
               backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(

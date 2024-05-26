@@ -22,6 +22,7 @@ class EditForumScreen extends ConsumerStatefulWidget {
 }
 
 class _EditForumScreenState extends ConsumerState<EditForumScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   bool isChecked = false;
@@ -74,7 +75,7 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
           profileFile: profileFile,
           bannerFile: bannerFile,
           forum: forum,
-          context: context);
+          context: _scaffold.currentContext!);
     }
   }
 
@@ -104,6 +105,7 @@ class _EditForumScreenState extends ConsumerState<EditForumScreen> {
             }
 
             return Scaffold(
+              key: _scaffold,
               backgroundColor: currentTheme.scaffoldBackgroundColor,
               appBar: AppBar(
                 title: Text(

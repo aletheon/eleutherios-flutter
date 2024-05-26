@@ -13,6 +13,7 @@ import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
+final GlobalKey _scaffold = GlobalKey();
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
 class ServiceAddForumScreen extends ConsumerWidget {
@@ -20,10 +21,10 @@ class ServiceAddForumScreen extends ConsumerWidget {
   const ServiceAddForumScreen({super.key, required String serviceId})
       : _serviceId = serviceId;
 
-  void registerService(BuildContext context, WidgetRef ref, String forumId) {
+  void registerService(WidgetRef ref, String forumId) {
     ref
         .read(memberControllerProvider.notifier)
-        .createMember(forumId, _serviceId, context);
+        .createMember(forumId, _serviceId, _scaffold.currentContext!);
   }
 
   void showForumDetails(BuildContext context, String forumId) {
@@ -47,7 +48,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
                     backgroundImage: NetworkImage(forum.image),
                   ),
             trailing: TextButton(
-              onPressed: () => registerService(context, ref, forum.forumId),
+              onPressed: () => registerService(ref, forum.forumId),
               child: const Text(
                 'Add',
               ),
@@ -161,6 +162,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
     return serviceProv.when(
       data: (service) {
         return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
