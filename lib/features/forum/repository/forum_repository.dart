@@ -47,7 +47,7 @@ class ForumRepository {
     });
   }
 
-  Stream<List<Forum>> getChildren(String parentId) {
+  Stream<List<Forum>> getForumChildren(String parentId) {
     return _forums
         .where('parentId', isEqualTo: parentId)
         .snapshots()
@@ -63,6 +63,20 @@ class ForumRepository {
 
   Stream<List<Forum>> getUserForums(String uid) {
     return _forums.where('uid', isEqualTo: uid).snapshots().map((event) {
+      List<Forum> forums = [];
+      for (var doc in event.docs) {
+        forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      forums.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      return forums;
+    });
+  }
+
+  Stream<List<Forum>> getServiceForums(String serviceId) {
+    return _forums
+        .where('services', arrayContains: serviceId)
+        .snapshots()
+        .map((event) {
       List<Forum> forums = [];
       for (var doc in event.docs) {
         forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));

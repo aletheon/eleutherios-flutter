@@ -406,7 +406,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                       ),
                     ),
                     children: [
-                      ref.watch(getChildrenProvider(widget.forumId)).when(
+                      ref.watch(getForumChildrenProvider(widget.forumId)).when(
                             data: (forums) {
                               if (forums.isNotEmpty) {
                                 return SizedBox(

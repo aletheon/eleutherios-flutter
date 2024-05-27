@@ -21,6 +21,27 @@ final getMemberByIdProvider =
   return ref.watch(memberControllerProvider.notifier).getMemberById(memberId);
 });
 
+final getMemberByServiceIdProvider =
+    StreamProvider.family((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(memberControllerProvider.notifier)
+        .getMemberByServiceId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final getMemberByServiceIdProvider2 = Provider.family((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(memberControllerProvider.notifier)
+        .getMemberByServiceId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final serviceIsRegisteredInForumProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
@@ -119,6 +140,7 @@ class MemberController extends StateNotifier<bool> {
         .read(forumControllerProvider.notifier)
         .getForumById(forumId)
         .first;
+
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
         .getServiceById(serviceId)
@@ -320,5 +342,9 @@ class MemberController extends StateNotifier<bool> {
 
   Stream<Member?> getMemberById(String memberId) {
     return _memberRepository.getMemberById(memberId);
+  }
+
+  Stream<Member?> getMemberByServiceId(String forumId, String serviceId) {
+    return _memberRepository.getMemberByServiceId(forumId, serviceId);
   }
 }

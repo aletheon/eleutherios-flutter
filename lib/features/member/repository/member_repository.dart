@@ -37,6 +37,28 @@ class MemberRepository {
     }
   }
 
+  Stream<Member?> getMemberByServiceId(String forumId, String serviceId) {
+    if (forumId.isNotEmpty && serviceId.isNotEmpty) {
+      return _members
+          .where('forumId', isEqualTo: forumId)
+          .where('serviceId', isEqualTo: serviceId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<Member> members = [];
+          for (var doc in event.docs) {
+            members.add(Member.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return members.first;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {
     return _members
         .where('forumId', isEqualTo: forumId)

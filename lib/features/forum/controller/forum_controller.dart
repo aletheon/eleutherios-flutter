@@ -26,6 +26,13 @@ final getForumByIdProvider2 = Provider.family((ref, String forumId) {
   }
 });
 
+final getServiceForumsProvider =
+    StreamProvider.family.autoDispose((ref, String serviceId) {
+  return ref
+      .watch(forumControllerProvider.notifier)
+      .getServiceForums(serviceId);
+});
+
 final userForumsProvider = StreamProvider.autoDispose((ref) {
   return ref.watch(forumControllerProvider.notifier).getUserForums();
 });
@@ -34,9 +41,9 @@ final forumsProvider = StreamProvider.autoDispose<List<Forum>>((ref) {
   return ref.watch(forumControllerProvider.notifier).getForums();
 });
 
-final getChildrenProvider =
+final getForumChildrenProvider =
     StreamProvider.family.autoDispose((ref, String parentId) {
-  return ref.watch(forumControllerProvider.notifier).getChildren(parentId);
+  return ref.watch(forumControllerProvider.notifier).getForumChildren(parentId);
 });
 
 final searchPrivateForumsProvider = StreamProvider.family.autoDispose(
@@ -264,12 +271,16 @@ class ForumController extends StateNotifier<bool> {
     return _forumRepository.getForums();
   }
 
-  Stream<List<Forum>> getChildren(String parentId) {
-    return _forumRepository.getChildren(parentId);
+  Stream<List<Forum>> getForumChildren(String parentId) {
+    return _forumRepository.getForumChildren(parentId);
   }
 
   Stream<Forum?> getForumById(String forumId) {
     return _forumRepository.getForumById(forumId);
+  }
+
+  Stream<List<Forum>> getServiceForums(String serviceId) {
+    return _forumRepository.getServiceForums(serviceId);
   }
 
   Stream<List<Forum>> searchPrivateForums(String uid, String query) {
