@@ -37,6 +37,28 @@ class ManagerRepository {
     }
   }
 
+  Stream<Manager?> getManagerByServiceId(String policyId, String serviceId) {
+    if (policyId.isNotEmpty && serviceId.isNotEmpty) {
+      return _managers
+          .where('policyId', isEqualTo: policyId)
+          .where('serviceId', isEqualTo: serviceId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<Manager> managers = [];
+          for (var doc in event.docs) {
+            managers.add(Manager.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return managers.first;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   Stream<Manager?> getUserSelectedManager(String policyId, String uid) {
     return _managers
         .where('policyId', isEqualTo: policyId)

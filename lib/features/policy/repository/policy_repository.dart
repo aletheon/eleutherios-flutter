@@ -127,7 +127,21 @@ class PolicyRepository {
     }
   }
 
-  Stream<List<Policy>> getServicePolicies(String serviceId) {
+  Stream<List<Policy>> getServiceManagerPolicies(String serviceId) {
+    return _policies
+        .where('services', arrayContains: serviceId)
+        .snapshots()
+        .map((event) {
+      List<Policy> policies = [];
+      for (var doc in event.docs) {
+        policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      policies.sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      return policies;
+    });
+  }
+
+  Stream<List<Policy>> getServiceConsumerPolicies(String serviceId) {
     return _policies
         .where('consumers', arrayContains: serviceId)
         .snapshots()

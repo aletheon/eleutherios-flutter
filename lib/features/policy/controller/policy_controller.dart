@@ -41,6 +41,20 @@ final getPolicyByIdProvider2 = Provider.family((ref, String policyId) {
   }
 });
 
+final getServiceManagerPoliciesProvider =
+    StreamProvider.family.autoDispose((ref, String serviceId) {
+  return ref
+      .watch(policyControllerProvider.notifier)
+      .getServiceManagerPolicies(serviceId);
+});
+
+final getServiceConsumerPoliciesProvider =
+    StreamProvider.family((ref, String serviceId) {
+  return ref
+      .watch(policyControllerProvider.notifier)
+      .getServiceConsumerPolicies(serviceId);
+});
+
 final userPoliciesProvider = StreamProvider.autoDispose<List<Policy>>((ref) {
   return ref.watch(policyControllerProvider.notifier).getUserPolicies();
 });
@@ -61,12 +75,6 @@ final searchPublicPoliciesProvider = StreamProvider.family((ref, String query) {
   return ref
       .watch(policyControllerProvider.notifier)
       .searchPublicPolicies(query);
-});
-
-final servicePoliciesProvider = StreamProvider.family((ref, String serviceId) {
-  return ref
-      .watch(policyControllerProvider.notifier)
-      .getServicePolicies(serviceId);
 });
 
 final policyControllerProvider =
@@ -183,6 +191,41 @@ class PolicyController extends StateNotifier<bool> {
     policyRes.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Policy updated successfully!');
     });
+  }
+
+  void removePolicyFromService(
+      String serviceId, String policyId, BuildContext context) async {
+    state = true;
+    Policy? policy = await _ref
+        .read(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
+
+    if (policy != null && service != null) {
+      service.policies.remove(policyId);
+      await _serviceRepository.updateService(service);
+
+      policy.consumers.remove(serviceId);
+      final resPolicy = await _policyRepository.updatePolicy(policy);
+
+      state = false;
+      resPolicy.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Policy removed successfully!');
+        },
+      );
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy or service does not exist');
+      }
+    }
   }
 
   void addPolicyToService(
@@ -347,8 +390,12 @@ class PolicyController extends StateNotifier<bool> {
     return _policyRepository.getPolicyById(policyId);
   }
 
-  Stream<List<Policy>> getServicePolicies(String serviceId) {
-    return _policyRepository.getServicePolicies(serviceId);
+  Stream<List<Policy>> getServiceConsumerPolicies(String serviceId) {
+    return _policyRepository.getServiceConsumerPolicies(serviceId);
+  }
+
+  Stream<List<Policy>> getServiceManagerPolicies(String serviceId) {
+    return _policyRepository.getServiceManagerPolicies(serviceId);
   }
 
   Stream<List<Policy>> searchPrivatePolicies(String uid, String query) {

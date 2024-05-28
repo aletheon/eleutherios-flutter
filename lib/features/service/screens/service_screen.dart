@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
@@ -260,12 +261,11 @@ class ServiceScreen extends ConsumerWidget {
                                   ],
                                 ),
                                 // #####################################################
-                                // #####################################################
-                                // Show services here
-                                // #####################################################
+                                // Show policies
                                 // #####################################################
                                 ref
-                                    .watch(servicePoliciesProvider(serviceId))
+                                    .watch(getServiceConsumerPoliciesProvider(
+                                        serviceId))
                                     .when(
                                       data: (policies) {
                                         if (policies.isEmpty) {

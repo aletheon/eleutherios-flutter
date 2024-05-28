@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
+import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -17,7 +18,7 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
       : _serviceId = serviceId;
 
   void removeServiceForum(WidgetRef ref, String forumId) async {
-    final member = await ref
+    Member? member = await ref
         .read(getMemberByServiceIdProvider2(Tuple2(forumId, _serviceId)))
         .first;
 
@@ -45,7 +46,7 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
-              'Remove Member',
+              'Remove Forum',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
@@ -74,7 +75,7 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
 
                       return ListTile(
                         title: Text(
-                          forum!.title,
+                          forum.title,
                           textWidthBasis: TextWidthBasis.longestLine,
                         ),
                         leading: forum.image == Constants.avatarDefault

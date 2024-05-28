@@ -20,10 +20,10 @@ class AddConsumerScreen extends ConsumerWidget {
   const AddConsumerScreen({super.key, required String policyId})
       : _policyId = policyId;
 
-  void addServiceToPolicy(WidgetRef ref, String serviceId) {
+  void addPolicyToService(WidgetRef ref, String serviceId) {
     ref
-        .read(serviceControllerProvider.notifier)
-        .addServiceToPolicy(_policyId, serviceId, _scaffold.currentContext!);
+        .read(policyControllerProvider.notifier)
+        .addPolicyToService(serviceId, _policyId, _scaffold.currentContext!);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -47,7 +47,7 @@ class AddConsumerScreen extends ConsumerWidget {
                     backgroundImage: NetworkImage(service.image),
                   ),
             trailing: TextButton(
-              onPressed: () => addServiceToPolicy(ref, service.serviceId),
+              onPressed: () => addPolicyToService(ref, service.serviceId),
               child: const Text(
                 'Add',
               ),
