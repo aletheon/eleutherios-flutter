@@ -193,41 +193,6 @@ class PolicyController extends StateNotifier<bool> {
     });
   }
 
-  void removePolicyFromService(
-      String serviceId, String policyId, BuildContext context) async {
-    state = true;
-    Policy? policy = await _ref
-        .read(policyControllerProvider.notifier)
-        .getPolicyById(policyId)
-        .first;
-
-    Service? service = await _ref
-        .read(serviceControllerProvider.notifier)
-        .getServiceById(serviceId)
-        .first;
-
-    if (policy != null && service != null) {
-      service.policies.remove(policyId);
-      await _serviceRepository.updateService(service);
-
-      policy.consumers.remove(serviceId);
-      final resPolicy = await _policyRepository.updatePolicy(policy);
-
-      state = false;
-      resPolicy.fold(
-        (l) => showSnackBar(context, l.message),
-        (r) {
-          showSnackBar(context, 'Policy removed successfully!');
-        },
-      );
-    } else {
-      state = false;
-      if (context.mounted) {
-        showSnackBar(context, 'Policy or service does not exist');
-      }
-    }
-  }
-
   void addPolicyToService(
       String serviceId, String policyId, BuildContext context) async {
     state = true;
@@ -369,6 +334,41 @@ class PolicyController extends StateNotifier<bool> {
           showSnackBar(context, 'Policy added successfully');
         }
       }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy or service does not exist');
+      }
+    }
+  }
+
+  void removePolicyFromService(
+      String serviceId, String policyId, BuildContext context) async {
+    state = true;
+    Policy? policy = await _ref
+        .read(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
+
+    if (policy != null && service != null) {
+      service.policies.remove(policyId);
+      await _serviceRepository.updateService(service);
+
+      policy.consumers.remove(serviceId);
+      final resPolicy = await _policyRepository.updatePolicy(policy);
+
+      state = false;
+      resPolicy.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Policy removed successfully!');
+        },
+      );
     } else {
       state = false;
       if (context.mounted) {

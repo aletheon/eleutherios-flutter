@@ -154,6 +154,7 @@ class ServiceAddForumScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(memberControllerProvider);
     final serviceProv = ref.watch(getServiceByIdProvider(_serviceId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -172,46 +173,48 @@ class ServiceAddForumScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text("Private"),
-                  Radio(
-                      value: "Private",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  const Text("Public"),
-                  Radio(
-                      value: "Public",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  IconButton(
-                    onPressed: () {
-                      showSearch(
-                        context: context,
-                        delegate: SearchForumDelegate(
-                          ref,
-                          user,
-                          _serviceId,
-                          ref.read(searchRadioProvider.notifier).state,
+          body: isLoading
+              ? const Loader()
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text("Private"),
+                        Radio(
+                            value: "Private",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        const Text("Public"),
+                        Radio(
+                            value: "Public",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        IconButton(
+                          onPressed: () {
+                            showSearch(
+                              context: context,
+                              delegate: SearchForumDelegate(
+                                ref,
+                                user,
+                                _serviceId,
+                                ref.read(searchRadioProvider.notifier).state,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.search),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.search),
-                  ),
-                ],
-              ),
-              showForums(ref, service!, searchRadioProv)
-            ],
-          ),
+                      ],
+                    ),
+                    showForums(ref, service!, searchRadioProv)
+                  ],
+                ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

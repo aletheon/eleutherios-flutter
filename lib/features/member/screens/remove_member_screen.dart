@@ -64,6 +64,7 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(memberControllerProvider);
     final forumProv = ref.watch(getForumByIdProvider(widget.forumId));
     final membersProv = ref.watch(getMembersProvider(widget.forumId));
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -81,72 +82,77 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
               ),
             ),
           ),
-          body: membersProv.when(
-            data: (members) {
-              if (members.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    child: const Text(
-                      'No members',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: ListView.builder(
-                    itemCount: members.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final member = members[index];
+          body: isLoading
+              ? const Loader()
+              : membersProv.when(
+                  data: (members) {
+                    if (members.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text(
+                            'No members',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: ListView.builder(
+                          itemCount: members.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final member = members[index];
 
-                      return ref
-                          .watch(getServiceByIdProvider(member.serviceId))
-                          .when(
-                            data: (service) {
-                              return ListTile(
-                                title: Text(
-                                  service!.title,
-                                  textWidthBasis: TextWidthBasis.longestLine,
-                                ),
-                                leading: service.image ==
-                                        Constants.avatarDefault
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            Image.asset(service.image).image,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(service.image),
+                            return ref
+                                .watch(getServiceByIdProvider(member.serviceId))
+                                .when(
+                                  data: (service) {
+                                    return ListTile(
+                                      title: Text(
+                                        service!.title,
+                                        textWidthBasis:
+                                            TextWidthBasis.longestLine,
                                       ),
-                                trailing: TextButton(
-                                  onPressed: () => removeMemberService(
-                                    ref,
-                                    forum!.forumId,
-                                    member.memberId,
-                                  ),
-                                  child: const Text(
-                                    'Remove',
-                                  ),
-                                ),
-                                onTap: () => showServiceDetails(
-                                    context, service.serviceId),
-                              );
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    },
-                  ),
-                );
-              }
-            },
-            error: (error, stackTrace) => ErrorText(error: error.toString()),
-            loading: () => const Loader(),
-          ),
+                                      leading: service.image ==
+                                              Constants.avatarDefault
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  Image.asset(service.image)
+                                                      .image,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(service.image),
+                                            ),
+                                      trailing: TextButton(
+                                        onPressed: () => removeMemberService(
+                                          ref,
+                                          forum!.forumId,
+                                          member.memberId,
+                                        ),
+                                        child: const Text(
+                                          'Remove',
+                                        ),
+                                      ),
+                                      onTap: () => showServiceDetails(
+                                          context, service.serviceId),
+                                    );
+                                  },
+                                  error: (error, stackTrace) =>
+                                      ErrorText(error: error.toString()),
+                                  loading: () => const Loader(),
+                                );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  error: (error, stackTrace) =>
+                      ErrorText(error: error.toString()),
+                  loading: () => const Loader(),
+                ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

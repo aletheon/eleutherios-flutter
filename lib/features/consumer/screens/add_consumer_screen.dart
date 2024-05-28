@@ -153,7 +153,7 @@ class AddConsumerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoading = ref.watch(serviceControllerProvider);
+    final isLoading = ref.watch(policyControllerProvider);
     final policyProv = ref.watch(getPolicyByIdProvider(_policyId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);

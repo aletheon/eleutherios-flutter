@@ -35,6 +35,7 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(memberControllerProvider);
     final serviceProv = ref.watch(getForumByIdProvider(_serviceId));
     final serviceForumsProv = ref.watch(getServiceForumsProvider(_serviceId));
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -52,58 +53,64 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: serviceForumsProv.when(
-            data: (serviceForums) {
-              if (serviceForums.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    child: const Text(
-                      'No forums',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: ListView.builder(
-                    itemCount: serviceForums.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final forum = serviceForums[index];
-
-                      return ListTile(
-                        title: Text(
-                          forum.title,
-                          textWidthBasis: TextWidthBasis.longestLine,
-                        ),
-                        leading: forum.image == Constants.avatarDefault
-                            ? CircleAvatar(
-                                backgroundImage: Image.asset(forum.image).image,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(forum.image),
-                              ),
-                        trailing: TextButton(
-                          onPressed: () => removeServiceForum(
-                            ref,
-                            forum.forumId,
-                          ),
+          body: isLoading
+              ? const Loader()
+              : serviceForumsProv.when(
+                  data: (serviceForums) {
+                    if (serviceForums.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          alignment: Alignment.topCenter,
                           child: const Text(
-                            'Remove',
+                            'No forums',
+                            style: TextStyle(fontSize: 14),
                           ),
                         ),
-                        onTap: () => showForumDetails(context, forum.forumId),
                       );
-                    },
-                  ),
-                );
-              }
-            },
-            error: (error, stackTrace) => ErrorText(error: error.toString()),
-            loading: () => const Loader(),
-          ),
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: ListView.builder(
+                          itemCount: serviceForums.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final forum = serviceForums[index];
+
+                            return ListTile(
+                              title: Text(
+                                forum.title,
+                                textWidthBasis: TextWidthBasis.longestLine,
+                              ),
+                              leading: forum.image == Constants.avatarDefault
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          Image.asset(forum.image).image,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(forum.image),
+                                    ),
+                              trailing: TextButton(
+                                onPressed: () => removeServiceForum(
+                                  ref,
+                                  forum.forumId,
+                                ),
+                                child: const Text(
+                                  'Remove',
+                                ),
+                              ),
+                              onTap: () =>
+                                  showForumDetails(context, forum.forumId),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  error: (error, stackTrace) =>
+                      ErrorText(error: error.toString()),
+                  loading: () => const Loader(),
+                ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

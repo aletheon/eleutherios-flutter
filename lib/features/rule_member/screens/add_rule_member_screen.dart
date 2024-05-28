@@ -294,6 +294,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(ruleMemberControllerProvider);
     final ruleProv = ref.watch(getRuleByIdProvider(widget.ruleId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -322,56 +323,63 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
             //       : const SizedBox(),
             // ],
           ),
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text("Private"),
-                  Radio(
-                      value: "Private",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  const Text("Public"),
-                  Radio(
-                      value: "Public",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  const Text("Favorite"),
-                  Radio(
-                      value: "Favorite",
-                      groupValue: searchRadioProv,
-                      onChanged: (newValue) {
-                        ref.read(searchRadioProvider.notifier).state =
-                            newValue.toString();
-                      }),
-                  IconButton(
-                    onPressed: () {
-                      showSearch(
-                        context: context,
-                        delegate: SearchRuleMemberDelegate(
-                            ref,
-                            user,
-                            widget.ruleId,
-                            ref.read(searchRadioProvider.notifier).state ==
-                                    "Favorite"
-                                ? "Private"
-                                : ref.read(searchRadioProvider.notifier).state),
-                      );
-                    },
-                    icon: const Icon(Icons.search),
-                  ),
-                ],
-              ),
-              showServices(ref, rule!, searchRadioProv)
-            ],
-          ),
+          body: isLoading
+              ? const Loader()
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text("Private"),
+                        Radio(
+                            value: "Private",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        const Text("Public"),
+                        Radio(
+                            value: "Public",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        const Text("Favorite"),
+                        Radio(
+                            value: "Favorite",
+                            groupValue: searchRadioProv,
+                            onChanged: (newValue) {
+                              ref.read(searchRadioProvider.notifier).state =
+                                  newValue.toString();
+                            }),
+                        IconButton(
+                          onPressed: () {
+                            showSearch(
+                              context: context,
+                              delegate: SearchRuleMemberDelegate(
+                                  ref,
+                                  user,
+                                  widget.ruleId,
+                                  ref
+                                              .read(
+                                                  searchRadioProvider.notifier)
+                                              .state ==
+                                          "Favorite"
+                                      ? "Private"
+                                      : ref
+                                          .read(searchRadioProvider.notifier)
+                                          .state),
+                            );
+                          },
+                          icon: const Icon(Icons.search),
+                        ),
+                      ],
+                    ),
+                    showServices(ref, rule!, searchRadioProv)
+                  ],
+                ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),
