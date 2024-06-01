@@ -24,9 +24,10 @@ class Forum {
   final List<String> members; // members (i.e. services) serving in this forum
   final List<String> posts;
   final List<String> forums;
-  final List<String> breadcrumbs; // breadcrumb to store forumIds up to the root
   final List<String>
-      breadcrumbReferences; // store the forumIds of other forums referencing this forum in their breadcrumb
+      breadcrumbs; // breadcrumb to store all child forumIds up to the root
+  final List<String>
+      breadcrumbReferences; // store the forumIds of other forums referencing this forum so we know which forums to update if this forum is deleted
   final String recentPostId;
   final DateTime lastUpdateDate;
   final DateTime creationDate;

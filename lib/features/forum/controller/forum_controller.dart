@@ -86,6 +86,61 @@ class ForumController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
+  Future<List<String>> getBreadCrumbPath(String breadCrumbPathForumId) async {
+    try {
+      List<String> breadcrumbs = [];
+
+      Future<Forum?> getCrumb(String crumbForumId) async {
+        try {
+          Forum? tempForum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(crumbForumId)
+              .first;
+
+          // update breadcrumb references for this forum (i.e. breadCrumbPathForumId) in case
+          // this forum is removed we know which children(s) breadcrumbs to update
+          // if (tempForum != null &&
+          //     tempForum.forumId != breadCrumbPathForumId &&
+          //     !tempForum.breadcrumbReferences.contains(breadCrumbPathForumId)) {
+          //   tempForum.breadcrumbReferences.add(breadCrumbPathForumId);
+          //   await _forumRepository.updateForum(tempForum);
+          // }
+          return tempForum;
+        } catch (e) {
+          print(e.toString());
+          rethrow;
+        }
+      }
+
+      // recursive function
+      Future<Forum?> getBreadCrumb(String forumIdToRecurse) async {
+        Future<Forum?> predicate(Forum? tempForum) async {
+          if (tempForum != null) {
+            breadcrumbs.add(tempForum.forumId);
+
+            if (tempForum.parentId.isNotEmpty) {
+              return await getBreadCrumb(tempForum.parentId);
+            } else {
+              return null;
+            }
+          } else {
+            return null;
+          }
+        }
+
+        // get our initial parent then recurse up the tree to the root parent
+        return await getCrumb(forumIdToRecurse).then(predicate);
+      }
+
+      // Start our recursive function
+      await getBreadCrumb(breadCrumbPathForumId);
+      return breadcrumbs.reversed.toList();
+    } catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
   void createForum(String? parentId, String title, String description,
       bool public, BuildContext context) async {
     state = true;
@@ -129,92 +184,40 @@ class ForumController extends StateNotifier<bool> {
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
-    final res = await _forumRepository.createForum(forum);
+    await _forumRepository.createForum(forum);
 
     if (parentForum != null) {
       // add the new forum to the parent forums list
       parentForum.forums.add(forumId);
-      final parentRes = await _forumRepository.updateForum(parentForum);
-
-      Future<Forum?> getCrumb(String forumId) async {
-        try {
-          Forum? tempForum = await _ref
-              .read(forumControllerProvider.notifier)
-              .getForumById(forumId)
-              .first;
-
-          // update breadcrumb references for this forum in case
-          // this forum is removed we know which children(s) breadcrumbs to update
-          if (tempForum != null &&
-              tempForum.forumId != forum.forumId &&
-              !tempForum.breadcrumbReferences.contains(forum.forumId)) {
-            tempForum.breadcrumbReferences.add(forum.forumId);
-            final bcRes = await _forumRepository.updateForum(tempForum);
-          }
-          return tempForum;
-        } catch (e) {
-          print(e.toString());
-          rethrow;
-        }
-      }
-
-      Future<List<String>> getBreadCrumbPath(String forumId) async {
-        try {
-          List<String> breadcrumbs = [];
-
-          // recursive function
-          Future<Forum?> getBreadCrumb(String forumIdToRecurse) async {
-            Future<Forum?> predicate(Forum? tempForum) async {
-              if (tempForum != null) {
-                breadcrumbs.add(tempForum.forumId);
-
-                if (tempForum.parentId.isNotEmpty) {
-                  return await getBreadCrumb(tempForum.parentId);
-                } else {
-                  return null;
-                }
-              } else {
-                return null;
-              }
-            }
-
-            // get our initial parent then recurse up the tree to the root parent
-            return await getCrumb(forumIdToRecurse).then(predicate);
-          }
-
-          // Start our recursive function
-          await getBreadCrumb(forumId);
-          return breadcrumbs.reversed.toList();
-        } catch (e) {
-          print(e.toString());
-          rethrow;
-        }
-      }
+      await _forumRepository.updateForum(parentForum);
 
       // get the breadcrumbs for this forum
-      List<String> breadcrumbs = await getBreadCrumbPath(forum.forumId);
-
-      // *********************************************************
-      // *********************************************************
-      // *********************************************************
-      // HERE ROB HAVE TO UPDATE forum.breadcrumbReferences for each breadcrumb
-      // so that if this forum gets deleted they know they have to update
-      // their breadcrumbs list
-      // *********************************************************
-      // *********************************************************
-      // *********************************************************
+      List<String> breadcrumbs = await getBreadCrumbPath(forumId);
 
       // store the breadcrumbs
       if (breadcrumbs.isNotEmpty) {
         forum = forum.copyWith(breadcrumbs: breadcrumbs);
-        final res = await _forumRepository.updateForum(forum);
+        await _forumRepository.updateForum(forum);
+
+        // Create a reference in this forums breadcrumb references table to the parent forum that it is pointing to
+        // So that if the parent gets deleted, we know we have to rebuild that reference forums, breadcrumbs
+        for (String crumb in breadcrumbs) {
+          if (crumb != forumId) {
+            Forum? breadcrumb = await _ref
+                .read(forumControllerProvider.notifier)
+                .getForumById(crumb)
+                .first;
+
+            breadcrumb!.breadcrumbReferences.add(forumId);
+            await _forumRepository.updateForum(breadcrumb);
+          }
+        }
       }
     }
-
     user.forums.add(forumId);
     final resUser = await _userProfileRepository.updateUser(user);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
+    resUser.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Forum created successfully!');
       Routemaster.of(context).replace('/user/forum/list');
     });
@@ -252,14 +255,107 @@ class ForumController extends StateNotifier<bool> {
     state = false;
     forumRes.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Forum updated successfully!');
-      // Routemaster.of(context).popUntil((routeData) {
-      //   if (routeData.toString().split("/").last ==
-      //       routeData.pathParameters['id']) {
-      //     return true;
-      //   }
-      //   return false;
-      // });
     });
+  }
+
+  void removeChildForum(
+      String forumId, String childForumId, BuildContext context) async {
+    state = true;
+    Forum? forum = await _ref
+        .read(forumControllerProvider.notifier)
+        .getForumById(forumId)
+        .first;
+
+    Forum? childForum = await _ref
+        .read(forumControllerProvider.notifier)
+        .getForumById(forumId)
+        .first;
+
+    if (forum != null && childForum != null) {
+      forum.forums.remove(childForumId);
+      await _forumRepository.updateForum(forum);
+
+      // remove the child forum
+      final resChildForum = await _forumRepository.deleteForum(childForumId);
+
+      // iterate through childForum.breadcrumbs and remove childForum.breadcrumbReferences
+      if (childForum.breadcrumbs.isNotEmpty) {
+        // iterate breadcrumbs
+        for (String crumb in childForum.breadcrumbs) {
+          // grab the breadcrumb
+          Forum? breadcrumbForum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(crumb)
+              .first;
+
+          // check if we have a breadcrumb
+          if (breadcrumbForum != null) {
+            // iterate breadcrumb references and remove any references from its breadcrumbReferences
+            if (childForum.breadcrumbReferences.isNotEmpty) {
+              for (String reference in childForum.breadcrumbReferences) {
+                if (breadcrumbForum.breadcrumbReferences.contains(reference)) {
+                  breadcrumbForum.breadcrumbReferences.remove(reference);
+                }
+              }
+              await _forumRepository.updateForum(breadcrumbForum);
+            }
+          }
+        }
+      }
+
+      // iterate through childForum.breadcrumbReferences and rebuild those childrens breadcrumbs
+      if (childForum.breadcrumbReferences.isNotEmpty) {
+        for (String reference in childForum.breadcrumbReferences) {
+          // grab the forum
+          Forum? referenceForum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(reference)
+              .first;
+
+          // check if we have a forum
+          if (referenceForum != null) {
+            // recreate the breadcrumbs for this forum
+            List<String> breadcrumbs =
+                await getBreadCrumbPath(referenceForum.forumId);
+
+            if (breadcrumbs.isNotEmpty) {
+              referenceForum =
+                  referenceForum.copyWith(breadcrumbs: breadcrumbs);
+              await _forumRepository.updateForum(referenceForum);
+
+              // Create a reference in this forums breadcrumb references table to the parent forum that it is pointing to
+              // So that if the parent gets deleted, we know we have to rebuild that reference forums, breadcrumbs
+              for (String crumb in breadcrumbs) {
+                if (crumb != referenceForum.forumId) {
+                  Forum? breadcrumb = await _ref
+                      .read(forumControllerProvider.notifier)
+                      .getForumById(crumb)
+                      .first;
+
+                  breadcrumb!.breadcrumbReferences.add(referenceForum.forumId);
+                  await _forumRepository.updateForum(breadcrumb);
+                }
+              }
+            } else {
+              referenceForum = referenceForum.copyWith(breadcrumbs: []);
+              await _forumRepository.updateForum(referenceForum);
+            }
+          }
+        }
+      }
+      state = false;
+      resChildForum.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Forum removed successfully!');
+        },
+      );
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Forum or child forum does not exist');
+      }
+    }
   }
 
   Stream<List<Forum>> getUserForums() {

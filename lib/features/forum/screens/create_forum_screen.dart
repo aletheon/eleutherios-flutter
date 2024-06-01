@@ -142,6 +142,7 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
           );
     } else {
       return Scaffold(
+          key: _scaffold,
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(

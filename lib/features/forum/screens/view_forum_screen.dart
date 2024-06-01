@@ -28,6 +28,7 @@ class ViewForumScreen extends ConsumerStatefulWidget {
 }
 
 class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   final messageController = TextEditingController();
   Member? selectedMember;
   String? dropdownValue;
@@ -81,12 +82,19 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
           forumId: widget.forumId, postId: postId, context: context);
     }
 
-    void showDetails(BuildContext context) {
-      Routemaster.of(context).push('/forum/${widget.forumId}');
+    void showDetails(String forumId, BuildContext context) {
+      Routemaster.of(context).push('/forum/$forumId');
     }
 
-    void viewForum(String forumId, BuildContext context) {
-      Routemaster.of(context).push('/forum/$forumId/view');
+    void viewForum(String forumId, BuildContext context) async {
+      selectedMember = await ref
+          .read(getUserSelectedMemberProvider2(Tuple2(forumId, user.uid)))
+          .first;
+
+      setState(() {
+        dropdownValue = selectedMember!.memberId;
+        Routemaster.of(context).push('/forum/$forumId/view');
+      });
     }
 
     void showMemberDetails(String memberId, BuildContext context) {
@@ -104,6 +112,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
     return ref.watch(getForumByIdProvider(widget.forumId)).when(
           data: (forum) {
             return Scaffold(
+              key: _scaffold,
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Column(
@@ -118,7 +127,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () => showDetails(context),
+                    onPressed: () => showDetails(forum.forumId, context),
                     child: const Text(
                       'Details',
                       style: TextStyle(
@@ -390,14 +399,6 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                   // ************************************************************
                   // Forums
                   // ************************************************************
-                  // ************************************************************
-                  // HERE ROB CONTINUE WITH FORUMS + SERVICES links etc
-                  // Also look at uploading source code to github
-                  //    - research flutter project
-                  //    - documentation
-                  //    - etc
-                  // ************************************************************
-                  // ************************************************************
                   ExpansionTile(
                     title: Text(
                       'Forums(${forum.forums.length})',
@@ -447,8 +448,22 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                   : Text(forum.title),
                                             ],
                                           ),
-                                          onTap: () =>
-                                              viewForum(forum.forumId, context),
+                                          onTap: () async {
+                                            Member? tempSelectedMember = await ref
+                                                .read(
+                                                    getUserSelectedMemberProvider2(
+                                                        Tuple2(forum.forumId,
+                                                            user.uid)))
+                                                .first;
+
+                                            if (tempSelectedMember != null) {
+                                              viewForum(forum.forumId,
+                                                  _scaffold.currentContext!);
+                                            } else {
+                                              showDetails(forum.forumId,
+                                                  _scaffold.currentContext!);
+                                            }
+                                          },
                                         ),
                                       );
                                     },
