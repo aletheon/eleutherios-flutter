@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -208,8 +209,10 @@ class ForumController extends StateNotifier<bool> {
                 .getForumById(crumb)
                 .first;
 
-            breadcrumb!.breadcrumbReferences.add(forumId);
-            await _forumRepository.updateForum(breadcrumb);
+            if (!breadcrumb!.breadcrumbReferences.contains(forumId)) {
+              breadcrumb.breadcrumbReferences.add(forumId);
+              await _forumRepository.updateForum(breadcrumb);
+            }
           }
         }
       }
@@ -258,6 +261,124 @@ class ForumController extends StateNotifier<bool> {
     });
   }
 
+  void deleteForum(String userId, String forumId, BuildContext context) async {
+    state = true;
+    UserModel? user = await _ref
+        .read(authControllerProvider.notifier)
+        .getUserData(userId)
+        .first;
+
+    Forum? forum = await _ref
+        .read(forumControllerProvider.notifier)
+        .getForumById(forumId)
+        .first;
+
+    if (user != null && forum != null) {
+      // get the parent and remove forum from parent
+      if (forum.parentId.isNotEmpty) {
+        Forum? parentForum = await _ref
+            .read(forumControllerProvider.notifier)
+            .getForumById(forumId)
+            .first;
+
+        if (parentForum != null) {
+          parentForum.forums.remove(forumId);
+          await _forumRepository.updateForum(parentForum);
+        }
+      }
+
+      // iterate through breadcrumbs and remove breadcrumbReferences
+      if (forum.breadcrumbs.isNotEmpty) {
+        // iterate breadcrumbs
+        for (String crumb in forum.breadcrumbs) {
+          // grab the breadcrumb
+          Forum? breadcrumbForum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(crumb)
+              .first;
+
+          // check if we have a breadcrumb
+          if (breadcrumbForum != null) {
+            // remove reference to childForum
+            breadcrumbForum.breadcrumbReferences.remove(forumId);
+            await _forumRepository.updateForum(breadcrumbForum);
+          }
+        }
+      }
+
+      // iterate through breadcrumbReferences and rebuild those childrens breadcrumbs
+      if (forum.breadcrumbReferences.isNotEmpty) {
+        for (String reference in forum.breadcrumbReferences) {
+          // grab the forum
+          Forum? referenceForum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(reference)
+              .first;
+
+          // check if we have a forum
+          if (referenceForum != null) {
+            // check if parentId equals forumId being deleted and set it to empty as
+            // this forum will no longer exist
+            if (referenceForum.parentId == forumId) {
+              referenceForum =
+                  referenceForum.copyWith(parentId: '', parentUid: '');
+            }
+
+            // recreate the breadcrumbs for this forum
+            List<String> breadcrumbs =
+                await getBreadCrumbPath(referenceForum.forumId);
+
+            if (breadcrumbs.isNotEmpty) {
+              referenceForum =
+                  referenceForum.copyWith(breadcrumbs: breadcrumbs);
+              await _forumRepository.updateForum(referenceForum);
+
+              // Create a reference in this forums breadcrumb references table to the parent forum that it is pointing to
+              // So that if the parent gets deleted, we know we have to rebuild that reference forums, breadcrumbs
+              for (String crumb in breadcrumbs) {
+                if (crumb != referenceForum.forumId) {
+                  Forum? breadcrumb = await _ref
+                      .read(forumControllerProvider.notifier)
+                      .getForumById(crumb)
+                      .first;
+
+                  if (!breadcrumb!.breadcrumbReferences
+                      .contains(referenceForum.forumId)) {
+                    breadcrumb.breadcrumbReferences.add(referenceForum.forumId);
+                    await _forumRepository.updateForum(breadcrumb);
+                  }
+                }
+              }
+            } else {
+              referenceForum = referenceForum.copyWith(breadcrumbs: []);
+              await _forumRepository.updateForum(referenceForum);
+            }
+          }
+        }
+      }
+      // remove forum from user forum list
+      user.forums.remove(forumId);
+      await _userProfileRepository.updateUser(user);
+
+      // delete forum
+      final resDeleteForum = await _forumRepository.deleteForum(forumId);
+      state = false;
+      resDeleteForum.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Forum deleted successfully!');
+        },
+      );
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Forum or child forum does not exist');
+      }
+    }
+  }
+
+  // Note: we are only removing the forum from its parent we are not deleting it from the system
+  // end users can still participate or serve one another through the child forum.
   void removeChildForum(
       String forumId, String childForumId, BuildContext context) async {
     state = true;
@@ -268,15 +389,12 @@ class ForumController extends StateNotifier<bool> {
 
     Forum? childForum = await _ref
         .read(forumControllerProvider.notifier)
-        .getForumById(forumId)
+        .getForumById(childForumId)
         .first;
 
     if (forum != null && childForum != null) {
       forum.forums.remove(childForumId);
-      await _forumRepository.updateForum(forum);
-
-      // remove the child forum
-      final resChildForum = await _forumRepository.deleteForum(childForumId);
+      final resChildForum = await _forumRepository.updateForum(forum);
 
       // iterate through childForum.breadcrumbs and remove childForum.breadcrumbReferences
       if (childForum.breadcrumbs.isNotEmpty) {
@@ -290,18 +408,16 @@ class ForumController extends StateNotifier<bool> {
 
           // check if we have a breadcrumb
           if (breadcrumbForum != null) {
-            // iterate breadcrumb references and remove any references from its breadcrumbReferences
-            if (childForum.breadcrumbReferences.isNotEmpty) {
-              for (String reference in childForum.breadcrumbReferences) {
-                if (breadcrumbForum.breadcrumbReferences.contains(reference)) {
-                  breadcrumbForum.breadcrumbReferences.remove(reference);
-                }
-              }
-              await _forumRepository.updateForum(breadcrumbForum);
-            }
+            // remove reference to childForum
+            breadcrumbForum.breadcrumbReferences.remove(childForumId);
+            await _forumRepository.updateForum(breadcrumbForum);
           }
         }
       }
+      // remove breadcrumbs from childForum and dissociate from parent
+      childForum =
+          childForum.copyWith(breadcrumbs: [], parentId: '', parentUid: '');
+      await _forumRepository.updateForum(childForum);
 
       // iterate through childForum.breadcrumbReferences and rebuild those childrens breadcrumbs
       if (childForum.breadcrumbReferences.isNotEmpty) {
@@ -332,8 +448,11 @@ class ForumController extends StateNotifier<bool> {
                       .getForumById(crumb)
                       .first;
 
-                  breadcrumb!.breadcrumbReferences.add(referenceForum.forumId);
-                  await _forumRepository.updateForum(breadcrumb);
+                  if (!breadcrumb!.breadcrumbReferences
+                      .contains(referenceForum.forumId)) {
+                    breadcrumb.breadcrumbReferences.add(referenceForum.forumId);
+                    await _forumRepository.updateForum(breadcrumb);
+                  }
                 }
               }
             } else {
