@@ -24,7 +24,7 @@ final getManagerByIdProvider =
 });
 
 final getManagerByServiceIdProvider =
-    StreamProvider.family((ref, Tuple2 params) {
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(managerControllerProvider.notifier)
@@ -34,7 +34,8 @@ final getManagerByServiceIdProvider =
   }
 });
 
-final getManagerByServiceIdProvider2 = Provider.family((ref, Tuple2 params) {
+final getManagerByServiceIdProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(managerControllerProvider.notifier)

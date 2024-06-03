@@ -19,7 +19,8 @@ final getPostByIdProvider =
   return ref.watch(postControllerProvider.notifier).getPostById(postId);
 });
 
-final forumPostsProvider = StreamProvider.family((ref, String forumId) {
+final forumPostsProvider =
+    StreamProvider.family.autoDispose((ref, String forumId) {
   return ref.watch(postControllerProvider.notifier).getForumPosts(forumId);
 });
 
@@ -34,7 +35,8 @@ final postsProvider = StreamProvider.family.autoDispose((ref, String forumId) {
   return ref.watch(postControllerProvider.notifier).getPosts(forumId);
 });
 
-final searchPostsProvider = StreamProvider.family((ref, Tuple2 params) {
+final searchPostsProvider =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
       .watch(postControllerProvider.notifier)
       .searchPosts(params.item1, params.item2);

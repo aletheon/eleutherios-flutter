@@ -22,7 +22,7 @@ final getMemberByIdProvider =
 });
 
 final getMemberByServiceIdProvider =
-    StreamProvider.family((ref, Tuple2 params) {
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(memberControllerProvider.notifier)
@@ -32,7 +32,8 @@ final getMemberByServiceIdProvider =
   }
 });
 
-final getMemberByServiceIdProvider2 = Provider.family((ref, Tuple2 params) {
+final getMemberByServiceIdProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(memberControllerProvider.notifier)
@@ -50,7 +51,7 @@ final serviceIsRegisteredInForumProvider =
 });
 
 final serviceIsRegisteredInForumProvider2 =
-    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+    Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(memberControllerProvider.notifier)
@@ -65,8 +66,19 @@ final getMembersProvider =
   return ref.watch(memberControllerProvider.notifier).getMembers(forumId);
 });
 
+final getMembersProvider2 = Provider.family.autoDispose((ref, String forumId) {
+  return ref.watch(memberControllerProvider.notifier).getMembers(forumId);
+});
+
 final getUserMembersProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  return ref
+      .watch(memberControllerProvider.notifier)
+      .getUserMembers(params.item1, params.item2);
+});
+
+final getUserMembersProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
   return ref
       .watch(memberControllerProvider.notifier)
       .getUserMembers(params.item1, params.item2);
@@ -80,7 +92,7 @@ final getUserMemberCountProvider =
 });
 
 final getUserSelectedMemberProvider =
-    StreamProvider.family((ref, Tuple2 params) {
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(memberControllerProvider.notifier)
@@ -90,7 +102,8 @@ final getUserSelectedMemberProvider =
   }
 });
 
-final getUserSelectedMemberProvider2 = Provider.family((ref, Tuple2 params) {
+final getUserSelectedMemberProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(memberControllerProvider.notifier)
@@ -318,6 +331,10 @@ class MemberController extends StateNotifier<bool> {
         showSnackBar(context, 'Member removed successfully!');
       }
     });
+  }
+
+  Future<void> deleteMembers(String forumId) {
+    return _memberRepository.deleteMembers(forumId);
   }
 
   Stream<List<Member>> getMembers(String forumId) {

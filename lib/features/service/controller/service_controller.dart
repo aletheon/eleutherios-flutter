@@ -1,28 +1,16 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
-import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
-import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
-import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
-import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
-import 'package:reddit_tutorial/models/forum.dart';
-import 'package:reddit_tutorial/models/member.dart';
-import 'package:reddit_tutorial/models/policy.dart';
-import 'package:reddit_tutorial/models/rule.dart';
-import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -56,7 +44,7 @@ final searchPrivateServicesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicServicesProvider = StreamProvider.family(
+final searchPublicServicesProvider = StreamProvider.family.autoDispose(
   (ref, String query) {
     return ref
         .watch(serviceControllerProvider.notifier)
@@ -83,10 +71,7 @@ final serviceControllerProvider =
 });
 
 class ServiceController extends StateNotifier<bool> {
-  final PolicyRepository _policyRepository;
-  final ForumRepository _forumRepository;
   final ServiceRepository _serviceRepository;
-  final MemberRepository _memberRepository;
   final UserProfileRepository _userProfileRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
@@ -98,10 +83,7 @@ class ServiceController extends StateNotifier<bool> {
       required UserProfileRepository userProfileRepository,
       required StorageRepository storageRepository,
       required Ref ref})
-      : _policyRepository = policyRepository,
-        _forumRepository = forumRepository,
-        _serviceRepository = serviceRepository,
-        _memberRepository = memberRepository,
+      : _serviceRepository = serviceRepository,
         _userProfileRepository = userProfileRepository,
         _storageRepository = storageRepository,
         _ref = ref,
@@ -135,7 +117,7 @@ class ServiceController extends StateNotifier<bool> {
     );
     final res = await _serviceRepository.createService(service);
     user!.services.add(serviceId);
-    final resUser = await _userProfileRepository.updateUser(user);
+    await _userProfileRepository.updateUser(user);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Service created successfully!');

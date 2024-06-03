@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 final getPolicyActivityByIdProvider =
-    Provider.family((ref, String policyActivityId) {
+    Provider.family.autoDispose((ref, String policyActivityId) {
   final policyActivityRepository = ref.watch(policyActivityRepositoryProvider);
   return policyActivityRepository.getPolicyActivityById(policyActivityId);
 });

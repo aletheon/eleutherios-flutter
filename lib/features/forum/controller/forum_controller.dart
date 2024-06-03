@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
@@ -19,7 +20,8 @@ final getForumByIdProvider =
   return ref.watch(forumControllerProvider.notifier).getForumById(forumId);
 });
 
-final getForumByIdProvider2 = Provider.family((ref, String forumId) {
+final getForumByIdProvider2 =
+    Provider.family.autoDispose((ref, String forumId) {
   try {
     return ref.watch(forumControllerProvider.notifier).getForumById(forumId);
   } catch (e) {
@@ -55,7 +57,8 @@ final searchPrivateForumsProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicForumsProvider = StreamProvider.family((ref, String query) {
+final searchPublicForumsProvider =
+    StreamProvider.family.autoDispose((ref, String query) {
   return ref.watch(forumControllerProvider.notifier).searchPublicForums(query);
 });
 
@@ -285,6 +288,13 @@ class ForumController extends StateNotifier<bool> {
           parentForum.forums.remove(forumId);
           await _forumRepository.updateForum(parentForum);
         }
+      }
+
+      // remove members from forum
+      if (forum.members.isNotEmpty) {
+        await _ref
+            .read(memberControllerProvider.notifier)
+            .deleteMembers(forumId);
       }
 
       // iterate through breadcrumbs and remove breadcrumbReferences

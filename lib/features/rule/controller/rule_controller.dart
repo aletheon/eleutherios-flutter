@@ -21,7 +21,7 @@ final getRuleByIdProvider =
   return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
 });
 
-final getRuleByIdProvider2 = Provider.family((ref, String ruleId) {
+final getRuleByIdProvider2 = Provider.family.autoDispose((ref, String ruleId) {
   try {
     return ref.watch(ruleControllerProvider.notifier).getRuleById(ruleId);
   } catch (e) {
@@ -34,7 +34,7 @@ final getRulesProvider =
   return ref.watch(ruleControllerProvider.notifier).getRules(policyId);
 });
 
-final getRulesProvider2 = Provider.family((ref, String policyId) {
+final getRulesProvider2 = Provider.family.autoDispose((ref, String policyId) {
   try {
     return ref.watch(ruleControllerProvider.notifier).getRules(policyId);
   } catch (e) {

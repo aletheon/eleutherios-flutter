@@ -33,7 +33,8 @@ final getPolicyByIdProvider =
   return ref.watch(policyControllerProvider.notifier).getPolicyById(policyId);
 });
 
-final getPolicyByIdProvider2 = Provider.family((ref, String policyId) {
+final getPolicyByIdProvider2 =
+    Provider.family.autoDispose((ref, String policyId) {
   try {
     return ref.watch(policyControllerProvider.notifier).getPolicyById(policyId);
   } catch (e) {
@@ -49,7 +50,7 @@ final getServiceManagerPoliciesProvider =
 });
 
 final getServiceConsumerPoliciesProvider =
-    StreamProvider.family((ref, String serviceId) {
+    StreamProvider.family.autoDispose((ref, String serviceId) {
   return ref
       .watch(policyControllerProvider.notifier)
       .getServiceConsumerPolicies(serviceId);
@@ -71,7 +72,8 @@ final searchPrivatePoliciesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicPoliciesProvider = StreamProvider.family((ref, String query) {
+final searchPublicPoliciesProvider =
+    StreamProvider.family.autoDispose((ref, String query) {
   return ref
       .watch(policyControllerProvider.notifier)
       .searchPublicPolicies(query);

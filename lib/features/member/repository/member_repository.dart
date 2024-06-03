@@ -19,6 +19,19 @@ class MemberRepository {
   CollectionReference get _members =>
       _firestore.collection(FirebaseConstants.membersCollection);
 
+  Future<void> deleteMembers(String forumId) {
+    WriteBatch batch = _firestore.batch();
+    return _members
+        .where('forumId', isEqualTo: forumId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
+
   Stream<Member?> getMemberById(String memberId) {
     if (memberId.isNotEmpty) {
       final DocumentReference documentReference = _members.doc(memberId);

@@ -10,7 +10,7 @@ import 'package:reddit_tutorial/models/favorite.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:uuid/uuid.dart';
 
-final getFavoriteByIdProvider = Provider.family(
+final getFavoriteByIdProvider = Provider.family.autoDispose(
   (ref, String favoriteId) {
     final favoriteRepository = ref.watch(favoriteRepositoryProvider);
     return favoriteRepository.getFavoriteById(favoriteId);
@@ -72,15 +72,15 @@ class FavoriteController extends StateNotifier<bool> {
         creationDate: DateTime.now(),
       );
       // create favorite
-      final res = await _favoriteRepository.createFavorite(favorite);
+      await _favoriteRepository.createFavorite(favorite);
 
       // update user
       user.favorites.add(serviceId);
-      final resUser = await _userProfileRepository.updateUser(user);
+      await _userProfileRepository.updateUser(user);
 
       // update service likes
       service.likes.add(user.uid);
-      final resService = await _serviceRepository.updateService(service);
+      await _serviceRepository.updateService(service);
       state = false;
     } else {
       state = false;
@@ -101,15 +101,15 @@ class FavoriteController extends StateNotifier<bool> {
 
     if (service != null) {
       // delete favorite
-      var res = await _favoriteRepository.deleteFavorite(user.uid, serviceId);
+      await _favoriteRepository.deleteFavorite(user.uid, serviceId);
 
       // delete favorite from users list
       user.favorites.remove(serviceId);
-      var userRes = await _userProfileRepository.updateUser(user);
+      await _userProfileRepository.updateUser(user);
 
       // update service likes
       service.likes.remove(user.uid);
-      final resService = await _serviceRepository.updateService(service);
+      await _serviceRepository.updateService(service);
       state = false;
     } else {
       state = false;

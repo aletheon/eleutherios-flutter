@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 final getForumActivityByIdProvider =
-    Provider.family((ref, String forumActivityId) {
+    Provider.family.autoDispose((ref, String forumActivityId) {
   final forumActivityRepository = ref.watch(forumActivityRepositoryProvider);
   return forumActivityRepository.getForumActivityById(forumActivityId);
 });
