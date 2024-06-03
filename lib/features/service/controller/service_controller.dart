@@ -167,6 +167,19 @@ class ServiceController extends StateNotifier<bool> {
     });
   }
 
+  void deleteService({
+    required BuildContext context,
+    required String serviceId,
+  }) async {
+    state = true;
+
+    final serviceRes = await _serviceRepository.deleteService(serviceId);
+    state = false;
+    serviceRes.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Service deleted successfully!');
+    });
+  }
+
   Stream<List<Service>> getUserServices() {
     final uid = _ref.read(userProvider)!.uid;
     return _serviceRepository.getUserServices(uid);

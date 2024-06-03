@@ -19,6 +19,19 @@ class RuleMemberRepository {
   CollectionReference get _ruleMembers =>
       _firestore.collection(FirebaseConstants.ruleMembersCollection);
 
+  Future<void> deleteRuleMembers(String ruleId) {
+    WriteBatch batch = _firestore.batch();
+    return _ruleMembers
+        .where('ruleId', isEqualTo: ruleId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
+
   Stream<RuleMember?> getRuleMemberById(String ruleMemberId) {
     if (ruleMemberId.isNotEmpty) {
       final DocumentReference documentReference =
@@ -79,6 +92,19 @@ class RuleMemberRepository {
     });
   }
 
+  Stream<List<RuleMember>> getRuleMembersByServiceId(String serviceId) {
+    return _ruleMembers
+        .where('serviceId', isEqualTo: serviceId)
+        .snapshots()
+        .map((event) {
+      List<RuleMember> ruleMembers = [];
+      for (var doc in event.docs) {
+        ruleMembers.add(RuleMember.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return ruleMembers;
+    });
+  }
+
   Stream<int> getUserRuleMemberCount(String ruleId, String uid) {
     return _ruleMembers
         .where('ruleId', isEqualTo: ruleId)
@@ -107,6 +133,14 @@ class RuleMemberRepository {
         return null;
       }
     });
+  }
+
+  Future<int> getRuleMembersByServiceIdCount(String serviceId) async {
+    AggregateQuerySnapshot query = await _ruleMembers
+        .where('serviceId', isEqualTo: serviceId)
+        .count()
+        .get();
+    return query.count;
   }
 
   FutureVoid createRuleMember(RuleMember ruleMember) async {

@@ -113,6 +113,19 @@ class MemberRepository {
     });
   }
 
+  Stream<List<Member>> getMembersByServiceId(String serviceId) {
+    return _members
+        .where('serviceId', isEqualTo: serviceId)
+        .snapshots()
+        .map((event) {
+      List<Member> members = [];
+      for (var doc in event.docs) {
+        members.add(Member.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return members;
+    });
+  }
+
   Stream<int> getUserMemberCount(String forumId, String uid) {
     return _members
         .where('forumId', isEqualTo: forumId)
@@ -140,6 +153,12 @@ class MemberRepository {
         return null;
       }
     });
+  }
+
+  Future<int> getMembersByServiceIdCount(String serviceId) async {
+    AggregateQuerySnapshot query =
+        await _members.where('serviceId', isEqualTo: serviceId).count().get();
+    return query.count;
   }
 
   FutureVoid createMember(Member member) async {

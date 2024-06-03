@@ -19,6 +19,19 @@ class ManagerRepository {
   CollectionReference get _managers =>
       _firestore.collection(FirebaseConstants.managersCollection);
 
+  Future<void> deleteManagers(String policyId) {
+    WriteBatch batch = _firestore.batch();
+    return _managers
+        .where('policyId', isEqualTo: policyId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
+
   Stream<Manager?> getManagerById(String managerId) {
     if (managerId.isNotEmpty) {
       final DocumentReference documentReference = _managers.doc(managerId);
@@ -79,19 +92,6 @@ class ManagerRepository {
     });
   }
 
-  // Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
-  //   return _managers
-  //       .where('policyId', isEqualTo: policyId)
-  //       .where('serviceId', isEqualTo: serviceId)
-  //       .snapshots()
-  //       .map((event) {
-  //     if (event.docs.isNotEmpty) {
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  // }
-
   Stream<List<Manager>> getManagers(String policyId) {
     return _managers
         .where('policyId', isEqualTo: policyId)
@@ -119,6 +119,19 @@ class ManagerRepository {
     });
   }
 
+  Stream<List<Manager>> getManagersByServiceId(String serviceId) {
+    return _managers
+        .where('serviceId', isEqualTo: serviceId)
+        .snapshots()
+        .map((event) {
+      List<Manager> managers = [];
+      for (var doc in event.docs) {
+        managers.add(Manager.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return managers;
+    });
+  }
+
   Stream<int> getUserManagerCount(String policyId, String uid) {
     return _managers
         .where('policyId', isEqualTo: policyId)
@@ -127,6 +140,12 @@ class ManagerRepository {
         .map((event) {
       return event.docs.length;
     });
+  }
+
+  Future<int> getManagersByServiceIdCount(String serviceId) async {
+    AggregateQuerySnapshot query =
+        await _managers.where('serviceId', isEqualTo: serviceId).count().get();
+    return query.count;
   }
 
   FutureVoid createManager(Manager manager) async {

@@ -84,6 +84,20 @@ final getUserMembersProvider2 =
       .getUserMembers(params.item1, params.item2);
 });
 
+final getMembersByServiceIdProvider =
+    StreamProvider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(memberControllerProvider.notifier)
+      .getMembersByServiceId(stringId);
+});
+
+final getMembersByServiceIdProvider2 =
+    Provider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(memberControllerProvider.notifier)
+      .getMembersByServiceId(stringId);
+});
+
 final getUserMemberCountProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
@@ -197,7 +211,7 @@ class MemberController extends StateNotifier<bool> {
         // update forum
         forum.members.add(memberId);
         forum.services.add(serviceId);
-        final resForum = await _forumRepository.updateForum(forum);
+        await _forumRepository.updateForum(forum);
 
         // create new forum activity
         if (user!.forumActivities.contains(forumId) == false) {
@@ -208,7 +222,7 @@ class MemberController extends StateNotifier<bool> {
 
           // add activity to users forum activity list
           user.forumActivities.add(forumId);
-          final resUser = await _userProfileRepository.updateUser(user);
+          await _userProfileRepository.updateUser(user);
 
           state = false;
           res.fold((l) => showSnackBar(context, l.message), (r) {
@@ -333,6 +347,10 @@ class MemberController extends StateNotifier<bool> {
     });
   }
 
+  Future<int> getMembersByServiceIdCount(String serviceId) {
+    return _memberRepository.getMembersByServiceIdCount(serviceId);
+  }
+
   Future<void> deleteMembers(String forumId) {
     return _memberRepository.deleteMembers(forumId);
   }
@@ -343,6 +361,10 @@ class MemberController extends StateNotifier<bool> {
 
   Stream<List<Member>> getUserMembers(String forumId, String uid) {
     return _memberRepository.getUserMembers(forumId, uid);
+  }
+
+  Stream<List<Member>> getMembersByServiceId(String serviceId) {
+    return _memberRepository.getMembersByServiceId(serviceId);
   }
 
   Stream<bool> serviceIsRegisteredInForum(String forumId, String serviceId) {

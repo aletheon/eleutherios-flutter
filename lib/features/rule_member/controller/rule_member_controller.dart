@@ -52,6 +52,20 @@ final getUserRuleMembersProvider =
       .getUserRuleMembers(params.item1, params.item2);
 });
 
+final getRuleMembersByServiceIdProvider =
+    StreamProvider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(ruleMemberControllerProvider.notifier)
+      .getRuleMembersByServiceId(stringId);
+});
+
+final getRuleMembersByServiceIdProvider2 =
+    Provider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(ruleMemberControllerProvider.notifier)
+      .getRuleMembersByServiceId(stringId);
+});
+
 final getUserRuleMemberCountProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
@@ -96,7 +110,6 @@ final ruleMemberControllerProvider =
 class RuleMemberController extends StateNotifier<bool> {
   final RuleMemberRepository _ruleMemberRepository;
   final RuleRepository _ruleRepository;
-  final UserProfileRepository _userProfileRepository;
   final Ref _ref;
   RuleMemberController(
       {required RuleMemberRepository ruleMemberRepository,
@@ -105,7 +118,6 @@ class RuleMemberController extends StateNotifier<bool> {
       required Ref ref})
       : _ruleMemberRepository = ruleMemberRepository,
         _ruleRepository = ruleRepository,
-        _userProfileRepository = userProfileRepository,
         _ref = ref,
         super(false);
 
@@ -124,7 +136,7 @@ class RuleMemberController extends StateNotifier<bool> {
     if (rule != null && service != null) {
       // ensure service is not already a member
       if (rule.members.contains(serviceId) == false) {
-        final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+        await _ref.read(getUserByIdProvider(service.uid)).first;
         final ruleMemberCount = await _ref
             .read(ruleMemberControllerProvider.notifier)
             .getUserRuleMemberCount(rule.ruleId, service.uid)
@@ -159,7 +171,7 @@ class RuleMemberController extends StateNotifier<bool> {
         // update rule
         rule.members.add(ruleMemberId);
         rule.services.add(serviceId);
-        final resRule = await _ruleRepository.updateRule(rule);
+        await _ruleRepository.updateRule(rule);
 
         // create new rule activity
         state = false;
@@ -263,12 +275,24 @@ class RuleMemberController extends StateNotifier<bool> {
     });
   }
 
+  Future<int> getRuleMembersByServiceIdCount(String serviceId) {
+    return _ruleMemberRepository.getRuleMembersByServiceIdCount(serviceId);
+  }
+
+  Future<void> deleteRuleMembers(String ruleId) {
+    return _ruleMemberRepository.deleteRuleMembers(ruleId);
+  }
+
   Stream<List<RuleMember>> getRuleMembers(String ruleId) {
     return _ruleMemberRepository.getRuleMembers(ruleId);
   }
 
   Stream<List<RuleMember>> getUserRuleMembers(String ruleId, String uid) {
     return _ruleMemberRepository.getUserRuleMembers(ruleId, uid);
+  }
+
+  Stream<List<RuleMember>> getRuleMembersByServiceId(String serviceId) {
+    return _ruleMemberRepository.getRuleMembersByServiceId(serviceId);
   }
 
   Stream<bool> serviceIsRegisteredInRule(String ruleId, String serviceId) {

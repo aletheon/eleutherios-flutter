@@ -45,13 +45,6 @@ final getManagerByServiceIdProvider2 =
   }
 });
 
-// final policyIsRegisteredInServiceProvider =
-//     StreamProvider.family.autoDispose((ref, Tuple2 params) {
-//   return ref
-//       .watch(managerControllerProvider.notifier)
-//       .policyIsRegisteredInService(params.item1, params.item2);
-// });
-
 final getManagersProvider =
     StreamProvider.family.autoDispose((ref, String policyId) {
   return ref.watch(managerControllerProvider.notifier).getManagers(policyId);
@@ -66,6 +59,20 @@ final getUserManagersProvider =
   } catch (e) {
     rethrow;
   }
+});
+
+final getManagersByServiceIdProvider =
+    StreamProvider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(managerControllerProvider.notifier)
+      .getManagersByServiceId(stringId);
+});
+
+final getManangersByServiceIdProvider2 =
+    Provider.family.autoDispose((ref, String stringId) {
+  return ref
+      .watch(managerControllerProvider.notifier)
+      .getManagersByServiceId(stringId);
 });
 
 final getUserManagerCountProvider =
@@ -192,7 +199,7 @@ class ManagerController extends StateNotifier<bool> {
         // add service to policy managers and service list
         policy.managers.add(managerId);
         policy.services.add(serviceId);
-        final resPolicy = await _policyRepository.updatePolicy(policy);
+        await _policyRepository.updatePolicy(policy);
 
         // create new policy activity
         if (user!.policyActivities.contains(policyId) == false) {
@@ -203,7 +210,7 @@ class ManagerController extends StateNotifier<bool> {
 
           // add activity to users policy activity list
           user.policyActivities.add(policyId);
-          final resUser = await _userProfileRepository.updateUser(user);
+          await _userProfileRepository.updateUser(user);
 
           state = false;
           res.fold((l) => showSnackBar(context, l.message), (r) {
@@ -326,16 +333,24 @@ class ManagerController extends StateNotifier<bool> {
     });
   }
 
+  Future<int> getManagersByServiceIdCount(String serviceId) {
+    return _managerRepository.getManagersByServiceIdCount(serviceId);
+  }
+
+  Future<void> deleteManagers(String policyId) {
+    return _managerRepository.deleteManagers(policyId);
+  }
+
   Stream<List<Manager>> getManagers(String policyId) {
     return _managerRepository.getManagers(policyId);
   }
 
-  // Stream<bool> policyIsRegisteredInService(String policyId, String serviceId) {
-  //   return _managerRepository.policyIsRegisteredInService(policyId, serviceId);
-  // }
-
   Stream<List<Manager>> getUserManagers(String policyId, String uid) {
     return _managerRepository.getUserManagers(policyId, uid);
+  }
+
+  Stream<List<Manager>> getManagersByServiceId(String serviceId) {
+    return _managerRepository.getManagersByServiceId(serviceId);
   }
 
   Stream<int> getUserManagerCount(String policyId, String uid) {
