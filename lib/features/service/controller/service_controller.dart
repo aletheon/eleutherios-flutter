@@ -173,6 +173,14 @@ class ServiceController extends StateNotifier<bool> {
   }) async {
     state = true;
 
+    // 1) remove the service from managers
+    // 1.a) go through each policy and remove service from services list
+    // 2) remove the service from members
+    // 2.a) go through each forum and remove service from services list
+    // 3) remove the service from rule members
+    // 3.a) go through each rule and remove service from services list
+    // 4) remove service from user services list
+
     final serviceRes = await _serviceRepository.deleteService(serviceId);
     state = false;
     serviceRes.fold((l) => showSnackBar(context, l.message), (r) {

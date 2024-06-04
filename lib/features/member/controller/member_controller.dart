@@ -348,7 +348,13 @@ class MemberController extends StateNotifier<bool> {
   }
 
   Future<int> getMembersByServiceIdCount(String serviceId) {
-    return _memberRepository.getMembersByServiceIdCount(serviceId);
+    state = true;
+    return _memberRepository.getMembersByServiceIdCount(serviceId).then(
+      (value) {
+        state = false;
+        return value;
+      },
+    );
   }
 
   Future<void> deleteMembers(String forumId) {
