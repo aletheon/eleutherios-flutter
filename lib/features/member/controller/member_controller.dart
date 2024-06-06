@@ -357,8 +357,8 @@ class MemberController extends StateNotifier<bool> {
     );
   }
 
-  Future<void> deleteMembers(String forumId) {
-    return _memberRepository.deleteMembers(forumId);
+  Future<void> deleteAllMembers(String forumId) {
+    return _memberRepository.deleteAllMembers(forumId);
   }
 
   Stream<List<Member>> getMembers(String forumId) {

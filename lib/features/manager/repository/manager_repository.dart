@@ -19,7 +19,7 @@ class ManagerRepository {
   CollectionReference get _managers =>
       _firestore.collection(FirebaseConstants.managersCollection);
 
-  Future<void> deleteManagers(String policyId) {
+  Future<void> deleteAllManagers(String policyId) {
     WriteBatch batch = _firestore.batch();
     return _managers
         .where('policyId', isEqualTo: policyId)

@@ -55,7 +55,10 @@ class ListUserServiceScreen extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  ref.read(serviceControllerProvider.notifier).deleteService(
+                        _scaffold.currentContext!,
+                        serviceId,
+                      );
                 },
                 child: const Text('Yes'),
               ),
@@ -70,7 +73,10 @@ class ListUserServiceScreen extends ConsumerWidget {
         },
       );
     } else {
-      print('deleting service');
+      ref.read(serviceControllerProvider.notifier).deleteService(
+            _scaffold.currentContext!,
+            serviceId,
+          );
     }
   }
 
@@ -80,6 +86,7 @@ class ListUserServiceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bool isLoading = ref.watch(serviceControllerProvider);
     final bool memberIsLoading = ref.watch(memberControllerProvider);
     final bool ruleMemberIsLoading = ref.watch(ruleMemberControllerProvider);
     final bool managerIsLoading = ref.watch(managerControllerProvider);
@@ -152,10 +159,12 @@ class ListUserServiceScreen extends ConsumerWidget {
                         ),
                       ),
                 Container(
-                  child:
-                      memberIsLoading || ruleMemberIsLoading || managerIsLoading
-                          ? const Loader()
-                          : Container(),
+                  child: isLoading ||
+                          memberIsLoading ||
+                          ruleMemberIsLoading ||
+                          managerIsLoading
+                      ? const Loader()
+                      : Container(),
                 )
               ],
             ),

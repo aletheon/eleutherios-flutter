@@ -4,14 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
+import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/manager/repository/manager_repository.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
+import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
+import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
+import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
+import 'package:reddit_tutorial/features/rule_member/repository/rule_member_repository.dart';
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
+import 'package:reddit_tutorial/models/forum.dart';
+import 'package:reddit_tutorial/models/manager.dart';
+import 'package:reddit_tutorial/models/member.dart';
+import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/rule.dart';
+import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -23,6 +39,17 @@ final getServiceByIdProvider = StreamProvider.family.autoDispose(
         .getServiceById(serviceId);
   },
 );
+
+final getServiceByIdProvider2 =
+    Provider.family.autoDispose((ref, String stringId) {
+  try {
+    return ref
+        .watch(serviceControllerProvider.notifier)
+        .getServiceById(stringId);
+  } catch (e) {
+    rethrow;
+  }
+});
 
 final userServicesProvider = StreamProvider.autoDispose<List<Service>>(
   (ref) {
@@ -57,21 +84,33 @@ final serviceControllerProvider =
   final policyRepository = ref.watch(policyRepositoryProvider);
   final forumRepository = ref.watch(forumRepositoryProvider);
   final serviceRepository = ref.watch(serviceRepositoryProvider);
+  final managerRepository = ref.watch(managerRepositoryProvider);
   final memberRepository = ref.watch(memberRepositoryProvider);
+  final ruleRepository = ref.watch(ruleRepositoryProvider);
+  final ruleMemberRepository = ref.watch(ruleMemberRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
   return ServiceController(
       policyRepository: policyRepository,
       forumRepository: forumRepository,
       serviceRepository: serviceRepository,
+      managerRepository: managerRepository,
       memberRepository: memberRepository,
+      ruleRepository: ruleRepository,
+      ruleMemberRepository: ruleMemberRepository,
       userProfileRepository: userProfileRepository,
       storageRepository: storageRepository,
       ref: ref);
 });
 
 class ServiceController extends StateNotifier<bool> {
+  final PolicyRepository _policyRepository;
+  final ForumRepository _forumRepository;
   final ServiceRepository _serviceRepository;
+  final ManagerRepository _managerRepository;
+  final MemberRepository _memberRepository;
+  final RuleRepository _ruleRepository;
+  final RuleMemberRepository _ruleMemberRepository;
   final UserProfileRepository _userProfileRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
@@ -79,11 +118,20 @@ class ServiceController extends StateNotifier<bool> {
       {required PolicyRepository policyRepository,
       required ForumRepository forumRepository,
       required ServiceRepository serviceRepository,
+      required ManagerRepository managerRepository,
       required MemberRepository memberRepository,
+      required RuleRepository ruleRepository,
+      required RuleMemberRepository ruleMemberRepository,
       required UserProfileRepository userProfileRepository,
       required StorageRepository storageRepository,
       required Ref ref})
-      : _serviceRepository = serviceRepository,
+      : _policyRepository = policyRepository,
+        _forumRepository = forumRepository,
+        _serviceRepository = serviceRepository,
+        _managerRepository = managerRepository,
+        _memberRepository = memberRepository,
+        _ruleRepository = ruleRepository,
+        _ruleMemberRepository = ruleMemberRepository,
         _userProfileRepository = userProfileRepository,
         _storageRepository = storageRepository,
         _ref = ref,
@@ -167,25 +215,123 @@ class ServiceController extends StateNotifier<bool> {
     });
   }
 
-  void deleteService({
-    required BuildContext context,
-    required String serviceId,
-  }) async {
+  void deleteService(
+    BuildContext context,
+    String serviceId,
+  ) async {
     state = true;
+    Service? service = await _ref
+        .read(serviceControllerProvider.notifier)
+        .getServiceById(serviceId)
+        .first;
 
-    // 1) remove the service from managers
-    // 1.a) go through each policy and remove service from services list
-    // 2) remove the service from members
-    // 2.a) go through each forum and remove service from services list
-    // 3) remove the service from rule members
-    // 3.a) go through each rule and remove service from services list
-    // 4) remove service from user services list
+    if (service != null) {
+      final user = await _ref.read(getUserByIdProvider(service.uid)).first;
 
-    final serviceRes = await _serviceRepository.deleteService(serviceId);
-    state = false;
-    serviceRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Service deleted successfully!');
-    });
+      if (user != null) {
+        final List<Manager> managers =
+            await _ref.read(getManangersByServiceIdProvider2(serviceId)).first;
+        final List<Member> members =
+            await _ref.read(getMembersByServiceIdProvider2(serviceId)).first;
+        final List<RuleMember> ruleMembers = await _ref
+            .read(getRuleMembersByServiceIdProvider2(serviceId))
+            .first;
+
+        // remove managers
+        if (managers.isNotEmpty) {
+          for (var manager in managers) {
+            await _managerRepository.deleteManager(manager.managerId);
+
+            // remove manager from policy manager list
+            Policy? policy = await _ref
+                .read(policyControllerProvider.notifier)
+                .getPolicyById(manager.policyId)
+                .first;
+
+            if (policy != null) {
+              policy.managers.remove(manager.managerId);
+              policy.services.remove(serviceId);
+              await _policyRepository.updatePolicy(policy);
+            }
+          }
+        }
+
+        // remove members
+        if (members.isNotEmpty) {
+          for (var member in members) {
+            await _memberRepository.deleteMember(member.memberId);
+
+            // remove member from forum member list
+            Forum? forum = await _ref
+                .read(forumControllerProvider.notifier)
+                .getForumById(member.forumId)
+                .first;
+
+            if (forum != null) {
+              forum.members.remove(member.memberId);
+              forum.services.remove(serviceId);
+              await _forumRepository.updateForum(forum);
+            }
+          }
+        }
+
+        // remove rule members
+        if (ruleMembers.isNotEmpty) {
+          for (var ruleMember in ruleMembers) {
+            await _ruleMemberRepository
+                .deleteRuleMember(ruleMember.ruleMemberId);
+
+            // remove rule member from rule member list
+            Rule? rule = await _ref
+                .read(ruleControllerProvider.notifier)
+                .getRuleById(ruleMember.ruleId)
+                .first;
+
+            if (rule != null) {
+              rule.members.remove(ruleMember.ruleMemberId);
+              rule.services.remove(serviceId);
+              await _ruleRepository.updateRule(rule);
+            }
+          }
+        }
+
+        // remove consumers
+        if (service.policies.isNotEmpty) {
+          final List<Policy?> policies = await _ref
+              .read(getServiceConsumerPoliciesProvider2(serviceId))
+              .first;
+
+          if (policies.isNotEmpty) {
+            for (var policy in policies) {
+              // remove service from policy consumer list
+              policy!.consumers.remove(serviceId);
+              await _policyRepository.updatePolicy(policy);
+            }
+          }
+        }
+
+        // update user service list
+        user.services.remove(serviceId);
+        await _userProfileRepository.updateUser(user);
+
+        // remove service
+        final serviceRes = await _serviceRepository.deleteService(serviceId);
+        state = false;
+        serviceRes.fold((l) => showSnackBar(context, l.message), (r) {
+          showSnackBar(context, 'Service deleted successfully!');
+        });
+      } else {
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'User does not exist');
+        }
+      }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Service does not exist');
+      }
+    }
   }
 
   Stream<List<Service>> getUserServices() {

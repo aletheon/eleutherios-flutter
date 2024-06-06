@@ -19,7 +19,7 @@ class MemberRepository {
   CollectionReference get _members =>
       _firestore.collection(FirebaseConstants.membersCollection);
 
-  Future<void> deleteMembers(String forumId) {
+  Future<void> deleteAllMembers(String forumId) {
     WriteBatch batch = _firestore.batch();
     return _members
         .where('forumId', isEqualTo: forumId)

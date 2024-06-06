@@ -56,6 +56,13 @@ final getServiceConsumerPoliciesProvider =
       .getServiceConsumerPolicies(serviceId);
 });
 
+final getServiceConsumerPoliciesProvider2 =
+    Provider.family.autoDispose((ref, String serviceId) {
+  return ref
+      .watch(policyControllerProvider.notifier)
+      .getServiceConsumerPolicies(serviceId);
+});
+
 final userPoliciesProvider = StreamProvider.autoDispose<List<Policy>>((ref) {
   return ref.watch(policyControllerProvider.notifier).getUserPolicies();
 });
@@ -152,7 +159,7 @@ class PolicyController extends StateNotifier<bool> {
     );
     final res = await _policyRepository.createPolicy(policy);
     user!.policies.add(policyId);
-    final resUser = await _userProfileRepository.updateUser(user);
+    await _userProfileRepository.updateUser(user);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Policy created successfully!');
@@ -211,10 +218,10 @@ class PolicyController extends StateNotifier<bool> {
 
     if (policy != null && service != null) {
       service.policies.add(policyId);
-      final resService = await _serviceRepository.updateService(service);
+      await _serviceRepository.updateService(service);
 
       policy.consumers.add(serviceId);
-      final resPolicy = await _policyRepository.updatePolicy(policy);
+      await _policyRepository.updatePolicy(policy);
 
       List<Rule>? rules = await _ref.read(getRulesProvider2(policyId)).first;
 
@@ -315,17 +322,17 @@ class PolicyController extends StateNotifier<bool> {
                   lastUpdateDate: DateTime.now(),
                   creationDate: DateTime.now(),
                 );
-                final resMember = await _memberRepository.createMember(member);
+                await _memberRepository.createMember(member);
 
                 // add member to forums member list
                 forum.members.add(memberId);
               }
             }
-            final resForum = await _forumRepository.createForum(forum);
+            await _forumRepository.createForum(forum);
             user.forums.add(forumId);
           }
         }
-        final resUser = await _userProfileRepository.updateUser(user!);
+        await _userProfileRepository.updateUser(user!);
         state = false;
         if (context.mounted) {
           showSnackBar(context, 'Policy added successfully');
