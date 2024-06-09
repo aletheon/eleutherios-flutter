@@ -233,154 +233,292 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                             posts[index].serviceId))
                                         .when(
                                             data: (service) {
-                                              return GestureDetector(
-                                                onTapDown: storePosition,
-                                                onLongPress: () async {
-                                                  if (user.uid == forum.uid ||
-                                                      user.uid ==
-                                                          posts[index]
-                                                              .serviceUid ||
-                                                      selectedMember!
-                                                          .permissions
-                                                          .contains(
-                                                              MemberPermissions
-                                                                  .removepost
-                                                                  .name)) {
-                                                    final RenderBox overlay =
-                                                        Overlay.of(context)
-                                                                .context
-                                                                .findRenderObject()
-                                                            as RenderBox;
+                                              if (service != null) {
+                                                return GestureDetector(
+                                                  onTapDown: storePosition,
+                                                  onLongPress: () async {
+                                                    if (user.uid == forum.uid ||
+                                                        user.uid ==
+                                                            posts[index]
+                                                                .serviceUid ||
+                                                        selectedMember!
+                                                            .permissions
+                                                            .contains(
+                                                                MemberPermissions
+                                                                    .removepost
+                                                                    .name)) {
+                                                      final RenderBox overlay =
+                                                          Overlay.of(context)
+                                                                  .context
+                                                                  .findRenderObject()
+                                                              as RenderBox;
 
-                                                    await showMenu(
-                                                      context: context,
-                                                      items: <PopupMenuEntry>[
-                                                        PopupMenuItem(
-                                                          child: const Row(
-                                                            children: <Widget>[
-                                                              Icon(
-                                                                  Icons.delete),
-                                                              SizedBox(
-                                                                  width: 8),
-                                                              Text("Delete"),
-                                                            ],
-                                                          ),
-                                                          onTap: () =>
-                                                              deletePost(
-                                                                  posts[index]
-                                                                      .postId,
-                                                                  context),
-                                                        )
-                                                      ],
-                                                      position:
-                                                          RelativeRect.fromRect(
-                                                              tapPosition &
-                                                                  const Size(40,
-                                                                      40), // smaller rect, the touch area
-                                                              Offset.zero &
-                                                                  overlay
-                                                                      .size // Bigger rect, the entire screen
-                                                              ),
-                                                    );
-                                                  }
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 12,
-                                                          right: 12,
-                                                          top: 10,
-                                                          bottom: 10),
-                                                  child: Align(
-                                                    alignment: (posts[index]
-                                                                .serviceUid !=
-                                                            user.uid
-                                                        ? Alignment.topLeft
-                                                        : Alignment.topRight),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color: (posts[index]
-                                                                    .serviceUid !=
-                                                                user.uid
-                                                            ? Pallete.blueColor
-                                                            : Pallete
-                                                                .greenColor),
-                                                      ),
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(
-                                                          10, 10, 10, 10),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  service!.image ==
-                                                                          Constants
-                                                                              .avatarDefault
-                                                                      ? CircleAvatar(
-                                                                          radius:
-                                                                              12,
-                                                                          backgroundImage:
-                                                                              Image.asset(service.image).image,
-                                                                        )
-                                                                      : CircleAvatar(
-                                                                          radius:
-                                                                              12,
-                                                                          backgroundImage:
-                                                                              NetworkImage(service.image),
-                                                                        ),
-                                                                  const SizedBox(
-                                                                    width: 8,
-                                                                  ),
-                                                                  service.title
-                                                                              .length >
-                                                                          20
-                                                                      ? Text(
-                                                                          '${service.title.substring(0, 20)}...',
-                                                                          style:
-                                                                              const TextStyle(fontSize: 11),
-                                                                        )
-                                                                      : Text(
-                                                                          service
-                                                                              .title,
-                                                                          style:
-                                                                              const TextStyle(fontSize: 11),
-                                                                        ),
-                                                                ],
-                                                              ),
-                                                              Text(
-                                                                ' ${timeago.format(posts[index].creationDate)}',
-                                                                style:
-                                                                    const TextStyle(
-                                                                        fontSize:
-                                                                            11),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Text(posts[index]
-                                                              .message),
+                                                      await showMenu(
+                                                        context: context,
+                                                        items: <PopupMenuEntry>[
+                                                          PopupMenuItem(
+                                                            child: const Row(
+                                                              children: <Widget>[
+                                                                Icon(Icons
+                                                                    .delete),
+                                                                SizedBox(
+                                                                    width: 8),
+                                                                Text("Delete"),
+                                                              ],
+                                                            ),
+                                                            onTap: () =>
+                                                                deletePost(
+                                                                    posts[index]
+                                                                        .postId,
+                                                                    context),
+                                                          )
                                                         ],
+                                                        position: RelativeRect
+                                                            .fromRect(
+                                                                tapPosition &
+                                                                    const Size(
+                                                                        40,
+                                                                        40), // smaller rect, the touch area
+                                                                Offset.zero &
+                                                                    overlay
+                                                                        .size // Bigger rect, the entire screen
+                                                                ),
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 12,
+                                                            right: 12,
+                                                            top: 10,
+                                                            bottom: 10),
+                                                    child: Align(
+                                                      alignment: (posts[index]
+                                                                  .serviceUid !=
+                                                              user.uid
+                                                          ? Alignment.topLeft
+                                                          : Alignment.topRight),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          color: (posts[index]
+                                                                      .serviceUid !=
+                                                                  user.uid
+                                                              ? Pallete
+                                                                  .blueColor
+                                                              : Pallete
+                                                                  .greenColor),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                10, 10, 10, 10),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    service.image ==
+                                                                            Constants.avatarDefault
+                                                                        ? CircleAvatar(
+                                                                            radius:
+                                                                                12,
+                                                                            backgroundImage:
+                                                                                Image.asset(service.image).image,
+                                                                          )
+                                                                        : CircleAvatar(
+                                                                            radius:
+                                                                                12,
+                                                                            backgroundImage:
+                                                                                NetworkImage(service.image),
+                                                                          ),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    service.title.length >
+                                                                            20
+                                                                        ? Text(
+                                                                            '${service.title.substring(0, 20)}...',
+                                                                            style:
+                                                                                const TextStyle(fontSize: 11),
+                                                                          )
+                                                                        : Text(
+                                                                            service.title,
+                                                                            style:
+                                                                                const TextStyle(fontSize: 11),
+                                                                          ),
+                                                                  ],
+                                                                ),
+                                                                Text(
+                                                                  ' ${timeago.format(posts[index].creationDate)}',
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          11),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            Text(posts[index]
+                                                                .message),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
+                                                );
+                                              } else {
+                                                return GestureDetector(
+                                                  onTapDown: storePosition,
+                                                  onLongPress: () async {
+                                                    if (user.uid == forum.uid ||
+                                                        user.uid ==
+                                                            posts[index]
+                                                                .serviceUid ||
+                                                        selectedMember!
+                                                            .permissions
+                                                            .contains(
+                                                                MemberPermissions
+                                                                    .removepost
+                                                                    .name)) {
+                                                      final RenderBox overlay =
+                                                          Overlay.of(context)
+                                                                  .context
+                                                                  .findRenderObject()
+                                                              as RenderBox;
+
+                                                      await showMenu(
+                                                        context: context,
+                                                        items: <PopupMenuEntry>[
+                                                          PopupMenuItem(
+                                                            child: const Row(
+                                                              children: <Widget>[
+                                                                Icon(Icons
+                                                                    .delete),
+                                                                SizedBox(
+                                                                    width: 8),
+                                                                Text("Delete"),
+                                                              ],
+                                                            ),
+                                                            onTap: () =>
+                                                                deletePost(
+                                                                    posts[index]
+                                                                        .postId,
+                                                                    context),
+                                                          )
+                                                        ],
+                                                        position: RelativeRect
+                                                            .fromRect(
+                                                                tapPosition &
+                                                                    const Size(
+                                                                        40,
+                                                                        40), // smaller rect, the touch area
+                                                                Offset.zero &
+                                                                    overlay
+                                                                        .size // Bigger rect, the entire screen
+                                                                ),
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 12,
+                                                            right: 12,
+                                                            top: 10,
+                                                            bottom: 10),
+                                                    child: Align(
+                                                      alignment: (posts[index]
+                                                                  .serviceUid !=
+                                                              user.uid
+                                                          ? Alignment.topLeft
+                                                          : Alignment.topRight),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          color: (posts[index]
+                                                                      .serviceUid !=
+                                                                  user.uid
+                                                              ? Pallete
+                                                                  .blueColor
+                                                              : Pallete
+                                                                  .greenColor),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                10, 10, 10, 10),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    CircleAvatar(
+                                                                      radius:
+                                                                          12,
+                                                                      backgroundImage:
+                                                                          Image.asset(Constants.avatarDefault)
+                                                                              .image,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 8,
+                                                                    ),
+                                                                    const Text(
+                                                                      'Unknown service',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              11),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text(
+                                                                  ' ${timeago.format(posts[index].creationDate)}',
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          11),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            Text(posts[index]
+                                                                .message),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
                                             },
                                             error: (error, stackTrace) =>
                                                 ErrorText(

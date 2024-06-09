@@ -482,11 +482,8 @@ class ForumScreen extends ConsumerWidget {
                                                                   CircleAvatar(
                                                                     radius: 12,
                                                                     backgroundImage:
-                                                                        Image
-                                                                            .asset(
-                                                                      Constants
-                                                                          .avatarDefault,
-                                                                    ).image,
+                                                                        Image.asset(Constants.avatarDefault)
+                                                                            .image,
                                                                   ),
                                                                   const SizedBox(
                                                                     width: 8,

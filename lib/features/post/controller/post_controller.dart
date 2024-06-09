@@ -114,7 +114,7 @@ class PostController extends StateNotifier<bool> {
       );
     }
     // create post
-    final res = await _postRepository.createPost(post);
+    await _postRepository.createPost(post);
 
     // update forum
     forum = forum.copyWith(
@@ -180,7 +180,7 @@ class PostController extends StateNotifier<bool> {
       }
     }
     forum.posts.remove(postId);
-    final resForum = await _forumRepository.updateForum(forum);
+    await _forumRepository.updateForum(forum);
     state = false;
     postRes.fold((l) => showSnackBar(context, l.message), (r) {
       // showSnackBar(context, 'Post deleted successfully!');
