@@ -384,94 +384,156 @@ class ForumScreen extends ConsumerWidget {
                                       getPostByIdProvider(forum.recentPostId))
                                   .when(
                                     data: (post) {
-                                      return ref
-                                          .watch(getServiceByIdProvider(
-                                              post.serviceId))
-                                          .when(
-                                            data: (service) {
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
+                                      if (post != null) {
+                                        return ref
+                                            .watch(getServiceByIdProvider(
+                                                post.serviceId))
+                                            .when(
+                                              data: (service) {
+                                                if (service != null) {
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                      Column(
                                                         children: [
                                                           Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
-                                                              service!.image ==
-                                                                      Constants
-                                                                          .avatarDefault
-                                                                  ? CircleAvatar(
-                                                                      radius:
-                                                                          12,
-                                                                      backgroundImage:
-                                                                          Image.asset(service.image)
-                                                                              .image,
-                                                                    )
-                                                                  : CircleAvatar(
-                                                                      radius:
-                                                                          12,
-                                                                      backgroundImage:
-                                                                          NetworkImage(
-                                                                              service.image),
-                                                                    ),
-                                                              const SizedBox(
-                                                                width: 8,
-                                                              ),
-                                                              service.title
-                                                                          .length >
-                                                                      20
-                                                                  ? Text(
-                                                                      '${service.title.substring(0, 20)}...',
-                                                                      style: const TextStyle(
-                                                                          fontSize:
-                                                                              14),
-                                                                    )
-                                                                  : Text(
-                                                                      service
-                                                                          .title,
-                                                                      style: const TextStyle(
-                                                                          fontSize:
-                                                                              14),
-                                                                    ),
-                                                              Text(
-                                                                ' - ${timeago.format(post.creationDate)}',
-                                                                style:
-                                                                    const TextStyle(
+                                                              Row(
+                                                                children: [
+                                                                  service.image ==
+                                                                          Constants
+                                                                              .avatarDefault
+                                                                      ? CircleAvatar(
+                                                                          radius:
+                                                                              12,
+                                                                          backgroundImage:
+                                                                              Image.asset(service.image).image,
+                                                                        )
+                                                                      : CircleAvatar(
+                                                                          radius:
+                                                                              12,
+                                                                          backgroundImage:
+                                                                              NetworkImage(service.image),
+                                                                        ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  service.title
+                                                                              .length >
+                                                                          20
+                                                                      ? Text(
+                                                                          '${service.title.substring(0, 20)}...',
+                                                                          style:
+                                                                              const TextStyle(fontSize: 14),
+                                                                        )
+                                                                      : Text(
+                                                                          service
+                                                                              .title,
+                                                                          style:
+                                                                              const TextStyle(fontSize: 14),
+                                                                        ),
+                                                                  Text(
+                                                                    ' - ${timeago.format(post.creationDate)}',
+                                                                    style: const TextStyle(
                                                                         fontSize:
                                                                             11),
-                                                              )
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Expanded(
+                                                                  child: Text(post
+                                                                      .message)),
                                                             ],
                                                           ),
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                    ],
+                                                  );
+                                                } else {
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
                                                         children: [
-                                                          Expanded(
-                                                              child: Text(post
-                                                                  .message)),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  CircleAvatar(
+                                                                    radius: 12,
+                                                                    backgroundImage:
+                                                                        Image
+                                                                            .asset(
+                                                                      Constants
+                                                                          .avatarDefault,
+                                                                    ).image,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  const Text(
+                                                                    'Unknown service',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                                  ),
+                                                                  Text(
+                                                                    ' - ${timeago.format(post.creationDate)}',
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            11),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Expanded(
+                                                                  child: Text(post
+                                                                      .message)),
+                                                            ],
+                                                          ),
                                                         ],
                                                       ),
                                                     ],
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                            error: (error, stackTrace) =>
-                                                ErrorText(
-                                                    error: error.toString()),
-                                            loading: () => const Loader(),
-                                          );
+                                                  );
+                                                }
+                                              },
+                                              error: (error, stackTrace) =>
+                                                  ErrorText(
+                                                      error: error.toString()),
+                                              loading: () => const Loader(),
+                                            );
+                                      } else {
+                                        return const SizedBox();
+                                      }
                                     },
                                     error: (error, stackTrace) =>
                                         ErrorText(error: error.toString()),

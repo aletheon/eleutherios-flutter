@@ -30,7 +30,7 @@ class PolicyActivityRepository {
     });
   }
 
-  Stream<PolicyActivity?> getUserActivityByPolicyId(
+  Stream<PolicyActivity?> getPolicyActivityByUserId(
       String policyId, String uid) {
     return _policyActivities
         .where('policyId', isEqualTo: policyId)

@@ -19,14 +19,22 @@ class PostRepository {
   CollectionReference get _posts =>
       _firestore.collection(FirebaseConstants.postsCollection);
 
-  Stream<Post> getPostById(String postId) {
-    final DocumentReference documentReference = _posts.doc(postId);
+  Stream<Post?> getPostById(String postId) {
+    if (postId.isNotEmpty) {
+      final DocumentReference documentReference = _posts.doc(postId);
 
-    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-    return documentStream.map((event) {
-      return Post.fromMap(event.data() as Map<String, dynamic>);
-    });
+      return documentStream.map((event) {
+        if (event.exists) {
+          return Post.fromMap(event.data() as Map<String, dynamic>);
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 
   Stream<Post?> getRecentPost(String forumId) {

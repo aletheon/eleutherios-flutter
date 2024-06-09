@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/forum_activity/controller/forum_activity_controller.dart';
+import 'package:reddit_tutorial/features/forum_activity/repository/forum_activity_repository.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/manager/repository/manager_repository.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
@@ -14,6 +16,8 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
+import 'package:reddit_tutorial/features/policy_activity/controller/policy_activity_controller.dart';
+import 'package:reddit_tutorial/features/policy_activity/repository/policy_activity_repository.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
@@ -24,10 +28,10 @@ import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/policy_activity.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
-import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -82,7 +86,9 @@ final searchPublicServicesProvider = StreamProvider.family.autoDispose(
 final serviceControllerProvider =
     StateNotifierProvider<ServiceController, bool>((ref) {
   final policyRepository = ref.watch(policyRepositoryProvider);
+  final policyActivityRepository = ref.watch(policyActivityRepositoryProvider);
   final forumRepository = ref.watch(forumRepositoryProvider);
+  final forumActivityRepository = ref.watch(forumActivityRepositoryProvider);
   final serviceRepository = ref.watch(serviceRepositoryProvider);
   final managerRepository = ref.watch(managerRepositoryProvider);
   final memberRepository = ref.watch(memberRepositoryProvider);
@@ -92,7 +98,9 @@ final serviceControllerProvider =
   final storageRepository = ref.watch(storageRepositoryProvider);
   return ServiceController(
       policyRepository: policyRepository,
+      policyActivityRepository: policyActivityRepository,
       forumRepository: forumRepository,
+      forumActivityRepository: forumActivityRepository,
       serviceRepository: serviceRepository,
       managerRepository: managerRepository,
       memberRepository: memberRepository,
@@ -105,7 +113,9 @@ final serviceControllerProvider =
 
 class ServiceController extends StateNotifier<bool> {
   final PolicyRepository _policyRepository;
+  final PolicyActivityRepository _policyActivityRepository;
   final ForumRepository _forumRepository;
+  final ForumActivityRepository _forumActivityRepository;
   final ServiceRepository _serviceRepository;
   final ManagerRepository _managerRepository;
   final MemberRepository _memberRepository;
@@ -116,7 +126,9 @@ class ServiceController extends StateNotifier<bool> {
   final Ref _ref;
   ServiceController(
       {required PolicyRepository policyRepository,
+      required PolicyActivityRepository policyActivityRepository,
       required ForumRepository forumRepository,
+      required ForumActivityRepository forumActivityRepository,
       required ServiceRepository serviceRepository,
       required ManagerRepository managerRepository,
       required MemberRepository memberRepository,
@@ -126,7 +138,9 @@ class ServiceController extends StateNotifier<bool> {
       required StorageRepository storageRepository,
       required Ref ref})
       : _policyRepository = policyRepository,
+        _policyActivityRepository = policyActivityRepository,
         _forumRepository = forumRepository,
+        _forumActivityRepository = forumActivityRepository,
         _serviceRepository = serviceRepository,
         _managerRepository = managerRepository,
         _memberRepository = memberRepository,
@@ -215,6 +229,16 @@ class ServiceController extends StateNotifier<bool> {
     });
   }
 
+  // *******************************************************************
+  // *******************************************************************
+  // *******************************************************************
+  // *******************************************************************
+  // HERE ROB HAVE TO REMOVE FROM forumActivities and policyActivities
+  // *******************************************************************
+  // *******************************************************************
+  // *******************************************************************
+  // *******************************************************************
+
   void deleteService(
     BuildContext context,
     String serviceId,
@@ -242,16 +266,59 @@ class ServiceController extends StateNotifier<bool> {
           for (var manager in managers) {
             await _managerRepository.deleteManager(manager.managerId);
 
-            // remove manager from policy manager list
+            // get policy
             Policy? policy = await _ref
                 .read(policyControllerProvider.notifier)
                 .getPolicyById(manager.policyId)
                 .first;
 
-            if (policy != null) {
+            // get user
+            final policyActivityUser =
+                await _ref.read(getUserByIdProvider(manager.serviceUid)).first;
+
+            if (policy != null && policyActivityUser != null) {
+              // remove manager from policy manager list
               policy.managers.remove(manager.managerId);
-              policy.services.remove(serviceId);
+              policy.services.remove(manager.serviceId);
               await _policyRepository.updatePolicy(policy);
+
+              // get this users manager count
+              final managerCount = await _ref
+                  .read(managerControllerProvider.notifier)
+                  .getUserManagerCount(policy.policyId, policyActivityUser.uid)
+                  .first;
+
+              // remove policy activity if no user managers are left
+              if (managerCount == 0) {
+                // get policy activity
+                final policyActivity = await _ref
+                    .read(policyActivityControllerProvider.notifier)
+                    .getPolicyActivityByUserId(
+                        policy.policyId, policyActivityUser.uid)
+                    .first;
+
+                if (policyActivity != null) {
+                  // now remove it
+                  await _policyActivityRepository
+                      .deletePolicyActivity(policyActivity.policyActivityId);
+
+                  // remove the activity from the users policy activity list
+                  policyActivityUser.policyActivities.remove(policy.policyId);
+                  await _userProfileRepository.updateUser(policyActivityUser);
+                }
+              } else {
+                // set next available manager as default
+                if (manager.selected) {
+                  // get the rest of the users managers
+                  final userManagers = await _ref
+                      .read(managerControllerProvider.notifier)
+                      .getUserManagers(policy.policyId, policyActivityUser.uid)
+                      .first;
+
+                  userManagers[0] = userManagers[0].copyWith(selected: true);
+                  await _managerRepository.updateManager(userManagers[0]);
+                }
+              }
             }
           }
         }
@@ -267,10 +334,52 @@ class ServiceController extends StateNotifier<bool> {
                 .getForumById(member.forumId)
                 .first;
 
-            if (forum != null) {
+            // get user
+            final forumActivityUser =
+                await _ref.read(getUserByIdProvider(member.serviceUid)).first;
+
+            if (forum != null && forumActivityUser != null) {
               forum.members.remove(member.memberId);
               forum.services.remove(serviceId);
               await _forumRepository.updateForum(forum);
+
+              // get this users member count
+              final memberCount = await _ref
+                  .read(memberControllerProvider.notifier)
+                  .getUserMemberCount(forum.forumId, forumActivityUser.uid)
+                  .first;
+
+              // remove forum activity if no user members are left
+              if (memberCount == 0) {
+                // get forum activity
+                final forumActivity = await _ref
+                    .read(forumActivityControllerProvider.notifier)
+                    .getUserForumActivityByForumId(
+                        forum.forumId, forumActivityUser.uid)
+                    .first;
+
+                if (forumActivity != null) {
+                  // now remove it
+                  await _forumActivityRepository
+                      .deleteForumActivity(forumActivity.forumActivityId);
+
+                  // remove the activity from the users forum activity list
+                  forumActivityUser.policyActivities.remove(forum.forumId);
+                  await _userProfileRepository.updateUser(forumActivityUser);
+                }
+              } else {
+                // set next available member as default
+                if (member.selected) {
+                  // get the rest of the users members
+                  final userMembers = await _ref
+                      .read(memberControllerProvider.notifier)
+                      .getUserMembers(forum.forumId, forumActivityUser.uid)
+                      .first;
+
+                  userMembers[0] = userMembers[0].copyWith(selected: true);
+                  await _memberRepository.updateMember(userMembers[0]);
+                }
+              }
             }
           }
         }

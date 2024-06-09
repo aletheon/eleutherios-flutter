@@ -203,7 +203,7 @@ class PostController extends StateNotifier<bool> {
     return _postRepository.getRecentPost(forumId);
   }
 
-  Stream<Post> getPostById(String postId) {
+  Stream<Post?> getPostById(String postId) {
     return _postRepository.getPostById(postId);
   }
 

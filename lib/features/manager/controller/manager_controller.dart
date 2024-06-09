@@ -304,19 +304,21 @@ class ManagerController extends StateNotifier<bool> {
       // get policy activity
       final policyActivity = await _ref
           .read(policyActivityControllerProvider.notifier)
-          .getUserPolicyActivityByPolicyId(policyId, manager!.serviceUid)
+          .getPolicyActivityByUserId(policyId, manager.serviceUid)
           .first;
 
-      // now remove it
-      await _policyActivityRepository
-          .deletePolicyActivity(policyActivity!.policyActivityId);
+      if (policyActivity != null) {
+        // now remove it
+        await _policyActivityRepository
+            .deletePolicyActivity(policyActivity.policyActivityId);
 
-      // remove the activity from the users policy activity list
-      user.policyActivities.remove(policyId);
-      await _userProfileRepository.updateUser(user);
+        // remove the activity from the users policy activity list
+        user.policyActivities.remove(policyId);
+        await _userProfileRepository.updateUser(user);
+      }
     } else {
       // set next available manager as default
-      if (manager!.selected) {
+      if (manager.selected) {
         // get the rest of the users managers
         final userManagers = await _ref
             .read(managerControllerProvider.notifier)
