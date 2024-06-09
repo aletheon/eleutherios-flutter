@@ -273,10 +273,10 @@ class ServiceController extends StateNotifier<bool> {
                 .first;
 
             // get user
-            final policyActivityUser =
+            final managerUser =
                 await _ref.read(getUserByIdProvider(manager.serviceUid)).first;
 
-            if (policy != null && policyActivityUser != null) {
+            if (policy != null && managerUser != null) {
               // remove manager from policy manager list
               policy.managers.remove(manager.managerId);
               policy.services.remove(manager.serviceId);
@@ -285,7 +285,7 @@ class ServiceController extends StateNotifier<bool> {
               // get this users manager count
               final managerCount = await _ref
                   .read(managerControllerProvider.notifier)
-                  .getUserManagerCount(policy.policyId, policyActivityUser.uid)
+                  .getUserManagerCount(policy.policyId, managerUser.uid)
                   .first;
 
               // remove policy activity if no user managers are left
@@ -293,8 +293,7 @@ class ServiceController extends StateNotifier<bool> {
                 // get policy activity
                 final policyActivity = await _ref
                     .read(policyActivityControllerProvider.notifier)
-                    .getPolicyActivityByUserId(
-                        policy.policyId, policyActivityUser.uid)
+                    .getPolicyActivityByUserId(policy.policyId, managerUser.uid)
                     .first;
 
                 if (policyActivity != null) {
@@ -303,8 +302,8 @@ class ServiceController extends StateNotifier<bool> {
                       .deletePolicyActivity(policyActivity.policyActivityId);
 
                   // remove the activity from the users policy activity list
-                  policyActivityUser.policyActivities.remove(policy.policyId);
-                  await _userProfileRepository.updateUser(policyActivityUser);
+                  managerUser.policyActivities.remove(policy.policyId);
+                  await _userProfileRepository.updateUser(managerUser);
                 }
               } else {
                 // set next available manager as default
@@ -312,7 +311,7 @@ class ServiceController extends StateNotifier<bool> {
                   // get the rest of the users managers
                   final userManagers = await _ref
                       .read(managerControllerProvider.notifier)
-                      .getUserManagers(policy.policyId, policyActivityUser.uid)
+                      .getUserManagers(policy.policyId, managerUser.uid)
                       .first;
 
                   userManagers[0] = userManagers[0].copyWith(selected: true);
@@ -335,10 +334,10 @@ class ServiceController extends StateNotifier<bool> {
                 .first;
 
             // get user
-            final forumActivityUser =
+            final memberUser =
                 await _ref.read(getUserByIdProvider(member.serviceUid)).first;
 
-            if (forum != null && forumActivityUser != null) {
+            if (forum != null && memberUser != null) {
               forum.members.remove(member.memberId);
               forum.services.remove(serviceId);
               await _forumRepository.updateForum(forum);
@@ -346,7 +345,7 @@ class ServiceController extends StateNotifier<bool> {
               // get this users member count
               final memberCount = await _ref
                   .read(memberControllerProvider.notifier)
-                  .getUserMemberCount(forum.forumId, forumActivityUser.uid)
+                  .getUserMemberCount(forum.forumId, memberUser.uid)
                   .first;
 
               // remove forum activity if no user members are left
@@ -355,7 +354,7 @@ class ServiceController extends StateNotifier<bool> {
                 final forumActivity = await _ref
                     .read(forumActivityControllerProvider.notifier)
                     .getUserForumActivityByForumId(
-                        forum.forumId, forumActivityUser.uid)
+                        forum.forumId, memberUser.uid)
                     .first;
 
                 if (forumActivity != null) {
@@ -364,8 +363,8 @@ class ServiceController extends StateNotifier<bool> {
                       .deleteForumActivity(forumActivity.forumActivityId);
 
                   // remove the activity from the users forum activity list
-                  forumActivityUser.policyActivities.remove(forum.forumId);
-                  await _userProfileRepository.updateUser(forumActivityUser);
+                  memberUser.policyActivities.remove(forum.forumId);
+                  await _userProfileRepository.updateUser(memberUser);
                 }
               } else {
                 // set next available member as default
@@ -373,7 +372,7 @@ class ServiceController extends StateNotifier<bool> {
                   // get the rest of the users members
                   final userMembers = await _ref
                       .read(memberControllerProvider.notifier)
-                      .getUserMembers(forum.forumId, forumActivityUser.uid)
+                      .getUserMembers(forum.forumId, memberUser.uid)
                       .first;
 
                   userMembers[0] = userMembers[0].copyWith(selected: true);
@@ -396,10 +395,37 @@ class ServiceController extends StateNotifier<bool> {
                 .getRuleById(ruleMember.ruleId)
                 .first;
 
-            if (rule != null) {
+            // get user
+            final ruleMemberUser = await _ref
+                .read(getUserByIdProvider(ruleMember.serviceUid))
+                .first;
+
+            if (rule != null && ruleMemberUser != null) {
               rule.members.remove(ruleMember.ruleMemberId);
               rule.services.remove(serviceId);
               await _ruleRepository.updateRule(rule);
+
+              // get this users member count
+              final ruleMemberCount = await _ref
+                  .read(ruleMemberControllerProvider.notifier)
+                  .getUserRuleMemberCount(rule.ruleId, ruleMemberUser.uid)
+                  .first;
+
+              if (ruleMemberCount > 0) {
+                // set next available rule member as default
+                if (ruleMember.selected) {
+                  // get the rest of the users rule members
+                  final userRuleMembers = await _ref
+                      .read(ruleMemberControllerProvider.notifier)
+                      .getUserRuleMembers(rule.ruleId, ruleMemberUser.uid)
+                      .first;
+
+                  userRuleMembers[0] =
+                      userRuleMembers[0].copyWith(selected: true);
+                  await _ruleMemberRepository
+                      .updateRuleMember(userRuleMembers[0]);
+                }
+              }
             }
           }
         }

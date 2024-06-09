@@ -282,9 +282,6 @@ class MemberController extends StateNotifier<bool> {
       String forumId, String memberId, BuildContext context) async {
     state = true;
 
-    // get user
-    final user = _ref.read(userProvider)!;
-
     // get member
     final member = await _ref
         .read(memberControllerProvider.notifier)
@@ -297,54 +294,65 @@ class MemberController extends StateNotifier<bool> {
         .getForumById(forumId)
         .first;
 
-    // delete member
-    final res = await _memberRepository.deleteMember(memberId);
+    if (forum != null && member != null) {
+      // delete member
+      final res = await _memberRepository.deleteMember(memberId);
 
-    // update forum
-    forum!.members.remove(memberId);
-    forum.services.remove(member!.serviceId);
-    await _forumRepository.updateForum(forum);
+      // get user
+      final memberUser =
+          await _ref.read(getUserByIdProvider(member.serviceUid)).first;
 
-    // get this users member count
-    final memberCount = await _ref
-        .read(memberControllerProvider.notifier)
-        .getUserMemberCount(forumId, user.uid)
-        .first;
+      // update forum
+      forum.members.remove(memberId);
+      forum.services.remove(member.serviceId);
+      await _forumRepository.updateForum(forum);
 
-    // remove forum activity if no user members are left
-    if (memberCount == 0) {
-      // get forum activity
-      final forumActivity = await _ref
-          .read(forumActivityControllerProvider.notifier)
-          .getUserForumActivityByForumId(forumId, member!.serviceUid)
+      // get this users member count
+      final memberCount = await _ref
+          .read(memberControllerProvider.notifier)
+          .getUserMemberCount(forumId, memberUser!.uid)
           .first;
 
-      // now remove it
-      await _forumActivityRepository
-          .deleteForumActivity(forumActivity!.forumActivityId);
-
-      // remove the activity from the users forum activity list
-      user.forumActivities.remove(forumId);
-      await _userProfileRepository.updateUser(user);
-    } else {
-      // set next available member as default
-      if (member.selected) {
-        // get the rest of the users members
-        final userMembers = await _ref
-            .read(memberControllerProvider.notifier)
-            .getUserMembers(forumId, user.uid)
+      // remove forum activity if no user members are left
+      if (memberCount == 0) {
+        // get forum activity
+        final forumActivity = await _ref
+            .read(forumActivityControllerProvider.notifier)
+            .getUserForumActivityByForumId(forumId, memberUser.uid)
             .first;
 
-        userMembers[0] = userMembers[0].copyWith(selected: true);
-        await _memberRepository.updateMember(userMembers[0]);
+        // now remove it
+        await _forumActivityRepository
+            .deleteForumActivity(forumActivity!.forumActivityId);
+
+        // remove the activity from the users forum activity list
+        memberUser.forumActivities.remove(forumId);
+        await _userProfileRepository.updateUser(memberUser);
+      } else {
+        // set next available member as default
+        if (member.selected) {
+          // get the rest of the users members
+          final userMembers = await _ref
+              .read(memberControllerProvider.notifier)
+              .getUserMembers(forumId, memberUser.uid)
+              .first;
+
+          userMembers[0] = userMembers[0].copyWith(selected: true);
+          await _memberRepository.updateMember(userMembers[0]);
+        }
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        if (context.mounted) {
+          showSnackBar(context, 'Member removed successfully!');
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Forum or member does not exist');
       }
     }
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      if (context.mounted) {
-        showSnackBar(context, 'Member removed successfully!');
-      }
-    });
   }
 
   Future<int> getMembersByServiceIdCount(String serviceId) {

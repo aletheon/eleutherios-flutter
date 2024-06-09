@@ -128,6 +128,7 @@ class RuleMemberController extends StateNotifier<bool> {
         .read(ruleControllerProvider.notifier)
         .getRuleById(ruleId)
         .first;
+
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
         .getServiceById(serviceId)
@@ -227,9 +228,6 @@ class RuleMemberController extends StateNotifier<bool> {
       String ruleId, String ruleMemberId, BuildContext context) async {
     state = true;
 
-    // get user
-    final user = _ref.read(userProvider)!;
-
     // get ruleMember
     final ruleMember = await _ref
         .read(ruleMemberControllerProvider.notifier)
@@ -242,37 +240,50 @@ class RuleMemberController extends StateNotifier<bool> {
         .getRuleById(ruleId)
         .first;
 
-    // delete ruleMember
-    final res = await _ruleMemberRepository.deleteRuleMember(ruleMemberId);
+    if (rule != null && ruleMember != null) {
+      // delete member
+      final res = await _ruleMemberRepository.deleteRuleMember(ruleMemberId);
 
-    // update rule
-    rule!.members.remove(ruleMemberId);
-    rule.services.remove(ruleMember!.serviceId);
-    await _ruleRepository.updateRule(rule);
+      // get user
+      final ruleMemberUser =
+          await _ref.read(getUserByIdProvider(ruleMember.serviceUid)).first;
 
-    // get this users member count
-    final ruleMemberCount = await _ref
-        .read(ruleMemberControllerProvider.notifier)
-        .getUserRuleMemberCount(ruleId, user.uid)
-        .first;
+      // update forum
+      rule.members.remove(ruleMemberId);
+      rule.services.remove(ruleMember.serviceId);
+      await _ruleRepository.updateRule(rule);
 
-    if (ruleMemberCount > 0) {
-      // set next available rule member as default
-      if (ruleMember!.selected) {
-        // get the rest of the users rule members
-        final userRuleMembers = await _ref
-            .read(ruleMemberControllerProvider.notifier)
-            .getUserRuleMembers(ruleId, user.uid)
-            .first;
+      // get this users member count
+      final ruleMemberCount = await _ref
+          .read(ruleMemberControllerProvider.notifier)
+          .getUserRuleMemberCount(ruleId, ruleMemberUser!.uid)
+          .first;
 
-        userRuleMembers[0] = userRuleMembers[0].copyWith(selected: true);
-        await _ruleMemberRepository.updateRuleMember(userRuleMembers[0]);
+      if (ruleMemberCount > 0) {
+        // set next available rule member as default
+        if (ruleMember.selected) {
+          // get the rest of the users rule members
+          final userRuleMembers = await _ref
+              .read(ruleMemberControllerProvider.notifier)
+              .getUserRuleMembers(ruleId, ruleMemberUser.uid)
+              .first;
+
+          userRuleMembers[0] = userRuleMembers[0].copyWith(selected: true);
+          await _ruleMemberRepository.updateRuleMember(userRuleMembers[0]);
+        }
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        if (context.mounted) {
+          showSnackBar(context, 'Potential member removed successfully!');
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Rule or potential member does not exist');
       }
     }
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Potential member removed successfully!');
-    });
   }
 
   Future<int> getRuleMembersByServiceIdCount(String serviceId) {

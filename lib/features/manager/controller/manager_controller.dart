@@ -270,9 +270,6 @@ class ManagerController extends StateNotifier<bool> {
       String policyId, String managerId, BuildContext context) async {
     state = true;
 
-    // get user
-    final user = _ref.read(userProvider)!;
-
     // get manager
     final manager = await _ref
         .read(managerControllerProvider.notifier)
@@ -285,54 +282,67 @@ class ManagerController extends StateNotifier<bool> {
         .getPolicyById(policyId)
         .first;
 
-    // delete mananger
-    final res = await _managerRepository.deleteManager(managerId);
+    if (policy != null && manager != null) {
+      // delete mananger
+      final res = await _managerRepository.deleteManager(managerId);
 
-    // update policy
-    policy!.managers.remove(managerId);
-    policy.services.remove(manager!.serviceId);
-    await _policyRepository.updatePolicy(policy);
+      // get user
+      final managerUser =
+          await _ref.read(getUserByIdProvider(manager.serviceUid)).first;
 
-    // get this users manager count
-    final managerCount = await _ref
-        .read(managerControllerProvider.notifier)
-        .getUserManagerCount(policyId, user.uid)
-        .first;
+      // update policy
+      policy.managers.remove(managerId);
+      policy.services.remove(manager.serviceId);
+      await _policyRepository.updatePolicy(policy);
 
-    // remove policy activity if no user managers are left
-    if (managerCount == 0) {
-      // get policy activity
-      final policyActivity = await _ref
-          .read(policyActivityControllerProvider.notifier)
-          .getPolicyActivityByUserId(policyId, manager.serviceUid)
+      // get this users manager count
+      final managerCount = await _ref
+          .read(managerControllerProvider.notifier)
+          .getUserManagerCount(policyId, managerUser!.uid)
           .first;
 
-      if (policyActivity != null) {
-        // now remove it
-        await _policyActivityRepository
-            .deletePolicyActivity(policyActivity.policyActivityId);
-
-        // remove the activity from the users policy activity list
-        user.policyActivities.remove(policyId);
-        await _userProfileRepository.updateUser(user);
-      }
-    } else {
-      // set next available manager as default
-      if (manager.selected) {
-        // get the rest of the users managers
-        final userManagers = await _ref
-            .read(managerControllerProvider.notifier)
-            .getUserManagers(policyId, user.uid)
+      // remove policy activity if no user managers are left
+      if (managerCount == 0) {
+        // get policy activity
+        final policyActivity = await _ref
+            .read(policyActivityControllerProvider.notifier)
+            .getPolicyActivityByUserId(policyId, manager.serviceUid)
             .first;
 
-        userManagers[0] = userManagers[0].copyWith(selected: true);
-        await _managerRepository.updateManager(userManagers[0]);
+        if (policyActivity != null) {
+          // now remove it
+          await _policyActivityRepository
+              .deletePolicyActivity(policyActivity.policyActivityId);
+
+          // remove the activity from the users policy activity list
+          managerUser.policyActivities.remove(policyId);
+          await _userProfileRepository.updateUser(managerUser);
+        }
+      } else {
+        // set next available manager as default
+        if (manager.selected) {
+          // get the rest of the users managers
+          final userManagers = await _ref
+              .read(managerControllerProvider.notifier)
+              .getUserManagers(policyId, managerUser.uid)
+              .first;
+
+          userManagers[0] = userManagers[0].copyWith(selected: true);
+          await _managerRepository.updateManager(userManagers[0]);
+        }
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        if (context.mounted) {
+          showSnackBar(context, 'Manager removed successfully!');
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Policy or manager does not exist');
       }
     }
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Manager removed successfully!');
-    });
   }
 
   Future<int> getManagersByServiceIdCount(String serviceId) {
