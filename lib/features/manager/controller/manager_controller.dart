@@ -156,7 +156,10 @@ class ManagerController extends StateNotifier<bool> {
     if (policy != null && service != null) {
       // ensure service is not already a manager
       if (policy.managers.contains(serviceId) == false) {
-        final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+        final user = await _ref
+            .read(authControllerProvider.notifier)
+            .getUserData(service.uid)
+            .first;
         final managerCount = await _ref
             .read(managerControllerProvider.notifier)
             .getUserManagerCount(policy.policyId, service.uid)
@@ -287,8 +290,10 @@ class ManagerController extends StateNotifier<bool> {
       final res = await _managerRepository.deleteManager(managerId);
 
       // get user
-      final managerUser =
-          await _ref.read(getUserByIdProvider(manager.serviceUid)).first;
+      final managerUser = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(manager.serviceUid)
+          .first;
 
       // update policy
       policy.managers.remove(managerId);

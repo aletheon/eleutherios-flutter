@@ -176,7 +176,10 @@ class MemberController extends StateNotifier<bool> {
     if (forum != null && service != null) {
       // ensure service is not already a member
       if (forum.members.contains(serviceId) == false) {
-        final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+        final user = await _ref
+            .read(authControllerProvider.notifier)
+            .getUserData(service.uid)
+            .first;
         final memberCount = await _ref
             .read(memberControllerProvider.notifier)
             .getUserMemberCount(forum.forumId, service.uid)
@@ -299,8 +302,10 @@ class MemberController extends StateNotifier<bool> {
       final res = await _memberRepository.deleteMember(memberId);
 
       // get user
-      final memberUser =
-          await _ref.read(getUserByIdProvider(member.serviceUid)).first;
+      final memberUser = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(member.serviceUid)
+          .first;
 
       // update forum
       forum.members.remove(memberId);

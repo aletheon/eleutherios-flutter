@@ -231,16 +231,6 @@ class ServiceController extends StateNotifier<bool> {
     });
   }
 
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-  // HERE ROB HAVE TO REMOVE FROM forumActivities and policyActivities
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-
   void deleteService(
     BuildContext context,
     String serviceId,
@@ -252,201 +242,201 @@ class ServiceController extends StateNotifier<bool> {
         .first;
 
     if (service != null) {
-      final user = await _ref.read(getUserByIdProvider(service.uid)).first;
+      final List<Manager> managers =
+          await _ref.read(getManangersByServiceIdProvider2(serviceId)).first;
+      final List<Member> members =
+          await _ref.read(getMembersByServiceIdProvider2(serviceId)).first;
+      final List<RuleMember> ruleMembers =
+          await _ref.read(getRuleMembersByServiceIdProvider2(serviceId)).first;
 
-      if (user != null) {
-        final List<Manager> managers =
-            await _ref.read(getManangersByServiceIdProvider2(serviceId)).first;
-        final List<Member> members =
-            await _ref.read(getMembersByServiceIdProvider2(serviceId)).first;
-        final List<RuleMember> ruleMembers = await _ref
-            .read(getRuleMembersByServiceIdProvider2(serviceId))
-            .first;
+      // remove managers
+      if (managers.isNotEmpty) {
+        for (var manager in managers) {
+          await _managerRepository.deleteManager(manager.managerId);
 
-        // remove managers
-        if (managers.isNotEmpty) {
-          for (var manager in managers) {
-            await _managerRepository.deleteManager(manager.managerId);
-
-            // get policy
-            Policy? policy = await _ref
-                .read(policyControllerProvider.notifier)
-                .getPolicyById(manager.policyId)
-                .first;
-
-            // get user
-            UserModel? managerUser =
-                await _ref.read(getUserByIdProvider(manager.serviceUid)).first;
-
-            if (policy != null && managerUser != null) {
-              // remove manager from policy manager list
-              policy.managers.remove(manager.managerId);
-              policy.services.remove(manager.serviceId);
-              await _policyRepository.updatePolicy(policy);
-
-              // get this users manager count
-              final managerCount = await _ref
-                  .read(managerControllerProvider.notifier)
-                  .getUserManagerCount(policy.policyId, managerUser.uid)
-                  .first;
-
-              // remove policy activity if no user managers are left
-              if (managerCount == 0) {
-                // get policy activity
-                PolicyActivity? policyActivity = await _ref
-                    .read(policyActivityControllerProvider.notifier)
-                    .getPolicyActivityByUserId(policy.policyId, managerUser.uid)
-                    .first;
-
-                if (policyActivity != null) {
-                  // now remove it
-                  await _policyActivityRepository
-                      .deletePolicyActivity(policyActivity.policyActivityId);
-
-                  // remove the activity from the users policy activity list
-                  managerUser.policyActivities.remove(policyActivity.policyId);
-                  await _userProfileRepository.updateUser(managerUser);
-                }
-              } else {
-                // set next available manager as default
-                if (manager.selected) {
-                  // get the rest of the users managers
-                  List<Manager> userManagers = await _ref
-                      .read(managerControllerProvider.notifier)
-                      .getUserManagers(policy.policyId, managerUser.uid)
-                      .first;
-
-                  userManagers[0] = userManagers[0].copyWith(selected: true);
-                  await _managerRepository.updateManager(userManagers[0]);
-                }
-              }
-            }
-          }
-        }
-
-        // remove members
-        if (members.isNotEmpty) {
-          for (var member in members) {
-            await _memberRepository.deleteMember(member.memberId);
-
-            // remove member from forum member list
-            Forum? forum = await _ref
-                .read(forumControllerProvider.notifier)
-                .getForumById(member.forumId)
-                .first;
-
-            // get user
-            UserModel? memberUser =
-                await _ref.read(getUserByIdProvider(member.serviceUid)).first;
-
-            if (forum != null && memberUser != null) {
-              forum.members.remove(member.memberId);
-              forum.services.remove(serviceId);
-              await _forumRepository.updateForum(forum);
-
-              // get this users member count
-              int memberCount = await _ref
-                  .read(memberControllerProvider.notifier)
-                  .getUserMemberCount(forum.forumId, memberUser.uid)
-                  .first;
-
-              // remove forum activity if no user members are left
-              if (memberCount == 0) {
-                // get forum activity
-                ForumActivity? forumActivity = await _ref
-                    .read(forumActivityControllerProvider.notifier)
-                    .getUserForumActivityByForumId(
-                        forum.forumId, memberUser.uid)
-                    .first;
-
-                if (forumActivity != null) {
-                  // now remove it
-                  await _forumActivityRepository
-                      .deleteForumActivity(forumActivity.forumActivityId);
-
-                  // remove the activity from the users forum activity list
-                  memberUser.forumActivities.remove(forumActivity.forumId);
-                  await _userProfileRepository.updateUser(memberUser);
-                }
-              } else {
-                // set next available member as default
-                if (member.selected) {
-                  // get the rest of the users members
-                  List<Member> userMembers = await _ref
-                      .read(memberControllerProvider.notifier)
-                      .getUserMembers(forum.forumId, memberUser.uid)
-                      .first;
-
-                  userMembers[0] = userMembers[0].copyWith(selected: true);
-                  await _memberRepository.updateMember(userMembers[0]);
-                }
-              }
-            }
-          }
-        }
-
-        // remove rule members
-        if (ruleMembers.isNotEmpty) {
-          for (var ruleMember in ruleMembers) {
-            await _ruleMemberRepository
-                .deleteRuleMember(ruleMember.ruleMemberId);
-
-            // remove rule member from rule member list
-            Rule? rule = await _ref
-                .read(ruleControllerProvider.notifier)
-                .getRuleById(ruleMember.ruleId)
-                .first;
-
-            // get user
-            UserModel? ruleMemberUser = await _ref
-                .read(getUserByIdProvider(ruleMember.serviceUid))
-                .first;
-
-            if (rule != null && ruleMemberUser != null) {
-              rule.members.remove(ruleMember.ruleMemberId);
-              rule.services.remove(serviceId);
-              await _ruleRepository.updateRule(rule);
-
-              // get this users member count
-              int ruleMemberCount = await _ref
-                  .read(ruleMemberControllerProvider.notifier)
-                  .getUserRuleMemberCount(rule.ruleId, ruleMemberUser.uid)
-                  .first;
-
-              if (ruleMemberCount > 0) {
-                // set next available rule member as default
-                if (ruleMember.selected) {
-                  // get the rest of the users rule members
-                  List<RuleMember> userRuleMembers = await _ref
-                      .read(ruleMemberControllerProvider.notifier)
-                      .getUserRuleMembers(rule.ruleId, ruleMemberUser.uid)
-                      .first;
-
-                  userRuleMembers[0] =
-                      userRuleMembers[0].copyWith(selected: true);
-                  await _ruleMemberRepository
-                      .updateRuleMember(userRuleMembers[0]);
-                }
-              }
-            }
-          }
-        }
-
-        // remove consumers
-        if (service.policies.isNotEmpty) {
-          final List<Policy?> policies = await _ref
-              .read(getServiceConsumerPoliciesProvider2(serviceId))
+          // get policy
+          Policy? policy = await _ref
+              .read(policyControllerProvider.notifier)
+              .getPolicyById(manager.policyId)
               .first;
 
-          if (policies.isNotEmpty) {
-            for (var policy in policies) {
-              // remove service from policy consumer list
-              policy!.consumers.remove(serviceId);
-              await _policyRepository.updatePolicy(policy);
+          // get manager user
+          UserModel? managerUser = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(manager.serviceUid)
+              .first;
+
+          if (policy != null && managerUser != null) {
+            // remove manager from policy manager list
+            policy.managers.remove(manager.managerId);
+            policy.services.remove(manager.serviceId);
+            await _policyRepository.updatePolicy(policy);
+
+            // get this users manager count
+            final managerCount = await _ref
+                .read(managerControllerProvider.notifier)
+                .getUserManagerCount(policy.policyId, managerUser.uid)
+                .first;
+
+            // remove policy activity if no user managers are left
+            if (managerCount == 0) {
+              // get policy activity
+              PolicyActivity? policyActivity = await _ref
+                  .read(policyActivityControllerProvider.notifier)
+                  .getPolicyActivityByUserId(policy.policyId, managerUser.uid)
+                  .first;
+
+              if (policyActivity != null) {
+                // now remove it
+                await _policyActivityRepository
+                    .deletePolicyActivity(policyActivity.policyActivityId);
+
+                // remove the activity from the users policy activity list
+                managerUser.policyActivities.remove(policyActivity.policyId);
+                await _userProfileRepository.updateUser(managerUser);
+              }
+            } else {
+              // set next available manager as default
+              if (manager.selected) {
+                // get the rest of the users managers
+                List<Manager> userManagers = await _ref
+                    .read(managerControllerProvider.notifier)
+                    .getUserManagers(policy.policyId, managerUser.uid)
+                    .first;
+
+                userManagers[0] = userManagers[0].copyWith(selected: true);
+                await _managerRepository.updateManager(userManagers[0]);
+              }
             }
           }
         }
+      }
 
+      // remove members
+      if (members.isNotEmpty) {
+        for (var member in members) {
+          await _memberRepository.deleteMember(member.memberId);
+
+          // remove member from forum member list
+          Forum? forum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(member.forumId)
+              .first;
+
+          // get member user
+          UserModel? memberUser = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(member.serviceUid)
+              .first;
+
+          if (forum != null && memberUser != null) {
+            forum.members.remove(member.memberId);
+            forum.services.remove(serviceId);
+            await _forumRepository.updateForum(forum);
+
+            // get this users member count
+            int memberCount = await _ref
+                .read(memberControllerProvider.notifier)
+                .getUserMemberCount(forum.forumId, memberUser.uid)
+                .first;
+
+            // remove forum activity if no user members are left
+            if (memberCount == 0) {
+              // get forum activity
+              ForumActivity? forumActivity = await _ref
+                  .read(forumActivityControllerProvider.notifier)
+                  .getUserForumActivityByForumId(forum.forumId, memberUser.uid)
+                  .first;
+
+              if (forumActivity != null) {
+                // now remove it
+                await _forumActivityRepository
+                    .deleteForumActivity(forumActivity.forumActivityId);
+
+                // remove the activity from the users forum activity list
+                memberUser.forumActivities.remove(forumActivity.forumId);
+                await _userProfileRepository.updateUser(memberUser);
+              }
+            } else {
+              // set next available member as default
+              if (member.selected) {
+                // get the rest of the users members
+                List<Member> userMembers = await _ref
+                    .read(memberControllerProvider.notifier)
+                    .getUserMembers(forum.forumId, memberUser.uid)
+                    .first;
+
+                userMembers[0] = userMembers[0].copyWith(selected: true);
+                await _memberRepository.updateMember(userMembers[0]);
+              }
+            }
+          }
+        }
+      }
+
+      // remove rule members
+      if (ruleMembers.isNotEmpty) {
+        for (var ruleMember in ruleMembers) {
+          await _ruleMemberRepository.deleteRuleMember(ruleMember.ruleMemberId);
+
+          // remove rule member from rule member list
+          Rule? rule = await _ref
+              .read(ruleControllerProvider.notifier)
+              .getRuleById(ruleMember.ruleId)
+              .first;
+
+          if (rule != null) {
+            rule.members.remove(ruleMember.ruleMemberId);
+            rule.services.remove(serviceId);
+            await _ruleRepository.updateRule(rule);
+
+            // get this users member count
+            int ruleMemberCount = await _ref
+                .read(ruleMemberControllerProvider.notifier)
+                .getUserRuleMemberCount(rule.ruleId, ruleMember.serviceUid)
+                .first;
+
+            if (ruleMemberCount > 0) {
+              // set next available rule member as default
+              if (ruleMember.selected) {
+                // get the rest of the users rule members
+                List<RuleMember> userRuleMembers = await _ref
+                    .read(ruleMemberControllerProvider.notifier)
+                    .getUserRuleMembers(rule.ruleId, ruleMember.serviceUid)
+                    .first;
+
+                userRuleMembers[0] =
+                    userRuleMembers[0].copyWith(selected: true);
+                await _ruleMemberRepository
+                    .updateRuleMember(userRuleMembers[0]);
+              }
+            }
+          }
+        }
+      }
+
+      // remove consumers
+      if (service.policies.isNotEmpty) {
+        final List<Policy?> policies = await _ref
+            .read(getServiceConsumerPoliciesProvider2(serviceId))
+            .first;
+
+        if (policies.isNotEmpty) {
+          for (var policy in policies) {
+            // remove service from policy consumer list
+            policy!.consumers.remove(serviceId);
+            await _policyRepository.updatePolicy(policy);
+          }
+        }
+      }
+
+      // get user who owns the service
+      final user = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(service.uid)
+          .first;
+
+      if (user != null) {
         // update user service list
         user.services.remove(serviceId);
         await _userProfileRepository.updateUser(user);

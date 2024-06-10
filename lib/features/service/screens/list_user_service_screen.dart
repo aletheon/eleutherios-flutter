@@ -59,6 +59,8 @@ class ListUserServiceScreen extends ConsumerWidget {
                         _scaffold.currentContext!,
                         serviceId,
                       );
+
+                  Navigator.of(context).pop();
                 },
                 child: const Text('Yes'),
               ),

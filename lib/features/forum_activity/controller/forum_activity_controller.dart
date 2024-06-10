@@ -43,7 +43,10 @@ class ForumActivityController extends StateNotifier<bool> {
 
   void createForumActivity(String uid, String forumId, String forumUid) async {
     state = true;
-    final user = await _ref.watch(getUserByIdProvider(uid)).first;
+
+    final user =
+        await _ref.read(authControllerProvider.notifier).getUserData(uid).first;
+
     String forumActivityId = const Uuid().v1().replaceAll('-', '');
 
     ForumActivity forumActivity = ForumActivity(
@@ -54,15 +57,14 @@ class ForumActivityController extends StateNotifier<bool> {
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
-    final res =
-        await _forumActivityRepository.createForumActivity(forumActivity);
+    await _forumActivityRepository.createForumActivity(forumActivity);
 
     // create a forumActivity for this user
     List result = user!.forumActivities.where((a) => a == forumId).toList();
     if (result.isEmpty) {
       // add the forumId not the activityId as it makes it easier to find out if a particular user is serving in a forum or not
       user.forumActivities.add(forumId);
-      final resUser = await _userProfileRepository.updateUser(user);
+      await _userProfileRepository.updateUser(user);
     }
     state = false;
   }

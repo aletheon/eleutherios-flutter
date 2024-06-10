@@ -137,7 +137,6 @@ class RuleMemberController extends StateNotifier<bool> {
     if (rule != null && service != null) {
       // ensure service is not already a member
       if (rule.members.contains(serviceId) == false) {
-        await _ref.read(getUserByIdProvider(service.uid)).first;
         final ruleMemberCount = await _ref
             .read(ruleMemberControllerProvider.notifier)
             .getUserRuleMemberCount(rule.ruleId, service.uid)
@@ -245,8 +244,10 @@ class RuleMemberController extends StateNotifier<bool> {
       final res = await _ruleMemberRepository.deleteRuleMember(ruleMemberId);
 
       // get user
-      final ruleMemberUser =
-          await _ref.read(getUserByIdProvider(ruleMember.serviceUid)).first;
+      final ruleMemberUser = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(ruleMember.serviceUid)
+          .first;
 
       // update forum
       rule.members.remove(ruleMemberId);

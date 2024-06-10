@@ -7,10 +7,10 @@ import 'package:reddit_tutorial/models/user_model.dart';
 
 final userProvider = StateProvider<UserModel?>((ref) => null);
 
-final getUserByIdProvider = Provider.family((ref, String uid) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  return authRepository.getUserData(uid);
-});
+// final getUserByIdProvider = Provider.family((ref, String uid) {
+//   final authRepository = ref.watch(authRepositoryProvider);
+//   return authRepository.getUserData(uid);
+// });
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {

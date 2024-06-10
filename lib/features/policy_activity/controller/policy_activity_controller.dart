@@ -59,7 +59,8 @@ class PolicyActivityController extends StateNotifier<bool> {
   void createPolicyActivity(
       String uid, String policyId, String policyUid) async {
     state = true;
-    final user = await _ref.watch(getUserByIdProvider(uid)).first;
+    final user =
+        await _ref.read(authControllerProvider.notifier).getUserData(uid).first;
     String policyActivityId = const Uuid().v1().replaceAll('-', '');
 
     PolicyActivity policyActivity = PolicyActivity(
