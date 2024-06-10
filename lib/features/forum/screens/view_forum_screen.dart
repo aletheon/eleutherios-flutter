@@ -4,6 +4,7 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
@@ -91,10 +92,16 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
           .read(getUserSelectedMemberProvider2(Tuple2(forumId, user.uid)))
           .first;
 
-      setState(() {
-        dropdownValue = selectedMember!.memberId;
-        Routemaster.of(context).push('/forum/$forumId/view');
-      });
+      if (selectedMember != null) {
+        setState(() {
+          dropdownValue = selectedMember!.memberId;
+          Routemaster.of(context).push('/forum/$forumId/view');
+        });
+      } else {
+        if (context.mounted) {
+          Routemaster.of(context).push('/forum/$forumId');
+        }
+      }
     }
 
     void showMemberDetails(String memberId, BuildContext context) {
