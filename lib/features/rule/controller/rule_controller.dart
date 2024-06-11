@@ -13,6 +13,7 @@ import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
 import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -187,26 +188,50 @@ class RuleController extends StateNotifier<bool> {
     });
   }
 
-  void deleteRule(String policyId, String ruleId, BuildContext context) async {
+  void deleteRule(String userId, String ruleId, BuildContext context) async {
     state = true;
 
-    // get policy
-    final policy = await _ref
-        .watch(policyControllerProvider.notifier)
-        .getPolicyById(policyId)
+    UserModel? user = await _ref
+        .read(authControllerProvider.notifier)
+        .getUserData(userId)
         .first;
 
-    // delete rule
-    final res = await _ruleRepository.deleteRule(ruleId);
+    Rule? rule = await _ref
+        .read(ruleControllerProvider.notifier)
+        .getRuleById(ruleId)
+        .first;
 
-    // update policy
-    policy!.rules.remove(ruleId);
-    await _policyRepository.updatePolicy(policy);
+    if (user != null && rule != null) {
+      // get policy
+      final policy = await _ref
+          .watch(policyControllerProvider.notifier)
+          .getPolicyById(rule.policyId)
+          .first;
 
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Rule removed successfully!');
-    });
+      if (policy != null) {
+        // delete rule
+        final res = await _ruleRepository.deleteRule(ruleId);
+
+        // update policy
+        policy.rules.remove(ruleId);
+        await _policyRepository.updatePolicy(policy);
+
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message), (r) {
+          showSnackBar(context, 'Rule removed successfully!');
+        });
+      } else {
+        state = false;
+        if (context.mounted) {
+          showSnackBar(context, 'Policy does not exist');
+        }
+      }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'User or rule does not exist');
+      }
+    }
   }
 
   Stream<List<Rule>> getRules(String policyId) {

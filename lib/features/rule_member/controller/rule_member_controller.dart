@@ -297,6 +297,16 @@ class RuleMemberController extends StateNotifier<bool> {
     );
   }
 
+  Future<int> getRuleMemberCount(String ruleId) {
+    state = true;
+    return _ruleMemberRepository.getRuleMemberCount(ruleId).then(
+      (value) {
+        state = false;
+        return value;
+      },
+    );
+  }
+
   Future<void> deleteAllRuleMembers(String ruleId) {
     return _ruleMemberRepository.deleteAllRuleMembers(ruleId);
   }

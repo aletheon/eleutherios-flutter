@@ -382,7 +382,7 @@ class ForumController extends StateNotifier<bool> {
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Forum or child forum does not exist');
+        showSnackBar(context, 'User or rule does not exist');
       }
     }
   }

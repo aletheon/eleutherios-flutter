@@ -143,6 +143,12 @@ class RuleMemberRepository {
     return query.count;
   }
 
+  Future<int> getRuleMemberCount(String ruleId) async {
+    AggregateQuerySnapshot query =
+        await _ruleMembers.where('ruleId', isEqualTo: ruleId).count().get();
+    return query.count;
+  }
+
   FutureVoid createRuleMember(RuleMember ruleMember) async {
     try {
       return right(
