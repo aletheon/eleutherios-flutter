@@ -161,6 +161,12 @@ class MemberRepository {
     return query.count;
   }
 
+  Future<int> getMemberCount(String forumId) async {
+    AggregateQuerySnapshot query =
+        await _members.where('forumId', isEqualTo: forumId).count().get();
+    return query.count;
+  }
+
   FutureVoid createMember(Member member) async {
     try {
       return right(_members.doc(member.memberId).set(member.toMap()));

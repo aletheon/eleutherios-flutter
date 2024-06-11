@@ -56,8 +56,8 @@ class ListUserServiceScreen extends ConsumerWidget {
               TextButton(
                 onPressed: () {
                   ref.read(serviceControllerProvider.notifier).deleteService(
-                        _scaffold.currentContext!,
                         serviceId,
+                        _scaffold.currentContext!,
                       );
 
                   Navigator.of(context).pop();
@@ -76,8 +76,8 @@ class ListUserServiceScreen extends ConsumerWidget {
       );
     } else {
       ref.read(serviceControllerProvider.notifier).deleteService(
-            _scaffold.currentContext!,
             serviceId,
+            _scaffold.currentContext!,
           );
     }
   }

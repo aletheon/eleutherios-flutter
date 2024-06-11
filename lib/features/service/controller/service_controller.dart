@@ -232,8 +232,8 @@ class ServiceController extends StateNotifier<bool> {
   }
 
   void deleteService(
-    BuildContext context,
     String serviceId,
+    BuildContext context,
   ) async {
     state = true;
     Service? service = await _ref
