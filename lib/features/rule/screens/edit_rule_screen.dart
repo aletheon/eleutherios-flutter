@@ -299,8 +299,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const Icon(Icons.build,
-                                  size: 21, color: Colors.grey),
+                              const Icon(Icons.build_outlined, size: 21),
                               const SizedBox(
                                 width: 12,
                               ),
@@ -327,8 +326,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const Icon(Icons.attach_money,
-                                  size: 22, color: Colors.grey),
+                              const Icon(Icons.attach_money_outlined, size: 22),
                               const SizedBox(
                                 width: 12,
                               ),

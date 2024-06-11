@@ -138,18 +138,18 @@ class RuleScreen extends ConsumerWidget {
                                                 rule.instantiationType ==
                                                         InstantiationType
                                                             .consume.value
-                                                    ? const Icon(Icons.build,
+                                                    ? const Icon(
+                                                        Icons.build_outlined,
                                                         size: 21,
-                                                        color:
-                                                            Pallete.greyColor)
+                                                      )
                                                     : rule.instantiationType ==
                                                             InstantiationType
                                                                 .order.value
                                                         ? const Icon(
-                                                            Icons.attach_money,
+                                                            Icons
+                                                                .attach_money_outlined,
                                                             size: 22,
-                                                            color: Pallete
-                                                                .greyColor)
+                                                          )
                                                         : const SizedBox(),
                                                 const SizedBox(
                                                   width: 10,

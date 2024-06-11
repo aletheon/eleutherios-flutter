@@ -493,7 +493,7 @@ class PolicyScreen extends ConsumerWidget {
                                                                       : rule.instantiationType ==
                                                                               InstantiationType.order.value
                                                                           ? const Icon(
-                                                                              Icons.attach_money,
+                                                                              Icons.attach_money_outlined,
                                                                               size: 21,
                                                                             )
                                                                           : const SizedBox(),
@@ -513,6 +513,21 @@ class PolicyScreen extends ConsumerWidget {
                                                                           NetworkImage(
                                                                               rule.image),
                                                                     ),
+
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+                                                              // HERE ROB VALIDATE
+                                                              // END USER CAN DELETE
+                                                              // RULE OR NOT
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+                                                              // *********************************
+
                                                               trailing:
                                                                   IconButton(
                                                                 icon: const Icon(
