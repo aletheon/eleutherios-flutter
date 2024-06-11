@@ -360,6 +360,16 @@ class ManagerController extends StateNotifier<bool> {
     );
   }
 
+  Future<int> getManagerCount(String policyId) {
+    state = true;
+    return _managerRepository.getManagerCount(policyId).then(
+      (value) {
+        state = false;
+        return value;
+      },
+    );
+  }
+
   Future<void> deleteAllManagers(String policyId) {
     return _managerRepository.deleteAllManagers(policyId);
   }

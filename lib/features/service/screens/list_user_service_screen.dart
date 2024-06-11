@@ -34,21 +34,20 @@ class ListUserServiceScreen extends ConsumerWidget {
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
-          String message = "This service is serving as a:\n";
+          String message = "This service is serving as a:";
 
           if (managerCount > 0) {
-            message += "Manager in $managerCount policies.\n";
+            message += "\nManager in $managerCount policies.";
           }
 
           if (memberCount > 0) {
-            message += "Member in $memberCount forums.\n";
+            message += "\nMember in $memberCount forums.";
           }
 
           if (ruleMemberCount > 0) {
-            message += "Rule member($ruleMemberCount).\n";
+            message += "\nRule member($ruleMemberCount).";
           }
-
-          message += "Are you sure you want to delete it?";
+          message += "  Are you sure you want to delete it?";
 
           return AlertDialog(
             content: Text(message),

@@ -148,6 +148,12 @@ class ManagerRepository {
     return query.count;
   }
 
+  Future<int> getManagerCount(String policyId) async {
+    AggregateQuerySnapshot query =
+        await _managers.where('policyId', isEqualTo: policyId).count().get();
+    return query.count;
+  }
+
   FutureVoid createManager(Manager manager) async {
     try {
       return right(_managers.doc(manager.managerId).set(manager.toMap()));

@@ -24,7 +24,8 @@ class ListUserForumScreen extends ConsumerWidget {
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
-          String message = "This forum has $memberCount serving in it.\n";
+          String message =
+              "This forum has $memberCount member(s) serving in it.  ";
           message += "Are you sure you want to delete it?";
 
           return AlertDialog(
@@ -67,6 +68,8 @@ class ListUserForumScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bool isLoading = ref.watch(forumControllerProvider);
+    final bool memberIsLoading = ref.watch(memberControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return ref.watch(userForumsProvider).when(
@@ -80,57 +83,68 @@ class ListUserForumScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            body: forums.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      child: const Text(
-                        "No forums",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: ListView.builder(
-                      itemCount: forums.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final forum = forums[index];
-                        return ListTile(
-                          leading: forum.image == Constants.avatarDefault
-                              ? CircleAvatar(
-                                  backgroundImage:
-                                      Image.asset(forum.image).image,
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: NetworkImage(forum.image),
-                                ),
-                          title: Row(
-                            children: [
-                              Text(forum.title),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              forum.public
-                                  ? const Icon(
-                                      Icons.lock_open_outlined,
-                                      size: 18,
+            body: Stack(
+              children: <Widget>[
+                forums.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: const Text(
+                            "No forums",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: ListView.builder(
+                          itemCount: forums.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final forum = forums[index];
+                            return ListTile(
+                              leading: forum.image == Constants.avatarDefault
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          Image.asset(forum.image).image,
                                     )
-                                  : const Icon(Icons.lock_outlined,
-                                      size: 18, color: Pallete.greyColor),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => deleteForum(
-                                context, ref, forum.uid, forum.forumId),
-                          ),
-                          onTap: () => showForumDetails(context, forum.forumId),
-                        );
-                      },
-                    ),
-                  ),
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(forum.image),
+                                    ),
+                              title: Row(
+                                children: [
+                                  Text(forum.title),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  forum.public
+                                      ? const Icon(
+                                          Icons.lock_open_outlined,
+                                          size: 18,
+                                        )
+                                      : const Icon(Icons.lock_outlined,
+                                          size: 18, color: Pallete.greyColor),
+                                ],
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () => deleteForum(
+                                    context, ref, forum.uid, forum.forumId),
+                              ),
+                              onTap: () =>
+                                  showForumDetails(context, forum.forumId),
+                            );
+                          },
+                        ),
+                      ),
+                Container(
+                  child: isLoading || memberIsLoading
+                      ? const Loader()
+                      : Container(),
+                )
+              ],
+            ),
           ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader(),

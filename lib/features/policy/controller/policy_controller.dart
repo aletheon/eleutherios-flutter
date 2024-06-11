@@ -11,6 +11,7 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
@@ -24,6 +25,7 @@ import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/service.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -200,6 +202,63 @@ class PolicyController extends StateNotifier<bool> {
     policyRes.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Policy updated successfully!');
     });
+  }
+
+  void deletePolicy(
+      String userId, String policyId, BuildContext context) async {
+    state = true;
+    UserModel? user = await _ref
+        .read(authControllerProvider.notifier)
+        .getUserData(userId)
+        .first;
+
+    Policy? policy = await _ref
+        .read(policyControllerProvider.notifier)
+        .getPolicyById(policyId)
+        .first;
+
+    if (user != null && policy != null) {
+      // remove managers from policy
+      if (policy.managers.isNotEmpty) {
+        await _ref
+            .read(managerControllerProvider.notifier)
+            .deleteAllManagers(policyId);
+      }
+
+      // remove consumers from policy
+      if (policy.consumers.isNotEmpty) {
+        for (String serviceId in policy.consumers) {
+          Service? service = await _ref
+              .read(serviceControllerProvider.notifier)
+              .getServiceById(serviceId)
+              .first;
+
+          if (service != null) {
+            service.policies.remove(policy.policyId);
+            await _serviceRepository.updateService(service);
+          }
+        }
+      }
+
+      // remove policy from user policy list
+      user.policies.remove(policyId);
+      await _userProfileRepository.updateUser(user);
+
+      // delete policy
+      final resDeletePolicy = await _policyRepository.deletePolicy(policyId);
+      state = false;
+      resDeletePolicy.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Policy deleted successfully!');
+        },
+      );
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'User or policy does not exist');
+      }
+    }
   }
 
   void addPolicyToService(
