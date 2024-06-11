@@ -513,33 +513,25 @@ class PolicyScreen extends ConsumerWidget {
                                                                           NetworkImage(
                                                                               rule.image),
                                                                     ),
-
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-                                                              // HERE ROB VALIDATE
-                                                              // END USER CAN DELETE
-                                                              // RULE OR NOT
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-                                                              // *********************************
-
-                                                              trailing:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .delete),
-                                                                onPressed: () =>
-                                                                    deleteRule(
-                                                                        context,
-                                                                        ref,
-                                                                        rule.uid,
-                                                                        rule.ruleId),
-                                                              ),
+                                                              trailing: user.uid ==
+                                                                          rule
+                                                                              .policyUid ||
+                                                                      userSelectedManager !=
+                                                                              null &&
+                                                                          userSelectedManager
+                                                                              .permissions
+                                                                              .contains(ManagerPermissions.removepotentialmember.name)
+                                                                  ? IconButton(
+                                                                      icon: const Icon(
+                                                                          Icons
+                                                                              .delete),
+                                                                      onPressed: () => deleteRule(
+                                                                          context,
+                                                                          ref,
+                                                                          rule.uid,
+                                                                          rule.ruleId),
+                                                                    )
+                                                                  : const SizedBox(),
                                                               onTap: () =>
                                                                   navigateToRule(
                                                                       context,
