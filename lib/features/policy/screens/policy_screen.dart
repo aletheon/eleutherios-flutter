@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/policy/controller/policy_controller.dar
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -19,6 +20,61 @@ final GlobalKey _scaffold = GlobalKey();
 class PolicyScreen extends ConsumerWidget {
   final String policyId;
   const PolicyScreen({super.key, required this.policyId});
+
+  void deletePolicy(BuildContext context, WidgetRef ref, Policy policy) async {
+    final int managerCount = await ref
+        .read(managerControllerProvider.notifier)
+        .getManagerCount(policy.policyId);
+
+    if (policy.consumers.isNotEmpty || managerCount > 0) {
+      showDialog(
+        context: _scaffold.currentContext!,
+        barrierDismissible: true,
+        builder: (context) {
+          String message = "This policy has:";
+
+          if (policy.consumers.isNotEmpty) {
+            message += "\n${policy.consumers.length} service(s) consuming it.";
+          }
+
+          if (managerCount > 0) {
+            message += "$managerCount manager(s) serving in it.";
+          }
+          message += "  Are you sure you want to delete it?";
+
+          return AlertDialog(
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  ref.read(policyControllerProvider.notifier).deletePolicy(
+                        policy.uid,
+                        policy.policyId,
+                        _scaffold.currentContext!,
+                      );
+
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('No'),
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      ref.read(policyControllerProvider.notifier).deletePolicy(
+            policy.uid,
+            policy.policyId,
+            _scaffold.currentContext!,
+          );
+    }
+  }
 
   void deleteRule(
       BuildContext context, WidgetRef ref, String uid, String ruleId) async {
@@ -164,31 +220,60 @@ class PolicyScreen extends ConsumerWidget {
                                                             policy.image),
                                                     radius: 35,
                                                   ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
-                                                  child: Text(
-                                                    policy.title,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                            policy.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                            textWidthBasis:
+                                                                TextWidthBasis
+                                                                    .longestLine),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      policy.public
+                                                          ? const Icon(
+                                                              Icons
+                                                                  .lock_open_outlined,
+                                                              size: 18,
+                                                            )
+                                                          : const Icon(
+                                                              Icons
+                                                                  .lock_outlined,
+                                                              color: Pallete
+                                                                  .greyColor,
+                                                              size: 18,
+                                                            ),
+                                                    ],
                                                   ),
                                                 ),
                                                 const SizedBox(
-                                                  width: 10,
+                                                  width: 5,
                                                 ),
-                                                policy.public
-                                                    ? const Icon(Icons
-                                                        .lock_open_outlined)
-                                                    : const Icon(
-                                                        Icons.lock_outlined,
-                                                        color:
-                                                            Pallete.greyColor),
+                                                (user.uid == policy.uid)
+                                                    ? IconButton(
+                                                        icon: const Icon(
+                                                            Icons.delete,
+                                                            size: 21),
+                                                        onPressed: () =>
+                                                            deletePolicy(
+                                                          context,
+                                                          ref,
+                                                          policy,
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
                                               ],
                                             ),
                                             const SizedBox(

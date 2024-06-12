@@ -19,15 +19,18 @@ class RuleRepository {
   CollectionReference get _rules =>
       _firestore.collection(FirebaseConstants.rulesCollection);
 
-  // Stream<Rule> getRuleById(String ruleId) {
-  //   final DocumentReference documentReference = _rules.doc(ruleId);
-
-  //   Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
-
-  //   return documentStream.map((event) {
-  //     return Rule.fromMap(event.data() as Map<String, dynamic>);
-  //   });
-  // }
+  Future<void> deleteRulesByPolicyId(String policyId) {
+    WriteBatch batch = _firestore.batch();
+    return _rules
+        .where('policyId', isEqualTo: policyId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
 
   Stream<Rule?> getRuleById(String ruleId) {
     if (ruleId.isNotEmpty) {

@@ -222,7 +222,14 @@ class PolicyController extends StateNotifier<bool> {
       if (policy.managers.isNotEmpty) {
         await _ref
             .read(managerControllerProvider.notifier)
-            .deleteAllManagers(policyId);
+            .deleteManagersByPolicId(policyId);
+      }
+
+      // remove rules from policy
+      if (policy.rules.isNotEmpty) {
+        await _ref
+            .read(ruleControllerProvider.notifier)
+            .deleteRulesByPolicyId(policyId);
       }
 
       // remove consumers from policy

@@ -234,6 +234,10 @@ class RuleController extends StateNotifier<bool> {
     }
   }
 
+  Future<void> deleteRulesByPolicyId(String policyId) {
+    return _ruleRepository.deleteRulesByPolicyId(policyId);
+  }
+
   Stream<List<Rule>> getRules(String policyId) {
     return _ruleRepository.getRules(policyId);
   }
