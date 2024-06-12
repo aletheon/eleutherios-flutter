@@ -86,13 +86,10 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                                         title: Row(
                                           children: [
                                             Flexible(
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  service!.title,
-                                                  textWidthBasis: TextWidthBasis
-                                                      .longestLine,
-                                                ),
+                                              child: Text(
+                                                service!.title,
+                                                textWidthBasis:
+                                                    TextWidthBasis.longestLine,
                                               ),
                                             ),
                                             member.selected == true

@@ -458,8 +458,13 @@ class PolicyScreen extends ConsumerWidget {
                                                               title: Row(
                                                                 // ignore: sort_child_properties_last
                                                                 children: [
-                                                                  Text(rule
-                                                                      .title),
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                        rule
+                                                                            .title,
+                                                                        textWidthBasis:
+                                                                            TextWidthBasis.longestLine),
+                                                                  ),
                                                                   const SizedBox(
                                                                     width: 5,
                                                                   ),
@@ -513,18 +518,26 @@ class PolicyScreen extends ConsumerWidget {
                                                                           NetworkImage(
                                                                               rule.image),
                                                                     ),
-                                                              trailing: user.uid ==
+                                                              trailing: (user
+                                                                              .uid ==
                                                                           rule
-                                                                              .policyUid ||
-                                                                      userSelectedManager !=
+                                                                              .uid) ||
+                                                                      (user.uid ==
+                                                                          rule
+                                                                              .policyUid) ||
+                                                                      (userSelectedManager !=
                                                                               null &&
                                                                           userSelectedManager
                                                                               .permissions
-                                                                              .contains(ManagerPermissions.removepotentialmember.name)
+                                                                              .contains(ManagerPermissions.removepotentialmember.name))
                                                                   ? IconButton(
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .delete),
+                                                                      icon:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .delete,
+                                                                        size:
+                                                                            20,
+                                                                      ),
                                                                       onPressed: () => deleteRule(
                                                                           context,
                                                                           ref,

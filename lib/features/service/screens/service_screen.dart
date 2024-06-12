@@ -292,19 +292,15 @@ class ServiceScreen extends ConsumerWidget {
                                                   title: Row(
                                                     children: [
                                                       Flexible(
-                                                        child: Container(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            policy.title,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 14,
-                                                            ),
-                                                            textWidthBasis:
-                                                                TextWidthBasis
-                                                                    .longestLine,
+                                                        child: Text(
+                                                          policy.title,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
                                                           ),
+                                                          textWidthBasis:
+                                                              TextWidthBasis
+                                                                  .longestLine,
                                                         ),
                                                       ),
                                                     ],

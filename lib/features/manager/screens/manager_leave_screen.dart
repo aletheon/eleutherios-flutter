@@ -84,13 +84,10 @@ class _ManagerLeaveScreenState extends ConsumerState<ManagerLeaveScreen> {
                                         title: Row(
                                           children: [
                                             Flexible(
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  service!.title,
-                                                  textWidthBasis: TextWidthBasis
-                                                      .longestLine,
-                                                ),
+                                              child: Text(
+                                                service!.title,
+                                                textWidthBasis:
+                                                    TextWidthBasis.longestLine,
                                               ),
                                             ),
                                             manager.selected == true

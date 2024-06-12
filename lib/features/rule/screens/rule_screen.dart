@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -12,10 +13,61 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
+final GlobalKey _scaffold = GlobalKey();
+
 class RuleScreen extends ConsumerWidget {
   final String policyId;
   final String ruleId;
   const RuleScreen({super.key, required this.policyId, required this.ruleId});
+
+  void deleteRule(
+      BuildContext context, WidgetRef ref, String uid, String ruleId) async {
+    final int ruleMemberCount = await ref
+        .read(ruleMemberControllerProvider.notifier)
+        .getRuleMemberCount(ruleId);
+
+    if (ruleMemberCount > 0) {
+      showDialog(
+        context: _scaffold.currentContext!,
+        barrierDismissible: true,
+        builder: (context) {
+          String message =
+              "This Rule has $ruleMemberCount potential member(s) serving in it.  ";
+          message += "Are you sure you want to delete it?";
+
+          return AlertDialog(
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  ref.read(ruleControllerProvider.notifier).deleteRule(
+                        uid,
+                        ruleId,
+                        _scaffold.currentContext!,
+                      );
+
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('No'),
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      ref.read(ruleControllerProvider.notifier).deleteRule(
+            uid,
+            ruleId,
+            _scaffold.currentContext!,
+          );
+    }
+  }
 
   void navigateToRuleTools(BuildContext context) {
     Routemaster.of(context).push('rule-tools');
@@ -39,13 +91,14 @@ class RuleScreen extends ConsumerWidget {
     final ruleMembersProv = ref.watch(getRuleMembersProvider(ruleId));
 
     return Scaffold(
+      key: _scaffold,
       body: ref.watch(getRuleByIdProvider(ruleId)).when(
           data: (rule) {
             return ref
                 .watch(
-                    getUserSelectedRuleMemberProvider(Tuple2(ruleId, user.uid)))
+                    getUserSelectedManagerProvider(Tuple2(policyId, user.uid)))
                 .when(
-                    data: (ruleMember) {
+                    data: (userSelectedManager) {
                       return NestedScrollView(
                         headerSliverBuilder: ((context, innerBoxIsScrolled) {
                           return [
@@ -123,44 +176,87 @@ class RuleScreen extends ConsumerWidget {
                                             Row(
                                               children: [
                                                 Expanded(
-                                                  child: Text(
-                                                    rule.title,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(rule.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                            textWidthBasis:
+                                                                TextWidthBasis
+                                                                    .longestLine),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      rule.public
+                                                          ? const Icon(
+                                                              Icons
+                                                                  .lock_open_outlined,
+                                                              size: 18,
+                                                            )
+                                                          : const Icon(
+                                                              Icons
+                                                                  .lock_outlined,
+                                                              color: Pallete
+                                                                  .greyColor,
+                                                              size: 18,
+                                                            ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      rule.instantiationType ==
+                                                              InstantiationType
+                                                                  .consume.value
+                                                          ? const Icon(
+                                                              Icons
+                                                                  .build_outlined,
+                                                              size: 19,
+                                                            )
+                                                          : rule.instantiationType ==
+                                                                  InstantiationType
+                                                                      .order
+                                                                      .value
+                                                              ? const Icon(
+                                                                  Icons
+                                                                      .attach_money_outlined,
+                                                                  size: 21,
+                                                                )
+                                                              : const SizedBox(),
+                                                    ],
                                                   ),
                                                 ),
                                                 const SizedBox(
-                                                  width: 10,
+                                                  width: 5,
                                                 ),
-                                                rule.instantiationType ==
-                                                        InstantiationType
-                                                            .consume.value
-                                                    ? const Icon(
-                                                        Icons.build_outlined,
-                                                        size: 21,
+                                                (user.uid == rule.uid) ||
+                                                        (user.uid ==
+                                                            rule.policyUid) ||
+                                                        (userSelectedManager !=
+                                                                null &&
+                                                            userSelectedManager
+                                                                .permissions
+                                                                .contains(
+                                                                    ManagerPermissions
+                                                                        .removepotentialmember
+                                                                        .name))
+                                                    ? IconButton(
+                                                        icon: const Icon(
+                                                            Icons.delete,
+                                                            size: 21),
+                                                        onPressed: () =>
+                                                            deleteRule(
+                                                                context,
+                                                                ref,
+                                                                rule.uid,
+                                                                rule.ruleId),
                                                       )
-                                                    : rule.instantiationType ==
-                                                            InstantiationType
-                                                                .order.value
-                                                        ? const Icon(
-                                                            Icons
-                                                                .attach_money_outlined,
-                                                            size: 22,
-                                                          )
-                                                        : const SizedBox(),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                rule.public
-                                                    ? const Icon(Icons
-                                                        .lock_open_outlined)
-                                                    : const Icon(
-                                                        Icons.lock_outlined,
-                                                        color:
-                                                            Pallete.greyColor),
+                                                    : const SizedBox(),
                                               ],
                                             ),
                                             const SizedBox(
