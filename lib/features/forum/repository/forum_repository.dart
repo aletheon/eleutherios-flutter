@@ -176,15 +176,6 @@ class ForumRepository {
     }
   }
 
-  // *****************************************************************
-  // *****************************************************************
-  // *****************************************************************
-  // Note: when removing sub-forums and making them standalone
-  // you have to remove the breadcrumbs and breadcrumbReferences too
-  // *****************************************************************
-  // *****************************************************************
-  // *****************************************************************
-
   FutureVoid deleteForum(String forumId) async {
     try {
       return right(_forums.doc(forumId).delete());

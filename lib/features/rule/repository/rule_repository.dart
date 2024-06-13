@@ -18,17 +18,31 @@ class RuleRepository {
 
   CollectionReference get _rules =>
       _firestore.collection(FirebaseConstants.rulesCollection);
+  CollectionReference get _ruleMembers =>
+      _firestore.collection(FirebaseConstants.ruleMembersCollection);
 
   Future<void> deleteRulesByPolicyId(String policyId) {
-    WriteBatch batch = _firestore.batch();
+    WriteBatch rulesBatch = _firestore.batch();
     return _rules
         .where('policyId', isEqualTo: policyId)
         .get()
-        .then((querySnapshot) {
-      for (var doc in querySnapshot.docs) {
-        batch.delete(doc.reference);
+        .then((ruleSnapshot) {
+      for (var ruleDoc in ruleSnapshot.docs) {
+        rulesBatch.delete(ruleDoc.reference);
+
+        // delete associated rule members
+        WriteBatch ruleMembersBatch = _firestore.batch();
+        return _ruleMembers
+            .where('ruleId', isEqualTo: ruleDoc.id)
+            .get()
+            .then((ruleMemberSnapshot) {
+          for (var ruleMemberDoc in ruleMemberSnapshot.docs) {
+            ruleMembersBatch.delete(ruleMemberDoc.reference);
+          }
+          return ruleMembersBatch.commit();
+        });
       }
-      return batch.commit();
+      return rulesBatch.commit();
     });
   }
 
