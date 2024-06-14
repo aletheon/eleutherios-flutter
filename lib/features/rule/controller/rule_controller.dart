@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/manager/controller/manager_controller.d
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/repository/rule_repository.dart';
+import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/models/manager.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/rule.dart';
@@ -209,6 +210,13 @@ class RuleController extends StateNotifier<bool> {
           .first;
 
       if (policy != null) {
+        // remove managers from policy
+        if (rule.members.isNotEmpty) {
+          await _ref
+              .read(ruleMemberControllerProvider.notifier)
+              .deleteRuleMembersByRuleId(ruleId);
+        }
+
         // delete rule
         final res = await _ruleRepository.deleteRule(ruleId);
 

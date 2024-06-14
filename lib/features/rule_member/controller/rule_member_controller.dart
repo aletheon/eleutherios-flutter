@@ -307,8 +307,8 @@ class RuleMemberController extends StateNotifier<bool> {
     );
   }
 
-  Future<void> deleteAllRuleMembers(String ruleId) {
-    return _ruleMemberRepository.deleteAllRuleMembers(ruleId);
+  Future<void> deleteRuleMembersByRuleId(String ruleId) {
+    return _ruleMemberRepository.deleteRuleMembersByRuleId(ruleId);
   }
 
   Stream<List<RuleMember>> getRuleMembers(String ruleId) {

@@ -19,7 +19,7 @@ class RuleMemberRepository {
   CollectionReference get _ruleMembers =>
       _firestore.collection(FirebaseConstants.ruleMembersCollection);
 
-  Future<void> deleteAllRuleMembers(String ruleId) {
+  Future<void> deleteRuleMembersByRuleId(String ruleId) {
     WriteBatch batch = _firestore.batch();
     return _ruleMembers
         .where('ruleId', isEqualTo: ruleId)

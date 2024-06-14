@@ -294,7 +294,7 @@ class ForumController extends StateNotifier<bool> {
       if (forum.members.isNotEmpty) {
         await _ref
             .read(memberControllerProvider.notifier)
-            .deleteAllMembers(forumId);
+            .deleteMembersByForumId(forumId);
       }
 
       // iterate through breadcrumbs and remove breadcrumbReferences
