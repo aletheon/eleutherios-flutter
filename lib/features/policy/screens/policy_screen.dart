@@ -603,18 +603,11 @@ class PolicyScreen extends ConsumerWidget {
                                                                           NetworkImage(
                                                                               rule.image),
                                                                     ),
-                                                              trailing: (user
-                                                                              .uid ==
-                                                                          rule
-                                                                              .uid) ||
-                                                                      (user.uid ==
+                                                              trailing: (user.uid ==
                                                                           rule
                                                                               .policyUid) ||
-                                                                      (userSelectedManager !=
-                                                                              null &&
-                                                                          userSelectedManager
-                                                                              .permissions
-                                                                              .contains(ManagerPermissions.removepotentialmember.name))
+                                                                      (user.uid ==
+                                                                          rule.uid)
                                                                   ? IconButton(
                                                                       icon:
                                                                           const Icon(

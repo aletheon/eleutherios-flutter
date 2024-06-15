@@ -69,13 +69,6 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     }
   }
 
-  // ************************************************************************
-  // ************************************************************************
-  // HERE ROB HAVE TO ENABLE PERSON WHO CREATED POLICY THE ABILITY TO
-  // JOIN THE POLICY AS A MANAGER - I.E. ADD A JOIN BUTTON, LEAVE BUTTON
-  // ************************************************************************
-  // ************************************************************************
-
   @override
   void initState() {
     super.initState();

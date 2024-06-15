@@ -3,10 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class RemoveRuleScreen extends ConsumerStatefulWidget {
   final String policyId;
@@ -27,6 +32,50 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
 
   void showRuleDetails(BuildContext context, String ruleId) {
     Routemaster.of(context).push(ruleId);
+  }
+
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final policy =
+        await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
+    final manager = await ref
+        .read(
+            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+        .first;
+
+    if (policy != null) {
+      if (policy.uid != user.uid) {
+        if (manager != null) {
+          if (manager.permissions
+                  .contains(ManagerPermissions.removerule.name) ==
+              false) {
+            Future.delayed(Duration.zero, () {
+              showSnackBar(context,
+                  'You do not have permission to remove a rule from this policy');
+              Routemaster.of(context).pop();
+            });
+          }
+        } else {
+          Future.delayed(Duration.zero, () {
+            showSnackBar(context, 'Manager does not exist');
+            Routemaster.of(context).pop();
+          });
+        }
+      }
+    } else {
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, 'Policy does not exist');
+        Routemaster.of(context).pop();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
   }
 
   @override

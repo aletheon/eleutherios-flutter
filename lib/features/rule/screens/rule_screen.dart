@@ -234,17 +234,8 @@ class RuleScreen extends ConsumerWidget {
                                                 const SizedBox(
                                                   width: 5,
                                                 ),
-                                                (user.uid == rule.uid) ||
-                                                        (user.uid ==
-                                                            rule.policyUid) ||
-                                                        (userSelectedManager !=
-                                                                null &&
-                                                            userSelectedManager
-                                                                .permissions
-                                                                .contains(
-                                                                    ManagerPermissions
-                                                                        .removepotentialmember
-                                                                        .name))
+                                                (user.uid == rule.policyUid) ||
+                                                        (user.uid == rule.uid)
                                                     ? IconButton(
                                                         icon: const Icon(
                                                             Icons.delete,

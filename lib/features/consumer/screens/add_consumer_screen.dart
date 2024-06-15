@@ -3,27 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/consumer/delegates/search_consumer_delegate.dart';
+import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
-final GlobalKey _scaffold = GlobalKey();
 
-class AddConsumerScreen extends ConsumerWidget {
-  final String _policyId;
-  const AddConsumerScreen({super.key, required String policyId})
-      : _policyId = policyId;
+class AddConsumerScreen extends ConsumerStatefulWidget {
+  final String policyId;
+  const AddConsumerScreen({super.key, required this.policyId});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AddConsumerScreenState();
+}
+
+class _AddConsumerScreenState extends ConsumerState<AddConsumerScreen> {
+  final GlobalKey _scaffold = GlobalKey();
 
   void addPolicyToService(WidgetRef ref, String serviceId) {
-    ref
-        .read(policyControllerProvider.notifier)
-        .addPolicyToService(serviceId, _policyId, _scaffold.currentContext!);
+    ref.read(policyControllerProvider.notifier).addPolicyToService(
+        serviceId, widget.policyId, _scaffold.currentContext!);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {
@@ -151,10 +160,54 @@ class AddConsumerScreen extends ConsumerWidget {
     }
   }
 
+  validateUser() async {
+    final user = ref.read(userProvider)!;
+    final policy =
+        await ref.read(getPolicyByIdProvider2(widget.policyId)).first;
+    final manager = await ref
+        .read(
+            getUserSelectedManagerProvider2(Tuple2(widget.policyId, user.uid)))
+        .first;
+
+    if (policy != null) {
+      if (policy.uid != user.uid) {
+        if (manager != null) {
+          if (manager.permissions
+                  .contains(ManagerPermissions.addconsumer.name) ==
+              false) {
+            Future.delayed(Duration.zero, () {
+              showSnackBar(context,
+                  'You do not have permission to add a consumer to this policy');
+              Routemaster.of(context).pop();
+            });
+          }
+        } else {
+          Future.delayed(Duration.zero, () {
+            showSnackBar(context, 'Manager does not exist');
+            Routemaster.of(context).pop();
+          });
+        }
+      }
+    } else {
+      Future.delayed(Duration.zero, () {
+        showSnackBar(context, 'Policy does not exist');
+        Routemaster.of(context).pop();
+      });
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      validateUser();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isLoading = ref.watch(policyControllerProvider);
-    final policyProv = ref.watch(getPolicyByIdProvider(_policyId));
+    final policyProv = ref.watch(getPolicyByIdProvider(widget.policyId));
     final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
