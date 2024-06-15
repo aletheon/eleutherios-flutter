@@ -8,6 +8,7 @@ import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart'
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -15,9 +16,59 @@ import 'package:routemaster/routemaster.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tuple/tuple.dart';
 
+final GlobalKey _scaffold = GlobalKey();
+
 class ForumScreen extends ConsumerWidget {
   final String forumId;
   const ForumScreen({super.key, required this.forumId});
+
+  void deleteForum(BuildContext context, WidgetRef ref, Forum forum) async {
+    final int memberCount = await ref
+        .read(memberControllerProvider.notifier)
+        .getMemberCount(forum.forumId);
+
+    if (memberCount > 0) {
+      showDialog(
+        context: _scaffold.currentContext!,
+        barrierDismissible: true,
+        builder: (context) {
+          String message =
+              "This forum has $memberCount member(s) serving in it.";
+          message += "  Are you sure you want to delete it?";
+
+          return AlertDialog(
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  ref.read(forumControllerProvider.notifier).deleteForum(
+                        forum.uid,
+                        forum.forumId,
+                        _scaffold.currentContext!,
+                      );
+
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('No'),
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      ref.read(forumControllerProvider.notifier).deleteForum(
+            forum.uid,
+            forum.forumId,
+            _scaffold.currentContext!,
+          );
+    }
+  }
 
   void navigateToForumTools(BuildContext context) {
     Routemaster.of(context).push('forum-tools');
@@ -41,6 +92,7 @@ class ForumScreen extends ConsumerWidget {
     final membersProv = ref.watch(getMembersProvider(forumId));
 
     return Scaffold(
+      key: _scaffold,
       body: ref.watch(getForumByIdProvider(forumId)).when(
           data: (forum) {
             return ref
@@ -118,31 +170,59 @@ class ForumScreen extends ConsumerWidget {
                                                     ).image,
                                                     radius: 35,
                                                   ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
-                                                  child: Text(
-                                                    forum.title,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(forum.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                            textWidthBasis:
+                                                                TextWidthBasis
+                                                                    .longestLine),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      forum.public
+                                                          ? const Icon(
+                                                              Icons
+                                                                  .lock_open_outlined,
+                                                              size: 18,
+                                                            )
+                                                          : const Icon(
+                                                              Icons
+                                                                  .lock_outlined,
+                                                              color: Pallete
+                                                                  .greyColor,
+                                                              size: 18,
+                                                            ),
+                                                    ],
                                                   ),
                                                 ),
                                                 const SizedBox(
-                                                  width: 10,
+                                                  width: 5,
                                                 ),
-                                                forum.public
-                                                    ? const Icon(Icons
-                                                        .lock_open_outlined)
-                                                    : const Icon(
-                                                        Icons.lock_outlined,
-                                                        color:
-                                                            Pallete.greyColor),
+                                                (user.uid == forum.uid)
+                                                    ? IconButton(
+                                                        icon: const Icon(
+                                                            Icons.delete,
+                                                            size: 21),
+                                                        onPressed: () =>
+                                                            deleteForum(
+                                                          context,
+                                                          ref,
+                                                          forum,
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
                                               ],
                                             ),
                                             const SizedBox(
