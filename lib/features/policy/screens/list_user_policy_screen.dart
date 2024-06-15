@@ -85,6 +85,7 @@ class ListUserPolicyScreen extends ConsumerWidget {
 
     return ref.watch(userPoliciesProvider).when(
           data: (policies) => Scaffold(
+            key: _scaffold,
             appBar: AppBar(
               title: Text(
                 'Policies(${policies.length})',
