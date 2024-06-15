@@ -34,18 +34,34 @@ class ListUserServiceScreen extends ConsumerWidget {
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
-          String message = "This service is serving as a:";
+          String message = "";
 
-          if (managerCount > 0) {
-            message += "\nManager in $managerCount policies.";
-          }
-
-          if (memberCount > 0) {
-            message += "\nMember in $memberCount forums.";
-          }
-
-          if (ruleMemberCount > 0) {
-            message += "\nRule member($ruleMemberCount).";
+          if (managerCount > 0 && memberCount > 0 && ruleMemberCount > 0) {
+            message +=
+                "This service is serving as a manager in $managerCount policy(s), a ";
+            message += "member in $memberCount forum(s) and a ";
+            message += "rule member in $ruleMemberCount rule(s).";
+          } else if (managerCount > 0 && memberCount > 0) {
+            message +=
+                "This service is serving as a manager in $managerCount policy(s) and a ";
+            message += "member in $memberCount forum(s).";
+          } else if (managerCount > 0 && ruleMemberCount > 0) {
+            message +=
+                "This service is serving as a manager in $managerCount policy(s) and a ";
+            message += "rule member in $ruleMemberCount rule(s).";
+          } else if (memberCount > 0 && ruleMemberCount > 0) {
+            message +=
+                "This service is serving as a member in $memberCount forum(s) and a ";
+            message += "rule member in $ruleMemberCount rule(s).";
+          } else if (managerCount > 0) {
+            message +=
+                "This service is serving as a manager in $managerCount policy(s).";
+          } else if (memberCount > 0) {
+            message +=
+                "This service is serving as a member in $memberCount forum(s).";
+          } else {
+            message +=
+                "This service has a rule member in $ruleMemberCount rule(s).";
           }
           message += "  Are you sure you want to delete it?";
 

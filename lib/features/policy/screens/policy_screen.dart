@@ -31,14 +31,18 @@ class PolicyScreen extends ConsumerWidget {
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
-          String message = "This policy has:";
+          String message = "";
 
-          if (policy.consumers.isNotEmpty) {
-            message += "\n${policy.consumers.length} service(s) consuming it.";
-          }
-
-          if (managerCount > 0) {
+          if (policy.consumers.isNotEmpty && managerCount > 0) {
+            message +=
+                "This policy has ${policy.consumers.length} service(s) consuming it and ";
             message += "$managerCount manager(s) serving in it.";
+          } else if (policy.consumers.isNotEmpty) {
+            message +=
+                "This policy has ${policy.consumers.length} service(s) consuming it.";
+          } else {
+            message +=
+                "This policy has $managerCount manager(s) serving in it.";
           }
           message += "  Are you sure you want to delete it?";
 
@@ -88,8 +92,7 @@ class PolicyScreen extends ConsumerWidget {
         barrierDismissible: true,
         builder: (context) {
           String message =
-              "This Rule has $ruleMemberCount potential member(s) serving in it.  ";
-          message += "Are you sure you want to delete it?";
+              "This Rule has $ruleMemberCount potential member(s) serving in it.  Are you sure you want to delete it?";
 
           return AlertDialog(
             content: Text(message),

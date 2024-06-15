@@ -33,8 +33,7 @@ class ForumScreen extends ConsumerWidget {
         barrierDismissible: true,
         builder: (context) {
           String message =
-              "This forum has $memberCount member(s) serving in it.";
-          message += "  Are you sure you want to delete it?";
+              "This forum has $memberCount member(s) serving in it.  Are you sure you want to delete it?";
 
           return AlertDialog(
             content: Text(message),
