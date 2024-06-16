@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -22,51 +22,8 @@ class ForumScreen extends ConsumerWidget {
   final String forumId;
   const ForumScreen({super.key, required this.forumId});
 
-  void deleteForum(BuildContext context, WidgetRef ref, Forum forum) async {
-    final int memberCount = await ref
-        .read(memberControllerProvider.notifier)
-        .getMemberCount(forum.forumId);
-
-    if (memberCount > 0) {
-      showDialog(
-        context: _scaffold.currentContext!,
-        barrierDismissible: true,
-        builder: (context) {
-          String message =
-              "This forum has $memberCount member(s) serving in it.  Are you sure you want to delete it?";
-
-          return AlertDialog(
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ref.read(forumControllerProvider.notifier).deleteForum(
-                        forum.uid,
-                        forum.forumId,
-                        _scaffold.currentContext!,
-                      );
-
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Yes'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('No'),
-              )
-            ],
-          );
-        },
-      );
-    } else {
-      ref.read(forumControllerProvider.notifier).deleteForum(
-            forum.uid,
-            forum.forumId,
-            _scaffold.currentContext!,
-          );
-    }
+  void editForum(BuildContext context) {
+    Routemaster.of(context).push('edit');
   }
 
   void navigateToForumTools(BuildContext context) {
@@ -97,7 +54,7 @@ class ForumScreen extends ConsumerWidget {
             return ref
                 .watch(getUserSelectedMemberProvider(Tuple2(forumId, user.uid)))
                 .when(
-                    data: (member) {
+                    data: (userSelectedMember) {
                       return NestedScrollView(
                         headerSliverBuilder: ((context, innerBoxIsScrolled) {
                           return [
@@ -169,6 +126,9 @@ class ForumScreen extends ConsumerWidget {
                                                     ).image,
                                                     radius: 35,
                                                   ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -206,20 +166,10 @@ class ForumScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                (user.uid == forum.uid)
-                                                    ? IconButton(
-                                                        icon: const Icon(
-                                                            Icons.delete,
-                                                            size: 21),
-                                                        onPressed: () =>
-                                                            deleteForum(
-                                                          context,
-                                                          ref,
-                                                          forum,
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
                                               ],
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
                                             ),
                                             forum.description.isNotEmpty
                                                 ? Wrap(
@@ -371,6 +321,42 @@ class ForumScreen extends ConsumerWidget {
                                                                           25)),
                                                       child: const Text(
                                                           'Forum Tools'),
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                            // edit policy button
+                                            (user.uid == forum.uid) ||
+                                                    (userSelectedMember !=
+                                                            null &&
+                                                        userSelectedMember
+                                                                .permissions
+                                                                .contains(
+                                                                    MemberPermissions
+                                                                        .editforum
+                                                                        .name) ==
+                                                            true)
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: OutlinedButton(
+                                                      onPressed: () =>
+                                                          editForum(context),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                      child: const Text('Edit'),
                                                     ),
                                                   )
                                                 : const SizedBox(),

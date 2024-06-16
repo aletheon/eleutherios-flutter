@@ -70,6 +70,11 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/favorite/:serviceid/edit': (route) => MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   // **************************************************
   // ViewForum / AddForum
   // **************************************************
@@ -104,6 +109,11 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/forum/:forumid/edit': (route) => MaterialPage(
+        child: EditForumScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
   '/forum/:forumid/leave-forum': (route) => MaterialPage(
         child: MemberLeaveScreen(
           forumId: route.pathParameters['forumid']!,
@@ -111,6 +121,12 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/forum/:forumid/leave-forum/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/forum/:forumid/leave-forum/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -135,6 +151,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/add-member/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/forum/:forumid/forum-tools/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
@@ -153,6 +175,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/remove-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/forum/:forumid/forum-tools/remove-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -193,6 +221,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/forum/:forumid/forum-tools/member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/forum/:forumid/forum-tools/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -228,6 +262,11 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/forum/:forumid/add-member/service/:serviceid/edit': (route) => MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/forum/:forumid/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
@@ -242,6 +281,12 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/forum/:forumid/remove-member/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/forum/:forumid/remove-member/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -280,6 +325,11 @@ final loggedInRoute = RouteMap(routes: {
           forumId: route.pathParameters['forumid']!,
         ),
       ),
+  '/user/forum/list/:forumid/edit': (route) => MaterialPage(
+        child: EditForumScreen(
+          forumId: route.pathParameters['forumid']!,
+        ),
+      ),
   '/user/forum/list/:forumid/leave-forum': (route) => MaterialPage(
         child: MemberLeaveScreen(
           forumId: route.pathParameters['forumid']!,
@@ -288,6 +338,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/forum/list/:forumid/leave-forum/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/forum/list/:forumid/leave-forum/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -313,6 +369,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -328,6 +390,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -372,6 +440,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/forum/list/:forumid/forum-tools/member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/:forumid/forum-tools/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -409,6 +483,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/user/forum/list/:forumid/add-member/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/user/forum/list/:forumid/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
@@ -424,6 +504,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/forum/list/:forumid/remove-member/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/forum/list/:forumid/remove-member/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -465,8 +551,19 @@ final loggedInRoute = RouteMap(routes: {
           policyId: route.pathParameters['policyid']!,
         ),
       ),
+  '/policy/:policyid/edit': (route) => MaterialPage(
+        child: EditPolicyScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
   '/policy/:policyid/rule/:ruleid': (route) => MaterialPage(
         child: RuleScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/rule/:ruleid/edit': (route) => MaterialPage(
+        child: EditRuleScreen(
           policyId: route.pathParameters['policyid']!,
           ruleId: route.pathParameters['ruleid']!,
         ),
@@ -504,6 +601,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member': (route) =>
       MaterialPage(
         child: AddRuleMemberScreen(
@@ -524,6 +627,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -539,6 +648,12 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -586,6 +701,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -601,6 +722,12 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -623,6 +750,12 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/policy/:policyid/leave-policy/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/policy/:policyid/leave-policy/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -662,6 +795,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/policy/:policyid/policy-tools/add-manager/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/policy-tools/add-manager/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -680,6 +819,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/policy/:policyid/policy-tools/remove-manager/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/policy-tools/remove-manager/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -712,6 +857,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/policy/:policyid/add-manager/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/policy/:policyid/add-manager/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
@@ -727,6 +878,12 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/remove-manager/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/policy/:policyid/remove-manager/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -754,6 +911,13 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid': (route) => MaterialPage(
         child: RuleScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/edit': (route) =>
+      MaterialPage(
+        child: EditRuleScreen(
           policyId: route.pathParameters['policyid']!,
           ruleId: route.pathParameters['ruleid']!,
         ),
@@ -793,6 +957,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
             child: AddRuleMemberScreen(
@@ -813,6 +983,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -828,6 +1004,12 @@ final loggedInRoute = RouteMap(routes: {
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -861,16 +1043,28 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/policy/:policyid/policy-tools/manager-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list': (_) => const MaterialPage(
         child: ListUserPolicyScreen(),
       ),
-  '/user/policy/list/:policyid': (route) => MaterialPage(
-        child: PolicyScreen(
+  '/user/policy/list/:policyid/edit': (route) => MaterialPage(
+        child: EditPolicyScreen(
           policyId: route.pathParameters['policyid']!,
         ),
       ),
   '/user/policy/list/:policyid/rule/:ruleid': (route) => MaterialPage(
         child: RuleScreen(
+          policyId: route.pathParameters['policyid']!,
+          ruleId: route.pathParameters['ruleid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/rule/:ruleid/edit': (route) => MaterialPage(
+        child: EditRuleScreen(
           policyId: route.pathParameters['policyid']!,
           ruleId: route.pathParameters['ruleid']!,
         ),
@@ -910,6 +1104,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
             child: AddRuleMemberScreen(
@@ -930,6 +1130,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -945,6 +1151,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -968,6 +1180,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/leave-policy/service/:serviceid': (route) =>
       MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/policy/list/:policyid/leave-policy/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -1017,6 +1235,13 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/edit':
+      (route) => MaterialPage(
+            child: EditRuleScreen(
+              policyId: route.pathParameters['policyid']!,
+              ruleId: route.pathParameters['ruleid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools':
       (route) => MaterialPage(
             child: RuleToolsScreen(
@@ -1052,6 +1277,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
             child: AddRuleMemberScreen(
@@ -1072,6 +1303,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -1087,6 +1324,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -1120,6 +1363,12 @@ final loggedInRoute = RouteMap(routes: {
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
+  '/user/policy/list/:policyid/policy-tools/add-manager/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/policy-tools/add-manager/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -1135,6 +1384,12 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list/:policyid/policy-tools/remove-manager/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
+  '/user/policy/list/:policyid/policy-tools/remove-manager/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
@@ -1166,6 +1421,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/user/policy/list/:policyid/add-manager/service/:serviceid/edit': (route) =>
+      MaterialPage(
+        child: EditServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
   '/user/policy/list/:policyid/add-manager/service/:serviceid/likes': (route) =>
       MaterialPage(
         child: ServiceLikesScreen(
@@ -1184,6 +1445,12 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
+  '/user/policy/list/:policyid/remove-manager/service/:serviceid/edit':
+      (route) => MaterialPage(
+            child: EditServiceScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/policy/list/:policyid/remove-manager/service/:serviceid/likes':
       (route) => MaterialPage(
             child: ServiceLikesScreen(
@@ -1204,6 +1471,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/service/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/service/:serviceid/edit': (route) => MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
@@ -1252,6 +1524,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/user/service/list/:serviceid': (route) => MaterialPage(
         child: ServiceScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
+      ),
+  '/user/service/list/:serviceid/edit': (route) => MaterialPage(
+        child: EditServiceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),

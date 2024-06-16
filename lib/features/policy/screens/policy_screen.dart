@@ -10,7 +10,6 @@ import 'package:reddit_tutorial/features/policy/controller/policy_controller.dar
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
@@ -21,73 +20,8 @@ class PolicyScreen extends ConsumerWidget {
   final String policyId;
   const PolicyScreen({super.key, required this.policyId});
 
-  // *******************************************************
-  // *******************************************************
-  // HERE ROB CONTINUE WITH ADDING EDIT BUTTON TO SCREEN
-  // *******************************************************
-  // *******************************************************
-
   void editPolicy(BuildContext context) {
     Routemaster.of(context).push('edit');
-  }
-
-  void deletePolicy(BuildContext context, WidgetRef ref, Policy policy) async {
-    final int managerCount = await ref
-        .read(managerControllerProvider.notifier)
-        .getManagerCount(policy.policyId);
-
-    if (policy.consumers.isNotEmpty || managerCount > 0) {
-      showDialog(
-        context: _scaffold.currentContext!,
-        barrierDismissible: true,
-        builder: (context) {
-          String message = "";
-
-          if (policy.consumers.isNotEmpty && managerCount > 0) {
-            message +=
-                "This policy has ${policy.consumers.length} service(s) consuming it and ";
-            message += "$managerCount manager(s) serving in it.";
-          } else if (policy.consumers.isNotEmpty) {
-            message +=
-                "This policy has ${policy.consumers.length} service(s) consuming it.";
-          } else {
-            message +=
-                "This policy has $managerCount manager(s) serving in it.";
-          }
-          message += "  Are you sure you want to delete it?";
-
-          return AlertDialog(
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ref.read(policyControllerProvider.notifier).deletePolicy(
-                        policy.uid,
-                        policy.policyId,
-                        _scaffold.currentContext!,
-                      );
-
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Yes'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('No'),
-              )
-            ],
-          );
-        },
-      );
-    } else {
-      ref.read(policyControllerProvider.notifier).deletePolicy(
-            policy.uid,
-            policy.policyId,
-            _scaffold.currentContext!,
-          );
-    }
   }
 
   void deleteRule(
@@ -233,6 +167,9 @@ class PolicyScreen extends ConsumerWidget {
                                                             policy.image),
                                                     radius: 35,
                                                   ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -271,20 +208,10 @@ class PolicyScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                (user.uid == policy.uid)
-                                                    ? IconButton(
-                                                        icon: const Icon(
-                                                            Icons.delete,
-                                                            size: 21),
-                                                        onPressed: () =>
-                                                            deletePolicy(
-                                                          context,
-                                                          ref,
-                                                          policy,
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
                                               ],
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
                                             ),
                                             policy.description.isNotEmpty
                                                 ? Wrap(
@@ -413,7 +340,6 @@ class PolicyScreen extends ConsumerWidget {
                                                     ),
                                                   )
                                                 : const SizedBox(),
-
                                             // edit policy button
                                             (user.uid == policy.uid) ||
                                                     (userSelectedManager !=
@@ -450,7 +376,6 @@ class PolicyScreen extends ConsumerWidget {
                                                     ),
                                                   )
                                                 : const SizedBox(),
-
                                             // consume button
                                             user.uid == policy.uid ||
                                                     policy.public ||

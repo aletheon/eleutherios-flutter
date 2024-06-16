@@ -20,52 +20,8 @@ class RuleScreen extends ConsumerWidget {
   final String ruleId;
   const RuleScreen({super.key, required this.policyId, required this.ruleId});
 
-  void deleteRule(
-      BuildContext context, WidgetRef ref, String uid, String ruleId) async {
-    final int ruleMemberCount = await ref
-        .read(ruleMemberControllerProvider.notifier)
-        .getRuleMemberCount(ruleId);
-
-    if (ruleMemberCount > 0) {
-      showDialog(
-        context: _scaffold.currentContext!,
-        barrierDismissible: true,
-        builder: (context) {
-          String message =
-              "This Rule has $ruleMemberCount potential member(s) serving in it.  Are you sure you want to delete it?";
-
-          return AlertDialog(
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ref.read(ruleControllerProvider.notifier).deleteRule(
-                        uid,
-                        ruleId,
-                        _scaffold.currentContext!,
-                      );
-
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Yes'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('No'),
-              )
-            ],
-          );
-        },
-      );
-    } else {
-      ref.read(ruleControllerProvider.notifier).deleteRule(
-            uid,
-            ruleId,
-            _scaffold.currentContext!,
-          );
-    }
+  void editRule(BuildContext context) {
+    Routemaster.of(context).push('edit');
   }
 
   void navigateToRuleTools(BuildContext context) {
@@ -169,6 +125,9 @@ class RuleScreen extends ConsumerWidget {
                                                     ).image,
                                                     radius: 35,
                                                   ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -227,21 +186,10 @@ class RuleScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                (user.uid == rule.policyUid) ||
-                                                        (user.uid == rule.uid)
-                                                    ? IconButton(
-                                                        icon: const Icon(
-                                                            Icons.delete,
-                                                            size: 21),
-                                                        onPressed: () =>
-                                                            deleteRule(
-                                                                context,
-                                                                ref,
-                                                                rule.uid,
-                                                                rule.ruleId),
-                                                      )
-                                                    : const SizedBox(),
                                               ],
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
                                             ),
                                             rule.description.isNotEmpty
                                                 ? Wrap(
@@ -340,7 +288,8 @@ class RuleScreen extends ConsumerWidget {
                                         Wrap(
                                           children: [
                                             // rule tools button
-                                            user.uid == rule.uid
+                                            (user.uid == rule.policyUid) ||
+                                                    (user.uid == rule.uid)
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -365,6 +314,43 @@ class RuleScreen extends ConsumerWidget {
                                                                           25)),
                                                       child: const Text(
                                                           'Rule Tools'),
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                            // edit policy button
+                                            (user.uid == rule.policyUid) ||
+                                                    (user.uid == rule.uid) ||
+                                                    (userSelectedManager !=
+                                                            null &&
+                                                        userSelectedManager
+                                                                .permissions
+                                                                .contains(
+                                                                    ManagerPermissions
+                                                                        .editpolicy
+                                                                        .name) ==
+                                                            true)
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: OutlinedButton(
+                                                      onPressed: () =>
+                                                          editRule(context),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                      child: const Text('Edit'),
                                                     ),
                                                   )
                                                 : const SizedBox(),

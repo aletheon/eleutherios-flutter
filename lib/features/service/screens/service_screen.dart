@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
@@ -16,6 +15,10 @@ import 'package:routemaster/routemaster.dart';
 class ServiceScreen extends ConsumerWidget {
   final String serviceId;
   const ServiceScreen({super.key, required this.serviceId});
+
+  void editService(BuildContext context) {
+    Routemaster.of(context).push('edit');
+  }
 
   void navigateToServiceTools(BuildContext context) {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
@@ -149,68 +152,72 @@ class ServiceScreen extends ConsumerWidget {
                                         : const SizedBox(),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                Wrap(
                                   children: [
                                     // like button
                                     service.uid == user.uid
-                                        ? OutlinedButton(
-                                            onPressed: () =>
-                                                navigateToLikes(context),
-                                            style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 25)),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Text(
-                                                  'Likes(${service.likes.length})',
-                                                ),
-                                              ],
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  navigateToLikes(context),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child: Text(
+                                                  'Likes(${service.likes.length})'),
                                             ),
                                           )
-                                        : OutlinedButton(
-                                            onPressed: () => likeService(
-                                                context, ref, service),
-                                            style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 25)),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                const Text(
-                                                  'Like',
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                ref
-                                                        .watch(userProvider)!
-                                                        .favorites
-                                                        .where((f) =>
-                                                            f == serviceId)
-                                                        .toList()
-                                                        .isEmpty
-                                                    ? const Icon(
-                                                        Icons.favorite_outline,
-                                                      )
-                                                    : const Icon(
-                                                        Icons.favorite,
-                                                        color: Colors.red,
-                                                      ),
-                                              ],
+                                        : Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () => likeService(
+                                                  context, ref, service),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  const Text(
+                                                    'Like',
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  ref
+                                                          .watch(userProvider)!
+                                                          .favorites
+                                                          .where((f) =>
+                                                              f == serviceId)
+                                                          .toList()
+                                                          .isEmpty
+                                                      ? const Icon(
+                                                          Icons
+                                                              .favorite_outline,
+                                                        )
+                                                      : const Icon(
+                                                          Icons.favorite,
+                                                          color: Colors.red,
+                                                        ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                     const SizedBox(
@@ -218,44 +225,62 @@ class ServiceScreen extends ConsumerWidget {
                                     ),
                                     // tools button
                                     user.uid == service.uid
-                                        ? Row(
-                                            children: [
-                                              OutlinedButton(
-                                                onPressed: () =>
-                                                    navigateToServiceTools(
-                                                        context),
-                                                style: ElevatedButton.styleFrom(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 25)),
-                                                child:
-                                                    const Text('Service Tools'),
-                                              ),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                            ],
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  navigateToServiceTools(
+                                                      context),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child:
+                                                  const Text('Service Tools'),
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    // edit service button
+                                    user.uid == service.uid
+                                        ? Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  editService(context),
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 25)),
+                                              child: const Text('Edit'),
+                                            ),
                                           )
                                         : const SizedBox(),
                                     // add to forum button
-                                    OutlinedButton(
-                                      onPressed: () =>
-                                          addForum(context, ref, service),
-                                      style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 25)),
-                                      child: const Text(
-                                        'Add Forum',
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 5),
+                                      child: OutlinedButton(
+                                        onPressed: () =>
+                                            addForum(context, ref, service),
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25)),
+                                        child: const Text('Add Forum'),
                                       ),
                                     )
                                   ],
