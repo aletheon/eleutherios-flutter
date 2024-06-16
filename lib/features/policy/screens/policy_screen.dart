@@ -21,6 +21,16 @@ class PolicyScreen extends ConsumerWidget {
   final String policyId;
   const PolicyScreen({super.key, required this.policyId});
 
+  // *******************************************************
+  // *******************************************************
+  // HERE ROB CONTINUE WITH ADDING EDIT BUTTON TO SCREEN
+  // *******************************************************
+  // *******************************************************
+
+  void editPolicy(BuildContext context) {
+    Routemaster.of(context).push('edit');
+  }
+
   void deletePolicy(BuildContext context, WidgetRef ref, Policy policy) async {
     final int managerCount = await ref
         .read(managerControllerProvider.notifier)
@@ -261,9 +271,6 @@ class PolicyScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
                                                 (user.uid == policy.uid)
                                                     ? IconButton(
                                                         icon: const Icon(
@@ -279,9 +286,6 @@ class PolicyScreen extends ConsumerWidget {
                                                     : const SizedBox(),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
                                             policy.description.isNotEmpty
                                                 ? Wrap(
                                                     children: [
@@ -292,8 +296,13 @@ class PolicyScreen extends ConsumerWidget {
                                                     ],
                                                   )
                                                 : const SizedBox(),
-                                            Text(
-                                                '${policy.managers.length} managers'),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Chip(
+                                              label: Text(
+                                                  '${policy.managers.length} managers'),
+                                            ),
                                             const SizedBox(
                                               height: 10,
                                             ),
@@ -404,8 +413,56 @@ class PolicyScreen extends ConsumerWidget {
                                                     ),
                                                   )
                                                 : const SizedBox(),
+
+                                            // edit policy button
+                                            (user.uid == policy.uid) ||
+                                                    (userSelectedManager !=
+                                                            null &&
+                                                        userSelectedManager
+                                                                .permissions
+                                                                .contains(
+                                                                    ManagerPermissions
+                                                                        .editpolicy
+                                                                        .name) ==
+                                                            true)
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: OutlinedButton(
+                                                      onPressed: () =>
+                                                          editPolicy(context),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                      child: const Text('Edit'),
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+
                                             // consume button
-                                            policy.public
+                                            user.uid == policy.uid ||
+                                                    policy.public ||
+                                                    (userSelectedManager !=
+                                                            null &&
+                                                        userSelectedManager
+                                                                .permissions
+                                                                .contains(
+                                                                    ManagerPermissions
+                                                                        .addconsumer
+                                                                        .name) ==
+                                                            true)
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

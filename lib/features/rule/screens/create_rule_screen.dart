@@ -122,7 +122,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    "Create rule when policy is consumed by a service",
+                    "Create forum immediately when policy is consumed by a service.",
                     textWidthBasis: TextWidthBasis.longestLine,
                   ),
                 ),
@@ -147,7 +147,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    "Create rule when service consuming policy has been ordered by a service",
+                    "Create forum when service consuming policy has been ordered by another service.  For example a patient wanting to speak with a doctor or client wanting to consult with a lawyer.",
                     textWidthBasis: TextWidthBasis.longestLine,
                   ),
                 ),

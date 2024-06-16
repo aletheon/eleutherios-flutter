@@ -206,9 +206,6 @@ class ForumScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
                                                 (user.uid == forum.uid)
                                                     ? IconButton(
                                                         icon: const Icon(
@@ -224,9 +221,6 @@ class ForumScreen extends ConsumerWidget {
                                                     : const SizedBox(),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
                                             forum.description.isNotEmpty
                                                 ? Wrap(
                                                     children: [
@@ -237,8 +231,13 @@ class ForumScreen extends ConsumerWidget {
                                                     ],
                                                   )
                                                 : const SizedBox(),
-                                            Text(
-                                                '${forum.members.length} members'),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Chip(
+                                              label: Text(
+                                                  '${forum.members.length} members'),
+                                            ),
                                             const SizedBox(
                                               height: 10,
                                             ),

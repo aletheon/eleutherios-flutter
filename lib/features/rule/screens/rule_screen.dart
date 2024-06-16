@@ -169,9 +169,6 @@ class RuleScreen extends ConsumerWidget {
                                                     ).image,
                                                     radius: 35,
                                                   ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -230,9 +227,6 @@ class RuleScreen extends ConsumerWidget {
                                                     ],
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
                                                 (user.uid == rule.policyUid) ||
                                                         (user.uid == rule.uid)
                                                     ? IconButton(
@@ -249,9 +243,6 @@ class RuleScreen extends ConsumerWidget {
                                                     : const SizedBox(),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
                                             rule.description.isNotEmpty
                                                 ? Wrap(
                                                     children: [
@@ -262,8 +253,13 @@ class RuleScreen extends ConsumerWidget {
                                                     ],
                                                   )
                                                 : const SizedBox(),
-                                            Text(
-                                                '${rule.members.length} potential members'),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Chip(
+                                              label: Text(
+                                                  '${rule.members.length} potential members'),
+                                            ),
                                             const SizedBox(
                                               height: 10,
                                             ),
