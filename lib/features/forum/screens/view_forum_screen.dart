@@ -38,13 +38,15 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
   getSelectedMember() async {
     final user = ref.read(userProvider)!;
 
-    selectedMember = await ref
+    Member? selectedMember = await ref
         .read(getUserSelectedMemberProvider2(Tuple2(widget.forumId, user.uid)))
         .first;
 
-    setState(() {
-      dropdownValue = selectedMember!.memberId;
-    });
+    if (selectedMember != null) {
+      setState(() {
+        dropdownValue = selectedMember!.memberId;
+      });
+    }
   }
 
   @override
@@ -88,13 +90,13 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
     }
 
     void viewForum(String forumId, BuildContext context) async {
-      selectedMember = await ref
+      Member? selectedMember = await ref
           .read(getUserSelectedMemberProvider2(Tuple2(forumId, user.uid)))
           .first;
 
       if (selectedMember != null) {
         setState(() {
-          dropdownValue = selectedMember!.memberId;
+          dropdownValue = selectedMember.memberId;
           Routemaster.of(context).push('/forum/$forumId/view');
         });
       } else {

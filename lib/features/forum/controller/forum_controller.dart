@@ -281,7 +281,7 @@ class ForumController extends StateNotifier<bool> {
       if (forum.parentId.isNotEmpty) {
         Forum? parentForum = await _ref
             .read(forumControllerProvider.notifier)
-            .getForumById(forumId)
+            .getForumById(forum.parentId)
             .first;
 
         if (parentForum != null) {
