@@ -53,7 +53,7 @@ class _EditPotentialMemberPermissionsScreenState
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to make changes to potential member permissions');
+              'You do not have permission to make changes to member permissions');
           Routemaster.of(context).pop();
         });
       }
@@ -83,7 +83,7 @@ class _EditPotentialMemberPermissionsScreenState
                       key: _scaffold,
                       appBar: AppBar(
                         title: Text(
-                          'Edit Potential Member Permissions',
+                          'Edit Member Permissions',
                           style: TextStyle(
                             color: currentTheme.textTheme.bodyMedium!.color!,
                           ),

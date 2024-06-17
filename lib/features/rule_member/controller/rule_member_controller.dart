@@ -176,7 +176,7 @@ class RuleMemberController extends StateNotifier<bool> {
         // create new rule activity
         state = false;
         res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Potential member added!');
+          showSnackBar(context, 'Member added!');
         });
       } else {
         state = false;
@@ -199,7 +199,7 @@ class RuleMemberController extends StateNotifier<bool> {
         await _ruleMemberRepository.updateRuleMember(ruleMember);
     state = false;
     ruleMemberRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Potential member updated successfully!');
+      showSnackBar(context, 'Member updated successfully!');
     });
   }
 
@@ -276,13 +276,13 @@ class RuleMemberController extends StateNotifier<bool> {
       state = false;
       res.fold((l) => showSnackBar(context, l.message), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Potential member removed successfully!');
+          showSnackBar(context, 'Member removed successfully!');
         }
       });
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Rule or potential member does not exist');
+        showSnackBar(context, 'Rule or member does not exist');
       }
     }
   }

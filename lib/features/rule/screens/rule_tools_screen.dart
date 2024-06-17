@@ -109,8 +109,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                         onTap: () => addMember(context),
                                         leading: const Icon(
                                             Icons.add_circle_outline),
-                                        title:
-                                            const Text('Add Potential Member'),
+                                        title: const Text('Add Member'),
                                       )
                                     : const SizedBox(),
                                 user.uid == policy.uid ||
@@ -121,8 +120,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                         onTap: () => removeMember(context),
                                         leading: const Icon(
                                             Icons.remove_circle_outline),
-                                        title: const Text(
-                                            'Remove Potential Member'),
+                                        title: const Text('Remove Member'),
                                       )
                                     : const SizedBox(),
                                 user.uid == policy.uid ||
@@ -135,8 +133,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                             potentialMemberPermissions(context),
                                         leading:
                                             const Icon(Icons.list_alt_outlined),
-                                        title: const Text(
-                                            'Potential Member Permissions'),
+                                        title: const Text('Member Permissions'),
                                       )
                                     : const SizedBox(),
                               ]);

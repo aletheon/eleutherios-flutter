@@ -36,7 +36,7 @@ class PolicyScreen extends ConsumerWidget {
         barrierDismissible: true,
         builder: (context) {
           String message =
-              "This Rule has $ruleMemberCount potential member(s) serving in it.  Are you sure you want to delete it?";
+              "This Rule has $ruleMemberCount member(s) serving in it.  Are you sure you want to delete it?";
 
           return AlertDialog(
             content: Text(message),

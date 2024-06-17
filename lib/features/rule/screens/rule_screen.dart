@@ -206,7 +206,7 @@ class RuleScreen extends ConsumerWidget {
                                             ),
                                             Chip(
                                               label: Text(
-                                                  '${rule.members.length} potential members'),
+                                                  '${rule.members.length} members'),
                                             ),
                                             const SizedBox(
                                               height: 10,

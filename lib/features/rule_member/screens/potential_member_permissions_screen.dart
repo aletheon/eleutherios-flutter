@@ -50,7 +50,7 @@ class _PotentialMemberPermissionsScreenState
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to make changes to potential member permissions');
+              'You do not have permission to make changes to member permissions');
           Routemaster.of(context).pop();
         });
       }
@@ -78,7 +78,7 @@ class _PotentialMemberPermissionsScreenState
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
-              'Potential Member Permissions',
+              'Member Permissions',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
@@ -94,7 +94,7 @@ class _PotentialMemberPermissionsScreenState
                         child: Container(
                           alignment: Alignment.topCenter,
                           child: const Text(
-                            'No potential members',
+                            'No members',
                             style: TextStyle(fontSize: 14),
                           ),
                         ),

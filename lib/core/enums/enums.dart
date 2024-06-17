@@ -95,11 +95,11 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
       case ManagerPermissions.removerule:
         return 'Remove Rule';
       case ManagerPermissions.addpotentialmember:
-        return 'Add Potential Member';
+        return 'Add Member';
       case ManagerPermissions.removepotentialmember:
-        return 'Remove Potential Member';
+        return 'Remove Member';
       case ManagerPermissions.editpotentialmemberpermissions:
-        return 'Edit Potential Member Permissions';
+        return 'Edit Member Permissions';
       case ManagerPermissions.addconsumer:
         return 'Add Consumer';
       case ManagerPermissions.removeconsumer:
