@@ -13,6 +13,11 @@ class UserModel {
   final bool isAuthenticated;
   final String banner;
   final int cert;
+  final String stripeCustomerId;
+  final String stripeAccountId;
+  final String stripeOnboardingStatus;
+  final String stripeCurrency;
+  final String fcmToken;
   final List<String> forumActivities;
   final List<String> policyActivities;
   final List<String> policies;
@@ -36,6 +41,11 @@ class UserModel {
     required this.isAuthenticated,
     required this.banner,
     required this.cert,
+    required this.stripeCustomerId,
+    required this.stripeAccountId,
+    required this.stripeOnboardingStatus,
+    required this.stripeCurrency,
+    required this.fcmToken,
     required this.forumActivities,
     required this.policyActivities,
     required this.policies,
@@ -61,6 +71,11 @@ class UserModel {
     bool? isAuthenticated,
     String? banner,
     int? cert,
+    String? stripeCustomerId,
+    String? stripeAccountId,
+    String? stripeOnboardingStatus,
+    String? stripeCurrency,
+    String? fcmToken,
     List<String>? forumActivities,
     List<String>? policyActivities,
     List<String>? policies,
@@ -85,6 +100,12 @@ class UserModel {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       banner: banner ?? this.banner,
       cert: cert ?? this.cert,
+      stripeCustomerId: stripeCustomerId ?? this.stripeCustomerId,
+      stripeAccountId: stripeAccountId ?? this.stripeAccountId,
+      stripeOnboardingStatus:
+          stripeOnboardingStatus ?? this.stripeOnboardingStatus,
+      stripeCurrency: stripeCurrency ?? this.stripeCurrency,
+      fcmToken: fcmToken ?? this.fcmToken,
       forumActivities: forumActivities ?? this.forumActivities,
       policyActivities: policyActivities ?? this.policyActivities,
       policies: policies ?? this.policies,
@@ -112,6 +133,11 @@ class UserModel {
       'isAuthenticated': isAuthenticated,
       'banner': banner,
       'cert': cert,
+      'stripeCustomerId': stripeCustomerId,
+      'stripeAccountId': stripeAccountId,
+      'stripeOnboardingStatus': stripeOnboardingStatus,
+      'stripeCurrency': stripeCurrency,
+      'fcmToken': fcmToken,
       'forumActivities': forumActivities,
       'policyActivities': policyActivities,
       'policies': policies,
@@ -139,6 +165,11 @@ class UserModel {
       isAuthenticated: map['isAuthenticated'] as bool,
       banner: map['banner'] as String,
       cert: map['cert'] as int,
+      stripeCustomerId: map['stripeCustomerId'] as String,
+      stripeAccountId: map['stripeAccountId'] as String,
+      stripeOnboardingStatus: map['stripeOnboardingStatus'] as String,
+      stripeCurrency: map['stripeCurrency'] as String,
+      fcmToken: map['fcmToken'] as String,
       forumActivities: List<String>.from(map['forumActivities']),
       policyActivities: List<String>.from(map['policyActivities']),
       policies: List<String>.from(map['policies']),
@@ -156,7 +187,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -175,6 +206,11 @@ class UserModel {
         other.isAuthenticated == isAuthenticated &&
         other.banner == banner &&
         other.cert == cert &&
+        other.stripeCustomerId == stripeCustomerId &&
+        other.stripeAccountId == stripeAccountId &&
+        other.stripeOnboardingStatus == stripeOnboardingStatus &&
+        other.stripeCurrency == stripeCurrency &&
+        other.fcmToken == fcmToken &&
         listEquals(other.forumActivities, forumActivities) &&
         listEquals(other.policyActivities, policyActivities) &&
         listEquals(other.policies, policies) &&
@@ -201,6 +237,11 @@ class UserModel {
         isAuthenticated.hashCode ^
         banner.hashCode ^
         cert.hashCode ^
+        stripeCustomerId.hashCode ^
+        stripeAccountId.hashCode ^
+        stripeOnboardingStatus.hashCode ^
+        stripeCurrency.hashCode ^
+        fcmToken.hashCode ^
         forumActivities.hashCode ^
         policyActivities.hashCode ^
         policies.hashCode ^

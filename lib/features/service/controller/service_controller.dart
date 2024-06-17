@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/forum_activity/controller/forum_activity_controller.dart';
@@ -173,6 +174,16 @@ class ServiceController extends StateNotifier<bool> {
       bannerFileType: 'image/jpeg',
       bannerFileName: Constants.serviceBannerDefault.split('/').last,
       public: public,
+      canBePurchased: false, // whether service can be purchased or not
+      price: 0, // [99.99]
+      type: ServiceType.service.name,
+      quantity: 0,
+      height: 0,
+      length: 0,
+      width: 0,
+      sizeUnit: '',
+      weight: 0,
+      weightUnit: '',
       tags: [],
       likes: [],
       policies: [],

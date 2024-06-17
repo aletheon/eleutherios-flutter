@@ -1,3 +1,20 @@
+enum ServiceType<String> { api, data, product, service }
+
+extension ServiceTypeValue on ServiceType {
+  String get value {
+    switch (this) {
+      case ServiceType.api:
+        return 'API';
+      case ServiceType.data:
+        return 'Data';
+      case ServiceType.product:
+        return 'Product';
+      case ServiceType.service:
+        return 'Service';
+    }
+  }
+}
+
 enum InstantiationType<String> { consume, order, date }
 
 extension InstantiationTypeValue on InstantiationType {

@@ -147,7 +147,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: const Text(
-                    "Create forum when service consuming policy is ordered by another service.  For example a customer paying for milk from a convenient store or item to be picked up by a delivery company.",
+                    "Create forum when service consuming policy is ordered by another service.  For example a patient paying for a consultancy service from a doctor.",
                     textWidthBasis: TextWidthBasis.longestLine,
                   ),
                 ),
