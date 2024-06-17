@@ -323,12 +323,11 @@ class RuleScreen extends ConsumerWidget {
                                                     (userSelectedManager !=
                                                             null &&
                                                         userSelectedManager
-                                                                .permissions
-                                                                .contains(
-                                                                    ManagerPermissions
-                                                                        .editpolicy
-                                                                        .name) ==
-                                                            true)
+                                                            .permissions
+                                                            .contains(
+                                                                ManagerPermissions
+                                                                    .editpolicy
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

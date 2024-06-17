@@ -267,7 +267,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
         .read(getUserSelectedMemberProvider2(Tuple2(widget.forumId, user.uid)))
         .first;
 
-    if (forum!.uid != user.uid) {
+    if (forum!.uid != user.uid || forum.public == false) {
       if (member!.permissions.contains(MemberPermissions.addmember.name) ==
           false) {
         Future.delayed(Duration.zero, () {

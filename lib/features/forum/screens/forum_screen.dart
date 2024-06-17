@@ -329,12 +329,11 @@ class ForumScreen extends ConsumerWidget {
                                                     (userSelectedMember !=
                                                             null &&
                                                         userSelectedMember
-                                                                .permissions
-                                                                .contains(
-                                                                    MemberPermissions
-                                                                        .editforum
-                                                                        .name) ==
-                                                            true)
+                                                            .permissions
+                                                            .contains(
+                                                                MemberPermissions
+                                                                    .editforum
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -362,7 +361,15 @@ class ForumScreen extends ConsumerWidget {
                                                 : const SizedBox(),
                                             // join button
                                             user.uid == forum.uid ||
-                                                    forum.public
+                                                    forum.public ||
+                                                    (userSelectedMember !=
+                                                            null &&
+                                                        userSelectedMember
+                                                            .permissions
+                                                            .contains(
+                                                                MemberPermissions
+                                                                    .addmember
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

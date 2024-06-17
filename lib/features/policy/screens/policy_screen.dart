@@ -345,12 +345,11 @@ class PolicyScreen extends ConsumerWidget {
                                                     (userSelectedManager !=
                                                             null &&
                                                         userSelectedManager
-                                                                .permissions
-                                                                .contains(
-                                                                    ManagerPermissions
-                                                                        .editpolicy
-                                                                        .name) ==
-                                                            true)
+                                                            .permissions
+                                                            .contains(
+                                                                ManagerPermissions
+                                                                    .editpolicy
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -382,12 +381,11 @@ class PolicyScreen extends ConsumerWidget {
                                                     (userSelectedManager !=
                                                             null &&
                                                         userSelectedManager
-                                                                .permissions
-                                                                .contains(
-                                                                    ManagerPermissions
-                                                                        .addconsumer
-                                                                        .name) ==
-                                                            true)
+                                                            .permissions
+                                                            .contains(
+                                                                ManagerPermissions
+                                                                    .addconsumer
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -418,12 +416,11 @@ class PolicyScreen extends ConsumerWidget {
                                                     (userSelectedManager !=
                                                             null &&
                                                         userSelectedManager
-                                                                .permissions
-                                                                .contains(
-                                                                    ManagerPermissions
-                                                                        .addmanager
-                                                                        .name) ==
-                                                            true)
+                                                            .permissions
+                                                            .contains(
+                                                                ManagerPermissions
+                                                                    .addmanager
+                                                                    .name))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
