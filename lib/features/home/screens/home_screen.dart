@@ -58,10 +58,10 @@ class HomeScreen extends ConsumerWidget {
             },
             icon: const Icon(Icons.search),
           ),
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: const Icon(Icons.shopping_cart),
-          // ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.shopping_cart),
+          ),
           Builder(builder: (context) {
             return IconButton(
               onPressed: () {
