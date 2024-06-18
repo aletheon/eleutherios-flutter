@@ -81,8 +81,7 @@ final searchPrivatePoliciesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicPoliciesProvider =
-    StreamProvider.family.autoDispose((ref, String query) {
+final searchPublicPoliciesProvider = StreamProvider.family((ref, String query) {
   return ref
       .watch(policyControllerProvider.notifier)
       .searchPublicPolicies(query);

@@ -57,8 +57,7 @@ final searchPrivateForumsProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicForumsProvider =
-    StreamProvider.family.autoDispose((ref, String query) {
+final searchPublicForumsProvider = StreamProvider.family((ref, String query) {
   return ref.watch(forumControllerProvider.notifier).searchPublicForums(query);
 });
 

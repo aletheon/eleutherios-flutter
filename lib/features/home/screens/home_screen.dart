@@ -11,7 +11,6 @@ import 'package:reddit_tutorial/features/home/drawers/list_drawer.dart';
 import 'package:reddit_tutorial/features/home/drawers/profile_drawer.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -42,16 +41,9 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
-    final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        // title: Text(
-        //   'Home',
-        //   style: TextStyle(
-        //     color: currentTheme.textTheme.bodyMedium!.color!,
-        //   ),
-        // ),
         centerTitle: false,
         leading: Builder(builder: (context) {
           return IconButton(
@@ -66,6 +58,10 @@ class HomeScreen extends ConsumerWidget {
             },
             icon: const Icon(Icons.search),
           ),
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(Icons.shopping_cart),
+          // ),
           Builder(builder: (context) {
             return IconButton(
               onPressed: () {

@@ -78,7 +78,7 @@ final searchPrivateServicesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicServicesProvider = StreamProvider.family.autoDispose(
+final searchPublicServicesProvider = StreamProvider.family(
   (ref, String query) {
     return ref
         .watch(serviceControllerProvider.notifier)
@@ -175,7 +175,7 @@ class ServiceController extends StateNotifier<bool> {
       bannerFileName: Constants.serviceBannerDefault.split('/').last,
       public: public,
       canBePurchased: false, // whether service can be purchased or not
-      price: 0, // [99.99]
+      price: 0,
       type: ServiceType.service.name,
       quantity: 1,
       height: 0,
