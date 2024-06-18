@@ -177,7 +177,7 @@ class ServiceController extends StateNotifier<bool> {
       canBePurchased: false, // whether service can be purchased or not
       price: 0, // [99.99]
       type: ServiceType.service.name,
-      quantity: 0,
+      quantity: 1,
       height: 0,
       length: 0,
       width: 0,
