@@ -242,6 +242,38 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
+                                          case 'addtocart':
+                                            _icons.add(
+                                              const Icon(
+                                                Icons.shopping_cart,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            );
+                                            _icons.add(
+                                              const Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            );
+                                            break;
+                                          case 'removefromcart':
+                                            _icons.add(
+                                              const Icon(
+                                                Icons.shopping_cart,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            );
+                                            _icons.add(
+                                              const Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 10,
+                                              ),
+                                            );
+                                            break;
                                           case 'editmemberpermissions':
                                             _icons.add(
                                               const Icon(

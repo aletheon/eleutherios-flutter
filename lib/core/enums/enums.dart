@@ -54,6 +54,8 @@ enum MemberPermissions<String> {
   removeforum, // - Remove Forum (implies removing other services forums)
   createpost, // - Create Post (implies remove own post)
   removepost, // - Remove Post (implies remove other services posts)
+  addtocart, // - Add item (service) to cart
+  removefromcart, // - Remove item (service) from cart
   editmemberpermissions, // - Edit Permissions (implies editing permissions for members)
 }
 
@@ -74,6 +76,10 @@ extension MemberPermissionsTypeValue on MemberPermissions {
         return 'Create Post';
       case MemberPermissions.removepost:
         return 'Remove Post';
+      case MemberPermissions.addtocart:
+        return 'Add To Cart';
+      case MemberPermissions.removefromcart:
+        return 'Remove From Cart';
       case MemberPermissions.editmemberpermissions:
         return 'Edit Permissions';
     }

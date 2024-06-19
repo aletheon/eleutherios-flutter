@@ -369,6 +369,81 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
+                                                      .addtocart.name) ==
+                                              true
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 3, bottom: 2),
+                                              child: const CircleAvatar(
+                                                radius: 14,
+                                                backgroundColor:
+                                                    Pallete.greyColor,
+                                                child: CircleAvatar(
+                                                  radius: 13,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.shopping_cart,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                      Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      member.permissions.contains(
+                                                  MemberPermissions
+                                                      .removefromcart.name) ==
+                                              true
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 3, bottom: 2),
+                                              child: const CircleAvatar(
+                                                radius: 14,
+                                                backgroundColor:
+                                                    Pallete.greyColor,
+                                                child: CircleAvatar(
+                                                  radius: 13,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.shopping_cart,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      ),
+                                                      Icon(
+                                                        Icons.remove,
+                                                        color: Color.fromARGB(
+                                                            255, 237, 86, 86),
+                                                        size: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      member.permissions.contains(
+                                                  MemberPermissions
                                                       .editmemberpermissions
                                                       .name) ==
                                               true
