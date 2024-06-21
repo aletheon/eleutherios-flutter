@@ -38,6 +38,10 @@ class HomeScreen extends ConsumerWidget {
     Scaffold.of(context).closeDrawer();
   }
 
+  void showCart(BuildContext context) {
+    Routemaster.of(context).replace('/viewcart');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
@@ -59,7 +63,9 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.search),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showCart(context);
+            },
             icon: const Icon(Icons.shopping_cart),
           ),
           Builder(builder: (context) {
