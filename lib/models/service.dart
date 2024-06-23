@@ -16,7 +16,7 @@ class Service {
   final bool public;
   final bool canBePurchased; // whether service can be purchased or not
   final double price; // [99.99]
-  final String type; // [API, Data, Product, Service]
+  final String serviceType; // [Product, Service, API, Data]
   final int quantity; // [99]
   final double height; // [99.99]
   final double length; // [99.99]
@@ -44,7 +44,7 @@ class Service {
     required this.public,
     required this.canBePurchased,
     required this.price,
-    required this.type,
+    required this.serviceType,
     required this.quantity,
     required this.height,
     required this.length,
@@ -74,7 +74,7 @@ class Service {
     bool? public,
     bool? canBePurchased,
     double? price,
-    String? type,
+    String? serviceType,
     int? quantity,
     double? height,
     double? length,
@@ -103,7 +103,7 @@ class Service {
       public: public ?? this.public,
       canBePurchased: canBePurchased ?? this.canBePurchased,
       price: price ?? this.price,
-      type: type ?? this.type,
+      serviceType: serviceType ?? this.serviceType,
       quantity: quantity ?? this.quantity,
       height: height ?? this.height,
       length: length ?? this.length,
@@ -135,7 +135,7 @@ class Service {
       'public': public,
       'canBePurchased': canBePurchased,
       'price': price,
-      'type': type,
+      'serviceType': serviceType,
       'quantity': quantity,
       'height': height,
       'length': length,
@@ -167,7 +167,7 @@ class Service {
       public: map['public'] as bool,
       canBePurchased: map['canBePurchased'] as bool,
       price: map['price'] as double,
-      type: map['type'] as String,
+      serviceType: map['serviceType'] as String,
       quantity: map['quantity'] as int,
       height: map['height'] as double,
       length: map['length'] as double,
@@ -187,7 +187,7 @@ class Service {
 
   @override
   String toString() {
-    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBePurchased: $canBePurchased, price: $price, type: $type, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBePurchased: $canBePurchased, price: $price, serviceType: $serviceType, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -208,7 +208,7 @@ class Service {
         other.public == public &&
         other.canBePurchased == canBePurchased &&
         other.price == price &&
-        other.type == type &&
+        other.serviceType == serviceType &&
         other.quantity == quantity &&
         other.height == height &&
         other.length == length &&
@@ -239,7 +239,7 @@ class Service {
         public.hashCode ^
         canBePurchased.hashCode ^
         price.hashCode ^
-        type.hashCode ^
+        serviceType.hashCode ^
         quantity.hashCode ^
         height.hashCode ^
         length.hashCode ^

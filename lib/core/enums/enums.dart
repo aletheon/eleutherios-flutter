@@ -1,3 +1,16 @@
+enum ServiceType<String> { physical, nonphysical }
+
+extension ServiceTypeValue on ServiceType {
+  String get value {
+    switch (this) {
+      case ServiceType.physical:
+        return 'Physical';
+      case ServiceType.nonphysical:
+        return 'Non Physical';
+    }
+  }
+}
+
 enum PaymentMethod<String> { stripe, paypal }
 
 extension PaymentMethodValue on PaymentMethod {
@@ -7,23 +20,6 @@ extension PaymentMethodValue on PaymentMethod {
         return 'Stripe';
       case PaymentMethod.paypal:
         return 'Paypal';
-    }
-  }
-}
-
-enum ServiceType<String> { api, data, product, service }
-
-extension ServiceTypeValue on ServiceType {
-  String get value {
-    switch (this) {
-      case ServiceType.api:
-        return 'API';
-      case ServiceType.data:
-        return 'Data';
-      case ServiceType.product:
-        return 'Product';
-      case ServiceType.service:
-        return 'Service';
     }
   }
 }
