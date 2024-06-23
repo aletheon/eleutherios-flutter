@@ -1,3 +1,16 @@
+enum PaymentMethod<String> { stripe, paypal }
+
+extension PaymentMethodValue on PaymentMethod {
+  String get value {
+    switch (this) {
+      case PaymentMethod.stripe:
+        return 'Stripe';
+      case PaymentMethod.paypal:
+        return 'Paypal';
+    }
+  }
+}
+
 enum ServiceType<String> { api, data, product, service }
 
 extension ServiceTypeValue on ServiceType {
