@@ -14,7 +14,7 @@ class Policy {
   final String bannerFileType;
   final String bannerFileName;
   final bool public; // visibility of policy
-  final List<String> tags; // tags identifying policy
+  final List<String> tags;
   final List<String> services; // copy of manager services for redundancy sake
   final List<String> managers; // managers (i.e. services) managing this policy
   final List<String> consumers; // services consuming this policy
