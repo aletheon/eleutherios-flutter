@@ -155,7 +155,7 @@ class ServiceController extends StateNotifier<bool> {
         super(false);
 
   void createService(String title, String description, bool public,
-      BuildContext context) async {
+      List<String>? tags, BuildContext context) async {
     state = true;
     final uid = _ref.read(userProvider)?.uid ?? '';
     final user = _ref.read(userProvider);
@@ -184,7 +184,7 @@ class ServiceController extends StateNotifier<bool> {
       sizeUnit: '',
       weight: 0,
       weightUnit: '',
-      tags: [],
+      tags: tags != null && tags.isNotEmpty ? tags : [],
       likes: [],
       policies: [],
       lastUpdateDate: DateTime.now(),

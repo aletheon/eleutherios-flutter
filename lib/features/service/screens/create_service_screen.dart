@@ -25,15 +25,12 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
   void createService() {
     List<String>? tags = _stringTagController.getTags;
 
-    if (tags != null) {
-      print(tags);
-    }
-
     if (titleController.text.trim().isNotEmpty) {
       ref.read(serviceControllerProvider.notifier).createService(
           titleController.text.trim(),
           descriptionController.text.trim(),
           isChecked,
+          tags,
           _scaffold.currentContext!);
     }
   }
@@ -143,7 +140,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
                     maxLength: 1000,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextFieldTags<String>(
                     textfieldTagsController: _stringTagController,
@@ -234,7 +231,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
                                                         color: Colors.white),
                                                   ),
                                                   onTap: () {
-                                                    print("$tag selected");
+                                                    // print("$tag selected");
                                                   },
                                                 ),
                                                 const SizedBox(width: 4.0),
@@ -290,22 +287,6 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
                       );
                     },
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  // OutlinedButton(
-                  //   onPressed: () {
-                  //     _stringTagController.clearTags();
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(10),
-                  //     ),
-                  //     padding: const EdgeInsets.symmetric(horizontal: 25),
-                  //     backgroundColor: const Color.fromARGB(255, 74, 137, 92),
-                  //   ),
-                  //   child: const Text('Clear Tags'),
-                  // ),
                   const SizedBox(
                     height: 20,
                   ),
