@@ -4,7 +4,6 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
-import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
@@ -44,7 +43,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
 
     if (selectedMember != null) {
       setState(() {
-        dropdownValue = selectedMember!.memberId;
+        dropdownValue = selectedMember.memberId;
       });
     }
   }
