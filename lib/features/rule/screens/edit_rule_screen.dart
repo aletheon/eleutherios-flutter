@@ -353,10 +353,6 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                       borderSide: BorderSide(
                                           color: Pallete.ruleTagColor),
                                     ),
-                                    //helperText: 'Enter language...',
-                                    helperStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 74, 137, 92),
-                                    ),
                                     hintText: inputFieldValues.tags.isNotEmpty
                                         ? ''
                                         : "Enter tag",

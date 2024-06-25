@@ -20,11 +20,11 @@ class Pallete {
   static var greenColor = Colors.green.shade500;
   static var darkGreenColor = const Color.fromARGB(255, 87, 131, 0);
 
-  static var userColor = Colors.purple.shade300;
+  static var userColor = const Color.fromARGB(255, 131, 67, 71);
   static var policyColor = Colors.amber.shade300;
   static var policyTagColor = const Color.fromARGB(255, 249, 171, 23);
-  static var ruleColor = Colors.amber.shade300;
-  static var ruleTagColor = const Color.fromARGB(255, 249, 171, 23);
+  static var ruleColor = const Color.fromARGB(255, 221, 179, 247);
+  static var ruleTagColor = const Color.fromARGB(255, 174, 23, 249);
   static var forumColor = Colors.red.shade300;
   static var forumTagColor = const Color.fromARGB(255, 209, 40, 3);
   static var freeServiceColor = Colors.green.shade300;

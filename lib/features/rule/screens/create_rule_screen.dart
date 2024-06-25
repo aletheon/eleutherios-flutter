@@ -133,7 +133,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 });
               },
               controlAffinity: ListTileControlAffinity.trailing,
-              activeColor: Pallete.policyColor,
+              activeColor: Pallete.ruleColor,
             ),
             TextField(
               controller: titleController,
@@ -362,7 +362,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                backgroundColor: Pallete.policyColor,
+                backgroundColor: Pallete.ruleColor,
               ),
               child: const Text(
                 'Create Rule',
