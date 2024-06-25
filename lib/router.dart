@@ -1059,6 +1059,11 @@ final loggedInRoute = RouteMap(routes: {
   '/user/policy/list': (_) => const MaterialPage(
         child: ListUserPolicyScreen(),
       ),
+  '/user/policy/list/:policyid': (route) => MaterialPage(
+        child: PolicyScreen(
+          policyId: route.pathParameters['policyid']!,
+        ),
+      ),
   '/user/policy/list/:policyid/edit': (route) => MaterialPage(
         child: EditPolicyScreen(
           policyId: route.pathParameters['policyid']!,

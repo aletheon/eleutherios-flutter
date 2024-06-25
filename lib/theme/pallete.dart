@@ -22,10 +22,15 @@ class Pallete {
 
   static var userColor = Colors.purple.shade300;
   static var policyColor = Colors.amber.shade300;
+  static var policyTagColor = const Color.fromARGB(255, 249, 171, 23);
   static var ruleColor = Colors.amber.shade300;
+  static var ruleTagColor = const Color.fromARGB(255, 249, 171, 23);
   static var forumColor = Colors.red.shade300;
+  static var forumTagColor = const Color.fromARGB(255, 209, 40, 3);
   static var freeServiceColor = Colors.green.shade300;
+  static var freeServiceTagColor = const Color.fromARGB(255, 87, 131, 0);
   static var paidServiceColor = Colors.blue.shade300;
+  static var paidServiceTagColor = const Color.fromARGB(255, 21, 89, 248);
 
   static var cert1 = const Color.fromARGB(255, 153, 0, 11);
   static var cert2 = const Color.fromARGB(255, 213, 105, 6);
