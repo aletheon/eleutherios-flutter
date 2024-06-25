@@ -131,7 +131,7 @@ class PolicyController extends StateNotifier<bool> {
         super(false);
 
   void createPolicy(String title, String description, bool public,
-      BuildContext context) async {
+      List<String>? tags, BuildContext context) async {
     state = true;
     final uid = _ref.read(userProvider)?.uid ?? '';
     final user = _ref.read(userProvider);
@@ -150,7 +150,7 @@ class PolicyController extends StateNotifier<bool> {
       bannerFileType: 'image/jpeg',
       bannerFileName: Constants.policyBannerDefault.split('/').last,
       public: public,
-      tags: [],
+      tags: tags != null && tags.isNotEmpty ? tags : [],
       services: [],
       managers: [],
       consumers: [],

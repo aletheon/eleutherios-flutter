@@ -145,7 +145,7 @@ class ForumController extends StateNotifier<bool> {
   }
 
   void createForum(String? parentId, String title, String description,
-      bool public, BuildContext context) async {
+      bool public, List<String>? tags, BuildContext context) async {
     state = true;
     final user = _ref.read(userProvider)!;
     Forum? parentForum;
@@ -176,7 +176,7 @@ class ForumController extends StateNotifier<bool> {
       bannerFileType: 'image/jpeg',
       bannerFileName: Constants.forumBannerDefault.split('/').last,
       public: public,
-      tags: [],
+      tags: tags != null && tags.isNotEmpty ? tags : [],
       services: [],
       members: [],
       posts: [],

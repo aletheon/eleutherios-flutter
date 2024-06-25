@@ -54,19 +54,6 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
     descriptionController.dispose();
   }
 
-  static const List<String> _initialTags = <String>[
-    // 'yaml',
-    // 'gradle',
-    // 'c',
-    // 'c++',
-    // 'java',
-    // 'python',
-    // 'javascript',
-    // 'sql',
-    // 'html',
-    // 'css',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(serviceControllerProvider);
@@ -144,13 +131,10 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
                   ),
                   TextFieldTags<String>(
                     textfieldTagsController: _stringTagController,
-                    initialTags: _initialTags,
                     textSeparators: const [' ', ','],
                     letterCase: LetterCase.small,
                     validator: (String tag) {
-                      if (tag == 'php') {
-                        return 'No, please just no';
-                      } else if (_stringTagController.getTags!.contains(tag)) {
+                      if (_stringTagController.getTags!.contains(tag)) {
                         return 'You\'ve already entered that';
                       }
                       return null;

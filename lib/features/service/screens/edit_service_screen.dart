@@ -283,10 +283,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                             textSeparators: const [' ', ','],
                             letterCase: LetterCase.small,
                             validator: (String tag) {
-                              if (tag == 'php') {
-                                return 'No, please just no';
-                              } else if (_stringTagController.getTags!
-                                  .contains(tag)) {
+                              if (_stringTagController.getTags!.contains(tag)) {
                                 return 'You\'ve already entered that';
                               }
                               return null;

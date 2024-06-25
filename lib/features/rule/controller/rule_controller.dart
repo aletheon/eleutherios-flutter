@@ -89,6 +89,7 @@ class RuleController extends StateNotifier<bool> {
       String title,
       String description,
       bool public,
+      List<String>? tags,
       String? instantiationType,
       DateTime? instantiationDate,
       BuildContext context) async {
@@ -132,7 +133,7 @@ class RuleController extends StateNotifier<bool> {
         instantiationDate: instantiationDate ?? DateTime.now(),
         services: [],
         members: [],
-        tags: [],
+        tags: tags != null && tags.isNotEmpty ? tags : [],
         lastUpdateDate: DateTime.now(),
         creationDate: DateTime.now(),
       );
