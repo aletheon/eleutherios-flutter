@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart'
 import 'package:reddit_tutorial/features/home/dialogs/search_tag_dialog.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class SearchHomeDelegate extends SearchDelegate {
@@ -94,7 +95,7 @@ class SearchHomeDelegate extends SearchDelegate {
                   List<String> tags = await showDialog(
                     context: context,
                     builder: (context) => SearchTagDialog(
-                      searchType: SearchType.forum.name,
+                      searchType: _searchType,
                       initialTags: searchTags,
                     ),
                   );
@@ -129,15 +130,36 @@ class SearchHomeDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     if (_searchType == SearchType.policy.value) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           searchTags.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: searchTags
-                      .map((e) => Chip(
-                            label: Text(e),
-                          ))
-                      .toList(),
+              ? Wrap(
+                  alignment: WrapAlignment.end,
+                  direction: Axis.horizontal,
+                  children: searchTags.map((e) {
+                    return Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(
+                            backgroundColor:
+                                _searchType == SearchType.policy.value
+                                    ? Pallete.policyTagColor
+                                    : _searchType == SearchType.forum.value
+                                        ? Pallete.forumTagColor
+                                        : Pallete.freeServiceTagColor,
+                            label: Text('$e#'),
+                            avatar: InkWell(
+                              onTap: () {
+                                print('tap');
+                              },
+                              child: const Icon(
+                                Icons.cancel,
+                              ),
+                            ),
+                          ),
+                        ));
+                  }).toList(),
                 )
               : const SizedBox(),
           ref.watch(searchPublicPoliciesProvider(query.toLowerCase())).when(
@@ -173,15 +195,36 @@ class SearchHomeDelegate extends SearchDelegate {
       );
     } else if (_searchType == SearchType.forum.value) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           searchTags.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: searchTags
-                      .map((e) => Chip(
-                            label: Text(e),
-                          ))
-                      .toList(),
+              ? Wrap(
+                  alignment: WrapAlignment.end,
+                  direction: Axis.horizontal,
+                  children: searchTags.map((e) {
+                    return Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(
+                            backgroundColor:
+                                _searchType == SearchType.policy.value
+                                    ? Pallete.policyTagColor
+                                    : _searchType == SearchType.forum.value
+                                        ? Pallete.forumTagColor
+                                        : Pallete.freeServiceTagColor,
+                            label: Text('$e#'),
+                            avatar: InkWell(
+                              onTap: () {
+                                print('tap');
+                              },
+                              child: const Icon(
+                                Icons.cancel,
+                              ),
+                            ),
+                          ),
+                        ));
+                  }).toList(),
                 )
               : const SizedBox(),
           ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
@@ -215,15 +258,36 @@ class SearchHomeDelegate extends SearchDelegate {
       );
     } else {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           searchTags.isNotEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: searchTags
-                      .map((e) => Chip(
-                            label: Text(e),
-                          ))
-                      .toList(),
+              ? Wrap(
+                  alignment: WrapAlignment.end,
+                  direction: Axis.horizontal,
+                  children: searchTags.map((e) {
+                    return Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(
+                            backgroundColor:
+                                _searchType == SearchType.policy.value
+                                    ? Pallete.policyTagColor
+                                    : _searchType == SearchType.forum.value
+                                        ? Pallete.forumTagColor
+                                        : Pallete.freeServiceTagColor,
+                            label: Text('$e#'),
+                            avatar: InkWell(
+                              onTap: () {
+                                print('tap');
+                              },
+                              child: const Icon(
+                                Icons.cancel,
+                              ),
+                            ),
+                          ),
+                        ));
+                  }).toList(),
                 )
               : const SizedBox(),
           ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
