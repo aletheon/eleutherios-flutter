@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
@@ -11,10 +12,22 @@ import 'package:reddit_tutorial/features/home/drawers/list_drawer.dart';
 import 'package:reddit_tutorial/features/home/drawers/profile_drawer.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends ConsumerStatefulWidget {
+  final String? forumId;
+  const HomeScreen({super.key, this.forumId});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final GlobalKey _scaffold = GlobalKey();
+  late double _distanceToField;
+  late StringTagController _stringTagController;
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
@@ -42,12 +55,25 @@ class HomeScreen extends ConsumerWidget {
     Routemaster.of(context).replace('/viewcart');
   }
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _distanceToField = MediaQuery.of(context).size.width;
+  // }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _stringTagController = StringTagController();
+  // }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: AppBar(
+        key: _scaffold,
         centerTitle: false,
         leading: Builder(builder: (context) {
           return IconButton(

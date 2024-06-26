@@ -6,13 +6,17 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/home/dialogs/search_tag_dialog.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:routemaster/routemaster.dart';
 
 class SearchHomeDelegate extends SearchDelegate {
   final WidgetRef ref;
-  SearchHomeDelegate(this.ref);
+  SearchHomeDelegate(
+    this.ref,
+  );
+
   List<Icon> searchIcons = [
     const Icon(
       Icons.construction_outlined,
@@ -29,6 +33,7 @@ class SearchHomeDelegate extends SearchDelegate {
     SearchType.forum.value,
     SearchType.policy.value
   ];
+  List<String> searchTags = [];
   String _searchType = SearchType.service.value;
   int searchIconsCount = 0;
 
@@ -48,44 +53,9 @@ class SearchHomeDelegate extends SearchDelegate {
     _searchType = searchType;
   }
 
-  // @override
-  // ThemeData appBarTheme(BuildContext context) {
-  //   final theme = Theme.of(context);
-  //   return theme.copyWith(
-  //     appBarTheme: theme.appBarTheme.copyWith(toolbarHeight: 120),
-  //   );
-  // }
-
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      // IconButton(
-      //   onPressed: () => changeSearchType(SearchType.policy.value),
-      //   icon: _searchType == SearchType.policy.value
-      //       ? Icon(
-      //           Icons.account_balance,
-      //           color: Pallete.policyColor,
-      //         )
-      //       : const Icon(Icons.account_balance),
-      // ),
-      // IconButton(
-      //   onPressed: () => changeSearchType(SearchType.forum.value),
-      //   icon: _searchType == SearchType.forum.value
-      //       ? Icon(
-      //           Icons.sms,
-      //           color: Pallete.forumColor,
-      //         )
-      //       : const Icon(Icons.sms),
-      // ),
-      // IconButton(
-      //   onPressed: () => changeSearchType(SearchType.service.value),
-      //   icon: _searchType == SearchType.service.value
-      //       ? Icon(
-      //           Icons.construction,
-      //           color: Pallete.freeServiceColor,
-      //         )
-      //       : const Icon(Icons.construction),
-      // ),
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -120,8 +90,15 @@ class SearchHomeDelegate extends SearchDelegate {
                 }).toList(),
               ),
               IconButton(
-                onPressed: () {
-                  query = '';
+                onPressed: () async {
+                  List<String> tags = await showDialog(
+                    context: context,
+                    builder: (context) => SearchTagDialog(
+                      searchType: SearchType.forum.name,
+                      initialTags: searchTags,
+                    ),
+                  );
+                  searchTags = tags;
                 },
                 icon: const Icon(Icons.tag),
               ),
@@ -153,17 +130,16 @@ class SearchHomeDelegate extends SearchDelegate {
     if (_searchType == SearchType.policy.value) {
       return Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Chip(
-                  label: Text('Test'),
+          searchTags.isNotEmpty
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: searchTags
+                      .map((e) => Chip(
+                            label: Text(e),
+                          ))
+                      .toList(),
                 )
-              ],
-            ),
-          ),
+              : const SizedBox(),
           ref.watch(searchPublicPoliciesProvider(query.toLowerCase())).when(
                 data: (policies) {
                   return ListView.builder(
@@ -198,17 +174,16 @@ class SearchHomeDelegate extends SearchDelegate {
     } else if (_searchType == SearchType.forum.value) {
       return Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Chip(
-                  label: Text('Test'),
+          searchTags.isNotEmpty
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: searchTags
+                      .map((e) => Chip(
+                            label: Text(e),
+                          ))
+                      .toList(),
                 )
-              ],
-            ),
-          ),
+              : const SizedBox(),
           ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
                 data: (forums) {
                   return ListView.builder(
@@ -241,38 +216,39 @@ class SearchHomeDelegate extends SearchDelegate {
     } else {
       return Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Chip(
-                  label: Text('Test'),
+          searchTags.isNotEmpty
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: searchTags
+                      .map((e) => Chip(
+                            label: Text(e),
+                          ))
+                      .toList(),
                 )
-              ],
-            ),
-          ),
+              : const SizedBox(),
           ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
                 data: (services) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: services.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final service = services[index];
-                      return ListTile(
-                        leading: service.image == Constants.avatarDefault
-                            ? CircleAvatar(
-                                backgroundImage:
-                                    Image.asset(service.image).image,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(service.image),
-                              ),
-                        title: Text(service.title),
-                        onTap: () =>
-                            showServiceDetails(context, service.serviceId),
-                      );
-                    },
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: services.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final service = services[index];
+                        return ListTile(
+                          leading: service.image == Constants.avatarDefault
+                              ? CircleAvatar(
+                                  backgroundImage:
+                                      Image.asset(service.image).image,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(service.image),
+                                ),
+                          title: Text(service.title),
+                          onTap: () =>
+                              showServiceDetails(context, service.serviceId),
+                        );
+                      },
+                    ),
                   );
                 },
                 error: (error, stackTrace) {
