@@ -130,182 +130,296 @@ class SearchHomeDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (_searchType == SearchType.policy.value) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          searchTags.isNotEmpty
-              ? Wrap(
-                  alignment: WrapAlignment.end,
-                  direction: Axis.horizontal,
-                  children: searchTags.map((e) {
-                    return Container(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Chip(
-                        backgroundColor: _searchType == SearchType.policy.value
-                            ? Pallete.policyTagColor
-                            : _searchType == SearchType.forum.value
-                                ? Pallete.forumTagColor
-                                : Pallete.freeServiceTagColor,
-                        label: Text('#$e'),
-                        onDeleted: () {
-                          searchTags.remove(e);
-                          query = query;
-                        },
-                      ),
-                    );
-                  }).toList(),
-                )
-              : const SizedBox(),
-          ref
-              .watch(searchPublicPoliciesProvider(Tuple2(query, searchTags)))
-              .when(
-                data: (policies) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: policies.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final policy = policies[index];
-                      return ListTile(
-                        leading: policy.image == Constants.avatarDefault
-                            ? CircleAvatar(
-                                backgroundImage:
-                                    Image.asset(policy.image).image,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(policy.image),
-                              ),
-                        title: Text(policy.title),
-                        onTap: () =>
-                            showPolicyDetails(context, policy.policyId),
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.policyTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            query = query;
+                          },
+                        ),
                       );
-                    },
-                  );
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              )
-        ],
-      );
-    } else if (_searchType == SearchType.forum.value) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          searchTags.isNotEmpty
-              ? Wrap(
-                  alignment: WrapAlignment.end,
-                  direction: Axis.horizontal,
-                  children: searchTags.map((e) {
-                    return Container(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Chip(
-                        backgroundColor: _searchType == SearchType.policy.value
-                            ? Pallete.policyTagColor
-                            : _searchType == SearchType.forum.value
-                                ? Pallete.forumTagColor
-                                : Pallete.freeServiceTagColor,
-                        label: Text('#$e'),
-                        onDeleted: () {
-                          searchTags.remove(e);
-                          query = query;
-                        },
-                      ),
-                    );
-                  }).toList(),
-                )
-              : const SizedBox(),
-          ref.watch(searchPublicForumsProvider(Tuple2(query, searchTags))).when(
-                data: (forums) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: forums.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final forum = forums[index];
-                      return ListTile(
-                        leading: forum.image == Constants.avatarDefault
-                            ? CircleAvatar(
-                                backgroundImage: Image.asset(forum.image).image,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(forum.image),
-                              ),
-                        title: Text(forum.title),
-                        onTap: () => showForumDetails(context, forum.forumId),
-                      );
-                    },
-                  );
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              )
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          searchTags.isNotEmpty
-              ? Wrap(
-                  alignment: WrapAlignment.end,
-                  direction: Axis.horizontal,
-                  children: searchTags.map((e) {
-                    return Container(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: Chip(
-                        backgroundColor: _searchType == SearchType.policy.value
-                            ? Pallete.policyTagColor
-                            : _searchType == SearchType.forum.value
-                                ? Pallete.forumTagColor
-                                : Pallete.freeServiceTagColor,
-                        label: Text('#$e'),
-                        onDeleted: () {
-                          searchTags.remove(e);
-                          query = query;
-                        },
-                      ),
-                    );
-                  }).toList(),
-                )
-              : const SizedBox(),
-          ref
-              .watch(searchPublicServicesProvider(Tuple2(query, searchTags)))
-              .when(
-                data: (services) {
-                  return Expanded(
-                    child: ListView.builder(
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref
+                .watch(searchPublicPoliciesProvider(Tuple2(query, searchTags)))
+                .when(
+                  data: (policies) {
+                    return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: services.length,
+                      itemCount: policies.length,
                       itemBuilder: (BuildContext context, int index) {
-                        final service = services[index];
+                        final policy = policies[index];
                         return ListTile(
-                          leading: service.image == Constants.avatarDefault
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(policy.title),
+                              policy.tags.isNotEmpty
+                                  ? Wrap(
+                                      alignment: WrapAlignment.start,
+                                      direction: Axis.horizontal,
+                                      children: policy.tags.map((e) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 5),
+                                          child: FilterChip(
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4, horizontal: -4),
+                                            onSelected: (value) {},
+                                            backgroundColor:
+                                                Pallete.policyTagColor,
+                                            label: Text(
+                                              '#$e',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                          leading: policy.image == Constants.avatarDefault
                               ? CircleAvatar(
                                   backgroundImage:
-                                      Image.asset(service.image).image,
+                                      Image.asset(policy.image).image,
                                 )
                               : CircleAvatar(
-                                  backgroundImage: NetworkImage(service.image),
+                                  backgroundImage: NetworkImage(policy.image),
                                 ),
-                          title: Text(service.title),
                           onTap: () =>
-                              showServiceDetails(context, service.serviceId),
+                              showPolicyDetails(context, policy.policyId),
                         );
                       },
-                    ),
-                  );
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              )
-        ],
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    } else if (_searchType == SearchType.forum.value) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.forumTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            query = query;
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref
+                .watch(searchPublicForumsProvider(Tuple2(query, searchTags)))
+                .when(
+                  data: (forums) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: forums.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final forum = forums[index];
+                        return ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(forum.title),
+                              forum.tags.isNotEmpty
+                                  ? Wrap(
+                                      alignment: WrapAlignment.start,
+                                      direction: Axis.horizontal,
+                                      children: forum.tags.map((e) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 5),
+                                          child: FilterChip(
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4, horizontal: -4),
+                                            onSelected: (value) {},
+                                            backgroundColor:
+                                                Pallete.forumTagColor,
+                                            label: Text(
+                                              '#$e',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                          leading: forum.image == Constants.avatarDefault
+                              ? CircleAvatar(
+                                  backgroundImage:
+                                      Image.asset(forum.image).image,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(forum.image),
+                                ),
+                          onTap: () => showForumDetails(context, forum.forumId),
+                        );
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            query = query;
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref
+                .watch(searchPublicServicesProvider(Tuple2(query, searchTags)))
+                .when(
+                  data: (services) {
+                    return Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: services.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final service = services[index];
+                          return ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(service.title),
+                                service.tags.isNotEmpty
+                                    ? Wrap(
+                                        alignment: WrapAlignment.start,
+                                        direction: Axis.horizontal,
+                                        children: service.tags.map((e) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: FilterChip(
+                                              visualDensity:
+                                                  const VisualDensity(
+                                                      vertical: -4,
+                                                      horizontal: -4),
+                                              onSelected: (value) {},
+                                              backgroundColor:
+                                                  Pallete.freeServiceTagColor,
+                                              label: Text(
+                                                '#$e',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                            leading: service.image == Constants.avatarDefault
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        Image.asset(service.image).image,
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(service.image),
+                                  ),
+                            onTap: () =>
+                                showServiceDetails(context, service.serviceId),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
       );
     }
   }
