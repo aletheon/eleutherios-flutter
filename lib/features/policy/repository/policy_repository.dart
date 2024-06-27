@@ -91,8 +91,8 @@ class PolicyRepository {
     }
   }
 
-  Stream<List<Policy>> searchPublicPolicies(String query) {
-    if (query.isNotEmpty) {
+  Stream<List<Policy>> searchPublicPolicies(String query, List<String> tags) {
+    if (query.isNotEmpty && tags.isNotEmpty) {
       return _policies
           .where('public', isEqualTo: true)
           .where(
@@ -105,6 +105,40 @@ class PolicyRepository {
                       query.codeUnitAt(query.length - 1) + 1,
                     ),
           )
+          .where('tags', arrayContainsAny: tags)
+          .snapshots()
+          .map((event) {
+        List<Policy> policies = [];
+        for (var doc in event.docs) {
+          policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return policies;
+      });
+    } else if (query.isNotEmpty) {
+      return _policies
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Policy> policies = [];
+        for (var doc in event.docs) {
+          policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return policies;
+      });
+    } else if (tags.isNotEmpty) {
+      return _policies
+          .where('public', isEqualTo: true)
+          .where('tags', arrayContainsAny: tags)
           .snapshots()
           .map((event) {
         List<Policy> policies = [];

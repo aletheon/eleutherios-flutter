@@ -119,8 +119,8 @@ class ForumRepository {
     }
   }
 
-  Stream<List<Forum>> searchPublicForums(String query) {
-    if (query.isNotEmpty) {
+  Stream<List<Forum>> searchPublicForums(String query, List<String> tags) {
+    if (query.isNotEmpty && tags.isNotEmpty) {
       return _forums
           .where('public', isEqualTo: true)
           .where(
@@ -133,6 +133,40 @@ class ForumRepository {
                       query.codeUnitAt(query.length - 1) + 1,
                     ),
           )
+          .where('tags', arrayContainsAny: tags)
+          .snapshots()
+          .map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
+    } else if (query.isNotEmpty) {
+      return _forums
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
+    } else if (tags.isNotEmpty) {
+      return _forums
+          .where('public', isEqualTo: true)
+          .where('tags', arrayContainsAny: tags)
           .snapshots()
           .map((event) {
         List<Forum> forums = [];

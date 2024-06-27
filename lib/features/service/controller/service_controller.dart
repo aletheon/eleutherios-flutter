@@ -78,13 +78,12 @@ final searchPrivateServicesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicServicesProvider = StreamProvider.family(
-  (ref, String query) {
-    return ref
-        .watch(serviceControllerProvider.notifier)
-        .searchPublicServices(query);
-  },
-);
+final searchPublicServicesProvider =
+    StreamProvider.family((ref, Tuple2 params) {
+  return ref
+      .watch(serviceControllerProvider.notifier)
+      .searchPublicServices(params.item1, params.item2);
+});
 
 final serviceControllerProvider =
     StateNotifierProvider<ServiceController, bool>((ref) {
@@ -489,7 +488,7 @@ class ServiceController extends StateNotifier<bool> {
     return _serviceRepository.searchPrivateServices(uid, query);
   }
 
-  Stream<List<Service>> searchPublicServices(String query) {
-    return _serviceRepository.searchPublicServices(query);
+  Stream<List<Service>> searchPublicServices(String query, List<String> tags) {
+    return _serviceRepository.searchPublicServices(query, tags);
   }
 }

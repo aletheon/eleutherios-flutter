@@ -150,7 +150,8 @@ class SearchRuleMemberDelegate extends SearchDelegate {
               );
         } else {
           return ref
-              .watch(searchPublicServicesProvider(query.toLowerCase()))
+              .watch(
+                  searchPublicServicesProvider(Tuple2(query.toLowerCase(), [])))
               .when(
                 data: (services) {
                   if (services.isNotEmpty) {

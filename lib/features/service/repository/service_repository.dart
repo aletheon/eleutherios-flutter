@@ -87,8 +87,8 @@ class ServiceRepository {
     }
   }
 
-  Stream<List<Service>> searchPublicServices(String query) {
-    if (query.isNotEmpty) {
+  Stream<List<Service>> searchPublicServices(String query, List<String> tags) {
+    if (query.isNotEmpty && tags.isNotEmpty) {
       return _services
           .where('public', isEqualTo: true)
           .where(
@@ -101,6 +101,40 @@ class ServiceRepository {
                       query.codeUnitAt(query.length - 1) + 1,
                     ),
           )
+          .where('tags', arrayContainsAny: tags)
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    } else if (query.isNotEmpty) {
+      return _services
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+            isLessThan: query.isEmpty
+                ? null
+                : query.substring(0, query.length - 1) +
+                    String.fromCharCode(
+                      query.codeUnitAt(query.length - 1) + 1,
+                    ),
+          )
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    } else if (tags.isNotEmpty) {
+      return _services
+          .where('public', isEqualTo: true)
+          .where('tags', arrayContainsAny: tags)
           .snapshots()
           .map((event) {
         List<Service> services = [];

@@ -135,7 +135,9 @@ class SearchConsumerDelegate extends SearchDelegate {
             loading: () => const Loader(),
           );
     } else {
-      return ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
+      return ref
+          .watch(searchPublicServicesProvider(Tuple2(query.toLowerCase(), [])))
+          .when(
             data: (services) {
               if (services.isNotEmpty) {
                 List<Service> servicesNotInPolicy = [];

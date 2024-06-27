@@ -57,8 +57,10 @@ final searchPrivateForumsProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicForumsProvider = StreamProvider.family((ref, String query) {
-  return ref.watch(forumControllerProvider.notifier).searchPublicForums(query);
+final searchPublicForumsProvider = StreamProvider.family((ref, Tuple2 params) {
+  return ref
+      .watch(forumControllerProvider.notifier)
+      .searchPublicForums(params.item1, params.item2);
 });
 
 final forumControllerProvider =
@@ -511,7 +513,7 @@ class ForumController extends StateNotifier<bool> {
     return _forumRepository.searchPrivateForums(uid, query);
   }
 
-  Stream<List<Forum>> searchPublicForums(String query) {
-    return _forumRepository.searchPublicForums(query);
+  Stream<List<Forum>> searchPublicForums(String query, List<String> tags) {
+    return _forumRepository.searchPublicForums(query, tags);
   }
 }

@@ -149,7 +149,8 @@ class SearchPolicyDelegate extends SearchDelegate {
               );
         } else {
           return ref
-              .watch(searchPublicPoliciesProvider(query.toLowerCase()))
+              .watch(
+                  searchPublicPoliciesProvider(Tuple2(query.toLowerCase(), [])))
               .when(
                 data: (policies) {
                   if (policies.isNotEmpty) {

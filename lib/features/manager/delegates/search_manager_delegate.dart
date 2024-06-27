@@ -6,8 +6,6 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/models/manager.dart';
-import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -152,7 +150,8 @@ class SearchManagerDelegate extends SearchDelegate {
               );
         } else {
           return ref
-              .watch(searchPublicServicesProvider(query.toLowerCase()))
+              .watch(
+                  searchPublicServicesProvider(Tuple2(query.toLowerCase(), [])))
               .when(
                 data: (services) {
                   if (services.isNotEmpty) {

@@ -81,10 +81,11 @@ final searchPrivatePoliciesProvider = StreamProvider.family.autoDispose(
   },
 );
 
-final searchPublicPoliciesProvider = StreamProvider.family((ref, String query) {
+final searchPublicPoliciesProvider =
+    StreamProvider.family((ref, Tuple2 params) {
   return ref
       .watch(policyControllerProvider.notifier)
-      .searchPublicPolicies(query);
+      .searchPublicPolicies(params.item1, params.item2);
 });
 
 final policyControllerProvider =
@@ -476,7 +477,7 @@ class PolicyController extends StateNotifier<bool> {
     return _policyRepository.searchPrivatePolicies(uid, query);
   }
 
-  Stream<List<Policy>> searchPublicPolicies(String query) {
-    return _policyRepository.searchPublicPolicies(query);
+  Stream<List<Policy>> searchPublicPolicies(String query, List<String> tags) {
+    return _policyRepository.searchPublicPolicies(query, tags);
   }
 }

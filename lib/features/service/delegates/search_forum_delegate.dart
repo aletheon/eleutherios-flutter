@@ -145,7 +145,9 @@ class SearchForumDelegate extends SearchDelegate {
             loading: () => const Loader(),
           );
     } else {
-      return ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
+      return ref
+          .watch(searchPublicForumsProvider(Tuple2(query.toLowerCase(), [])))
+          .when(
             data: (forums) {
               if (forums.isNotEmpty) {
                 List<Forum> forumsNotContainingService = [];

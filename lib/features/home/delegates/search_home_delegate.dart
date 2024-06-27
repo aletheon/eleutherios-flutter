@@ -11,6 +11,7 @@ import 'package:reddit_tutorial/features/policy/controller/policy_controller.dar
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class SearchHomeDelegate extends SearchDelegate {
   final WidgetRef ref;
@@ -137,32 +138,27 @@ class SearchHomeDelegate extends SearchDelegate {
                   alignment: WrapAlignment.end,
                   direction: Axis.horizontal,
                   children: searchTags.map((e) {
-                    return Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Chip(
-                            backgroundColor:
-                                _searchType == SearchType.policy.value
-                                    ? Pallete.policyTagColor
-                                    : _searchType == SearchType.forum.value
-                                        ? Pallete.forumTagColor
-                                        : Pallete.freeServiceTagColor,
-                            label: Text('$e#'),
-                            avatar: InkWell(
-                              onTap: () {
-                                print('tap');
-                              },
-                              child: const Icon(
-                                Icons.cancel,
-                              ),
-                            ),
-                          ),
-                        ));
+                    return Container(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Chip(
+                        backgroundColor: _searchType == SearchType.policy.value
+                            ? Pallete.policyTagColor
+                            : _searchType == SearchType.forum.value
+                                ? Pallete.forumTagColor
+                                : Pallete.freeServiceTagColor,
+                        label: Text('#$e'),
+                        onDeleted: () {
+                          searchTags.remove(e);
+                          query = query;
+                        },
+                      ),
+                    );
                   }).toList(),
                 )
               : const SizedBox(),
-          ref.watch(searchPublicPoliciesProvider(query.toLowerCase())).when(
+          ref
+              .watch(searchPublicPoliciesProvider(Tuple2(query, searchTags)))
+              .when(
                 data: (policies) {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -202,32 +198,25 @@ class SearchHomeDelegate extends SearchDelegate {
                   alignment: WrapAlignment.end,
                   direction: Axis.horizontal,
                   children: searchTags.map((e) {
-                    return Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Chip(
-                            backgroundColor:
-                                _searchType == SearchType.policy.value
-                                    ? Pallete.policyTagColor
-                                    : _searchType == SearchType.forum.value
-                                        ? Pallete.forumTagColor
-                                        : Pallete.freeServiceTagColor,
-                            label: Text('$e#'),
-                            avatar: InkWell(
-                              onTap: () {
-                                print('tap');
-                              },
-                              child: const Icon(
-                                Icons.cancel,
-                              ),
-                            ),
-                          ),
-                        ));
+                    return Container(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Chip(
+                        backgroundColor: _searchType == SearchType.policy.value
+                            ? Pallete.policyTagColor
+                            : _searchType == SearchType.forum.value
+                                ? Pallete.forumTagColor
+                                : Pallete.freeServiceTagColor,
+                        label: Text('#$e'),
+                        onDeleted: () {
+                          searchTags.remove(e);
+                          query = query;
+                        },
+                      ),
+                    );
                   }).toList(),
                 )
               : const SizedBox(),
-          ref.watch(searchPublicForumsProvider(query.toLowerCase())).when(
+          ref.watch(searchPublicForumsProvider(Tuple2(query, searchTags))).when(
                 data: (forums) {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -265,32 +254,27 @@ class SearchHomeDelegate extends SearchDelegate {
                   alignment: WrapAlignment.end,
                   direction: Axis.horizontal,
                   children: searchTags.map((e) {
-                    return Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Chip(
-                            backgroundColor:
-                                _searchType == SearchType.policy.value
-                                    ? Pallete.policyTagColor
-                                    : _searchType == SearchType.forum.value
-                                        ? Pallete.forumTagColor
-                                        : Pallete.freeServiceTagColor,
-                            label: Text('$e#'),
-                            avatar: InkWell(
-                              onTap: () {
-                                print('tap');
-                              },
-                              child: const Icon(
-                                Icons.cancel,
-                              ),
-                            ),
-                          ),
-                        ));
+                    return Container(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Chip(
+                        backgroundColor: _searchType == SearchType.policy.value
+                            ? Pallete.policyTagColor
+                            : _searchType == SearchType.forum.value
+                                ? Pallete.forumTagColor
+                                : Pallete.freeServiceTagColor,
+                        label: Text('#$e'),
+                        onDeleted: () {
+                          searchTags.remove(e);
+                          query = query;
+                        },
+                      ),
+                    );
                   }).toList(),
                 )
               : const SizedBox(),
-          ref.watch(searchPublicServicesProvider(query.toLowerCase())).when(
+          ref
+              .watch(searchPublicServicesProvider(Tuple2(query, searchTags)))
+              .when(
                 data: (services) {
                   return Expanded(
                     child: ListView.builder(
