@@ -66,39 +66,92 @@ class _RemoveForumScreenState extends ConsumerState<RemoveForumScreen> {
                         itemCount: forum.forums.length,
                         itemBuilder: (BuildContext context, int index) {
                           final childForumId = forum.forums[index];
-
                           return ref
                               .watch(getForumByIdProvider(childForumId))
                               .when(
                                 data: (childForum) {
-                                  return ListTile(
-                                    title: Text(
-                                      childForum!.title,
-                                      textWidthBasis:
-                                          TextWidthBasis.longestLine,
-                                    ),
-                                    leading: childForum.image ==
-                                            Constants.avatarDefault
-                                        ? CircleAvatar(
-                                            backgroundImage:
-                                                Image.asset(childForum.image)
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      ListTile(
+                                        title: Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                childForum!.title,
+                                                textWidthBasis:
+                                                    TextWidthBasis.longestLine,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            childForum.public
+                                                ? const Icon(
+                                                    Icons.lock_open_outlined,
+                                                    size: 18,
+                                                  )
+                                                : const Icon(
+                                                    Icons.lock_outlined,
+                                                    size: 18,
+                                                    color: Pallete.greyColor),
+                                          ],
+                                        ),
+                                        leading: childForum.image ==
+                                                Constants.avatarDefault
+                                            ? CircleAvatar(
+                                                backgroundImage: Image.asset(
+                                                        childForum.image)
                                                     .image,
-                                          )
-                                        : CircleAvatar(
-                                            backgroundImage:
-                                                NetworkImage(childForum.image),
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    childForum.image),
+                                              ),
+                                        trailing: TextButton(
+                                          onPressed: () => removeChildForum(
+                                              ref, childForum.forumId),
+                                          child: const Text(
+                                            'Remove',
                                           ),
-                                    trailing: TextButton(
-                                      onPressed: () => removeChildForum(
-                                        ref,
-                                        childForumId,
+                                        ),
+                                        onTap: () => showForumDetails(
+                                            context, childForum.forumId),
                                       ),
-                                      child: const Text(
-                                        'Remove',
-                                      ),
-                                    ),
-                                    onTap: () =>
-                                        showForumDetails(context, childForumId),
+                                      childForum.tags.isNotEmpty
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 0, right: 20, left: 10),
+                                              child: Wrap(
+                                                alignment: WrapAlignment.end,
+                                                direction: Axis.horizontal,
+                                                children:
+                                                    childForum.tags.map((e) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: FilterChip(
+                                                      visualDensity:
+                                                          const VisualDensity(
+                                                              vertical: -4,
+                                                              horizontal: -4),
+                                                      onSelected: (value) {},
+                                                      backgroundColor:
+                                                          Pallete.forumTagColor,
+                                                      label: Text(
+                                                        '#$e',
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                    ],
                                   );
                                 },
                                 error: (error, stackTrace) =>

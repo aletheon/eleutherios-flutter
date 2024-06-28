@@ -117,29 +117,76 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
                     itemCount: rules.length,
                     itemBuilder: (BuildContext context, int index) {
                       final rule = rules[index];
-
-                      return ListTile(
-                        title: Text(
-                          rule!.title,
-                          textWidthBasis: TextWidthBasis.longestLine,
-                        ),
-                        leading: rule.image == Constants.avatarDefault
-                            ? CircleAvatar(
-                                backgroundImage: Image.asset(rule.image).image,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(rule.image),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          ListTile(
+                            title: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    rule.title,
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                rule.public
+                                    ? const Icon(
+                                        Icons.lock_open_outlined,
+                                        size: 18,
+                                      )
+                                    : const Icon(Icons.lock_outlined,
+                                        size: 18, color: Pallete.greyColor),
+                              ],
+                            ),
+                            leading: rule.image == Constants.avatarDefault
+                                ? CircleAvatar(
+                                    backgroundImage:
+                                        Image.asset(rule.image).image,
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: NetworkImage(rule.image),
+                                  ),
+                            trailing: TextButton(
+                              onPressed: () => removeRule(ref, rule.ruleId),
+                              child: const Text(
+                                'Remove',
                               ),
-                        trailing: TextButton(
-                          onPressed: () => removeRule(
-                            ref,
-                            rule.ruleId,
+                            ),
+                            onTap: () => showRuleDetails(context, rule.ruleId),
                           ),
-                          child: const Text(
-                            'Remove',
-                          ),
-                        ),
-                        onTap: () => showRuleDetails(context, rule.ruleId),
+                          rule.tags.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 0, right: 20, left: 10),
+                                  child: Wrap(
+                                    alignment: WrapAlignment.end,
+                                    direction: Axis.horizontal,
+                                    children: rule.tags.map((e) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5),
+                                        child: FilterChip(
+                                          visualDensity: const VisualDensity(
+                                              vertical: -4, horizontal: -4),
+                                          onSelected: (value) {},
+                                          backgroundColor:
+                                              Pallete.forumTagColor,
+                                          label: Text(
+                                            '#$e',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
                       );
                     },
                   ),

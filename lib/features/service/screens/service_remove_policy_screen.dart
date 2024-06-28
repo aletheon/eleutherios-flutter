@@ -67,32 +67,84 @@ class ServiceRemovePolicyScreen extends ConsumerWidget {
                           itemCount: serviceConsumerPolicies.length,
                           itemBuilder: (BuildContext context, int index) {
                             final policy = serviceConsumerPolicies[index];
-
-                            return ListTile(
-                              title: Text(
-                                policy.title,
-                                textWidthBasis: TextWidthBasis.longestLine,
-                              ),
-                              leading: policy.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(policy.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(policy.image),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                ListTile(
+                                  title: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          policy.title,
+                                          textWidthBasis:
+                                              TextWidthBasis.longestLine,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      policy.public
+                                          ? const Icon(
+                                              Icons.lock_open_outlined,
+                                              size: 18,
+                                            )
+                                          : const Icon(Icons.lock_outlined,
+                                              size: 18,
+                                              color: Pallete.greyColor),
+                                    ],
+                                  ),
+                                  leading: policy.image ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(policy.image).image,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(policy.image),
+                                        ),
+                                  trailing: TextButton(
+                                    onPressed: () => removeServicePolicy(
+                                        ref, policy.policyId),
+                                    child: const Text(
+                                      'Remove',
                                     ),
-                              trailing: TextButton(
-                                onPressed: () => removeServicePolicy(
-                                  ref,
-                                  policy.policyId,
+                                  ),
+                                  onTap: () => showPolicyDetails(
+                                      context, policy.policyId),
                                 ),
-                                child: const Text(
-                                  'Remove',
-                                ),
-                              ),
-                              onTap: () =>
-                                  showPolicyDetails(context, policy.policyId),
+                                policy.tags.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 0, right: 20, left: 10),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.end,
+                                          direction: Axis.horizontal,
+                                          children: policy.tags.map((e) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: FilterChip(
+                                                visualDensity:
+                                                    const VisualDensity(
+                                                        vertical: -4,
+                                                        horizontal: -4),
+                                                onSelected: (value) {},
+                                                backgroundColor:
+                                                    Pallete.policyTagColor,
+                                                label: Text(
+                                                  '#$e',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
                             );
                           },
                         ),
