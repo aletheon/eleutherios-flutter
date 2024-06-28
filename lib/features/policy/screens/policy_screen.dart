@@ -213,6 +213,39 @@ class PolicyScreen extends ConsumerWidget {
                                             const SizedBox(
                                               height: 5,
                                             ),
+                                            policy.tags.isNotEmpty
+                                                ? Wrap(
+                                                    alignment:
+                                                        WrapAlignment.end,
+                                                    direction: Axis.horizontal,
+                                                    children:
+                                                        policy.tags.map((e) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 5),
+                                                        child: FilterChip(
+                                                          visualDensity:
+                                                              const VisualDensity(
+                                                                  vertical: -4,
+                                                                  horizontal:
+                                                                      -4),
+                                                          onSelected:
+                                                              (value) {},
+                                                          backgroundColor: Pallete
+                                                              .policyTagColor,
+                                                          label: Text(
+                                                            '#$e',
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  )
+                                                : const SizedBox(),
                                             policy.description.isNotEmpty
                                                 ? Wrap(
                                                     children: [

@@ -140,6 +140,33 @@ class ServiceScreen extends ConsumerWidget {
                                     const SizedBox(
                                       height: 5,
                                     ),
+                                    service.tags.isNotEmpty
+                                        ? Wrap(
+                                            alignment: WrapAlignment.end,
+                                            direction: Axis.horizontal,
+                                            children: service.tags.map((e) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: FilterChip(
+                                                  visualDensity:
+                                                      const VisualDensity(
+                                                          vertical: -4,
+                                                          horizontal: -4),
+                                                  onSelected: (value) {},
+                                                  backgroundColor: Pallete
+                                                      .freeServiceTagColor,
+                                                  label: Text(
+                                                    '#$e',
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          )
+                                        : const SizedBox(),
                                     service.description.isNotEmpty
                                         ? Wrap(
                                             children: [

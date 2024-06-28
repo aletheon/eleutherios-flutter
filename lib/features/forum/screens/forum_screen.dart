@@ -171,6 +171,40 @@ class ForumScreen extends ConsumerWidget {
                                             const SizedBox(
                                               height: 5,
                                             ),
+                                            forum.tags.isNotEmpty
+                                                ? Wrap(
+                                                    alignment:
+                                                        WrapAlignment.end,
+                                                    direction: Axis.horizontal,
+                                                    children:
+                                                        forum.tags.map((e) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 5),
+                                                        child: FilterChip(
+                                                          visualDensity:
+                                                              const VisualDensity(
+                                                                  vertical: -4,
+                                                                  horizontal:
+                                                                      -4),
+                                                          onSelected:
+                                                              (value) {},
+                                                          backgroundColor:
+                                                              Pallete
+                                                                  .forumTagColor,
+                                                          label: Text(
+                                                            '#$e',
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  )
+                                                : const SizedBox(),
                                             forum.description.isNotEmpty
                                                 ? Wrap(
                                                     children: [
