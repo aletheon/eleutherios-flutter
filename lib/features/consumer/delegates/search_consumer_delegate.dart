@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
@@ -20,6 +21,13 @@ class SearchConsumerDelegate extends SearchDelegate {
 
   final searchRadioProvider = StateProvider<String>((ref) => '');
   bool initializedSearch = false;
+
+  void addPolicyToService(
+      BuildContext context, WidgetRef ref, String serviceId) {
+    ref
+        .read(policyControllerProvider.notifier)
+        .addPolicyToService(serviceId, policy.policyId, context);
+  }
 
   void showServiceDetails(BuildContext context, String serviceId) {
     Routemaster.of(context).push('/service/$serviceId');
@@ -211,13 +219,13 @@ class SearchConsumerDelegate extends SearchDelegate {
                     : CircleAvatar(
                         backgroundImage: NetworkImage(service.image),
                       ),
-                // trailing: TextButton(
-                //   onPressed: () => addRuleMemberService(
-                //       ref, rule.ruleId, service.serviceId),
-                //   child: const Text(
-                //     'Add',
-                //   ),
-                // ),
+                trailing: TextButton(
+                  onPressed: () =>
+                      addPolicyToService(context, ref, service.serviceId),
+                  child: const Text(
+                    'Add',
+                  ),
+                ),
                 onTap: () => showServiceDetails(context, service.serviceId),
               ),
               service.tags.isNotEmpty
