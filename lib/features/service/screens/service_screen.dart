@@ -315,74 +315,74 @@ class ServiceScreen extends ConsumerWidget {
                                 // #####################################################
                                 // Show policies
                                 // #####################################################
-                                ref
-                                    .watch(getServiceConsumerPoliciesProvider(
-                                        serviceId))
-                                    .when(
-                                      data: (policies) {
-                                        if (policies.isEmpty) {
-                                          return const Center(
-                                            child: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child:
-                                                  Text("There are no policies"),
-                                            ),
-                                          );
-                                        } else {
-                                          return MediaQuery.removePadding(
-                                            context: context,
-                                            removeTop: true,
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: policies.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                final policy = policies[index];
+                                // ref
+                                //     .watch(getServiceConsumerPoliciesProvider(
+                                //         serviceId))
+                                //     .when(
+                                //       data: (policies) {
+                                //         if (policies.isEmpty) {
+                                //           return const Center(
+                                //             child: Padding(
+                                //               padding: EdgeInsets.all(8.0),
+                                //               child:
+                                //                   Text("There are no policies"),
+                                //             ),
+                                //           );
+                                //         } else {
+                                //           return MediaQuery.removePadding(
+                                //             context: context,
+                                //             removeTop: true,
+                                //             child: ListView.builder(
+                                //               shrinkWrap: true,
+                                //               itemCount: policies.length,
+                                //               itemBuilder:
+                                //                   (BuildContext context,
+                                //                       int index) {
+                                //                 final policy = policies[index];
 
-                                                return ListTile(
-                                                  title: Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Text(
-                                                          policy.title,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                          textWidthBasis:
-                                                              TextWidthBasis
-                                                                  .longestLine,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  leading: policy.image ==
-                                                          Constants
-                                                              .avatarDefault
-                                                      ? CircleAvatar(
-                                                          backgroundImage:
-                                                              Image.asset(policy
-                                                                      .image)
-                                                                  .image,
-                                                        )
-                                                      : CircleAvatar(
-                                                          backgroundImage:
-                                                              NetworkImage(
-                                                                  policy.image),
-                                                        ),
-                                                  onTap: () => navigateToPolicy(
-                                                      context, policy.policyId),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      error: (error, stackTrace) =>
-                                          ErrorText(error: error.toString()),
-                                      loading: () => const Loader(),
-                                    ),
+                                //                 return ListTile(
+                                //                   title: Row(
+                                //                     children: [
+                                //                       Flexible(
+                                //                         child: Text(
+                                //                           policy.title,
+                                //                           style:
+                                //                               const TextStyle(
+                                //                             fontSize: 14,
+                                //                           ),
+                                //                           textWidthBasis:
+                                //                               TextWidthBasis
+                                //                                   .longestLine,
+                                //                         ),
+                                //                       ),
+                                //                     ],
+                                //                   ),
+                                //                   leading: policy.image ==
+                                //                           Constants
+                                //                               .avatarDefault
+                                //                       ? CircleAvatar(
+                                //                           backgroundImage:
+                                //                               Image.asset(policy
+                                //                                       .image)
+                                //                                   .image,
+                                //                         )
+                                //                       : CircleAvatar(
+                                //                           backgroundImage:
+                                //                               NetworkImage(
+                                //                                   policy.image),
+                                //                         ),
+                                //                   onTap: () => navigateToPolicy(
+                                //                       context, policy.policyId),
+                                //                 );
+                                //               },
+                                //             ),
+                                //           );
+                                //         }
+                                //       },
+                                //       error: (error, stackTrace) =>
+                                //           ErrorText(error: error.toString()),
+                                //       loading: () => const Loader(),
+                                //     ),
                               ],
                             ),
                           ],

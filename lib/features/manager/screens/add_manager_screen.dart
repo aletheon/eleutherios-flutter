@@ -54,23 +54,69 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
           itemCount: services.length,
           itemBuilder: (BuildContext context, int index) {
             final service = services[index];
-            return ListTile(
-              title: Text(service.title),
-              leading: service.image == Constants.avatarDefault
-                  ? CircleAvatar(
-                      backgroundImage: Image.asset(service.image).image,
-                    )
-                  : CircleAvatar(
-                      backgroundImage: NetworkImage(service.image),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ListTile(
+                  title: Row(
+                    children: [
+                      Text(service.title),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      service.public
+                          ? const Icon(
+                              Icons.lock_open_outlined,
+                              size: 18,
+                            )
+                          : const Icon(Icons.lock_outlined,
+                              size: 18, color: Pallete.greyColor),
+                    ],
+                  ),
+                  leading: service.image == Constants.avatarDefault
+                      ? CircleAvatar(
+                          backgroundImage: Image.asset(service.image).image,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(service.image),
+                        ),
+                  trailing: TextButton(
+                    onPressed: () => addManagerService(
+                        ref, policy.policyId, service.serviceId),
+                    child: const Text(
+                      'Add',
                     ),
-              trailing: TextButton(
-                onPressed: () =>
-                    addManagerService(ref, policy.policyId, service.serviceId),
-                child: const Text(
-                  'Add',
+                  ),
+                  onTap: () => showServiceDetails(context, service.serviceId),
                 ),
-              ),
-              onTap: () => showServiceDetails(context, service.serviceId),
+                service.tags.isNotEmpty
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.only(top: 0, right: 20, left: 10),
+                        child: Wrap(
+                          alignment: WrapAlignment.end,
+                          direction: Axis.horizontal,
+                          children: service.tags.map((e) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: FilterChip(
+                                visualDensity: const VisualDensity(
+                                    vertical: -4, horizontal: -4),
+                                onSelected: (value) {},
+                                backgroundColor: Pallete.freeServiceTagColor,
+                                label: Text(
+                                  '#$e',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
             );
           },
         ),

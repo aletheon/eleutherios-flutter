@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/features/service/controller/service_controller.d
 import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
@@ -184,16 +185,69 @@ class SearchConsumerDelegate extends SearchDelegate {
         itemCount: services.length,
         itemBuilder: (BuildContext context, int index) {
           final service = services[index];
-          return ListTile(
-            leading: service.image == Constants.avatarDefault
-                ? CircleAvatar(
-                    backgroundImage: Image.asset(service.image).image,
-                  )
-                : CircleAvatar(
-                    backgroundImage: NetworkImage(service.image),
-                  ),
-            title: Text(service.title),
-            onTap: () => showServiceDetails(context, service.serviceId),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ListTile(
+                title: Row(
+                  children: [
+                    Text(service.title),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    service.public
+                        ? const Icon(
+                            Icons.lock_open_outlined,
+                            size: 18,
+                          )
+                        : const Icon(Icons.lock_outlined,
+                            size: 18, color: Pallete.greyColor),
+                  ],
+                ),
+                leading: service.image == Constants.avatarDefault
+                    ? CircleAvatar(
+                        backgroundImage: Image.asset(service.image).image,
+                      )
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(service.image),
+                      ),
+                // trailing: TextButton(
+                //   onPressed: () => addRuleMemberService(
+                //       ref, rule.ruleId, service.serviceId),
+                //   child: const Text(
+                //     'Add',
+                //   ),
+                // ),
+                onTap: () => showServiceDetails(context, service.serviceId),
+              ),
+              service.tags.isNotEmpty
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(top: 0, right: 20, left: 10),
+                      child: Wrap(
+                        alignment: WrapAlignment.end,
+                        direction: Axis.horizontal,
+                        children: service.tags.map((e) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: FilterChip(
+                              visualDensity: const VisualDensity(
+                                  vertical: -4, horizontal: -4),
+                              onSelected: (value) {},
+                              backgroundColor: Pallete.freeServiceTagColor,
+                              label: Text(
+                                '#$e',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
           );
         },
       ),
