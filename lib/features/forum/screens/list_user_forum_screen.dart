@@ -101,38 +101,76 @@ class ListUserForumScreen extends ConsumerWidget {
                           itemCount: forums.length,
                           itemBuilder: (BuildContext context, int index) {
                             final forum = forums[index];
-                            return ListTile(
-                              leading: forum.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(forum.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(forum.image),
-                                    ),
-                              title: Row(
-                                children: [
-                                  Text(forum.title),
-                                  const SizedBox(
-                                    width: 5,
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                ListTile(
+                                  title: Row(
+                                    children: [
+                                      Text(forum.title),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      forum.public
+                                          ? const Icon(
+                                              Icons.lock_open_outlined,
+                                              size: 18,
+                                            )
+                                          : const Icon(Icons.lock_outlined,
+                                              size: 18,
+                                              color: Pallete.greyColor),
+                                    ],
                                   ),
-                                  forum.public
-                                      ? const Icon(
-                                          Icons.lock_open_outlined,
-                                          size: 18,
+                                  leading: forum.image ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(forum.image).image,
                                         )
-                                      : const Icon(Icons.lock_outlined,
-                                          size: 18, color: Pallete.greyColor),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () => deleteForum(
-                                    context, ref, forum.uid, forum.forumId),
-                              ),
-                              onTap: () =>
-                                  showForumDetails(context, forum.forumId),
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(forum.image),
+                                        ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () => deleteForum(
+                                        context, ref, forum.uid, forum.forumId),
+                                  ),
+                                  onTap: () =>
+                                      showForumDetails(context, forum.forumId),
+                                ),
+                                forum.tags.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 0, right: 20, left: 10),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.end,
+                                          direction: Axis.horizontal,
+                                          children: forum.tags.map((e) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: FilterChip(
+                                                visualDensity:
+                                                    const VisualDensity(
+                                                        vertical: -4,
+                                                        horizontal: -4),
+                                                onSelected: (value) {},
+                                                backgroundColor:
+                                                    Pallete.forumTagColor,
+                                                label: Text(
+                                                  '#$e',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
                             );
                           },
                         ),

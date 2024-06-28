@@ -131,7 +131,7 @@ class SearchHomeDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     if (_searchType == SearchType.policy.value) {
       return Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -154,6 +154,8 @@ class SearchHomeDelegate extends SearchDelegate {
                           ),
                           onDeleted: () {
                             searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
                             query = query;
                           },
                         ),
@@ -170,14 +172,43 @@ class SearchHomeDelegate extends SearchDelegate {
                       itemCount: policies.length,
                       itemBuilder: (BuildContext context, int index) {
                         final policy = policies[index];
-                        return ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(policy.title),
-                              policy.tags.isNotEmpty
-                                  ? Wrap(
-                                      alignment: WrapAlignment.start,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ListTile(
+                              title: Row(
+                                children: [
+                                  Text(policy.title),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  policy.public
+                                      ? const Icon(
+                                          Icons.lock_open_outlined,
+                                          size: 18,
+                                        )
+                                      : const Icon(Icons.lock_outlined,
+                                          size: 18, color: Pallete.greyColor),
+                                ],
+                              ),
+                              leading: policy.image == Constants.avatarDefault
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          Image.asset(policy.image).image,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(policy.image),
+                                    ),
+                              onTap: () =>
+                                  showForumDetails(context, policy.policyId),
+                            ),
+                            policy.tags.isNotEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 0, right: 0, left: 10),
+                                    child: Wrap(
+                                      alignment: WrapAlignment.end,
                                       direction: Axis.horizontal,
                                       children: policy.tags.map((e) {
                                         return Padding(
@@ -198,20 +229,10 @@ class SearchHomeDelegate extends SearchDelegate {
                                           ),
                                         );
                                       }).toList(),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ),
-                          leading: policy.image == Constants.avatarDefault
-                              ? CircleAvatar(
-                                  backgroundImage:
-                                      Image.asset(policy.image).image,
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: NetworkImage(policy.image),
-                                ),
-                          onTap: () =>
-                              showPolicyDetails(context, policy.policyId),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
                         );
                       },
                     );
@@ -227,7 +248,7 @@ class SearchHomeDelegate extends SearchDelegate {
       );
     } else if (_searchType == SearchType.forum.value) {
       return Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -250,6 +271,8 @@ class SearchHomeDelegate extends SearchDelegate {
                           ),
                           onDeleted: () {
                             searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
                             query = query;
                           },
                         ),
@@ -266,14 +289,43 @@ class SearchHomeDelegate extends SearchDelegate {
                       itemCount: forums.length,
                       itemBuilder: (BuildContext context, int index) {
                         final forum = forums[index];
-                        return ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(forum.title),
-                              forum.tags.isNotEmpty
-                                  ? Wrap(
-                                      alignment: WrapAlignment.start,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ListTile(
+                              title: Row(
+                                children: [
+                                  Text(forum.title),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  forum.public
+                                      ? const Icon(
+                                          Icons.lock_open_outlined,
+                                          size: 18,
+                                        )
+                                      : const Icon(Icons.lock_outlined,
+                                          size: 18, color: Pallete.greyColor),
+                                ],
+                              ),
+                              leading: forum.image == Constants.avatarDefault
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          Image.asset(forum.image).image,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(forum.image),
+                                    ),
+                              onTap: () =>
+                                  showForumDetails(context, forum.forumId),
+                            ),
+                            forum.tags.isNotEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 0, right: 0, left: 10),
+                                    child: Wrap(
+                                      alignment: WrapAlignment.end,
                                       direction: Axis.horizontal,
                                       children: forum.tags.map((e) {
                                         return Padding(
@@ -294,19 +346,10 @@ class SearchHomeDelegate extends SearchDelegate {
                                           ),
                                         );
                                       }).toList(),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ),
-                          leading: forum.image == Constants.avatarDefault
-                              ? CircleAvatar(
-                                  backgroundImage:
-                                      Image.asset(forum.image).image,
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: NetworkImage(forum.image),
-                                ),
-                          onTap: () => showForumDetails(context, forum.forumId),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
                         );
                       },
                     );
@@ -322,7 +365,7 @@ class SearchHomeDelegate extends SearchDelegate {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -345,6 +388,8 @@ class SearchHomeDelegate extends SearchDelegate {
                           ),
                           onDeleted: () {
                             searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
                             query = query;
                           },
                         ),
@@ -362,14 +407,44 @@ class SearchHomeDelegate extends SearchDelegate {
                         itemCount: services.length,
                         itemBuilder: (BuildContext context, int index) {
                           final service = services[index];
-                          return ListTile(
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(service.title),
-                                service.tags.isNotEmpty
-                                    ? Wrap(
-                                        alignment: WrapAlignment.start,
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(service.title),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    service.public
+                                        ? const Icon(
+                                            Icons.lock_open_outlined,
+                                            size: 18,
+                                          )
+                                        : const Icon(Icons.lock_outlined,
+                                            size: 18, color: Pallete.greyColor),
+                                  ],
+                                ),
+                                leading: service.image ==
+                                        Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(service.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(service.image),
+                                      ),
+                                onTap: () => showServiceDetails(
+                                    context, service.serviceId),
+                              ),
+                              service.tags.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, right: 0, left: 10),
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
                                         direction: Axis.horizontal,
                                         children: service.tags.map((e) {
                                           return Padding(
@@ -392,21 +467,10 @@ class SearchHomeDelegate extends SearchDelegate {
                                             ),
                                           );
                                         }).toList(),
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            ),
-                            leading: service.image == Constants.avatarDefault
-                                ? CircleAvatar(
-                                    backgroundImage:
-                                        Image.asset(service.image).image,
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(service.image),
-                                  ),
-                            onTap: () =>
-                                showServiceDetails(context, service.serviceId),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
                           );
                         },
                       ),
