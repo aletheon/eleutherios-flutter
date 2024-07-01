@@ -89,14 +89,17 @@ class SearchHomeDelegate extends SearchDelegate {
               ),
               IconButton(
                 onPressed: () async {
-                  List<String> tags = await showDialog(
+                  await showDialog(
                     context: context,
                     builder: (context) => SearchTagDialog(
                       searchType: _searchType,
                       initialTags: searchTags,
                     ),
-                  );
-                  searchTags = tags;
+                  ).then((tags) {
+                    if (tags != null) {
+                      searchTags = tags;
+                    }
+                  });
                 },
                 icon: const Icon(Icons.tag),
               ),
@@ -164,75 +167,87 @@ class SearchHomeDelegate extends SearchDelegate {
                 : const SizedBox(),
             ref.watch(searchPublicPoliciesProvider(search)).when(
                   data: (policies) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: policies.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final policy = policies[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            ListTile(
-                              title: Row(
-                                children: [
-                                  Text(policy.title),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  policy.public
-                                      ? const Icon(
-                                          Icons.lock_open_outlined,
-                                          size: 18,
-                                        )
-                                      : const Icon(Icons.lock_outlined,
-                                          size: 18, color: Pallete.greyColor),
-                                ],
-                              ),
-                              leading: policy.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(policy.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(policy.image),
+                    if (policies.isNotEmpty) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: policies.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final policy = policies[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(policy.title),
+                                    const SizedBox(
+                                      width: 5,
                                     ),
-                              onTap: () =>
-                                  showForumDetails(context, policy.policyId),
-                            ),
-                            policy.tags.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 0, right: 0, left: 10),
-                                    child: Wrap(
-                                      alignment: WrapAlignment.end,
-                                      direction: Axis.horizontal,
-                                      children: policy.tags.map((e) {
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5),
-                                          child: FilterChip(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4, horizontal: -4),
-                                            onSelected: (value) {},
-                                            backgroundColor:
-                                                Pallete.policyTagColor,
-                                            label: Text(
-                                              '#$e',
-                                              style: const TextStyle(
-                                                fontSize: 12,
+                                    policy.public
+                                        ? const Icon(
+                                            Icons.lock_open_outlined,
+                                            size: 18,
+                                          )
+                                        : const Icon(Icons.lock_outlined,
+                                            size: 18, color: Pallete.greyColor),
+                                  ],
+                                ),
+                                leading: policy.image == Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(policy.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(policy.image),
+                                      ),
+                                onTap: () =>
+                                    showForumDetails(context, policy.policyId),
+                              ),
+                              policy.tags.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, right: 0, left: 10),
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
+                                        direction: Axis.horizontal,
+                                        children: policy.tags.map((e) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: FilterChip(
+                                              visualDensity:
+                                                  const VisualDensity(
+                                                      vertical: -4,
+                                                      horizontal: -4),
+                                              onSelected: (value) {},
+                                              backgroundColor:
+                                                  Pallete.policyTagColor,
+                                              label: Text(
+                                                '#$e',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                : const SizedBox(),
-                          ],
-                        );
-                      },
-                    );
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('No policies found'),
+                        ),
+                      );
+                    }
                   },
                   error: (error, stackTrace) {
                     print(error.toString());
@@ -279,75 +294,87 @@ class SearchHomeDelegate extends SearchDelegate {
                 : const SizedBox(),
             ref.watch(searchPublicForumsProvider(search)).when(
                   data: (forums) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: forums.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final forum = forums[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            ListTile(
-                              title: Row(
-                                children: [
-                                  Text(forum.title),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  forum.public
-                                      ? const Icon(
-                                          Icons.lock_open_outlined,
-                                          size: 18,
-                                        )
-                                      : const Icon(Icons.lock_outlined,
-                                          size: 18, color: Pallete.greyColor),
-                                ],
-                              ),
-                              leading: forum.image == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(forum.image).image,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(forum.image),
+                    if (forums.isNotEmpty) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: forums.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final forum = forums[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(forum.title),
+                                    const SizedBox(
+                                      width: 5,
                                     ),
-                              onTap: () =>
-                                  showForumDetails(context, forum.forumId),
-                            ),
-                            forum.tags.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 0, right: 0, left: 10),
-                                    child: Wrap(
-                                      alignment: WrapAlignment.end,
-                                      direction: Axis.horizontal,
-                                      children: forum.tags.map((e) {
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5),
-                                          child: FilterChip(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4, horizontal: -4),
-                                            onSelected: (value) {},
-                                            backgroundColor:
-                                                Pallete.forumTagColor,
-                                            label: Text(
-                                              '#$e',
-                                              style: const TextStyle(
-                                                fontSize: 12,
+                                    forum.public
+                                        ? const Icon(
+                                            Icons.lock_open_outlined,
+                                            size: 18,
+                                          )
+                                        : const Icon(Icons.lock_outlined,
+                                            size: 18, color: Pallete.greyColor),
+                                  ],
+                                ),
+                                leading: forum.image == Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(forum.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(forum.image),
+                                      ),
+                                onTap: () =>
+                                    showForumDetails(context, forum.forumId),
+                              ),
+                              forum.tags.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, right: 0, left: 10),
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
+                                        direction: Axis.horizontal,
+                                        children: forum.tags.map((e) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: FilterChip(
+                                              visualDensity:
+                                                  const VisualDensity(
+                                                      vertical: -4,
+                                                      horizontal: -4),
+                                              onSelected: (value) {},
+                                              backgroundColor:
+                                                  Pallete.forumTagColor,
+                                              label: Text(
+                                                '#$e',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                : const SizedBox(),
-                          ],
-                        );
-                      },
-                    );
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('No forums found'),
+                        ),
+                      );
+                    }
                   },
                   error: (error, stackTrace) {
                     print(error.toString());
@@ -394,80 +421,91 @@ class SearchHomeDelegate extends SearchDelegate {
                 : const SizedBox(),
             ref.watch(searchPublicServicesProvider(search)).when(
                   data: (services) {
-                    return Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: services.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final service = services[index];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              ListTile(
-                                title: Row(
-                                  children: [
-                                    Text(service.title),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    service.public
-                                        ? const Icon(
-                                            Icons.lock_open_outlined,
-                                            size: 18,
-                                          )
-                                        : const Icon(Icons.lock_outlined,
-                                            size: 18, color: Pallete.greyColor),
-                                  ],
-                                ),
-                                leading: service.image ==
-                                        Constants.avatarDefault
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            Image.asset(service.image).image,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(service.image),
+                    if (services.isNotEmpty) {
+                      return Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: services.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final service = services[index];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                ListTile(
+                                  title: Row(
+                                    children: [
+                                      Text(service.title),
+                                      const SizedBox(
+                                        width: 5,
                                       ),
-                                onTap: () => showServiceDetails(
-                                    context, service.serviceId),
-                              ),
-                              service.tags.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 0, right: 0, left: 10),
-                                      child: Wrap(
-                                        alignment: WrapAlignment.end,
-                                        direction: Axis.horizontal,
-                                        children: service.tags.map((e) {
-                                          return Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 5),
-                                            child: FilterChip(
-                                              visualDensity:
-                                                  const VisualDensity(
-                                                      vertical: -4,
-                                                      horizontal: -4),
-                                              onSelected: (value) {},
-                                              backgroundColor:
-                                                  Pallete.freeServiceTagColor,
-                                              label: Text(
-                                                '#$e',
-                                                style: const TextStyle(
-                                                  fontSize: 12,
+                                      service.public
+                                          ? const Icon(
+                                              Icons.lock_open_outlined,
+                                              size: 18,
+                                            )
+                                          : const Icon(Icons.lock_outlined,
+                                              size: 18,
+                                              color: Pallete.greyColor),
+                                    ],
+                                  ),
+                                  leading: service.image ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(service.image).image,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(service.image),
+                                        ),
+                                  onTap: () => showServiceDetails(
+                                      context, service.serviceId),
+                                ),
+                                service.tags.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 0, right: 0, left: 10),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.end,
+                                          direction: Axis.horizontal,
+                                          children: service.tags.map((e) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: FilterChip(
+                                                visualDensity:
+                                                    const VisualDensity(
+                                                        vertical: -4,
+                                                        horizontal: -4),
+                                                onSelected: (value) {},
+                                                backgroundColor:
+                                                    Pallete.freeServiceTagColor,
+                                                label: Text(
+                                                  '#$e',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          );
-                        },
-                      ),
-                    );
+                                            );
+                                          }).toList(),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('No services found'),
+                        ),
+                      );
+                    }
                   },
                   error: (error, stackTrace) {
                     print(error.toString());

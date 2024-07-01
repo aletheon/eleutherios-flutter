@@ -66,14 +66,17 @@ class SearchManagerDelegate extends SearchDelegate {
               ),
               IconButton(
                 onPressed: () async {
-                  List<String> tags = await showDialog(
+                  await showDialog(
                     context: context,
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.service.value,
                       initialTags: searchTags,
                     ),
-                  );
-                  searchTags = tags;
+                  ).then((tags) {
+                    if (tags != null) {
+                      searchTags = tags;
+                    }
+                  });
                 },
                 icon: const Icon(Icons.tag),
               ),
@@ -174,7 +177,13 @@ class SearchManagerDelegate extends SearchDelegate {
                             );
                           }
                         } else {
-                          return const SizedBox();
+                          return Container(
+                            alignment: Alignment.topCenter,
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 15),
+                              child: Text('No services found'),
+                            ),
+                          );
                         }
                       },
                       error: (error, stackTrace) {
@@ -254,7 +263,13 @@ class SearchManagerDelegate extends SearchDelegate {
                             );
                           }
                         } else {
-                          return const SizedBox();
+                          return Container(
+                            alignment: Alignment.topCenter,
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 15),
+                              child: Text('No services found'),
+                            ),
+                          );
                         }
                       },
                       error: (error, stackTrace) {
@@ -274,9 +289,9 @@ class SearchManagerDelegate extends SearchDelegate {
   }
 
   Widget showServiceList(WidgetRef ref, List<Service> services) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+    return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         itemCount: services.length,
         itemBuilder: (BuildContext context, int index) {
           final service = services[index];
@@ -318,7 +333,7 @@ class SearchManagerDelegate extends SearchDelegate {
               service.tags.isNotEmpty
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(top: 0, right: 20, left: 10),
+                          const EdgeInsets.only(top: 0, right: 0, left: 10),
                       child: Wrap(
                         alignment: WrapAlignment.end,
                         direction: Axis.horizontal,

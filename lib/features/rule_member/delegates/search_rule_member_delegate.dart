@@ -66,14 +66,17 @@ class SearchRuleMemberDelegate extends SearchDelegate {
               ),
               IconButton(
                 onPressed: () async {
-                  List<String> tags = await showDialog(
+                  await showDialog(
                     context: context,
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.service.value,
                       initialTags: searchTags,
                     ),
-                  );
-                  searchTags = tags;
+                  ).then((tags) {
+                    if (tags != null) {
+                      searchTags = tags;
+                    }
+                  });
                 },
                 icon: const Icon(Icons.tag),
               ),
@@ -169,7 +172,13 @@ class SearchRuleMemberDelegate extends SearchDelegate {
                         );
                       }
                     } else {
-                      return const SizedBox();
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('No services found'),
+                        ),
+                      );
                     }
                   },
                   error: (error, stackTrace) {
@@ -248,7 +257,13 @@ class SearchRuleMemberDelegate extends SearchDelegate {
                         );
                       }
                     } else {
-                      return const SizedBox();
+                      return Container(
+                        alignment: Alignment.topCenter,
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text('No services found'),
+                        ),
+                      );
                     }
                   },
                   error: (error, stackTrace) {
