@@ -402,7 +402,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
                               delegate: SearchMemberDelegate(
                                   ref,
                                   user,
-                                  widget.forumId,
+                                  forum!,
                                   ref
                                               .read(
                                                   searchRadioProvider.notifier)

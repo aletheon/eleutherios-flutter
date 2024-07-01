@@ -6,6 +6,7 @@ import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
 import 'package:reddit_tutorial/models/forum.dart';
+import 'package:reddit_tutorial/models/search.dart';
 
 final forumRepositoryProvider = Provider((ref) {
   return ForumRepository(firestore: ref.watch(firestoreProvider));
@@ -86,18 +87,18 @@ class ForumRepository {
     });
   }
 
-  Stream<List<Forum>> searchPrivateForums(String uid, String query) {
-    if (query.isNotEmpty) {
+  Stream<List<Forum>> searchPrivateForums(Search search) {
+    if (search.query.isNotEmpty) {
       return _forums
-          .where('uid', isEqualTo: uid)
+          .where('uid', isEqualTo: search.uid)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
           .snapshots()
@@ -109,7 +110,10 @@ class ForumRepository {
         return forums;
       });
     } else {
-      return _forums.where('uid', isEqualTo: uid).snapshots().map((event) {
+      return _forums
+          .where('uid', isEqualTo: search.uid)
+          .snapshots()
+          .map((event) {
         List<Forum> forums = [];
         for (var doc in event.docs) {
           forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
@@ -119,21 +123,21 @@ class ForumRepository {
     }
   }
 
-  Stream<List<Forum>> searchPublicForums(String query, List<String> tags) {
-    if (query.isNotEmpty && tags.isNotEmpty) {
+  Stream<List<Forum>> searchPublicForums(Search search) {
+    if (search.query.isNotEmpty && search.tags.isNotEmpty) {
       return _forums
           .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
-          .where('tags', arrayContainsAny: tags)
+          .where('tags', arrayContainsAny: search.tags)
           .snapshots()
           .map((event) {
         List<Forum> forums = [];
@@ -142,17 +146,17 @@ class ForumRepository {
         }
         return forums;
       });
-    } else if (query.isNotEmpty) {
+    } else if (search.query.isNotEmpty) {
       return _forums
           .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
           .snapshots()
@@ -163,10 +167,10 @@ class ForumRepository {
         }
         return forums;
       });
-    } else if (tags.isNotEmpty) {
+    } else if (search.tags.isNotEmpty) {
       return _forums
           .where('public', isEqualTo: true)
-          .where('tags', arrayContainsAny: tags)
+          .where('tags', arrayContainsAny: search.tags)
           .snapshots()
           .map((event) {
         List<Forum> forums = [];

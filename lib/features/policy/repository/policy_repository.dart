@@ -6,6 +6,7 @@ import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
 import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/search.dart';
 
 final policyRepositoryProvider = Provider((ref) {
   return PolicyRepository(firestore: ref.watch(firestoreProvider));
@@ -58,18 +59,18 @@ class PolicyRepository {
     });
   }
 
-  Stream<List<Policy>> searchPrivatePolicies(String uid, String query) {
-    if (query.isNotEmpty) {
+  Stream<List<Policy>> searchPrivatePolicies(Search search) {
+    if (search.query.isNotEmpty) {
       return _policies
-          .where('uid', isEqualTo: uid)
+          .where('uid', isEqualTo: search.uid)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
           .snapshots()
@@ -81,7 +82,10 @@ class PolicyRepository {
         return policies;
       });
     } else {
-      return _policies.where('uid', isEqualTo: uid).snapshots().map((event) {
+      return _policies
+          .where('uid', isEqualTo: search.uid)
+          .snapshots()
+          .map((event) {
         List<Policy> policies = [];
         for (var doc in event.docs) {
           policies.add(Policy.fromMap(doc.data() as Map<String, dynamic>));
@@ -91,21 +95,21 @@ class PolicyRepository {
     }
   }
 
-  Stream<List<Policy>> searchPublicPolicies(String query, List<String> tags) {
-    if (query.isNotEmpty && tags.isNotEmpty) {
+  Stream<List<Policy>> searchPublicPolicies(Search search) {
+    if (search.query.isNotEmpty && search.tags.isNotEmpty) {
       return _policies
           .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
-          .where('tags', arrayContainsAny: tags)
+          .where('tags', arrayContainsAny: search.tags)
           .snapshots()
           .map((event) {
         List<Policy> policies = [];
@@ -114,17 +118,17 @@ class PolicyRepository {
         }
         return policies;
       });
-    } else if (query.isNotEmpty) {
+    } else if (search.query.isNotEmpty) {
       return _policies
           .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
-            isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-            isLessThan: query.isEmpty
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
                 ? null
-                : query.substring(0, query.length - 1) +
+                : search.query.substring(0, search.query.length - 1) +
                     String.fromCharCode(
-                      query.codeUnitAt(query.length - 1) + 1,
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
                     ),
           )
           .snapshots()
@@ -135,10 +139,10 @@ class PolicyRepository {
         }
         return policies;
       });
-    } else if (tags.isNotEmpty) {
+    } else if (search.tags.isNotEmpty) {
       return _policies
           .where('public', isEqualTo: true)
-          .where('tags', arrayContainsAny: tags)
+          .where('tags', arrayContainsAny: search.tags)
           .snapshots()
           .map((event) {
         List<Policy> policies = [];

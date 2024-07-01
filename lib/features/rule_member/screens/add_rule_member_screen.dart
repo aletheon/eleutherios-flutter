@@ -407,7 +407,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
                               delegate: SearchRuleMemberDelegate(
                                   ref,
                                   user,
-                                  widget.ruleId,
+                                  rule!,
                                   ref
                                               .read(
                                                   searchRadioProvider.notifier)

@@ -3,24 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/dialogs/search_tag_dialog.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/search.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 class SearchConsumerDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
   final Policy policy;
-  final String searchType;
+  String searchType;
   SearchConsumerDelegate(this.ref, this.user, this.policy, this.searchType);
 
-  final searchRadioProvider = StateProvider<String>((ref) => '');
-  bool initializedSearch = false;
+  List<String> searchValues = ['Private', 'Public'];
+  List<String> searchTags = [];
 
   void addPolicyToService(
       BuildContext context, WidgetRef ref, String serviceId) {
@@ -33,52 +35,58 @@ class SearchConsumerDelegate extends SearchDelegate {
     Routemaster.of(context).push('/service/$serviceId');
   }
 
+  void changeSearchType(String selectedType) {
+    searchType = selectedType;
+  }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
-    final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
-
     return [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Text(
-            "Private",
-          ),
-          Radio(
-            value: "Private",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
+          Row(
+            children: [
+              DropdownButton(
+                isDense: true,
+                value: searchType,
+                onChanged: (String? selectedType) {
+                  if (selectedType is String) {
+                    changeSearchType(selectedType);
+                  }
+                },
+                items:
+                    searchValues.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              IconButton(
+                onPressed: () async {
+                  List<String> tags = await showDialog(
+                    context: context,
+                    builder: (context) => SearchTagDialog(
+                      searchType: SearchType.service.value,
+                      initialTags: searchTags,
+                    ),
+                  );
+                  searchTags = tags;
+                },
+                icon: const Icon(Icons.tag),
+              ),
+              IconButton(
+                onPressed: () {
+                  query = '';
+                },
+                icon: const Icon(Icons.close),
+              )
+            ],
+          )
         ],
-      ),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "Public",
-          ),
-          Radio(
-            value: "Public",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
-        ],
-      ),
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.close))
+      )
     ];
   }
 
@@ -94,102 +102,173 @@ class SearchConsumerDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // set the search type [Private, Public]
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (initializedSearch == false) {
-        ref.watch(searchRadioProvider.notifier).state = searchType;
-        initializedSearch = true;
-      }
-    });
+    if (searchType == "Private") {
+      Search searchPrivate =
+          Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
 
-    if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-      return ref
-          .watch(searchPrivateServicesProvider(
-              Tuple2(user.uid, query.toLowerCase())))
-          .when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInPolicy = [];
-                for (Service s in services) {
-                  bool result = false;
-                  for (String p in s.policies) {
-                    if (p == policy.policyId) {
-                      result = true;
-                      break;
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPrivateServicesProvider(searchPrivate)).when(
+                  data: (services) {
+                    if (services.isNotEmpty) {
+                      List<Service> servicesNotInPolicy = [];
+                      for (Service service in services) {
+                        bool foundService = false;
+                        for (String serviceId in policy.services) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
+
+                        if (foundService == false) {
+                          servicesNotInPolicy.add(service);
+                        }
+                      }
+
+                      if (servicesNotInPolicy.isNotEmpty) {
+                        return showServiceList(ref, servicesNotInPolicy);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child:
+                                Text('All of your services are in the policy'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox();
                     }
-                  }
-                  if (result == false) {
-                    servicesNotInPolicy.add(s);
-                  }
-                }
-
-                if (servicesNotInPolicy.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInPolicy);
-                } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('All of your services are in the policy'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
     } else {
-      return ref
-          .watch(searchPublicServicesProvider(Tuple2(query.toLowerCase(), [])))
-          .when(
-            data: (services) {
-              if (services.isNotEmpty) {
-                List<Service> servicesNotInPolicy = [];
-                for (Service s in services) {
-                  bool result = false;
-                  for (String p in s.policies) {
-                    if (p == policy.policyId) {
-                      result = true;
-                      break;
-                    }
-                  }
-                  if (result == false) {
-                    servicesNotInPolicy.add(s);
-                  }
-                }
+      Search searchPublic =
+          Search(uid: '', query: query.toLowerCase(), tags: searchTags);
 
-                if (servicesNotInPolicy.isNotEmpty) {
-                  return showServiceList(ref, servicesNotInPolicy);
-                } else {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('All public services are in the policy'),
-                    ),
-                  );
-                }
-              } else {
-                return const SizedBox();
-              }
-            },
-            error: (error, stackTrace) {
-              print(error.toString());
-              return ErrorText(error: error.toString());
-            },
-            loading: () => const Loader(),
-          );
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPublicServicesProvider(searchPublic)).when(
+                  data: (services) {
+                    if (services.isNotEmpty) {
+                      List<Service> servicesNotInPolicy = [];
+                      for (Service service in services) {
+                        bool foundService = false;
+                        for (String serviceId in policy.services) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
+
+                        if (foundService == false) {
+                          servicesNotInPolicy.add(service);
+                        }
+                      }
+
+                      if (servicesNotInPolicy.isNotEmpty) {
+                        return showServiceList(ref, servicesNotInPolicy);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child:
+                                Text('All public services are in the policy'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
     }
   }
 
   Widget showServiceList(WidgetRef ref, List<Service> services) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+    return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         itemCount: services.length,
         itemBuilder: (BuildContext context, int index) {
           final service = services[index];
@@ -231,7 +310,7 @@ class SearchConsumerDelegate extends SearchDelegate {
               service.tags.isNotEmpty
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(top: 0, right: 20, left: 10),
+                          const EdgeInsets.only(top: 0, right: 0, left: 10),
                       child: Wrap(
                         alignment: WrapAlignment.end,
                         direction: Axis.horizontal,

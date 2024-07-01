@@ -3,81 +3,89 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
-import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/core/dialogs/search_tag_dialog.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/models/forum.dart';
+import 'package:reddit_tutorial/models/search.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 class SearchMemberDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
-  final String forumId;
-  final String searchType;
-  SearchMemberDelegate(this.ref, this.user, this.forumId, this.searchType);
+  final Forum forum;
+  String searchType;
+  SearchMemberDelegate(this.ref, this.user, this.forum, this.searchType);
 
-  final searchRadioProvider = StateProvider<String>((ref) => '');
-  bool initializedSearch = false;
+  List<String> searchValues = ['Private', 'Public'];
+  List<String> searchTags = [];
+
+  void addMemberService(BuildContext context, WidgetRef ref, String serviceId) {
+    ref
+        .read(memberControllerProvider.notifier)
+        .createMember(forum.forumId, serviceId, context);
+  }
 
   void showServiceDetails(BuildContext context, String serviceId) {
     Routemaster.of(context).push('/service/$serviceId');
   }
 
-  void addMemberService(BuildContext context, WidgetRef ref, String serviceId) {
-    ref
-        .read(memberControllerProvider.notifier)
-        .createMember(forumId, serviceId, context);
+  void changeSearchType(String selectedType) {
+    searchType = selectedType;
   }
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
-
     return [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Text(
-            "Private",
-          ),
-          Radio(
-            value: "Private",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
+          Row(
+            children: [
+              DropdownButton(
+                isDense: true,
+                value: searchType,
+                onChanged: (String? selectedType) {
+                  if (selectedType is String) {
+                    changeSearchType(selectedType);
+                  }
+                },
+                items:
+                    searchValues.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              IconButton(
+                onPressed: () async {
+                  List<String> tags = await showDialog(
+                    context: context,
+                    builder: (context) => SearchTagDialog(
+                      searchType: SearchType.service.value,
+                      initialTags: searchTags,
+                    ),
+                  );
+                  searchTags = tags;
+                },
+                icon: const Icon(Icons.tag),
+              ),
+              IconButton(
+                onPressed: () {
+                  query = '';
+                },
+                icon: const Icon(Icons.close),
+              )
+            ],
+          )
         ],
-      ),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "Public",
-          ),
-          Radio(
-            value: "Public",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
-        ],
-      ),
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.close))
+      )
     ];
   }
 
@@ -93,115 +101,172 @@ class SearchMemberDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final forumProv = ref.watch(getForumByIdProvider(forumId));
+    if (searchType == "Private") {
+      Search searchPrivate =
+          Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
 
-    // set the search type [Private, Public]
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (initializedSearch == false) {
-        ref.watch(searchRadioProvider.notifier).state = searchType;
-        initializedSearch = true;
-      }
-    });
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPrivateServicesProvider(searchPrivate)).when(
+                  data: (services) {
+                    if (services.isNotEmpty) {
+                      List<Service> servicesNotInForum = [];
+                      for (Service service in services) {
+                        bool foundService = false;
+                        for (String serviceId in forum.services) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
 
-    return forumProv.when(
-      data: (forum) {
-        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-          return ref
-              .watch(searchPrivateServicesProvider(
-                  Tuple2(user.uid, query.toLowerCase())))
-              .when(
-                data: (services) {
-                  if (services.isNotEmpty) {
-                    List<Service> servicesNotInForum = [];
-                    for (Service service in services) {
-                      bool foundService = false;
-                      for (String serviceId in forum!.services) {
-                        if (service.serviceId == serviceId) {
-                          foundService = true;
-                          break;
+                        if (foundService == false) {
+                          servicesNotInForum.add(service);
                         }
                       }
 
-                      if (foundService == false) {
-                        servicesNotInForum.add(service);
+                      if (servicesNotInForum.isNotEmpty) {
+                        return showServiceList(ref, servicesNotInForum);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child:
+                                Text('All of your services are in the forum'),
+                          ),
+                        );
                       }
-                    }
-
-                    if (servicesNotInForum.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInForum);
                     } else {
+                      return const SizedBox();
+                    }
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    } else {
+      Search searchPublic =
+          Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
                       return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text('All of your services are in the forum'),
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
                         ),
                       );
-                    }
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        } else {
-          return ref
-              .watch(
-                  searchPublicServicesProvider(Tuple2(query.toLowerCase(), [])))
-              .when(
-                data: (services) {
-                  if (services.isNotEmpty) {
-                    List<Service> servicesNotInForum = [];
-                    for (Service service in services) {
-                      bool foundService = false;
-                      for (String serviceId in forum!.services) {
-                        if (service.serviceId == serviceId) {
-                          foundService = true;
-                          break;
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPublicServicesProvider(searchPublic)).when(
+                  data: (services) {
+                    if (services.isNotEmpty) {
+                      List<Service> servicesNotInForum = [];
+                      for (Service service in services) {
+                        bool foundService = false;
+                        for (String serviceId in forum!.services) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
+
+                        if (foundService == false) {
+                          servicesNotInForum.add(service);
                         }
                       }
 
-                      if (foundService == false) {
-                        servicesNotInForum.add(service);
+                      if (servicesNotInForum.isNotEmpty) {
+                        return showServiceList(ref, servicesNotInForum);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child: Text('All public services are in the forum'),
+                          ),
+                        );
                       }
-                    }
-
-                    if (servicesNotInForum.isNotEmpty) {
-                      return showServiceList(ref, servicesNotInForum);
                     } else {
-                      return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text('All public services are in the forum'),
-                        ),
-                      );
+                      return const SizedBox();
                     }
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        }
-      },
-      error: (error, stackTrace) => ErrorText(error: error.toString()),
-      loading: () => const Loader(),
-    );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    }
   }
 
   Widget showServiceList(WidgetRef ref, List<Service> services) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+    return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         itemCount: services.length,
         itemBuilder: (BuildContext context, int index) {
           final service = services[index];
@@ -243,7 +308,7 @@ class SearchMemberDelegate extends SearchDelegate {
               service.tags.isNotEmpty
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(top: 0, right: 20, left: 10),
+                          const EdgeInsets.only(top: 0, right: 0, left: 10),
                       child: Wrap(
                         alignment: WrapAlignment.end,
                         direction: Axis.horizontal,

@@ -33,10 +33,10 @@ import 'package:reddit_tutorial/models/policy.dart';
 import 'package:reddit_tutorial/models/policy_activity.dart';
 import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
+import 'package:reddit_tutorial/models/search.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getServiceByIdProvider = StreamProvider.family.autoDispose(
@@ -71,18 +71,18 @@ final servicesProvider = StreamProvider.autoDispose<List<Service>>(
 );
 
 final searchPrivateServicesProvider = StreamProvider.family.autoDispose(
-  (ref, Tuple2 params) {
+  (ref, Search search) {
     return ref
         .watch(serviceControllerProvider.notifier)
-        .searchPrivateServices(params.item1, params.item2);
+        .searchPrivateServices(search);
   },
 );
 
 final searchPublicServicesProvider =
-    StreamProvider.family((ref, Tuple2 params) {
+    StreamProvider.family((ref, Search search) {
   return ref
       .watch(serviceControllerProvider.notifier)
-      .searchPublicServices(params.item1, params.item2);
+      .searchPublicServices(search);
 });
 
 final serviceControllerProvider =
@@ -484,11 +484,11 @@ class ServiceController extends StateNotifier<bool> {
     return _serviceRepository.getServiceById(serviceId);
   }
 
-  Stream<List<Service>> searchPrivateServices(String uid, String query) {
-    return _serviceRepository.searchPrivateServices(uid, query);
+  Stream<List<Service>> searchPrivateServices(Search search) {
+    return _serviceRepository.searchPrivateServices(search);
   }
 
-  Stream<List<Service>> searchPublicServices(String query, List<String> tags) {
-    return _serviceRepository.searchPublicServices(query, tags);
+  Stream<List<Service>> searchPublicServices(Search search) {
+    return _serviceRepository.searchPublicServices(search);
   }
 }

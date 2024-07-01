@@ -204,7 +204,7 @@ class AddPolicyScreen extends ConsumerWidget {
                               delegate: SearchPolicyDelegate(
                                   ref,
                                   user,
-                                  _serviceId,
+                                  service!,
                                   ref.read(searchRadioProvider.notifier).state),
                             );
                           },

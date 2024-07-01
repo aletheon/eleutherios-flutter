@@ -3,22 +3,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/dialogs/search_tag_dialog.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
-import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/policy.dart';
+import 'package:reddit_tutorial/models/search.dart';
+import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 class SearchPolicyDelegate extends SearchDelegate {
   final WidgetRef ref;
   final UserModel user;
-  final String serviceId;
-  final String searchType;
-  SearchPolicyDelegate(this.ref, this.user, this.serviceId, this.searchType);
+  final Service service;
+  String searchType;
+  SearchPolicyDelegate(this.ref, this.user, this.service, this.searchType);
 
-  final searchRadioProvider = StateProvider<String>((ref) => '');
-  bool initializedSearch = false;
+  List<String> searchValues = ['Private', 'Public'];
+  List<String> searchTags = [];
 
   void showPolicyDetails(BuildContext context, String policyId) {
     Routemaster.of(context).push('/policy/$policyId');
@@ -28,55 +31,61 @@ class SearchPolicyDelegate extends SearchDelegate {
       BuildContext context, WidgetRef ref, String policyId) {
     ref
         .read(policyControllerProvider.notifier)
-        .addPolicyToService(serviceId, policyId, context);
+        .addPolicyToService(service.serviceId, policyId, context);
+  }
+
+  void changeSearchType(String selectedType) {
+    searchType = selectedType;
   }
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    final searchRadioProv = ref.watch(searchRadioProvider.notifier).state;
-
     return [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const Text(
-            "Private",
-          ),
-          Radio(
-            value: "Private",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
+          Row(
+            children: [
+              DropdownButton(
+                isDense: true,
+                value: searchType,
+                onChanged: (String? selectedType) {
+                  if (selectedType is String) {
+                    changeSearchType(selectedType);
+                  }
+                },
+                items:
+                    searchValues.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              IconButton(
+                onPressed: () async {
+                  List<String> tags = await showDialog(
+                    context: context,
+                    builder: (context) => SearchTagDialog(
+                      searchType: SearchType.policy.value,
+                      initialTags: searchTags,
+                    ),
+                  );
+                  searchTags = tags;
+                },
+                icon: const Icon(Icons.tag),
+              ),
+              IconButton(
+                onPressed: () {
+                  query = '';
+                },
+                icon: const Icon(Icons.close),
+              )
+            ],
+          )
         ],
-      ),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "Public",
-          ),
-          Radio(
-            value: "Public",
-            groupValue: searchRadioProv,
-            onChanged: (newValue) {
-              ref.read(searchRadioProvider.notifier).state =
-                  newValue.toString();
-            },
-          ),
-        ],
-      ),
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.close))
+      )
     ];
   }
 
@@ -92,134 +101,237 @@ class SearchPolicyDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final serviceProv = ref.watch(getServiceByIdProvider(serviceId));
+    if (searchType == "Private") {
+      Search searchPrivate =
+          Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
 
-    // set the search type [Private, Public]
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (initializedSearch == false) {
-        ref.watch(searchRadioProvider.notifier).state = searchType;
-        initializedSearch = true;
-      }
-    });
-
-    return serviceProv.when(
-      data: (service) {
-        if (ref.watch(searchRadioProvider.notifier).state == "Private") {
-          return ref
-              .watch(searchPrivatePoliciesProvider(
-                  Tuple2(user.uid, query.toLowerCase())))
-              .when(
-                data: (policies) {
-                  if (policies.isNotEmpty) {
-                    List<Policy> policesNotInService = [];
-                    for (Policy p in policies) {
-                      bool foundService = false;
-                      for (String serviceId in p.consumers) {
-                        if (service!.serviceId == serviceId) {
-                          foundService = true;
-                          break;
-                        }
-                      }
-                      if (foundService == false) {
-                        policesNotInService.add(p);
-                      }
-                    }
-
-                    if (policesNotInService.isNotEmpty) {
-                      return showPolicyList(ref, policesNotInService);
-                    } else {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
                       return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child:
-                              Text('All of your policies are in the service'),
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.policyTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
                         ),
                       );
-                    }
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        } else {
-          return ref
-              .watch(
-                  searchPublicPoliciesProvider(Tuple2(query.toLowerCase(), [])))
-              .when(
-                data: (policies) {
-                  if (policies.isNotEmpty) {
-                    List<Policy> policesNotInService = [];
-                    for (Policy p in policies) {
-                      bool foundService = false;
-                      for (String serviceId in p.consumers) {
-                        if (service!.serviceId == serviceId) {
-                          foundService = true;
-                          break;
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPrivatePoliciesProvider(searchPrivate)).when(
+                  data: (policies) {
+                    if (policies.isNotEmpty) {
+                      List<Policy> policesNotInService = [];
+                      for (Policy p in policies) {
+                        bool foundService = false;
+                        for (String serviceId in p.consumers) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
+                        if (foundService == false) {
+                          policesNotInService.add(p);
                         }
                       }
-                      if (foundService == false) {
-                        policesNotInService.add(p);
-                      }
-                    }
 
-                    if (policesNotInService.isNotEmpty) {
-                      return showPolicyList(ref, policesNotInService);
+                      if (policesNotInService.isNotEmpty) {
+                        return showPolicyList(ref, policesNotInService);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child:
+                                Text('All of your policies are in the service'),
+                          ),
+                        );
+                      }
                     } else {
+                      return const SizedBox();
+                    }
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    } else {
+      Search searchPublic =
+          Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            searchTags.isNotEmpty
+                ? Wrap(
+                    alignment: WrapAlignment.end,
+                    direction: Axis.horizontal,
+                    children: searchTags.map((e) {
                       return Container(
-                        alignment: Alignment.topCenter,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text('All public policies are in the service'),
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Chip(
+                          visualDensity:
+                              const VisualDensity(vertical: -4, horizontal: -4),
+                          backgroundColor: Pallete.freeServiceTagColor,
+                          label: Text(
+                            '#$e',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                          onDeleted: () {
+                            searchTags.remove(e);
+                            searchTags =
+                                searchTags.isNotEmpty ? searchTags : [];
+                            query = query;
+                          },
                         ),
                       );
+                    }).toList(),
+                  )
+                : const SizedBox(),
+            ref.watch(searchPublicPoliciesProvider(searchPublic)).when(
+                  data: (policies) {
+                    if (policies.isNotEmpty) {
+                      List<Policy> policesNotInService = [];
+                      for (Policy p in policies) {
+                        bool foundService = false;
+                        for (String serviceId in p.consumers) {
+                          if (service.serviceId == serviceId) {
+                            foundService = true;
+                            break;
+                          }
+                        }
+                        if (foundService == false) {
+                          policesNotInService.add(p);
+                        }
+                      }
+
+                      if (policesNotInService.isNotEmpty) {
+                        return showPolicyList(ref, policesNotInService);
+                      } else {
+                        return Container(
+                          alignment: Alignment.topCenter,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child:
+                                Text('All public policies are in the service'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox();
                     }
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) {
-                  print(error.toString());
-                  return ErrorText(error: error.toString());
-                },
-                loading: () => const Loader(),
-              );
-        }
-      },
-      error: (error, stackTrace) => ErrorText(error: error.toString()),
-      loading: () => const Loader(),
-    );
+                  },
+                  error: (error, stackTrace) {
+                    print(error.toString());
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader(),
+                )
+          ],
+        ),
+      );
+    }
   }
 
   Widget showPolicyList(WidgetRef ref, List<Policy> policies) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+    return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         itemCount: policies.length,
         itemBuilder: (BuildContext context, int index) {
           final policy = policies[index];
-          return ListTile(
-            leading: policy.image == Constants.avatarDefault
-                ? CircleAvatar(
-                    backgroundImage: Image.asset(policy.image).image,
-                  )
-                : CircleAvatar(
-                    backgroundImage: NetworkImage(policy.image),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ListTile(
+                title: Row(
+                  children: [
+                    Text(policy.title),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    policy.public
+                        ? const Icon(
+                            Icons.lock_open_outlined,
+                            size: 18,
+                          )
+                        : const Icon(Icons.lock_outlined,
+                            size: 18, color: Pallete.greyColor),
+                  ],
+                ),
+                leading: policy.image == Constants.avatarDefault
+                    ? CircleAvatar(
+                        backgroundImage: Image.asset(policy.image).image,
+                      )
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(policy.image),
+                      ),
+                trailing: TextButton(
+                  onPressed: () =>
+                      addPolicyToService(context, ref, policy.policyId),
+                  child: const Text(
+                    'Add',
                   ),
-            title: Text(policy.title),
-            trailing: TextButton(
-              onPressed: () =>
-                  addPolicyToService(context, ref, policy.policyId),
-              child: const Text(
-                'Add',
+                ),
+                onTap: () => showPolicyDetails(context, policy.policyId),
               ),
-            ),
-            onTap: () => showPolicyDetails(context, policy.policyId),
+              policy.tags.isNotEmpty
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(top: 0, right: 0, left: 10),
+                      child: Wrap(
+                        alignment: WrapAlignment.end,
+                        direction: Axis.horizontal,
+                        children: policy.tags.map((e) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: FilterChip(
+                              visualDensity: const VisualDensity(
+                                  vertical: -4, horizontal: -4),
+                              onSelected: (value) {},
+                              backgroundColor: Pallete.policyTagColor,
+                              label: Text(
+                                '#$e',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
           );
         },
       ),

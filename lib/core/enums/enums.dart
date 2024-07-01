@@ -1,3 +1,16 @@
+enum ServiceType2<String> { public, private }
+
+extension ServiceTypeValue2 on ServiceType2 {
+  String get value {
+    switch (this) {
+      case ServiceType2.public:
+        return 'Public';
+      case ServiceType2.private:
+        return 'Private';
+    }
+  }
+}
+
 enum ServiceType<String> { physical, nonphysical }
 
 extension ServiceTypeValue on ServiceType {

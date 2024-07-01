@@ -35,9 +35,7 @@ class _SearchTagDialogState extends ConsumerState<SearchTagDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 0,
-      //backgroundColor: Colors.transparent,
       child: _buildChild(context),
     );
   }

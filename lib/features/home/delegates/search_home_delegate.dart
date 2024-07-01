@@ -6,12 +6,12 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
-import 'package:reddit_tutorial/features/home/dialogs/search_tag_dialog.dart';
+import 'package:reddit_tutorial/core/dialogs/search_tag_dialog.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/models/search.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:tuple/tuple.dart';
 
 class SearchHomeDelegate extends SearchDelegate {
   final WidgetRef ref;
@@ -37,7 +37,6 @@ class SearchHomeDelegate extends SearchDelegate {
   ];
   List<String> searchTags = [];
   String _searchType = SearchType.service.value;
-  int searchIconsCount = 0;
 
   void showPolicyDetails(BuildContext context, String policyId) {
     Routemaster.of(context).push('/policy/$policyId');
@@ -72,9 +71,6 @@ class SearchHomeDelegate extends SearchDelegate {
                     changeSearchType(value);
                   }
                 },
-                // *********************************
-                // items
-                // *********************************
                 items: searchValues.mapWithIndex<DropdownMenuItem<String>>(
                     (String value, int index) {
                   return DropdownMenuItem<String>(
@@ -129,6 +125,9 @@ class SearchHomeDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    Search search =
+        Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
     if (_searchType == SearchType.policy.value) {
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
@@ -163,9 +162,7 @@ class SearchHomeDelegate extends SearchDelegate {
                     }).toList(),
                   )
                 : const SizedBox(),
-            ref
-                .watch(searchPublicPoliciesProvider(Tuple2(query, searchTags)))
-                .when(
+            ref.watch(searchPublicPoliciesProvider(search)).when(
                   data: (policies) {
                     return ListView.builder(
                       shrinkWrap: true,
@@ -280,9 +277,7 @@ class SearchHomeDelegate extends SearchDelegate {
                     }).toList(),
                   )
                 : const SizedBox(),
-            ref
-                .watch(searchPublicForumsProvider(Tuple2(query, searchTags)))
-                .when(
+            ref.watch(searchPublicForumsProvider(search)).when(
                   data: (forums) {
                     return ListView.builder(
                       shrinkWrap: true,
@@ -397,9 +392,7 @@ class SearchHomeDelegate extends SearchDelegate {
                     }).toList(),
                   )
                 : const SizedBox(),
-            ref
-                .watch(searchPublicServicesProvider(Tuple2(query, searchTags)))
-                .when(
+            ref.watch(searchPublicServicesProvider(search)).when(
                   data: (services) {
                     return Expanded(
                       child: ListView.builder(
