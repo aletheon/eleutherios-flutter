@@ -88,9 +88,33 @@ class ForumRepository {
   }
 
   Stream<List<Forum>> searchPrivateForums(Search search) {
-    if (search.query.isNotEmpty) {
+    if (search.query.isNotEmpty && search.tags.isNotEmpty) {
       return _forums
           .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
+                ? null
+                : search.query.substring(0, search.query.length - 1) +
+                    String.fromCharCode(
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
+                    ),
+          )
+          .where('tags', arrayContainsAny: search.tags)
+          .snapshots()
+          .map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
+    } else if (search.query.isNotEmpty) {
+      return _forums
+          .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
             isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
@@ -109,9 +133,23 @@ class ForumRepository {
         }
         return forums;
       });
+    } else if (search.tags.isNotEmpty) {
+      return _forums
+          .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
+          .where('tags', arrayContainsAny: search.tags)
+          .snapshots()
+          .map((event) {
+        List<Forum> forums = [];
+        for (var doc in event.docs) {
+          forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return forums;
+      });
     } else {
       return _forums
           .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
           .snapshots()
           .map((event) {
         List<Forum> forums = [];

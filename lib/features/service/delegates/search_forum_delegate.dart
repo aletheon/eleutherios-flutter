@@ -199,7 +199,7 @@ class SearchForumDelegate extends SearchDelegate {
                         child: Chip(
                           visualDensity:
                               const VisualDensity(vertical: -4, horizontal: -4),
-                          backgroundColor: Pallete.freeServiceTagColor,
+                          backgroundColor: Pallete.forumTagColor,
                           label: Text(
                             '#$e',
                             style: const TextStyle(

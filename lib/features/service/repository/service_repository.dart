@@ -56,9 +56,33 @@ class ServiceRepository {
   }
 
   Stream<List<Service>> searchPrivateServices(Search search) {
-    if (search.query.isNotEmpty) {
+    if (search.query.isNotEmpty && search.tags.isNotEmpty) {
       return _services
           .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
+          .where(
+            'titleLowercase',
+            isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
+            isLessThan: search.query.isEmpty
+                ? null
+                : search.query.substring(0, search.query.length - 1) +
+                    String.fromCharCode(
+                      search.query.codeUnitAt(search.query.length - 1) + 1,
+                    ),
+          )
+          .where('tags', arrayContainsAny: search.tags)
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
+    } else if (search.query.isNotEmpty) {
+      return _services
+          .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
           .where(
             'titleLowercase',
             isGreaterThanOrEqualTo: search.query.isEmpty ? 0 : search.query,
@@ -77,9 +101,23 @@ class ServiceRepository {
         }
         return services;
       });
+    } else if (search.tags.isNotEmpty) {
+      return _services
+          .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
+          .where('tags', arrayContainsAny: search.tags)
+          .snapshots()
+          .map((event) {
+        List<Service> services = [];
+        for (var doc in event.docs) {
+          services.add(Service.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return services;
+      });
     } else {
       return _services
           .where('uid', isEqualTo: search.uid)
+          .where('public', isEqualTo: true)
           .snapshots()
           .map((event) {
         List<Service> services = [];

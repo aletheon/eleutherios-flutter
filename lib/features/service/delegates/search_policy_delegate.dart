@@ -199,7 +199,7 @@ class SearchPolicyDelegate extends SearchDelegate {
                         child: Chip(
                           visualDensity:
                               const VisualDensity(vertical: -4, horizontal: -4),
-                          backgroundColor: Pallete.freeServiceTagColor,
+                          backgroundColor: Pallete.policyTagColor,
                           label: Text(
                             '#$e',
                             style: const TextStyle(
