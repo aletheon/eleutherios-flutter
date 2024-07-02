@@ -176,6 +176,8 @@ class ServiceController extends StateNotifier<bool> {
       canBePurchased: false, // whether service can be purchased or not
       price: 0,
       serviceType: ServiceType.nonphysical.name,
+      frequency: 0,
+      frequencyUnit: '',
       quantity: 1,
       height: 0,
       length: 0,
@@ -183,6 +185,7 @@ class ServiceController extends StateNotifier<bool> {
       sizeUnit: '',
       weight: 0,
       weightUnit: '',
+      currency: '',
       tags: tags != null && tags.isNotEmpty ? tags : [],
       likes: [],
       policies: [],
