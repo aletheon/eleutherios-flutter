@@ -53,7 +53,7 @@ class ServiceToolsScreen extends ConsumerWidget {
         ListTile(
           onTap: () => editPrice(context),
           leading: const Icon(Icons.paid_outlined),
-          title: const Text('Edit Price'),
+          title: const Text('Edit Price & Type'),
         ),
         ListTile(
           onTap: () => addPolicy(context),

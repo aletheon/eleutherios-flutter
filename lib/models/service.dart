@@ -14,9 +14,9 @@ class Service {
   final String bannerFileType;
   final String bannerFileName;
   final bool public; // whether the service is publicly or privately available
-  final bool canBePurchased; // whether service can be purchased or not
+  final bool canBeOrdered; // whether service can be purchased or not
   final double price; // [99.99]
-  final String serviceType; // [physical, non-physical]
+  final String type; // [physical, non-physical]
   final double frequency; // [99.99]
   final String frequencyUnit; // [minute, hour, day, month, year]
   final int quantity; // [99]
@@ -45,9 +45,9 @@ class Service {
     required this.bannerFileType,
     required this.bannerFileName,
     required this.public,
-    required this.canBePurchased,
+    required this.canBeOrdered,
     required this.price,
-    required this.serviceType,
+    required this.type,
     required this.frequency,
     required this.frequencyUnit,
     required this.quantity,
@@ -78,9 +78,9 @@ class Service {
     String? bannerFileType,
     String? bannerFileName,
     bool? public,
-    bool? canBePurchased,
+    bool? canBeOrdered,
     double? price,
-    String? serviceType,
+    String? type,
     double? frequency,
     String? frequencyUnit,
     int? quantity,
@@ -110,9 +110,9 @@ class Service {
       bannerFileType: bannerFileType ?? this.bannerFileType,
       bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
-      canBePurchased: canBePurchased ?? this.canBePurchased,
+      canBeOrdered: canBeOrdered ?? this.canBeOrdered,
       price: price ?? this.price,
-      serviceType: serviceType ?? this.serviceType,
+      type: type ?? this.type,
       quantity: quantity ?? this.quantity,
       frequency: frequency ?? this.frequency,
       frequencyUnit: frequencyUnit ?? this.frequencyUnit,
@@ -145,9 +145,9 @@ class Service {
       'bannerFileType': bannerFileType,
       'bannerFileName': bannerFileName,
       'public': public,
-      'canBePurchased': canBePurchased,
+      'canBeOrdered': canBeOrdered,
       'price': price,
-      'serviceType': serviceType,
+      'type': type,
       'frequency': frequency,
       'frequencyUnit': frequencyUnit,
       'quantity': quantity,
@@ -180,9 +180,9 @@ class Service {
       bannerFileType: map['bannerFileType'] as String,
       bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
-      canBePurchased: map['canBePurchased'] as bool,
+      canBeOrdered: map['canBeOrdered'] as bool,
       price: map['price'] as double,
-      serviceType: map['serviceType'] as String,
+      type: map['type'] as String,
       frequency: map['frequency'] as double,
       frequencyUnit: map['frequencyUnit'] as String,
       quantity: map['quantity'] as int,
@@ -205,7 +205,7 @@ class Service {
 
   @override
   String toString() {
-    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBePurchased: $canBePurchased, price: $price, serviceType: $serviceType, frequency: $frequency, frequencyUnit: $frequencyUnit, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, currency: $currency, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBeOrdered: $canBeOrdered, price: $price, type: $type, frequency: $frequency, frequencyUnit: $frequencyUnit, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, currency: $currency, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -224,9 +224,9 @@ class Service {
         other.bannerFileType == bannerFileType &&
         other.bannerFileName == bannerFileName &&
         other.public == public &&
-        other.canBePurchased == canBePurchased &&
+        other.canBeOrdered == canBeOrdered &&
         other.price == price &&
-        other.serviceType == serviceType &&
+        other.type == type &&
         other.frequency == frequency &&
         other.frequencyUnit == frequencyUnit &&
         other.quantity == quantity &&
@@ -258,9 +258,9 @@ class Service {
         bannerFileType.hashCode ^
         bannerFileName.hashCode ^
         public.hashCode ^
-        canBePurchased.hashCode ^
+        canBeOrdered.hashCode ^
         price.hashCode ^
-        serviceType.hashCode ^
+        type.hashCode ^
         frequency.hashCode ^
         frequencyUnit.hashCode ^
         quantity.hashCode ^

@@ -1,4 +1,7 @@
-enum ServiceType<String> { physical, nonphysical }
+enum ServiceType<String> {
+  physical,
+  nonphysical,
+}
 
 extension ServiceTypeValue on ServiceType {
   String get value {
@@ -11,7 +14,100 @@ extension ServiceTypeValue on ServiceType {
   }
 }
 
-enum PaymentMethod<String> { stripe, paypal }
+enum FrequencyUnit<String> {
+  minute,
+  hour,
+  day,
+  week,
+  month,
+  year,
+}
+
+extension FrequencyUnitValue on FrequencyUnit {
+  String get value {
+    switch (this) {
+      case FrequencyUnit.minute:
+        return 'Minute';
+      case FrequencyUnit.hour:
+        return 'Hour';
+      case FrequencyUnit.day:
+        return 'Day';
+      case FrequencyUnit.week:
+        return 'Week';
+      case FrequencyUnit.month:
+        return 'Month';
+      case FrequencyUnit.year:
+        return 'Year';
+    }
+  }
+}
+
+enum SizeUnit<String> {
+  nanometer,
+  millimeter,
+  centimeter,
+  meter,
+  inch,
+  foot,
+  yard,
+}
+
+extension SizeUnitValue on SizeUnit {
+  String get value {
+    switch (this) {
+      case SizeUnit.nanometer:
+        return 'Nanometer';
+      case SizeUnit.millimeter:
+        return 'Millimeter';
+      case SizeUnit.centimeter:
+        return 'Centimeter';
+      case SizeUnit.meter:
+        return 'Meter';
+      case SizeUnit.inch:
+        return 'Inch';
+      case SizeUnit.foot:
+        return 'Foot';
+      case SizeUnit.yard:
+        return 'Yard';
+    }
+  }
+}
+
+enum WeightUnit<String> {
+  picogram,
+  nanogram,
+  microgram,
+  milligram,
+  gram,
+  kilogram,
+  tonne,
+}
+
+extension WeightUnitValue on WeightUnit {
+  String get value {
+    switch (this) {
+      case WeightUnit.picogram:
+        return 'Picogram';
+      case WeightUnit.nanogram:
+        return 'Nanogram';
+      case WeightUnit.microgram:
+        return 'Microgram';
+      case WeightUnit.milligram:
+        return 'Milligram';
+      case WeightUnit.gram:
+        return 'Gram';
+      case WeightUnit.kilogram:
+        return 'Kilogram';
+      case WeightUnit.tonne:
+        return 'Tonne';
+    }
+  }
+}
+
+enum PaymentMethod<String> {
+  stripe,
+  paypal,
+}
 
 extension PaymentMethodValue on PaymentMethod {
   String get value {
@@ -24,7 +120,11 @@ extension PaymentMethodValue on PaymentMethod {
   }
 }
 
-enum InstantiationType<String> { consume, order, date }
+enum InstantiationType<String> {
+  consume,
+  order,
+  date,
+}
 
 extension InstantiationTypeValue on InstantiationType {
   String get value {
@@ -39,7 +139,11 @@ extension InstantiationTypeValue on InstantiationType {
   }
 }
 
-enum SearchType<String> { policy, forum, service }
+enum SearchType<String> {
+  policy,
+  forum,
+  service,
+}
 
 extension SearchTypeValue on SearchType {
   String get value {

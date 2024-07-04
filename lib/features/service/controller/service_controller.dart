@@ -173,12 +173,12 @@ class ServiceController extends StateNotifier<bool> {
       bannerFileType: 'image/jpeg',
       bannerFileName: Constants.serviceBannerDefault.split('/').last,
       public: public,
-      canBePurchased: false, // whether service can be purchased or not
+      canBeOrdered: false, // whether service can be ordered or not
       price: 0,
-      serviceType: ServiceType.nonphysical.name,
+      type: ServiceType.nonphysical.name,
       frequency: 0,
       frequencyUnit: '',
-      quantity: 1,
+      quantity: 0,
       height: 0,
       length: 0,
       width: 0,
