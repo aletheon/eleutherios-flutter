@@ -1,8 +1,10 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart'
+    as currency_text_input_formatter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
@@ -31,13 +33,41 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
   final _sizeUnitController = TextEditingController();
   final _weightController = TextEditingController();
   final _weightUnitController = TextEditingController();
-  final NumberFormat numFormat = NumberFormat('###,##0.00', 'en_US');
-  final NumberFormat numSanitizedFormat = NumberFormat('en_US');
+  final NumberFormat numFormat = NumberFormat("######.0#", "en_US");
   List<String> serviceTypeValues = [
     ServiceType.physical.value,
     ServiceType.nonphysical.value
   ];
+  List<String> frequencyUnitValues = [
+    FrequencyUnit.minute.value,
+    FrequencyUnit.hour.value,
+    FrequencyUnit.day.value,
+    FrequencyUnit.week.value,
+    FrequencyUnit.month.value,
+    FrequencyUnit.year.value,
+  ];
+  List<String> sizeUnitValues = [
+    SizeUnit.nanometer.value,
+    SizeUnit.millimeter.value,
+    SizeUnit.centimeter.value,
+    SizeUnit.meter.value,
+    SizeUnit.inch.value,
+    SizeUnit.foot.value,
+    SizeUnit.yard.value,
+  ];
+  List<String> weightUnitValues = [
+    WeightUnit.picogram.value,
+    WeightUnit.nanogram.value,
+    WeightUnit.microgram.value,
+    WeightUnit.milligram.value,
+    WeightUnit.gram.value,
+    WeightUnit.kilogram.value,
+    WeightUnit.tonne.value,
+  ];
   String selectedType = ServiceType.physical.value;
+  String selectedFrequencyUnit = FrequencyUnit.hour.value;
+  String selectedSizeUnit = SizeUnit.meter.value;
+  String selectedWeightUnit = WeightUnit.kilogram.value;
   bool isChecked = true;
   var isLoaded = false;
 
@@ -89,7 +119,8 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
             if (isLoaded == false) {
               _priceController.text =
                   service!.price == 0 ? '' : service.price.toString();
-              _frequencyController.text = service.frequency.toString();
+              _frequencyController.text =
+                  service.frequency == 0 ? '' : service.frequency.toString();
               _frequencyUnitController.text = service.frequencyUnit.toString();
               _quantityController.text =
                   service.quantity == 0 ? '' : service.quantity.toString();
@@ -159,7 +190,8 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                     decoration:
                                         const InputDecoration(hintText: 'Free'),
                                     inputFormatters: <TextInputFormatter>[
-                                      CurrencyTextInputFormatter.currency(
+                                      currency_text_input_formatter
+                                          .CurrencyTextInputFormatter.currency(
                                         //locale: 'ko',
                                         decimalDigits: 2,
                                         symbol: 'USD ',
@@ -225,14 +257,6 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                         ? const InputDecoration(hintText: '0')
                                         : const InputDecoration(
                                             hintText: 'Unlimited'),
-                                    // inputFormatters: <TextInputFormatter>[
-                                    //   CurrencyTextInputFormatter.currency(
-                                    //     decimalDigits: 0,
-                                    //     symbol: '',
-                                    //   ),
-                                    //   LengthLimitingTextInputFormatter(7)
-                                    // ],
-                                    // https://appvesto.medium.com/flutter-formatting-textfield-with-textinputformatter-c73ee2167514
                                     inputFormatters: <TextInputFormatter>[
                                       FilteringTextInputFormatter.digitsOnly,
                                       LengthLimitingTextInputFormatter(6),
@@ -242,6 +266,48 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                           RegExp(r'[ ]')),
                                     ],
                                     keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Frequency',
+                                  style: TextStyle(
+                                    color: Pallete.greyColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 80,
+                                  child: TextFormField(
+                                    controller: _frequencyController,
+                                    decoration:
+                                        const InputDecoration(hintText: 'None'),
+                                    inputFormatters: <TextInputFormatter>[
+                                      NumberTextInputFormatter(
+                                        integerDigits: 10,
+                                        decimalDigits: 2,
+                                        maxValue: '1000000000.00',
+                                        decimalSeparator: '.',
+                                        groupDigits: 3,
+                                        groupSeparator: ',',
+                                        allowNegative: false,
+                                        overrideDecimalPoint: true,
+                                        insertDecimalPoint: false,
+                                        insertDecimalDigits: true,
+                                      ),
+                                    ],
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
                                     textAlign: TextAlign.end,
                                   ),
                                 ),

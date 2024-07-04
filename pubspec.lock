@@ -528,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  number_text_input_formatter:
+    dependency: "direct main"
+    description:
+      name: number_text_input_formatter
+      sha256: "07fc5754ca0678a30ea4a42e8a0dfac45235e49387cd897cce05339fc6044f4d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+8"
   package_config:
     dependency: transitive
     description:
