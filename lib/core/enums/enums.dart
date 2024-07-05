@@ -27,17 +27,17 @@ extension FrequencyUnitValue on FrequencyUnit {
   String get value {
     switch (this) {
       case FrequencyUnit.minute:
-        return 'Minute';
+        return 'MIN';
       case FrequencyUnit.hour:
-        return 'Hour';
+        return 'HR';
       case FrequencyUnit.day:
-        return 'Day';
+        return 'DAY';
       case FrequencyUnit.week:
-        return 'Week';
+        return 'WK';
       case FrequencyUnit.month:
-        return 'Month';
+        return 'Mth';
       case FrequencyUnit.year:
-        return 'Year';
+        return 'Yr';
     }
   }
 }
@@ -56,19 +56,19 @@ extension SizeUnitValue on SizeUnit {
   String get value {
     switch (this) {
       case SizeUnit.nanometer:
-        return 'Nanometer';
+        return 'NM';
       case SizeUnit.millimeter:
-        return 'Millimeter';
+        return 'MM';
       case SizeUnit.centimeter:
-        return 'Centimeter';
+        return 'CM';
       case SizeUnit.meter:
-        return 'Meter';
+        return 'M';
       case SizeUnit.inch:
-        return 'Inch';
+        return 'IN';
       case SizeUnit.foot:
-        return 'Foot';
+        return 'FT';
       case SizeUnit.yard:
-        return 'Yard';
+        return 'YD';
     }
   }
 }
@@ -87,19 +87,19 @@ extension WeightUnitValue on WeightUnit {
   String get value {
     switch (this) {
       case WeightUnit.picogram:
-        return 'Picogram';
+        return 'PG';
       case WeightUnit.nanogram:
-        return 'Nanogram';
+        return 'NG';
       case WeightUnit.microgram:
-        return 'Microgram';
+        return 'MCG';
       case WeightUnit.milligram:
-        return 'Milligram';
+        return 'MG';
       case WeightUnit.gram:
-        return 'Gram';
+        return 'GM';
       case WeightUnit.kilogram:
-        return 'Kilogram';
+        return 'KG';
       case WeightUnit.tonne:
-        return 'Tonne';
+        return 'TN';
     }
   }
 }

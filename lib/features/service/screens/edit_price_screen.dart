@@ -39,6 +39,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
     ServiceType.nonphysical.value
   ];
   List<String> frequencyUnitValues = [
+    'None',
     FrequencyUnit.minute.value,
     FrequencyUnit.hour.value,
     FrequencyUnit.day.value,
@@ -65,9 +66,9 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
     WeightUnit.tonne.value,
   ];
   String selectedType = ServiceType.physical.value;
-  String selectedFrequencyUnit = FrequencyUnit.hour.value;
-  String selectedSizeUnit = SizeUnit.meter.value;
-  String selectedWeightUnit = WeightUnit.kilogram.value;
+  String selectedFrequency = 'None';
+  String selectedSize = SizeUnit.meter.value;
+  String selectedWeight = WeightUnit.kilogram.value;
   bool isChecked = true;
   var isLoaded = false;
 
@@ -105,6 +106,24 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
     });
   }
 
+  void changeFrequency(String frequency) async {
+    setState(() {
+      selectedFrequency = frequency;
+    });
+  }
+
+  void changeSize(String size) async {
+    setState(() {
+      selectedSize = size;
+    });
+  }
+
+  void changeWeight(String weight) async {
+    setState(() {
+      selectedWeight = weight;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(serviceControllerProvider);
@@ -124,9 +143,12 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
               _frequencyUnitController.text = service.frequencyUnit.toString();
               _quantityController.text =
                   service.quantity == 0 ? '' : service.quantity.toString();
-              _lengthController.text = service.length.toString();
-              _widthController.text = service.width.toString();
-              _heightController.text = service.height.toString();
+              _lengthController.text =
+                  service.length == 0 ? '' : service.length.toString();
+              _widthController.text =
+                  service.width == 0 ? '' : service.width.toString();
+              _heightController.text =
+                  service.height == 0 ? '' : service.height.toString();
               _sizeUnitController.text = service.sizeUnit.toString();
               _weightController.text = service.weight.toString();
               _weightUnitController.text = service.weightUnit.toString();
@@ -203,9 +225,6 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -217,7 +236,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                   ),
                                 ),
                                 DropdownButton(
-                                  isDense: true,
+                                  itemHeight: 65,
                                   value: selectedType,
                                   onChanged: (String? selectedType) {
                                     if (selectedType is String) {
@@ -236,7 +255,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                               ],
                             ),
                             const SizedBox(
-                              height: 10,
+                              height: 0,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -271,48 +290,310 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Frequency',
-                                  style: TextStyle(
-                                    color: Pallete.greyColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 80,
-                                  child: TextFormField(
-                                    controller: _frequencyController,
-                                    decoration:
-                                        const InputDecoration(hintText: 'None'),
-                                    inputFormatters: <TextInputFormatter>[
-                                      NumberTextInputFormatter(
-                                        integerDigits: 10,
-                                        decimalDigits: 2,
-                                        maxValue: '1000000000.00',
-                                        decimalSeparator: '.',
-                                        groupDigits: 3,
-                                        groupSeparator: ',',
-                                        allowNegative: false,
-                                        overrideDecimalPoint: true,
-                                        insertDecimalPoint: false,
-                                        insertDecimalDigits: true,
+                            selectedType == ServiceType.nonphysical.value
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Frequency',
+                                        style: TextStyle(
+                                          color: Pallete.greyColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          SizedBox(
+                                            width: 60,
+                                            child: TextFormField(
+                                              controller: _frequencyController,
+                                              decoration: const InputDecoration(
+                                                  hintText: 'None',
+                                                  contentPadding:
+                                                      EdgeInsets.fromLTRB(
+                                                          6, 6, 6, 6)),
+                                              inputFormatters: <TextInputFormatter>[
+                                                NumberTextInputFormatter(
+                                                  integerDigits: 10,
+                                                  decimalDigits: 2,
+                                                  maxValue: '1000000000.00',
+                                                  decimalSeparator: '.',
+                                                  groupDigits: 3,
+                                                  groupSeparator: ',',
+                                                  allowNegative: false,
+                                                  overrideDecimalPoint: true,
+                                                  insertDecimalPoint: false,
+                                                  insertDecimalDigits: true,
+                                                ),
+                                              ],
+                                              keyboardType: const TextInputType
+                                                  .numberWithOptions(
+                                                decimal: true,
+                                              ),
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          DropdownButton(
+                                            itemHeight: 65,
+                                            value: selectedFrequency,
+                                            onChanged: (String? frequency) {
+                                              if (frequency is String) {
+                                                changeFrequency(frequency);
+                                              }
+                                            },
+                                            items: frequencyUnitValues
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Size',
+                                            style: TextStyle(
+                                              color: Pallete.greyColor,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  controller: _lengthController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          hintText: 'L',
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .fromLTRB(6,
+                                                                      6, 6, 6)),
+                                                  inputFormatters: <TextInputFormatter>[
+                                                    NumberTextInputFormatter(
+                                                      integerDigits: 10,
+                                                      decimalDigits: 2,
+                                                      maxValue: '1000000000.00',
+                                                      decimalSeparator: '.',
+                                                      groupDigits: 3,
+                                                      groupSeparator: ',',
+                                                      allowNegative: false,
+                                                      overrideDecimalPoint:
+                                                          true,
+                                                      insertDecimalPoint: false,
+                                                      insertDecimalDigits: true,
+                                                    ),
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                    decimal: true,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  controller: _widthController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          hintText: 'W',
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .fromLTRB(6,
+                                                                      6, 6, 6)),
+                                                  inputFormatters: <TextInputFormatter>[
+                                                    NumberTextInputFormatter(
+                                                      integerDigits: 10,
+                                                      decimalDigits: 2,
+                                                      maxValue: '1000000000.00',
+                                                      decimalSeparator: '.',
+                                                      groupDigits: 3,
+                                                      groupSeparator: ',',
+                                                      allowNegative: false,
+                                                      overrideDecimalPoint:
+                                                          true,
+                                                      insertDecimalPoint: false,
+                                                      insertDecimalDigits: true,
+                                                    ),
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                    decimal: true,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  controller: _heightController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          hintText: 'H',
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .fromLTRB(6,
+                                                                      6, 6, 6)),
+                                                  inputFormatters: <TextInputFormatter>[
+                                                    NumberTextInputFormatter(
+                                                      integerDigits: 10,
+                                                      decimalDigits: 2,
+                                                      maxValue: '1000000000.00',
+                                                      decimalSeparator: '.',
+                                                      groupDigits: 3,
+                                                      groupSeparator: ',',
+                                                      allowNegative: false,
+                                                      overrideDecimalPoint:
+                                                          true,
+                                                      insertDecimalPoint: false,
+                                                      insertDecimalDigits: true,
+                                                    ),
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                    decimal: true,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              DropdownButton(
+                                                itemHeight: 65,
+                                                value: selectedSize,
+                                                onChanged: (String? size) {
+                                                  if (size is String) {
+                                                    changeSize(size);
+                                                  }
+                                                },
+                                                items: sizeUnitValues.map<
+                                                        DropdownMenuItem<
+                                                            String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Weight',
+                                            style: TextStyle(
+                                              color: Pallete.greyColor,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                width: 60,
+                                                child: TextFormField(
+                                                  controller: _weightController,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          hintText: 'None',
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .fromLTRB(6,
+                                                                      6, 6, 6)),
+                                                  inputFormatters: <TextInputFormatter>[
+                                                    NumberTextInputFormatter(
+                                                      integerDigits: 10,
+                                                      decimalDigits: 2,
+                                                      maxValue: '1000000000.00',
+                                                      decimalSeparator: '.',
+                                                      groupDigits: 3,
+                                                      groupSeparator: ',',
+                                                      allowNegative: false,
+                                                      overrideDecimalPoint:
+                                                          true,
+                                                      insertDecimalPoint: false,
+                                                      insertDecimalDigits: true,
+                                                    ),
+                                                  ],
+                                                  keyboardType:
+                                                      const TextInputType
+                                                          .numberWithOptions(
+                                                    decimal: true,
+                                                  ),
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              DropdownButton(
+                                                itemHeight: 65,
+                                                value: selectedWeight,
+                                                onChanged: (String? weight) {
+                                                  if (weight is String) {
+                                                    changeWeight(weight);
+                                                  }
+                                                },
+                                                items: weightUnitValues.map<
+                                                        DropdownMenuItem<
+                                                            String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ],
+                                          )
+                                        ],
                                       ),
                                     ],
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                      decimal: true,
-                                    ),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ),
-                              ],
-                            ),
+                                  )
                           ],
                         ),
                       ),
