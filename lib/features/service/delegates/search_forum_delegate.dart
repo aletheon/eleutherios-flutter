@@ -22,6 +22,7 @@ class SearchForumDelegate extends SearchDelegate {
 
   List<String> searchValues = ['Private', 'Public'];
   List<String> searchTags = [];
+  bool firstTimeThrough = true;
 
   void registerService(BuildContext context, WidgetRef ref, String forumId) {
     ref
@@ -69,6 +70,7 @@ class SearchForumDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.forum.value,
                       initialTags: searchTags,
+                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {
@@ -106,6 +108,12 @@ class SearchForumDelegate extends SearchDelegate {
     if (searchType == "Private") {
       Search searchPrivate =
           Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
+
+      if (firstTimeThrough == true) {
+        searchTags = user.searchTags;
+        searchPrivate = searchPrivate.copyWith(tags: user.searchTags);
+        firstTimeThrough = false;
+      }
 
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
@@ -192,6 +200,12 @@ class SearchForumDelegate extends SearchDelegate {
     } else {
       Search searchPublic =
           Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
+      if (firstTimeThrough == true) {
+        searchTags = user.searchTags;
+        searchPublic = searchPublic.copyWith(tags: user.searchTags);
+        firstTimeThrough = false;
+      }
 
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class UserProfileController extends StateNotifier<bool> {
       {required File? profileFile,
       required File? bannerFile,
       required UserModel userModel,
+      required bool showSnackBarMessage,
       required BuildContext context}) async {
     state = true;
     if (profileFile != null) {
@@ -62,7 +64,9 @@ class UserProfileController extends StateNotifier<bool> {
     final res = await _userProfileRepository.updateUser(userModel);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'User updated successfully!');
+      if (showSnackBarMessage) {
+        showSnackBar(context, 'User updated successfully!');
+      }
       Routemaster.of(context).pop();
     });
   }

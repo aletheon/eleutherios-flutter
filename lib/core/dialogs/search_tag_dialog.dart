@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/features/user_profile/controller/user_profile_controller.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class SearchTagDialog extends ConsumerStatefulWidget {
   final String searchType;
   final List<String> initialTags;
-  const SearchTagDialog(
-      {super.key, required this.searchType, required this.initialTags});
+  final UserModel user;
+  const SearchTagDialog({
+    super.key,
+    required this.searchType,
+    required this.initialTags,
+    required this.user,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -19,6 +26,21 @@ class SearchTagDialog extends ConsumerStatefulWidget {
 class _SearchTagDialogState extends ConsumerState<SearchTagDialog> {
   late double _distanceToField;
   late StringTagController _stringTagController;
+
+  Future<void> save(List<String> tags) async {
+    if (tags.isNotEmpty) {
+      UserModel newUser = widget.user.copyWith(
+        searchTags: tags,
+      );
+      ref.read(userProfileControllerProvider.notifier).updateUser(
+            profileFile: null,
+            bannerFile: null,
+            userModel: newUser,
+            showSnackBarMessage: false,
+            context: context,
+          );
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -202,6 +224,29 @@ class _SearchTagDialogState extends ConsumerState<SearchTagDialog> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ElevatedButton(
+                  onPressed: () async {
+                    await save(_stringTagController.getTags!).then((value) {
+                      return Navigator.of(context)
+                          .pop(_stringTagController.getTags);
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Pallete.greenColor,
+                  ),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
                   onPressed: () {
                     return Navigator.of(context)
                         .pop(_stringTagController.getTags);
@@ -210,12 +255,7 @@ class _SearchTagDialogState extends ConsumerState<SearchTagDialog> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    backgroundColor:
-                        widget.searchType == SearchType.policy.value
-                            ? Pallete.policyTagColor
-                            : widget.searchType == SearchType.forum.value
-                                ? Pallete.forumTagColor
-                                : Pallete.freeServiceTagColor,
+                    backgroundColor: Pallete.redColor,
                   ),
                   child: const Text(
                     'Close',

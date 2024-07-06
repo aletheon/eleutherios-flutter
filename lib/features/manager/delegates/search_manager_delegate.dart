@@ -23,6 +23,7 @@ class SearchManagerDelegate extends SearchDelegate {
 
   List<String> searchValues = ['Private', 'Public'];
   List<String> searchTags = [];
+  bool firstTimeThrough = true;
 
   void showServiceDetails(BuildContext context, String serviceId) {
     Routemaster.of(context).push('/service/$serviceId');
@@ -71,6 +72,7 @@ class SearchManagerDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.service.value,
                       initialTags: searchTags,
+                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {
@@ -112,6 +114,12 @@ class SearchManagerDelegate extends SearchDelegate {
         if (searchType == "Private") {
           Search searchPrivate = Search(
               uid: user.uid, query: query.toLowerCase(), tags: searchTags);
+
+          if (firstTimeThrough == true) {
+            searchTags = user.searchTags;
+            searchPrivate = searchPrivate.copyWith(tags: user.searchTags);
+            firstTimeThrough = false;
+          }
 
           return Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
@@ -198,6 +206,12 @@ class SearchManagerDelegate extends SearchDelegate {
         } else {
           Search searchPublic =
               Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
+          if (firstTimeThrough == true) {
+            searchTags = user.searchTags;
+            searchPublic = searchPublic.copyWith(tags: user.searchTags);
+            firstTimeThrough = false;
+          }
 
           return Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),

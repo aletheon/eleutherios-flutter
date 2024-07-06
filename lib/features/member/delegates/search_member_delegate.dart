@@ -23,6 +23,7 @@ class SearchMemberDelegate extends SearchDelegate {
 
   List<String> searchValues = ['Private', 'Public'];
   List<String> searchTags = [];
+  bool firstTimeThrough = true;
 
   void addMemberService(BuildContext context, WidgetRef ref, String serviceId) {
     ref
@@ -70,6 +71,7 @@ class SearchMemberDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.service.value,
                       initialTags: searchTags,
+                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {
@@ -107,6 +109,12 @@ class SearchMemberDelegate extends SearchDelegate {
     if (searchType == "Private") {
       Search searchPrivate =
           Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
+
+      if (firstTimeThrough == true) {
+        searchTags = user.searchTags;
+        searchPrivate = searchPrivate.copyWith(tags: user.searchTags);
+        firstTimeThrough = false;
+      }
 
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
@@ -193,6 +201,12 @@ class SearchMemberDelegate extends SearchDelegate {
     } else {
       Search searchPublic =
           Search(uid: '', query: query.toLowerCase(), tags: searchTags);
+
+      if (firstTimeThrough == true) {
+        searchTags = user.searchTags;
+        searchPublic = searchPublic.copyWith(tags: user.searchTags);
+        firstTimeThrough = false;
+      }
 
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
