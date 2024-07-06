@@ -77,6 +77,7 @@ class AuthRepository {
           services: [],
           favorites: [],
           tags: [],
+          searchTags: [],
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
           lastUpdateDate: DateTime.now(),
           creationDate: DateTime.now(),

@@ -180,6 +180,35 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Type',
+                                  style: TextStyle(
+                                    color: Pallete.greyColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                DropdownButton(
+                                  itemHeight: 65,
+                                  value: selectedType,
+                                  onChanged: (String? selectedType) {
+                                    if (selectedType is String) {
+                                      changeType(selectedType);
+                                    }
+                                  },
+                                  items: serviceTypeValues
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
                             CheckboxListTile(
                               title: const Text(
                                 "Orderable",
@@ -222,35 +251,6 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                     keyboardType: TextInputType.number,
                                     textAlign: TextAlign.end,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Type',
-                                  style: TextStyle(
-                                    color: Pallete.greyColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                DropdownButton(
-                                  itemHeight: 65,
-                                  value: selectedType,
-                                  onChanged: (String? selectedType) {
-                                    if (selectedType is String) {
-                                      changeType(selectedType);
-                                    }
-                                  },
-                                  items: serviceTypeValues
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
                                 ),
                               ],
                             ),
@@ -382,7 +382,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                                 MainAxisAlignment.end,
                                             children: [
                                               SizedBox(
-                                                width: 50,
+                                                width: 60,
                                                 child: TextFormField(
                                                   controller: _lengthController,
                                                   decoration:
@@ -419,7 +419,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                                 width: 15,
                                               ),
                                               SizedBox(
-                                                width: 50,
+                                                width: 60,
                                                 child: TextFormField(
                                                   controller: _widthController,
                                                   decoration:
@@ -456,7 +456,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                                 width: 15,
                                               ),
                                               SizedBox(
-                                                width: 50,
+                                                width: 60,
                                                 child: TextFormField(
                                                   controller: _heightController,
                                                   decoration:

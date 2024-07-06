@@ -25,6 +25,7 @@ class UserModel {
   final List<String> services;
   final List<String> favorites;
   final List<String> tags;
+  final List<String> searchTags; // tags saved by the user for searching
   final String profilePic;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
@@ -53,6 +54,7 @@ class UserModel {
     required this.services,
     required this.favorites,
     required this.tags,
+    required this.searchTags,
     required this.profilePic,
     required this.lastUpdateDate,
     required this.creationDate,
@@ -83,6 +85,7 @@ class UserModel {
     List<String>? services,
     List<String>? favorites,
     List<String>? tags,
+    List<String>? searchTags,
     String? profilePic,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
@@ -113,6 +116,7 @@ class UserModel {
       services: services ?? this.services,
       favorites: favorites ?? this.favorites,
       tags: tags ?? this.tags,
+      searchTags: searchTags ?? this.searchTags,
       profilePic: profilePic ?? this.profilePic,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
@@ -145,6 +149,7 @@ class UserModel {
       'services': services,
       'favorites': favorites,
       'tags': tags,
+      'searchTags': searchTags,
       'profilePic': profilePic,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
@@ -177,6 +182,7 @@ class UserModel {
       services: List<String>.from(map['services']),
       favorites: List<String>.from(map['favorites']),
       tags: List<String>.from(map['tags']),
+      searchTags: List<String>.from(map['searchTags']),
       profilePic: map['profilePic'] as String,
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
@@ -187,7 +193,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, searchTags: $searchTags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -218,6 +224,7 @@ class UserModel {
         listEquals(other.services, services) &&
         listEquals(other.favorites, favorites) &&
         listEquals(other.tags, tags) &&
+        listEquals(other.searchTags, searchTags) &&
         other.profilePic == profilePic &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
@@ -249,6 +256,7 @@ class UserModel {
         services.hashCode ^
         favorites.hashCode ^
         tags.hashCode ^
+        searchTags.hashCode ^
         profilePic.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
