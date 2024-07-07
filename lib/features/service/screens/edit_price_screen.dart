@@ -73,16 +73,37 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
   var isLoaded = false;
 
   void save(Service service) {
-    // if (titleController.text.trim().isNotEmpty) {
-    //   service = service.copyWith(
-    //     title: titleController.text.trim(),
-    //     titleLowercase: titleController.text.trim().toLowerCase(),
-    //     public: isChecked,
-    //   );
-    //   // ref.read(serviceControllerProvider.notifier).updateService(
-    //   //     service: service,
-    //   //     context: _scaffold.currentContext!);
-    // }
+    service = service.copyWith(
+      type: selectedType,
+      canBeOrdered: isChecked,
+      price: double.parse(_priceController.text),
+    );
+    if (selectedType == ServiceType.physical.value) {
+      service = service.copyWith(
+        quantity: int.parse(_quantityController.text),
+        length: double.parse(_lengthController.text),
+        width: double.parse(_widthController.text),
+        height: double.parse(_heightController.text),
+        sizeUnit: selectedSize,
+        weight: double.parse(_weightController.text),
+        weightUnit: selectedWeight,
+      );
+    } else {
+      service = service.copyWith(
+        quantity: _quantityController.text == ''
+            ? null
+            : int.parse(_quantityController.text),
+        frequency: _frequencyController.text == ''
+            ? null
+            : double.parse(_frequencyController.text),
+        frequencyUnit: selectedFrequency == 'None' ? null : selectedFrequency,
+      );
+    }
+    ref.read(serviceControllerProvider.notifier).updateService(
+        profileFile: null,
+        bannerFile: null,
+        service: service,
+        context: _scaffold.currentContext!);
   }
 
   @override

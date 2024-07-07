@@ -37,7 +37,6 @@ class UserProfileController extends StateNotifier<bool> {
       {required File? profileFile,
       required File? bannerFile,
       required UserModel userModel,
-      required bool showSnackBarMessage,
       required BuildContext context}) async {
     state = true;
     print('in updated user');
@@ -65,9 +64,7 @@ class UserProfileController extends StateNotifier<bool> {
     final res = await _userProfileRepository.updateUser(userModel);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
-      if (showSnackBarMessage) {
-        showSnackBar(context, 'User updated successfully!');
-      }
+      showSnackBar(context, 'User updated successfully!');
       Routemaster.of(context).pop();
     });
   }

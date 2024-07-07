@@ -67,7 +67,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           profileFile: profileFile,
           bannerFile: bannerFile,
           userModel: userModel,
-          showSnackBarMessage: true,
           context: _scaffold.currentContext!);
     }
   }
