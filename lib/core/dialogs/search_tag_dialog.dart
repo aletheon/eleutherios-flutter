@@ -213,10 +213,10 @@ class _SearchTagDialogState extends ConsumerState<SearchTagDialog> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    backgroundColor: Pallete.redColor,
+                    backgroundColor: Pallete.greenColor,
                   ),
                   child: const Text(
-                    'Close',
+                    'Save',
                     style: TextStyle(
                       fontSize: 16,
                     ),

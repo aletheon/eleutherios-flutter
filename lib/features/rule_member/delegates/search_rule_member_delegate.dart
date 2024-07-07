@@ -110,12 +110,6 @@ class SearchRuleMemberDelegate extends SearchDelegate {
       Search searchPrivate =
           Search(uid: user.uid, query: query.toLowerCase(), tags: searchTags);
 
-      if (firstTimeThrough == true) {
-        searchTags = user.searchTags;
-        searchPrivate = searchPrivate.copyWith(tags: user.searchTags);
-        firstTimeThrough = false;
-      }
-
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
         child: Column(
@@ -200,12 +194,6 @@ class SearchRuleMemberDelegate extends SearchDelegate {
     } else {
       Search searchPublic =
           Search(uid: '', query: query.toLowerCase(), tags: searchTags);
-
-      if (firstTimeThrough == true) {
-        searchTags = user.searchTags;
-        searchPublic = searchPublic.copyWith(tags: user.searchTags);
-        firstTimeThrough = false;
-      }
 
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
