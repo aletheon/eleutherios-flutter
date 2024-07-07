@@ -10,16 +10,13 @@ import 'package:reddit_tutorial/core/dialogs/search_tag_dialog.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/search.dart';
-import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class SearchHomeDelegate extends SearchDelegate {
   final WidgetRef ref;
-  final UserModel user;
   SearchHomeDelegate(
     this.ref,
-    this.user,
   );
 
   List<Icon> searchIcons = [
@@ -40,8 +37,6 @@ class SearchHomeDelegate extends SearchDelegate {
   ];
   List<String> searchTags = [];
   String _searchType = SearchType.service.value;
-  bool firstTimeThrough = true;
-  Search initialSearch = Search(uid: '', query: '', tags: []);
 
   void showPolicyDetails(BuildContext context, String policyId) {
     Routemaster.of(context).push('/policy/$policyId');
@@ -99,7 +94,6 @@ class SearchHomeDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: _searchType,
                       initialTags: searchTags,
-                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {
@@ -137,12 +131,6 @@ class SearchHomeDelegate extends SearchDelegate {
     Search search =
         Search(uid: '', query: query.toLowerCase(), tags: searchTags);
 
-    if (firstTimeThrough == true) {
-      searchTags = user.searchTags;
-      search = search.copyWith(tags: user.searchTags);
-      firstTimeThrough = false;
-    }
-
     if (_searchType == SearchType.policy.value) {
       return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
@@ -166,7 +154,7 @@ class SearchHomeDelegate extends SearchDelegate {
                               fontSize: 13,
                             ),
                           ),
-                          onDeleted: () {
+                          onDeleted: () async {
                             searchTags.remove(e);
                             searchTags =
                                 searchTags.isNotEmpty ? searchTags : [];
@@ -293,7 +281,7 @@ class SearchHomeDelegate extends SearchDelegate {
                               fontSize: 13,
                             ),
                           ),
-                          onDeleted: () {
+                          onDeleted: () async {
                             searchTags.remove(e);
                             searchTags =
                                 searchTags.isNotEmpty ? searchTags : [];
@@ -420,7 +408,7 @@ class SearchHomeDelegate extends SearchDelegate {
                               fontSize: 13,
                             ),
                           ),
-                          onDeleted: () {
+                          onDeleted: () async {
                             searchTags.remove(e);
                             searchTags =
                                 searchTags.isNotEmpty ? searchTags : [];

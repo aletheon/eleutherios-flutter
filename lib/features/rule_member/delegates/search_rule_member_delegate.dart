@@ -72,7 +72,6 @@ class SearchRuleMemberDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.service.value,
                       initialTags: searchTags,
-                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {

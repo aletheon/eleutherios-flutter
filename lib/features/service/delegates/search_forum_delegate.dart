@@ -70,7 +70,6 @@ class SearchForumDelegate extends SearchDelegate {
                     builder: (context) => SearchTagDialog(
                       searchType: SearchType.forum.value,
                       initialTags: searchTags,
-                      user: user,
                     ),
                   ).then((tags) {
                     if (tags != null) {

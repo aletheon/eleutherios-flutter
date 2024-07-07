@@ -40,6 +40,7 @@ class UserProfileController extends StateNotifier<bool> {
       required bool showSnackBarMessage,
       required BuildContext context}) async {
     state = true;
+    print('in updated user');
     if (profileFile != null) {
       // users/profile/123456
       final profileRes = await _storageRepository.storeFile(
