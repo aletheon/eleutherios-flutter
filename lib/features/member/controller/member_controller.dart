@@ -185,18 +185,18 @@ class MemberController extends StateNotifier<bool> {
             .getUserMemberCount(forum.forumId, service.uid)
             .first;
         String memberId = const Uuid().v1().replaceAll('-', '');
-        List<String> defaultPermissions = [MemberPermissions.createpost.name];
+        List<String> defaultPermissions = [MemberPermissions.createpost.value];
 
         if (forum.uid == service.uid) {
-          defaultPermissions.add(MemberPermissions.editforum.name);
-          defaultPermissions.add(MemberPermissions.addmember.name);
-          defaultPermissions.add(MemberPermissions.removemember.name);
-          defaultPermissions.add(MemberPermissions.createforum.name);
-          defaultPermissions.add(MemberPermissions.removeforum.name);
-          defaultPermissions.add(MemberPermissions.removepost.name);
-          defaultPermissions.add(MemberPermissions.addtocart.name);
-          defaultPermissions.add(MemberPermissions.removefromcart.name);
-          defaultPermissions.add(MemberPermissions.editmemberpermissions.name);
+          defaultPermissions.add(MemberPermissions.editforum.value);
+          defaultPermissions.add(MemberPermissions.addmember.value);
+          defaultPermissions.add(MemberPermissions.removemember.value);
+          defaultPermissions.add(MemberPermissions.createforum.value);
+          defaultPermissions.add(MemberPermissions.removeforum.value);
+          defaultPermissions.add(MemberPermissions.removepost.value);
+          defaultPermissions.add(MemberPermissions.addtocart.value);
+          defaultPermissions.add(MemberPermissions.removefromcart.value);
+          defaultPermissions.add(MemberPermissions.editmemberpermissions.value);
         }
 
         // create member

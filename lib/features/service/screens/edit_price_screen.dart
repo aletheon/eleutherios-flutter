@@ -65,7 +65,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
     WeightUnit.kilogram.value,
     WeightUnit.tonne.value,
   ];
-  String selectedType = ServiceType.physical.value;
+  String selectedType = ServiceType.nonphysical.value;
   String selectedFrequency = 'None';
   String selectedSize = SizeUnit.meter.value;
   String selectedWeight = WeightUnit.kilogram.value;
@@ -73,27 +73,62 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
   var isLoaded = false;
 
   void save(Service service) {
+    print('canBeOrdered $isChecked');
+    print('price ${_priceController.text}');
+    print('type $selectedType');
+    print('frequency ${_frequencyController.text}');
+    print('frequencyUnit $selectedFrequency');
+    print('quantity ${_quantityController.text}');
+    print('height ${_heightController.text}');
+    print('length ${_lengthController.text}');
+    print('width ${_widthController.text}');
+    print('sizeUnit ${_sizeUnitController.text}');
+    print('weight ${_weightController.text}');
+    print('weightUnit ${_weightUnitController.text}');
+
+    // price,
+    // type,
+    // frequency,
+    // frequencyUnit,
+    // quantity,
+    // height,
+    // length,
+    // width,
+    // sizeUnit,
+    // weight,
+    // weightUnit,
+
     service = service.copyWith(
       type: selectedType,
       canBeOrdered: isChecked,
-      price: double.parse(_priceController.text),
+      price: _priceController.text.isEmpty
+          ? null
+          : double.parse(_priceController.text),
     );
     if (selectedType == ServiceType.physical.value) {
       service = service.copyWith(
         quantity: int.parse(_quantityController.text),
-        length: double.parse(_lengthController.text),
-        width: double.parse(_widthController.text),
-        height: double.parse(_heightController.text),
+        length: _lengthController.text.isEmpty
+            ? null
+            : double.parse(_lengthController.text),
+        width: _widthController.text.isEmpty
+            ? null
+            : double.parse(_widthController.text),
+        height: _heightController.text.isEmpty
+            ? null
+            : double.parse(_heightController.text),
         sizeUnit: selectedSize,
-        weight: double.parse(_weightController.text),
+        weight: _weightController.text.isEmpty
+            ? null
+            : double.parse(_weightController.text),
         weightUnit: selectedWeight,
       );
     } else {
       service = service.copyWith(
-        quantity: _quantityController.text == ''
+        quantity: _quantityController.text.isEmpty
             ? null
             : int.parse(_quantityController.text),
-        frequency: _frequencyController.text == ''
+        frequency: _frequencyController.text.isEmpty
             ? null
             : double.parse(_frequencyController.text),
         frequencyUnit: selectedFrequency == 'None' ? null : selectedFrequency,

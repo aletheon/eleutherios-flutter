@@ -41,7 +41,7 @@ class _MemberPermissionsScreenState
 
     if (forum!.uid != user.uid) {
       if (member!.permissions
-              .contains(MemberPermissions.editmemberpermissions.name) ==
+              .contains(MemberPermissions.editmemberpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
@@ -114,7 +114,7 @@ class _MemberPermissionsScreenState
                                     children: [
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .editforum.name) ==
+                                                      .editforum.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -146,7 +146,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .addmember.name) ==
+                                                      .addmember.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -183,7 +183,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .removemember.name) ==
+                                                      .removemember.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -220,7 +220,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .createforum.name) ==
+                                                      .createforum.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -257,7 +257,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .removeforum.name) ==
+                                                      .removeforum.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -294,7 +294,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .createpost.name) ==
+                                                      .createpost.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -331,7 +331,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .removepost.name) ==
+                                                      .removepost.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -369,7 +369,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .addtocart.name) ==
+                                                      .addtocart.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -406,7 +406,7 @@ class _MemberPermissionsScreenState
                                           : const SizedBox(),
                                       member.permissions.contains(
                                                   MemberPermissions
-                                                      .removefromcart.name) ==
+                                                      .removefromcart.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -445,7 +445,7 @@ class _MemberPermissionsScreenState
                                       member.permissions.contains(
                                                   MemberPermissions
                                                       .editmemberpermissions
-                                                      .name) ==
+                                                      .value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(

@@ -122,7 +122,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                       return Column(children: [
                         user.uid == forum!.uid ||
                                 member!.permissions
-                                    .contains(MemberPermissions.editforum.name)
+                                    .contains(MemberPermissions.editforum.value)
                             ? ListTile(
                                 onTap: () => editForum(context),
                                 leading: const Icon(Icons.edit_note_outlined),
@@ -131,7 +131,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions
-                                    .contains(MemberPermissions.addmember.name)
+                                    .contains(MemberPermissions.addmember.value)
                             ? ListTile(
                                 onTap: () => addMember(context),
                                 leading:
@@ -141,7 +141,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions.contains(
-                                    MemberPermissions.removemember.name)
+                                    MemberPermissions.removemember.value)
                             ? ListTile(
                                 onTap: () => removeMember(context),
                                 leading:
@@ -151,7 +151,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions.contains(
-                                    MemberPermissions.createforum.name)
+                                    MemberPermissions.createforum.value)
                             ? ListTile(
                                 onTap: () => createForum(context),
                                 leading: const Icon(Icons.add_circle_outline),
@@ -160,7 +160,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions.contains(
-                                    MemberPermissions.removeforum.name)
+                                    MemberPermissions.removeforum.value)
                             ? ListTile(
                                 onTap: () => removeForum(context),
                                 leading:
@@ -170,7 +170,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                             : const SizedBox(),
                         user.uid == forum.uid ||
                                 member!.permissions.contains(MemberPermissions
-                                    .editmemberpermissions.name)
+                                    .editmemberpermissions.value)
                             ? ListTile(
                                 onTap: () => memberPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

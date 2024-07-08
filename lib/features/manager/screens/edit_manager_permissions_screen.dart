@@ -46,7 +46,7 @@ class _EditManagerPermissionsScreenState
 
     if (policy!.uid != user.uid) {
       if (manager!.permissions
-              .contains(ManagerPermissions.editmanagerpermissions.name) ==
+              .contains(ManagerPermissions.editmanagerpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
@@ -138,7 +138,7 @@ class _EditManagerPermissionsScreenState
                                             ManagerPermissions.values[index];
                                         List<Widget> _icons = [];
 
-                                        switch (permission.name) {
+                                        switch (permission.value) {
                                           case 'editpolicy':
                                             _icons.add(
                                               const Icon(
@@ -332,17 +332,17 @@ class _EditManagerPermissionsScreenState
                                           secondary: permissionIcon,
                                           title: Text(permission.value),
                                           value: permissions
-                                                  .contains(permission.name)
+                                                  .contains(permission.value)
                                               ? true
                                               : false,
                                           onChanged: (isChecked) {
                                             setState(() {
                                               if (isChecked!) {
                                                 permissions
-                                                    .add(permission.name);
+                                                    .add(permission.value);
                                               } else {
                                                 permissions
-                                                    .remove(permission.name);
+                                                    .remove(permission.value);
                                               }
                                             });
                                           },

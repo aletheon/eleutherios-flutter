@@ -108,7 +108,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
         .first;
 
     if (policy!.uid != user.uid) {
-      if (manager!.permissions.contains(ManagerPermissions.editrule.name) ==
+      if (manager!.permissions.contains(ManagerPermissions.editrule.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,

@@ -46,7 +46,7 @@ class _PotentialMemberPermissionsScreenState
 
     if (rule!.uid != user.uid) {
       if (manager!.permissions.contains(
-              ManagerPermissions.editpotentialmemberpermissions.name) ==
+              ManagerPermissions.editpotentialmemberpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
@@ -125,7 +125,7 @@ class _PotentialMemberPermissionsScreenState
                                           children: [
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
-                                                            .editforum.name) ==
+                                                            .editforum.value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -160,7 +160,7 @@ class _PotentialMemberPermissionsScreenState
                                                 : const SizedBox(),
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
-                                                            .addmember.name) ==
+                                                            .addmember.value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -203,7 +203,7 @@ class _PotentialMemberPermissionsScreenState
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
                                                             .removemember
-                                                            .name) ==
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -246,7 +246,7 @@ class _PotentialMemberPermissionsScreenState
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
                                                             .createforum
-                                                            .name) ==
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -288,7 +288,7 @@ class _PotentialMemberPermissionsScreenState
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
                                                             .removeforum
-                                                            .name) ==
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -329,7 +329,8 @@ class _PotentialMemberPermissionsScreenState
                                                 : const SizedBox(),
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
-                                                            .createpost.name) ==
+                                                            .createpost
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -370,7 +371,8 @@ class _PotentialMemberPermissionsScreenState
                                                 : const SizedBox(),
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
-                                                            .removepost.name) ==
+                                                            .removepost
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:
@@ -412,7 +414,7 @@ class _PotentialMemberPermissionsScreenState
                                             ruleMember.permissions.contains(
                                                         MemberPermissions
                                                             .editmemberpermissions
-                                                            .name) ==
+                                                            .value) ==
                                                     true
                                                 ? Container(
                                                     padding:

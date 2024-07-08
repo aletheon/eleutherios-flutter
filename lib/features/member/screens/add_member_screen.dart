@@ -314,7 +314,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
         .first;
 
     if (forum!.uid != user.uid || forum.public == false) {
-      if (member!.permissions.contains(MemberPermissions.addmember.name) ==
+      if (member!.permissions.contains(MemberPermissions.addmember.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,

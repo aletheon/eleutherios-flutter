@@ -43,7 +43,7 @@ class _ManagerPermissionsScreenState
 
     if (policy!.uid != user.uid) {
       if (manager!.permissions
-              .contains(ManagerPermissions.editmanagerpermissions.name) ==
+              .contains(ManagerPermissions.editmanagerpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
@@ -116,7 +116,7 @@ class _ManagerPermissionsScreenState
                                     children: [
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .editpolicy.name) ==
+                                                      .editpolicy.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -148,7 +148,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .addmanager.name) ==
+                                                      .addmanager.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -185,7 +185,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .removemanager.name) ==
+                                                      .removemanager.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -222,7 +222,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .createrule.name) ==
+                                                      .createrule.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -259,7 +259,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .editrule.name) ==
+                                                      .editrule.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -291,7 +291,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .removerule.name) ==
+                                                      .removerule.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -329,7 +329,7 @@ class _ManagerPermissionsScreenState
                                       manager.permissions.contains(
                                                   ManagerPermissions
                                                       .addpotentialmember
-                                                      .name) ==
+                                                      .value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -367,7 +367,7 @@ class _ManagerPermissionsScreenState
                                       manager.permissions.contains(
                                                   ManagerPermissions
                                                       .removepotentialmember
-                                                      .name) ==
+                                                      .value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -405,7 +405,7 @@ class _ManagerPermissionsScreenState
                                       manager.permissions.contains(
                                                   ManagerPermissions
                                                       .editpotentialmemberpermissions
-                                                      .name) ==
+                                                      .value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -437,7 +437,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .addconsumer.name) ==
+                                                      .addconsumer.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -475,7 +475,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .removeconsumer.name) ==
+                                                      .removeconsumer.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -514,7 +514,7 @@ class _ManagerPermissionsScreenState
                                       manager.permissions.contains(
                                                   ManagerPermissions
                                                       .editmanagerpermissions
-                                                      .name) ==
+                                                      .value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(

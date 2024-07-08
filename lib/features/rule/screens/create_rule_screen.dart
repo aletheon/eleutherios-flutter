@@ -67,7 +67,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
       if (policy.uid != user.uid) {
         if (manager != null) {
           if (manager.permissions
-                  .contains(ManagerPermissions.createrule.name) ==
+                  .contains(ManagerPermissions.createrule.value) ==
               false) {
             Future.delayed(Duration.zero, () {
               showSnackBar(context,

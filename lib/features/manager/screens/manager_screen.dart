@@ -233,7 +233,7 @@ class ManagerScreen extends ConsumerWidget {
                               itemCount: ManagerPermissions.values.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final name =
-                                    ManagerPermissions.values[index].name;
+                                    ManagerPermissions.values[index].value;
                                 final value =
                                     ManagerPermissions.values[index].value;
                                 return CheckboxListTile(

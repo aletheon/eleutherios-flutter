@@ -367,7 +367,7 @@ class ForumScreen extends ConsumerWidget {
                                                             .contains(
                                                                 MemberPermissions
                                                                     .editforum
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -403,7 +403,7 @@ class ForumScreen extends ConsumerWidget {
                                                             .contains(
                                                                 MemberPermissions
                                                                     .addmember
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

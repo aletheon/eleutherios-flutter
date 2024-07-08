@@ -218,7 +218,7 @@ class _AddConsumerScreenState extends ConsumerState<AddConsumerScreen> {
       if (policy.uid != user.uid) {
         if (manager != null) {
           if (manager.permissions
-                  .contains(ManagerPermissions.addconsumer.name) ==
+                  .contains(ManagerPermissions.addconsumer.value) ==
               false) {
             Future.delayed(Duration.zero, () {
               showSnackBar(context,

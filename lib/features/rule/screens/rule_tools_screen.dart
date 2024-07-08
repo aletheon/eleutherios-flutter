@@ -93,7 +93,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                               return Column(children: [
                                 user.uid == policy!.uid ||
                                         manager!.permissions.contains(
-                                            ManagerPermissions.editrule.name)
+                                            ManagerPermissions.editrule.value)
                                     ? ListTile(
                                         onTap: () => editRule(context),
                                         leading: const Icon(
@@ -104,7 +104,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                 user.uid == policy.uid ||
                                         manager!.permissions.contains(
                                             ManagerPermissions
-                                                .addpotentialmember.name)
+                                                .addpotentialmember.value)
                                     ? ListTile(
                                         onTap: () => addMember(context),
                                         leading: const Icon(
@@ -115,7 +115,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                 user.uid == policy.uid ||
                                         manager!.permissions.contains(
                                             ManagerPermissions
-                                                .removepotentialmember.name)
+                                                .removepotentialmember.value)
                                     ? ListTile(
                                         onTap: () => removeMember(context),
                                         leading: const Icon(
@@ -127,7 +127,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                         manager!.permissions.contains(
                                             ManagerPermissions
                                                 .editpotentialmemberpermissions
-                                                .name)
+                                                .value)
                                     ? ListTile(
                                         onTap: () =>
                                             potentialMemberPermissions(context),

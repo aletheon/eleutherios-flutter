@@ -232,7 +232,7 @@ class MemberScreen extends ConsumerWidget {
                               itemCount: MemberPermissions.values.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final name =
-                                    MemberPermissions.values[index].name;
+                                    MemberPermissions.values[index].value;
                                 final value =
                                     MemberPermissions.values[index].value;
                                 return CheckboxListTile(

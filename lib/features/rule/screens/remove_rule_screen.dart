@@ -47,7 +47,7 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
       if (policy.uid != user.uid) {
         if (manager != null) {
           if (manager.permissions
-                  .contains(ManagerPermissions.removerule.name) ==
+                  .contains(ManagerPermissions.removerule.value) ==
               false) {
             Future.delayed(Duration.zero, () {
               showSnackBar(context,

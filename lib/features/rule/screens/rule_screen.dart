@@ -327,7 +327,7 @@ class RuleScreen extends ConsumerWidget {
                                                             .contains(
                                                                 ManagerPermissions
                                                                     .editpolicy
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

@@ -142,16 +142,16 @@ class RuleMemberController extends StateNotifier<bool> {
             .getUserRuleMemberCount(rule.ruleId, service.uid)
             .first;
         String ruleMemberId = const Uuid().v1().replaceAll('-', '');
-        List<String> defaultPermissions = [MemberPermissions.createpost.name];
+        List<String> defaultPermissions = [MemberPermissions.createpost.value];
 
         if (rule.uid == service.uid) {
-          defaultPermissions.add(MemberPermissions.editforum.name);
-          defaultPermissions.add(MemberPermissions.addmember.name);
-          defaultPermissions.add(MemberPermissions.removemember.name);
-          defaultPermissions.add(MemberPermissions.createforum.name);
-          defaultPermissions.add(MemberPermissions.removeforum.name);
-          defaultPermissions.add(MemberPermissions.removepost.name);
-          defaultPermissions.add(MemberPermissions.editmemberpermissions.name);
+          defaultPermissions.add(MemberPermissions.editforum.value);
+          defaultPermissions.add(MemberPermissions.addmember.value);
+          defaultPermissions.add(MemberPermissions.removemember.value);
+          defaultPermissions.add(MemberPermissions.createforum.value);
+          defaultPermissions.add(MemberPermissions.removeforum.value);
+          defaultPermissions.add(MemberPermissions.removepost.value);
+          defaultPermissions.add(MemberPermissions.editmemberpermissions.value);
         }
 
         // create rule member

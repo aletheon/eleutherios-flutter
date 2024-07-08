@@ -68,7 +68,7 @@ class AuthRepository {
           stripeCustomerId: '',
           stripeAccountId: '',
           stripeOnboardingStatus: '',
-          stripeCurrency: '',
+          stripeCurrency: 'USD',
           fcmToken: '',
           forumActivities: [],
           policyActivities: [],

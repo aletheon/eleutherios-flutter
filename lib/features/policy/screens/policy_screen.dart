@@ -382,7 +382,7 @@ class PolicyScreen extends ConsumerWidget {
                                                             .contains(
                                                                 ManagerPermissions
                                                                     .editpolicy
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -418,7 +418,7 @@ class PolicyScreen extends ConsumerWidget {
                                                             .contains(
                                                                 ManagerPermissions
                                                                     .addconsumer
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(
@@ -453,7 +453,7 @@ class PolicyScreen extends ConsumerWidget {
                                                             .contains(
                                                                 ManagerPermissions
                                                                     .addmanager
-                                                                    .name))
+                                                                    .value))
                                                 ? Container(
                                                     margin:
                                                         const EdgeInsets.only(

@@ -43,7 +43,7 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
         .first;
 
     if (forum!.uid != user.uid) {
-      if (member!.permissions.contains(MemberPermissions.removemember.name) ==
+      if (member!.permissions.contains(MemberPermissions.removemember.value) ==
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,

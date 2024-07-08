@@ -126,7 +126,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                       return Column(children: [
                         user.uid == policy!.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.editpolicy.name)
+                                    ManagerPermissions.editpolicy.value)
                             ? ListTile(
                                 onTap: () => editPolicy(context),
                                 leading: const Icon(Icons.edit_note_outlined),
@@ -135,7 +135,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.createrule.name)
+                                    ManagerPermissions.createrule.value)
                             ? ListTile(
                                 onTap: () => createRule(context),
                                 leading: const Icon(Icons.add_circle_outline),
@@ -144,7 +144,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.removerule.name)
+                                    ManagerPermissions.removerule.value)
                             ? ListTile(
                                 onTap: () => removeRule(context),
                                 leading:
@@ -154,7 +154,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.addmanager.name)
+                                    ManagerPermissions.addmanager.value)
                             ? ListTile(
                                 onTap: () => addManager(context),
                                 leading:
@@ -164,7 +164,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.removemanager.name)
+                                    ManagerPermissions.removemanager.value)
                             ? ListTile(
                                 onTap: () => removeManager(context),
                                 leading:
@@ -174,7 +174,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.addconsumer.name)
+                                    ManagerPermissions.addconsumer.value)
                             ? ListTile(
                                 onTap: () => addConsumer(context),
                                 leading:
@@ -184,7 +184,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(
-                                    ManagerPermissions.removeconsumer.name)
+                                    ManagerPermissions.removeconsumer.value)
                             ? ListTile(
                                 onTap: () => removeConsumer(context),
                                 leading:
@@ -194,7 +194,7 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
                             : const SizedBox(),
                         user.uid == policy.uid ||
                                 manager!.permissions.contains(ManagerPermissions
-                                    .editmanagerpermissions.name)
+                                    .editmanagerpermissions.value)
                             ? ListTile(
                                 onTap: () => managerPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

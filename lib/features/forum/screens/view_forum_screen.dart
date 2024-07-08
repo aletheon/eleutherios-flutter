@@ -254,7 +254,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                             .contains(
                                                                 MemberPermissions
                                                                     .removepost
-                                                                    .name)) {
+                                                                    .value)) {
                                                       final RenderBox overlay =
                                                           Overlay.of(context)
                                                                   .context
@@ -403,7 +403,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                             .contains(
                                                                 MemberPermissions
                                                                     .removepost
-                                                                    .name)) {
+                                                                    .value)) {
                                                       final RenderBox overlay =
                                                           Overlay.of(context)
                                                                   .context
