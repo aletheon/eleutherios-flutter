@@ -112,7 +112,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to make changes to this rule');
+              'You do not have permission to make changes to this rule', true);
           Routemaster.of(context).pop();
         });
       }

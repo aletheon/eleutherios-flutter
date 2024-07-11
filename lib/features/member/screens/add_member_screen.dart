@@ -318,7 +318,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to add a member to this forum');
+              'You do not have permission to add a member to this forum', true);
           Routemaster.of(context).pop();
         });
       }

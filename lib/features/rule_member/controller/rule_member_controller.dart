@@ -175,19 +175,20 @@ class RuleMemberController extends StateNotifier<bool> {
 
         // create new rule activity
         state = false;
-        res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Member added!');
+        res.fold((l) => showSnackBar(context, l.message, true), (r) {
+          showSnackBar(context, 'Member added!', false);
         });
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Service is already a member of this rule');
+          showSnackBar(
+              context, 'Service is already a member of this rule', true);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Rule or service does not exist');
+        showSnackBar(context, 'Rule or service does not exist', true);
       }
     }
   }
@@ -198,8 +199,8 @@ class RuleMemberController extends StateNotifier<bool> {
     final ruleMemberRes =
         await _ruleMemberRepository.updateRuleMember(ruleMember);
     state = false;
-    ruleMemberRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Member updated successfully!');
+    ruleMemberRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Member updated successfully!', false);
     });
   }
 
@@ -274,15 +275,15 @@ class RuleMemberController extends StateNotifier<bool> {
         }
       }
       state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Member removed successfully!');
+          showSnackBar(context, 'Member removed successfully!', false);
         }
       });
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Rule or member does not exist');
+        showSnackBar(context, 'Rule or member does not exist', true);
       }
     }
   }

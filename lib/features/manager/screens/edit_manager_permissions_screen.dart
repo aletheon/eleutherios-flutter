@@ -49,8 +49,10 @@ class _EditManagerPermissionsScreenState
               .contains(ManagerPermissions.editmanagerpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to make changes to manager permissions');
+          showSnackBar(
+              context,
+              'You do not have permission to make changes to manager permissions',
+              true);
           Routemaster.of(context).pop();
         });
       }

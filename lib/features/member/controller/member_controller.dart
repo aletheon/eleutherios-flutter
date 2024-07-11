@@ -230,25 +230,26 @@ class MemberController extends StateNotifier<bool> {
           await _userProfileRepository.updateUser(user);
 
           state = false;
-          res.fold((l) => showSnackBar(context, l.message), (r) {
-            showSnackBar(context, 'Member added successfully!');
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            showSnackBar(context, 'Member added successfully!', false);
           });
         } else {
           state = false;
-          res.fold((l) => showSnackBar(context, l.message), (r) {
-            showSnackBar(context, 'Member added successfully!');
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            showSnackBar(context, 'Member added successfully!', false);
           });
         }
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Service is already a member of this forum');
+          showSnackBar(
+              context, 'Service is already a member of this forum', true);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Forum or service does not exist');
+        showSnackBar(context, 'Forum or service does not exist', true);
       }
     }
   }
@@ -258,8 +259,8 @@ class MemberController extends StateNotifier<bool> {
     state = true;
     final memberRes = await _memberRepository.updateMember(member);
     state = false;
-    memberRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Member updated successfully!');
+    memberRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Member updated successfully!', false);
     });
   }
 
@@ -349,15 +350,15 @@ class MemberController extends StateNotifier<bool> {
         }
       }
       state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Member removed successfully!');
+          showSnackBar(context, 'Member removed successfully!', false);
         }
       });
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Forum or member does not exist');
+        showSnackBar(context, 'Forum or member does not exist', true);
       }
     }
   }

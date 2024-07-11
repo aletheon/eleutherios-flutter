@@ -85,7 +85,7 @@ class FavoriteController extends StateNotifier<bool> {
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Service does not exist');
+        showSnackBar(context, 'Service does not exist', true);
       }
     }
   }
@@ -114,7 +114,7 @@ class FavoriteController extends StateNotifier<bool> {
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Service does not exist');
+        showSnackBar(context, 'Service does not exist', true);
       }
     }
   }

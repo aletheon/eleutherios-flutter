@@ -49,8 +49,10 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
               .contains(ManagerPermissions.removemanager.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to remove a manager from this policy');
+          showSnackBar(
+              context,
+              'You do not have permission to remove a manager from this policy',
+              true);
           Routemaster.of(context).pop();
         });
       }

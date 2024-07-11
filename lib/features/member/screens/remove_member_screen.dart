@@ -46,8 +46,10 @@ class _RemoveMemberScreenState extends ConsumerState<RemoveMemberScreen> {
       if (member!.permissions.contains(MemberPermissions.removemember.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to remove a member from this forum');
+          showSnackBar(
+              context,
+              'You do not have permission to remove a member from this forum',
+              true);
           Routemaster.of(context).pop();
         });
       }

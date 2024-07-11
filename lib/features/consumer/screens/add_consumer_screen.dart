@@ -221,21 +221,23 @@ class _AddConsumerScreenState extends ConsumerState<AddConsumerScreen> {
                   .contains(ManagerPermissions.addconsumer.value) ==
               false) {
             Future.delayed(Duration.zero, () {
-              showSnackBar(context,
-                  'You do not have permission to add a consumer to this policy');
+              showSnackBar(
+                  context,
+                  'You do not have permission to add a consumer to this policy',
+                  true);
               Routemaster.of(context).pop();
             });
           }
         } else {
           Future.delayed(Duration.zero, () {
-            showSnackBar(context, 'Manager does not exist');
+            showSnackBar(context, 'Manager does not exist', true);
             Routemaster.of(context).pop();
           });
         }
       }
     } else {
       Future.delayed(Duration.zero, () {
-        showSnackBar(context, 'Policy does not exist');
+        showSnackBar(context, 'Policy does not exist', true);
         Routemaster.of(context).pop();
       });
     }

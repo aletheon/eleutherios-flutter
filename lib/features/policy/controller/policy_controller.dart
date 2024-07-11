@@ -163,8 +163,8 @@ class PolicyController extends StateNotifier<bool> {
     user!.policies.add(policyId);
     await _userProfileRepository.updateUser(user);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Policy created successfully!');
+    res.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Policy created successfully!', false);
       Routemaster.of(context).replace('/user/policy/list');
     });
   }
@@ -182,7 +182,7 @@ class PolicyController extends StateNotifier<bool> {
           path: 'policies/profile', id: policy.policyId, file: profileFile);
 
       profileRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => policy = policy.copyWith(image: r),
       );
     }
@@ -193,14 +193,14 @@ class PolicyController extends StateNotifier<bool> {
           path: 'policies/banner', id: policy.policyId, file: bannerFile);
 
       bannerRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => policy = policy.copyWith(banner: r),
       );
     }
     final policyRes = await _policyRepository.updatePolicy(policy);
     state = false;
-    policyRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Policy updated successfully!');
+    policyRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Policy updated successfully!', false);
     });
   }
 
@@ -255,15 +255,15 @@ class PolicyController extends StateNotifier<bool> {
       final resDeletePolicy = await _policyRepository.deletePolicy(policyId);
       state = false;
       resDeletePolicy.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Policy deleted successfully!');
+          showSnackBar(context, 'Policy deleted successfully!', false);
         },
       );
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'User or policy does not exist');
+        showSnackBar(context, 'User or policy does not exist', true);
       }
     }
   }
@@ -338,7 +338,7 @@ class PolicyController extends StateNotifier<bool> {
                   path: 'forums/profile', id: forum.forumId, file: profileFile);
 
               profileStorageResponse.fold(
-                (l) => showSnackBar(context, l.message),
+                (l) => showSnackBar(context, l.message, true),
                 (r) => forum = forum.copyWith(
                   image: r,
                   imageFileName: rule.imageFileName,
@@ -359,7 +359,7 @@ class PolicyController extends StateNotifier<bool> {
                   path: 'forums/banner', id: forum.forumId, file: bannerFile);
 
               bannerStorageResponse.fold(
-                (l) => showSnackBar(context, l.message),
+                (l) => showSnackBar(context, l.message, true),
                 (r) => forum = forum.copyWith(
                   banner: r,
                   bannerFileName: rule.bannerFileName,
@@ -401,18 +401,18 @@ class PolicyController extends StateNotifier<bool> {
         await _userProfileRepository.updateUser(user!);
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Policy added successfully');
+          showSnackBar(context, 'Policy added successfully', false);
         }
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Policy added successfully');
+          showSnackBar(context, 'Policy added successfully', false);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Policy or service does not exist');
+        showSnackBar(context, 'Policy or service does not exist', true);
       }
     }
   }
@@ -439,15 +439,15 @@ class PolicyController extends StateNotifier<bool> {
 
       state = false;
       resPolicy.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Policy removed successfully!');
+          showSnackBar(context, 'Policy removed successfully!', false);
         },
       );
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Policy or service does not exist');
+        showSnackBar(context, 'Policy or service does not exist', true);
       }
     }
   }

@@ -53,8 +53,10 @@ class _RemoveRuleMemberScreenState
               .contains(ManagerPermissions.addpotentialmember.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to remove a member from this rule');
+          showSnackBar(
+              context,
+              'You do not have permission to remove a member from this rule',
+              true);
           Routemaster.of(context).pop();
         });
       }

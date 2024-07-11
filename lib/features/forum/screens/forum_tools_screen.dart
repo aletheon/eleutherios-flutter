@@ -58,7 +58,7 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
       if (user.forumActivities.contains(widget.forumId) == false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to make changes to this forum');
+              'You do not have permission to make changes to this forum', true);
           Routemaster.of(context).pop();
         });
       }

@@ -143,13 +143,13 @@ class RuleController extends StateNotifier<bool> {
       policy.rules.add(ruleId);
       final resPolicy = await _policyRepository.updatePolicy(policy);
       state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
-        showSnackBar(context, 'Rule added successfully!');
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
+        showSnackBar(context, 'Rule added successfully!', false);
       });
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Policy does not exist');
+        showSnackBar(context, 'Policy does not exist', true);
       }
     }
   }
@@ -167,7 +167,7 @@ class RuleController extends StateNotifier<bool> {
           path: 'rules/profile', id: rule.ruleId, file: profileFile);
 
       profileRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => rule = rule.copyWith(image: r),
       );
     }
@@ -178,14 +178,14 @@ class RuleController extends StateNotifier<bool> {
           path: 'rules/banner', id: rule.ruleId, file: bannerFile);
 
       bannerRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => rule = rule.copyWith(banner: r),
       );
     }
     final ruleRes = await _ruleRepository.updateRule(rule);
     state = false;
-    ruleRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Rule updated successfully!');
+    ruleRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Rule updated successfully!', false);
       // Routemaster.of(context).pop();
     });
   }
@@ -226,19 +226,19 @@ class RuleController extends StateNotifier<bool> {
         await _policyRepository.updatePolicy(policy);
 
         state = false;
-        res.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Rule removed successfully!');
+        res.fold((l) => showSnackBar(context, l.message, true), (r) {
+          showSnackBar(context, 'Rule removed successfully!', false);
         });
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Policy does not exist');
+          showSnackBar(context, 'Policy does not exist', true);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'User or rule does not exist');
+        showSnackBar(context, 'User or rule does not exist', true);
       }
     }
   }

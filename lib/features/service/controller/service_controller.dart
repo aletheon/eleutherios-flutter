@@ -196,8 +196,8 @@ class ServiceController extends StateNotifier<bool> {
     user!.services.add(serviceId);
     await _userProfileRepository.updateUser(user);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Service created successfully!');
+    res.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Service created successfully!', false);
       Routemaster.of(context).replace('/user/service/list');
     });
   }
@@ -215,7 +215,7 @@ class ServiceController extends StateNotifier<bool> {
           path: 'services/profile', id: service.serviceId, file: profileFile);
 
       profileRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => service = service.copyWith(image: r),
       );
     }
@@ -226,14 +226,14 @@ class ServiceController extends StateNotifier<bool> {
           path: 'services/banner', id: service.serviceId, file: bannerFile);
 
       bannerRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => service = service.copyWith(banner: r),
       );
     }
     final serviceRes = await _serviceRepository.updateService(service);
     state = false;
-    serviceRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Service updated successfully!');
+    serviceRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Service updated successfully!', false);
       // Routemaster.of(context).popUntil((routeData) {
       //   if (routeData.toString().split("/").last ==
       //       routeData.pathParameters['id']) {
@@ -457,19 +457,19 @@ class ServiceController extends StateNotifier<bool> {
         // remove service
         final serviceRes = await _serviceRepository.deleteService(serviceId);
         state = false;
-        serviceRes.fold((l) => showSnackBar(context, l.message), (r) {
-          showSnackBar(context, 'Service deleted successfully!');
+        serviceRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+          showSnackBar(context, 'Service deleted successfully!', false);
         });
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'User does not exist');
+          showSnackBar(context, 'User does not exist', true);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Service does not exist');
+        showSnackBar(context, 'Service does not exist', true);
       }
     }
   }

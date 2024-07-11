@@ -61,8 +61,10 @@ class _PolicyToolsScreenState extends ConsumerState<PolicyToolsScreen> {
     if (policy!.uid != user.uid) {
       if (user.policyActivities.contains(widget.policyId) == false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to make changes to this policy');
+          showSnackBar(
+              context,
+              'You do not have permission to make changes to this policy',
+              true);
           Routemaster.of(context).pop();
         });
       }

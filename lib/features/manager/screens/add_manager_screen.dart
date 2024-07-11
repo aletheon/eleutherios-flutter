@@ -316,8 +316,10 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
       if (manager!.permissions.contains(ManagerPermissions.addmanager.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to add a manager to this policy');
+          showSnackBar(
+              context,
+              'You do not have permission to add a manager to this policy',
+              true);
           Routemaster.of(context).pop();
         });
       }

@@ -323,7 +323,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
           false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
-              'You do not have permission to add a member to this rule');
+              'You do not have permission to add a member to this rule', true);
           Routemaster.of(context).pop();
         });
       }

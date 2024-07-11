@@ -47,8 +47,10 @@ class _EditMemberPermissionsScreenState
               .contains(MemberPermissions.editmemberpermissions.value) ==
           false) {
         Future.delayed(Duration.zero, () {
-          showSnackBar(context,
-              'You do not have permission to make changes to member permissions');
+          showSnackBar(
+              context,
+              'You do not have permission to make changes to member permissions',
+              true);
           Routemaster.of(context).pop();
         });
       }

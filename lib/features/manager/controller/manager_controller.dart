@@ -216,25 +216,26 @@ class ManagerController extends StateNotifier<bool> {
           await _userProfileRepository.updateUser(user);
 
           state = false;
-          res.fold((l) => showSnackBar(context, l.message), (r) {
-            showSnackBar(context, 'Manager added successfully!');
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            showSnackBar(context, 'Manager added successfully!', false);
           });
         } else {
           state = false;
-          res.fold((l) => showSnackBar(context, l.message), (r) {
-            showSnackBar(context, 'Manager added successfully!');
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            showSnackBar(context, 'Manager added successfully!', false);
           });
         }
       } else {
         state = false;
         if (context.mounted) {
-          showSnackBar(context, 'Service is already managing this policy');
+          showSnackBar(
+              context, 'Service is already managing this policy', true);
         }
       }
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Policy or service does not exist');
+        showSnackBar(context, 'Policy or service does not exist', true);
       }
     }
   }
@@ -244,8 +245,8 @@ class ManagerController extends StateNotifier<bool> {
     state = true;
     final managerRes = await _managerRepository.updateManager(manager);
     state = false;
-    managerRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Manager updated successfully!');
+    managerRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Manager updated successfully!', false);
     });
   }
 
@@ -337,15 +338,15 @@ class ManagerController extends StateNotifier<bool> {
         }
       }
       state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Manager removed successfully!');
+          showSnackBar(context, 'Manager removed successfully!', false);
         }
       });
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Policy or manager does not exist');
+        showSnackBar(context, 'Policy or manager does not exist', true);
       }
     }
   }

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ final userProfileControllerProvider =
 class UserProfileController extends StateNotifier<bool> {
   final UserProfileRepository _userProfileRepository;
   final StorageRepository _storageRepository;
-  final Ref _ref;
 
   UserProfileController(
       {required UserProfileRepository userProfileRepository,
@@ -30,7 +28,6 @@ class UserProfileController extends StateNotifier<bool> {
       required Ref ref})
       : _userProfileRepository = userProfileRepository,
         _storageRepository = storageRepository,
-        _ref = ref,
         super(false); // is loading
 
   void updateUser(
@@ -46,7 +43,7 @@ class UserProfileController extends StateNotifier<bool> {
           path: 'users/profile', id: userModel.uid, file: profileFile);
 
       profileRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => userModel = userModel.copyWith(profilePic: r),
       );
     }
@@ -57,14 +54,14 @@ class UserProfileController extends StateNotifier<bool> {
           path: 'users/banner', id: userModel.uid, file: bannerFile);
 
       bannerRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => userModel = userModel.copyWith(banner: r),
       );
     }
     final res = await _userProfileRepository.updateUser(userModel);
     state = false;
-    res.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'User updated successfully!');
+    res.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'User updated successfully!', false);
       Routemaster.of(context).pop();
     });
   }

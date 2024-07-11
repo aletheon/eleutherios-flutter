@@ -222,8 +222,8 @@ class ForumController extends StateNotifier<bool> {
     user.forums.add(forumId);
     final resUser = await _userProfileRepository.updateUser(user);
     state = false;
-    resUser.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Forum created successfully!');
+    resUser.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Forum created successfully!', false);
       Routemaster.of(context).replace('/user/forum/list');
     });
   }
@@ -241,7 +241,7 @@ class ForumController extends StateNotifier<bool> {
           path: 'forums/profile', id: forum.forumId, file: profileFile);
 
       profileRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => forum = forum.copyWith(image: r),
       );
     }
@@ -252,14 +252,14 @@ class ForumController extends StateNotifier<bool> {
           path: 'forums/banner', id: forum.forumId, file: bannerFile);
 
       bannerRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => forum = forum.copyWith(banner: r),
       );
     }
     final forumRes = await _forumRepository.updateForum(forum);
     state = false;
-    forumRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Forum updated successfully!');
+    forumRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Forum updated successfully!', false);
     });
   }
 
@@ -373,15 +373,15 @@ class ForumController extends StateNotifier<bool> {
       final resDeleteForum = await _forumRepository.deleteForum(forumId);
       state = false;
       resDeleteForum.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Forum deleted successfully!');
+          showSnackBar(context, 'Forum deleted successfully!', false);
         },
       );
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'User or rule does not exist');
+        showSnackBar(context, 'User or rule does not exist', false);
       }
     }
   }
@@ -473,15 +473,15 @@ class ForumController extends StateNotifier<bool> {
       }
       state = false;
       resChildForum.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Forum removed successfully!');
+          showSnackBar(context, 'Forum removed successfully!', false);
         },
       );
     } else {
       state = false;
       if (context.mounted) {
-        showSnackBar(context, 'Forum or child forum does not exist');
+        showSnackBar(context, 'Forum or child forum does not exist', false);
       }
     }
   }

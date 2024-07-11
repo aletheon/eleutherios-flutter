@@ -109,7 +109,7 @@ class PostController extends StateNotifier<bool> {
           path: 'posts/image', id: postId, file: imageFile);
 
       imageRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => post = post.copyWith(image: r),
       );
     }
@@ -123,7 +123,7 @@ class PostController extends StateNotifier<bool> {
     forum.posts.add(postId);
     final resForum = await _forumRepository.updateForum(forum);
     state = false;
-    resForum.fold((l) => showSnackBar(context, l.message), (r) {});
+    resForum.fold((l) => showSnackBar(context, l.message, true), (r) {});
   }
 
   void updatePost({
@@ -139,14 +139,14 @@ class PostController extends StateNotifier<bool> {
           path: 'posts/image', id: post.postId, file: imageFile);
 
       imageRes.fold(
-        (l) => showSnackBar(context, l.message),
+        (l) => showSnackBar(context, l.message, true),
         (r) => post = post.copyWith(image: r),
       );
     }
     final postRes = await _postRepository.updatePost(post);
     state = false;
-    postRes.fold((l) => showSnackBar(context, l.message), (r) {
-      showSnackBar(context, 'Post updated successfully!');
+    postRes.fold((l) => showSnackBar(context, l.message, true), (r) {
+      showSnackBar(context, 'Post updated successfully!', false);
     });
   }
 
@@ -182,7 +182,7 @@ class PostController extends StateNotifier<bool> {
     forum.posts.remove(postId);
     await _forumRepository.updateForum(forum);
     state = false;
-    postRes.fold((l) => showSnackBar(context, l.message), (r) {
+    postRes.fold((l) => showSnackBar(context, l.message, true), (r) {
       // showSnackBar(context, 'Post deleted successfully!');
     });
   }
