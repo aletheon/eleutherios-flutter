@@ -321,7 +321,7 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                       );
                                     }).toList(),
                                   ),
-                                ],
+                                ], // some comment
                               ),
                               CheckboxListTile(
                                 title: const Text(
