@@ -78,28 +78,6 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
       caseSensitive: false,
       multiLine: false,
     );
-    RegExp intRegex = RegExp(
-      r"^[0-9]+$",
-      caseSensitive: false,
-      multiLine: false,
-    );
-
-    print('canBeOrdered $isChecked');
-    print('price ${_priceController.text}');
-    print('type $selectedType');
-    print('frequency ${_frequencyController.text}');
-    print('frequencyUnit $selectedFrequencyUnit');
-    print('quantity ${_quantityController.text}');
-    print('height ${_heightController.text}');
-    print('length ${_lengthController.text}');
-    print('width ${_widthController.text}');
-    print('sizeUnit $selectedSizeUnit');
-    print('weight ${_weightController.text}');
-    print('weightUnit $selectedWeightUnit');
-
-    print('intRegex length ${doubleRegex.hasMatch(_lengthController.text)}');
-    print('intRegex width ${doubleRegex.hasMatch(_widthController.text)}');
-    print('intRegex height ${doubleRegex.hasMatch(_heightController.text)}');
 
     // validate physical properties
     if (selectedType == ServiceType.physical.value) {
@@ -134,7 +112,6 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
 
     // validate price
     if (_priceController.text.isNotEmpty) {
-      print(_priceController.text);
       if (!doubleRegex
           .hasMatch(_priceController.text.replaceAll(RegExp(r'[^0-9.]'), ''))) {
         errorMessage.write('Price is invalid and must be in the format 9.99.');
@@ -158,6 +135,8 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
           quantity: _quantityController.text.isEmpty
               ? -1
               : int.parse(_quantityController.text),
+          frequency: -1,
+          frequencyUnit: '',
           length: _lengthController.text.isEmpty
               ? -1
               : double.parse(_lengthController.text),
