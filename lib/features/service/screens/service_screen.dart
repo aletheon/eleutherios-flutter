@@ -5,7 +5,6 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
-import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
@@ -154,8 +153,13 @@ class ServiceScreen extends ConsumerWidget {
                                                           vertical: -4,
                                                           horizontal: -4),
                                                   onSelected: (value) {},
-                                                  backgroundColor: Pallete
-                                                      .freeServiceTagColor,
+                                                  backgroundColor: service
+                                                              .price ==
+                                                          -1
+                                                      ? Pallete
+                                                          .freeServiceTagColor
+                                                      : Pallete
+                                                          .paidServiceTagColor,
                                                   label: Text(
                                                     '#$e',
                                                     style: const TextStyle(
@@ -190,6 +194,14 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () =>
                                                   navigateToLikes(context),
                                               style: ElevatedButton.styleFrom(
+                                                  side: BorderSide(
+                                                    width: 1.0,
+                                                    color: service.price == -1
+                                                        ? Pallete
+                                                            .freeServiceTagColor
+                                                        : Pallete
+                                                            .paidServiceTagColor,
+                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -209,6 +221,14 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () => likeService(
                                                   context, ref, service),
                                               style: ElevatedButton.styleFrom(
+                                                  side: BorderSide(
+                                                    width: 1.0,
+                                                    color: service.price == -1
+                                                        ? Pallete
+                                                            .freeServiceTagColor
+                                                        : Pallete
+                                                            .paidServiceTagColor,
+                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -260,6 +280,14 @@ class ServiceScreen extends ConsumerWidget {
                                                   navigateToServiceTools(
                                                       context),
                                               style: ElevatedButton.styleFrom(
+                                                  side: BorderSide(
+                                                    width: 1.0,
+                                                    color: service.price == -1
+                                                        ? Pallete
+                                                            .freeServiceTagColor
+                                                        : Pallete
+                                                            .paidServiceTagColor,
+                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -282,6 +310,14 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () =>
                                                   editService(context),
                                               style: ElevatedButton.styleFrom(
+                                                  side: BorderSide(
+                                                    width: 1.0,
+                                                    color: service.price == -1
+                                                        ? Pallete
+                                                            .freeServiceTagColor
+                                                        : Pallete
+                                                            .paidServiceTagColor,
+                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -301,6 +337,12 @@ class ServiceScreen extends ConsumerWidget {
                                         onPressed: () =>
                                             addForum(context, ref, service),
                                         style: ElevatedButton.styleFrom(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              color: service.price == -1
+                                                  ? Pallete.freeServiceTagColor
+                                                  : Pallete.paidServiceTagColor,
+                                            ),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(10),
