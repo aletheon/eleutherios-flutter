@@ -337,7 +337,13 @@ class _EditPriceScreenState extends ConsumerState<EditPriceScreen> {
                                 contentPadding: EdgeInsets.zero,
                                 controlAffinity:
                                     ListTileControlAffinity.trailing,
-                                activeColor: Pallete.freeServiceColor,
+                                activeColor: _priceController.text.isNotEmpty &&
+                                        double.parse(_priceController.text
+                                                .replaceAll(
+                                                    RegExp(r'[^0-9.]'), '')) >
+                                            0
+                                    ? Pallete.paidServiceTagColor
+                                    : Pallete.freeServiceTagColor,
                               ),
                               Row(
                                 mainAxisAlignment:

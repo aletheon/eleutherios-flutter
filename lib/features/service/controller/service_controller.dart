@@ -174,7 +174,7 @@ class ServiceController extends StateNotifier<bool> {
       bannerFileName: Constants.serviceBannerDefault.split('/').last,
       public: public,
       canBeOrdered: false, // whether service can be ordered or not
-      price: 0,
+      price: -1,
       type: ServiceType.nonphysical.value,
       frequency: 0,
       frequencyUnit: '',

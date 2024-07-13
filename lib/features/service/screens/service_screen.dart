@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
@@ -129,6 +130,24 @@ class ServiceScreen extends ConsumerWidget {
                                         const SizedBox(
                                           width: 10,
                                         ),
+                                        service.price > 0
+                                            ? Container(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10),
+                                                child: Text(
+                                                  NumberFormat.currency(
+                                                          symbol:
+                                                              '${service.currency} ',
+                                                          locale: 'en_US',
+                                                          decimalDigits: 2)
+                                                      .format(service.price),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox(),
                                         service.public
                                             ? const Icon(
                                                 Icons.lock_open_outlined)
