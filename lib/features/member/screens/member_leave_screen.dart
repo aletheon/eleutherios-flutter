@@ -183,8 +183,13 @@ class _MemberLeaveScreenState extends ConsumerState<MemberLeaveScreen> {
                                                                       -4),
                                                           onSelected:
                                                               (value) {},
-                                                          backgroundColor: Pallete
-                                                              .freeServiceTagColor,
+                                                          backgroundColor: service
+                                                                      .price ==
+                                                                  -1
+                                                              ? Pallete
+                                                                  .freeServiceTagColor
+                                                              : Pallete
+                                                                  .paidServiceTagColor,
                                                           label: Text(
                                                             '#$e',
                                                             style:

@@ -251,7 +251,10 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                 contentPadding: const EdgeInsets.all(18),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Pallete.freeServiceTagColor),
+                                    color: service!.price == -1
+                                        ? Pallete.freeServiceTagColor
+                                        : Pallete.paidServiceTagColor,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
@@ -269,7 +272,10 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                 contentPadding: const EdgeInsets.all(18),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Pallete.freeServiceTagColor),
+                                    color: service.price == -1
+                                        ? Pallete.freeServiceTagColor
+                                        : Pallete.paidServiceTagColor,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
@@ -309,11 +315,17 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                     isDense: true,
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Pallete.freeServiceTagColor),
+                                        color: service.price == -1
+                                            ? Pallete.freeServiceTagColor
+                                            : Pallete.paidServiceTagColor,
+                                      ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Pallete.freeServiceTagColor),
+                                        color: service.price == -1
+                                            ? Pallete.freeServiceTagColor
+                                            : Pallete.paidServiceTagColor,
+                                      ),
                                     ),
                                     hintText: inputFieldValues.tags.isNotEmpty
                                         ? ''
@@ -345,8 +357,12 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                                                 .all(
                                                           Radius.circular(20.0),
                                                         ),
-                                                        color: Pallete
-                                                            .freeServiceTagColor,
+                                                        color: service.price ==
+                                                                -1
+                                                            ? Pallete
+                                                                .freeServiceTagColor
+                                                            : Pallete
+                                                                .paidServiceTagColor,
                                                       ),
                                                       margin: const EdgeInsets
                                                           .symmetric(

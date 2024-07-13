@@ -190,8 +190,13 @@ class _RemoveConsumerScreenState extends ConsumerState<RemoveConsumerScreen> {
                                                               vertical: -4,
                                                               horizontal: -4),
                                                       onSelected: (value) {},
-                                                      backgroundColor: Pallete
-                                                          .freeServiceTagColor,
+                                                      backgroundColor: service
+                                                                  .price ==
+                                                              -1
+                                                          ? Pallete
+                                                              .freeServiceTagColor
+                                                          : Pallete
+                                                              .paidServiceTagColor,
                                                       label: Text(
                                                         '#$e',
                                                         style: const TextStyle(

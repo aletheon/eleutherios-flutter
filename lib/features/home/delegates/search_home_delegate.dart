@@ -479,7 +479,11 @@ class SearchHomeDelegate extends SearchDelegate {
                                                         horizontal: -4),
                                                 onSelected: (value) {},
                                                 backgroundColor:
-                                                    Pallete.freeServiceTagColor,
+                                                    service.price == -1
+                                                        ? Pallete
+                                                            .freeServiceTagColor
+                                                        : Pallete
+                                                            .paidServiceTagColor,
                                                 label: Text(
                                                   '#$e',
                                                   style: const TextStyle(
