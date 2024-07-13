@@ -359,8 +359,7 @@ class _MemberPermissionsScreenState
                                                       ),
                                                       Icon(
                                                         Icons.remove,
-                                                        color: Color.fromARGB(
-                                                            255, 237, 86, 86),
+                                                        color: Colors.white,
                                                         size: 10,
                                                       ),
                                                     ],
@@ -434,8 +433,7 @@ class _MemberPermissionsScreenState
                                                       ),
                                                       Icon(
                                                         Icons.remove,
-                                                        color: Color.fromARGB(
-                                                            255, 237, 86, 86),
+                                                        color: Colors.white,
                                                         size: 10,
                                                       ),
                                                     ],

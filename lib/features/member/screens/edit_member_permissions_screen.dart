@@ -139,7 +139,7 @@ class _EditMemberPermissionsScreenState
                                         List<Widget> _icons = [];
 
                                         switch (permission.value) {
-                                          case 'editforum':
+                                          case 'Edit Forum':
                                             _icons.add(
                                               const Icon(
                                                 Icons.edit,
@@ -148,7 +148,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'addmember':
+                                          case 'Add Member':
                                             _icons.add(
                                               const Icon(
                                                 Icons.construction,
@@ -164,7 +164,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removemember':
+                                          case 'Remove Member':
                                             _icons.add(
                                               const Icon(
                                                 Icons.construction,
@@ -180,7 +180,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'createforum':
+                                          case 'Create Forum':
                                             _icons.add(
                                               const Icon(
                                                 Icons.forum,
@@ -196,7 +196,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removeforum':
+                                          case 'Remove Forum':
                                             _icons.add(
                                               const Icon(
                                                 Icons.forum,
@@ -212,7 +212,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'createpost':
+                                          case 'Create Post':
                                             _icons.add(
                                               const Icon(
                                                 Icons.article,
@@ -228,7 +228,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removepost':
+                                          case 'Remove Post':
                                             _icons.add(
                                               const Icon(
                                                 Icons.article,
@@ -244,7 +244,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'addtocart':
+                                          case 'Add To Cart':
                                             _icons.add(
                                               const Icon(
                                                 Icons.shopping_cart,
@@ -260,7 +260,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removefromcart':
+                                          case 'Remove From Cart':
                                             _icons.add(
                                               const Icon(
                                                 Icons.shopping_cart,
@@ -276,7 +276,7 @@ class _EditMemberPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'editmemberpermissions':
+                                          case 'Edit Permissions':
                                             _icons.add(
                                               const Icon(
                                                 Icons.auto_fix_normal,

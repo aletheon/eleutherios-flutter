@@ -141,7 +141,7 @@ class _EditManagerPermissionsScreenState
                                         List<Widget> _icons = [];
 
                                         switch (permission.value) {
-                                          case 'editpolicy':
+                                          case 'Edit Policy':
                                             _icons.add(
                                               const Icon(
                                                 Icons.edit,
@@ -150,7 +150,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'addmanager':
+                                          case 'Add Manager':
                                             _icons.add(
                                               const Icon(
                                                 Icons.handyman,
@@ -166,7 +166,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removemanager':
+                                          case 'Remove Manager':
                                             _icons.add(
                                               const Icon(
                                                 Icons.handyman,
@@ -182,7 +182,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'createrule':
+                                          case 'Create Rule':
                                             _icons.add(
                                               const Icon(
                                                 Icons.account_balance,
@@ -198,7 +198,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'editrule':
+                                          case 'Edit Rule':
                                             _icons.add(
                                               const Icon(
                                                 Icons.edit,
@@ -207,7 +207,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removerule':
+                                          case 'Remove Rule':
                                             _icons.add(
                                               const Icon(
                                                 Icons.account_balance,
@@ -223,7 +223,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'addpotentialmember':
+                                          case 'Add Member':
                                             _icons.add(
                                               const Icon(
                                                 Icons.construction,
@@ -239,7 +239,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removepotentialmember':
+                                          case 'Remove Member':
                                             _icons.add(
                                               const Icon(
                                                 Icons.construction,
@@ -255,7 +255,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'editpotentialmemberpermissions':
+                                          case 'Edit Member Permissions':
                                             _icons.add(
                                               const Icon(
                                                 Icons.auto_fix_high,
@@ -264,7 +264,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'addconsumer':
+                                          case 'Add Consumer':
                                             _icons.add(
                                               const Icon(
                                                 Icons.miscellaneous_services,
@@ -280,7 +280,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'removeconsumer':
+                                          case 'Remove Consumer':
                                             _icons.add(
                                               const Icon(
                                                 Icons.miscellaneous_services,
@@ -296,7 +296,7 @@ class _EditManagerPermissionsScreenState
                                               ),
                                             );
                                             break;
-                                          case 'editmanagerpermissions':
+                                          case 'Edit Manager Permissions':
                                             _icons.add(
                                               const Icon(
                                                 Icons.auto_fix_normal,
