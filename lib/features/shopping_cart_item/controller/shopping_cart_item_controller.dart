@@ -4,7 +4,7 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
-import 'package:reddit_tutorial/features/shoppingCartItems/repository/shopping_cart_item_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_item/repository/shopping_cart_item_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';

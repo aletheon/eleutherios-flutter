@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/utils.dart';
-import 'package:reddit_tutorial/features/shoppingCartItems/controller/shopping_cart_item_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:uuid/uuid.dart';

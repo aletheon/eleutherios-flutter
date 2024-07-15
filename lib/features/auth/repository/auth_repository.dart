@@ -76,7 +76,7 @@ class AuthRepository {
           forums: [],
           services: [],
           favorites: [],
-          shoppingCartUserIds: [],
+          shoppingCartUserIds: [], // ensure each uid is unique and not a duplicate
           tags: [],
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
           lastUpdateDate: DateTime.now(),
