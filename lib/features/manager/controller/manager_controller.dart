@@ -62,17 +62,17 @@ final getUserManagersProvider =
 });
 
 final getManagersByServiceIdProvider =
-    StreamProvider.family.autoDispose((ref, String stringId) {
+    StreamProvider.family.autoDispose((ref, String serviceId) {
   return ref
       .watch(managerControllerProvider.notifier)
-      .getManagersByServiceId(stringId);
+      .getManagersByServiceId(serviceId);
 });
 
 final getManangersByServiceIdProvider2 =
-    Provider.family.autoDispose((ref, String stringId) {
+    Provider.family.autoDispose((ref, String serviceId) {
   return ref
       .watch(managerControllerProvider.notifier)
-      .getManagersByServiceId(stringId);
+      .getManagersByServiceId(serviceId);
 });
 
 final getUserManagerCountProvider =
@@ -155,7 +155,7 @@ class ManagerController extends StateNotifier<bool> {
     // ensure policy and service exist
     if (policy != null && service != null) {
       // ensure service is not already a manager
-      if (policy.managers.contains(serviceId) == false) {
+      if (policy.services.contains(serviceId) == false) {
         final user = await _ref
             .read(authControllerProvider.notifier)
             .getUserData(service.uid)
@@ -340,7 +340,7 @@ class ManagerController extends StateNotifier<bool> {
       state = false;
       res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Manager removed successfully!', false);
+          showSnackBar(context, 'Manager deleted successfully!', false);
         }
       });
     } else {

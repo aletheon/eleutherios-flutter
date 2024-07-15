@@ -227,7 +227,7 @@ class RuleController extends StateNotifier<bool> {
 
         state = false;
         res.fold((l) => showSnackBar(context, l.message, true), (r) {
-          showSnackBar(context, 'Rule removed successfully!', false);
+          showSnackBar(context, 'Rule deleted successfully!', false);
         });
       } else {
         state = false;

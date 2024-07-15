@@ -475,7 +475,7 @@ class ForumController extends StateNotifier<bool> {
       resChildForum.fold(
         (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Forum removed successfully!', false);
+          showSnackBar(context, 'Forum deleted successfully!', false);
         },
       );
     } else {

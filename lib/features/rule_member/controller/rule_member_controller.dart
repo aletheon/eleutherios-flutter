@@ -136,7 +136,7 @@ class RuleMemberController extends StateNotifier<bool> {
 
     if (rule != null && service != null) {
       // ensure service is not already a member
-      if (rule.members.contains(serviceId) == false) {
+      if (rule.services.contains(serviceId) == false) {
         final ruleMemberCount = await _ref
             .read(ruleMemberControllerProvider.notifier)
             .getUserRuleMemberCount(rule.ruleId, service.uid)
@@ -277,7 +277,7 @@ class RuleMemberController extends StateNotifier<bool> {
       state = false;
       res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Member removed successfully!', false);
+          showSnackBar(context, 'Member deleted successfully!', false);
         }
       });
     } else {

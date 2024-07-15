@@ -16,6 +16,10 @@ class ServiceScreen extends ConsumerWidget {
   final String serviceId;
   const ServiceScreen({super.key, required this.serviceId});
 
+  void addToCart(BuildContext context, WidgetRef ref, Service service) {
+    Routemaster.of(context).push('edit');
+  }
+
   void editService(BuildContext context) {
     Routemaster.of(context).push('edit');
   }
@@ -213,14 +217,6 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () =>
                                                   navigateToLikes(context),
                                               style: ElevatedButton.styleFrom(
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: service.price == -1
-                                                        ? Pallete
-                                                            .freeServiceTagColor
-                                                        : Pallete
-                                                            .paidServiceTagColor,
-                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -240,14 +236,6 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () => likeService(
                                                   context, ref, service),
                                               style: ElevatedButton.styleFrom(
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: service.price == -1
-                                                        ? Pallete
-                                                            .freeServiceTagColor
-                                                        : Pallete
-                                                            .paidServiceTagColor,
-                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -299,14 +287,6 @@ class ServiceScreen extends ConsumerWidget {
                                                   navigateToServiceTools(
                                                       context),
                                               style: ElevatedButton.styleFrom(
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: service.price == -1
-                                                        ? Pallete
-                                                            .freeServiceTagColor
-                                                        : Pallete
-                                                            .paidServiceTagColor,
-                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -329,14 +309,6 @@ class ServiceScreen extends ConsumerWidget {
                                               onPressed: () =>
                                                   editService(context),
                                               style: ElevatedButton.styleFrom(
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: service.price == -1
-                                                        ? Pallete
-                                                            .freeServiceTagColor
-                                                        : Pallete
-                                                            .paidServiceTagColor,
-                                                  ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -351,17 +323,11 @@ class ServiceScreen extends ConsumerWidget {
                                         : const SizedBox(),
                                     // add to forum button
                                     Container(
-                                      margin: const EdgeInsets.only(right: 5),
+                                      margin: const EdgeInsets.only(right: 10),
                                       child: OutlinedButton(
                                         onPressed: () =>
                                             addForum(context, ref, service),
                                         style: ElevatedButton.styleFrom(
-                                            side: BorderSide(
-                                              width: 1.0,
-                                              color: service.price == -1
-                                                  ? Pallete.freeServiceTagColor
-                                                  : Pallete.paidServiceTagColor,
-                                            ),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(10),
@@ -369,6 +335,30 @@ class ServiceScreen extends ConsumerWidget {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 25)),
                                         child: const Text('Add Forum'),
+                                      ),
+                                    ),
+                                    // add to cart button
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: OutlinedButton(
+                                        onPressed: () =>
+                                            addToCart(context, ref, service),
+                                        style: ElevatedButton.styleFrom(
+                                            // side: BorderSide(
+                                            //   width: 1.0,
+                                            //   color: service.price == -1
+                                            //       ? Pallete.freeServiceTagColor
+                                            //       : Pallete.paidServiceTagColor,
+                                            // ),
+                                            backgroundColor:
+                                                Pallete.darkGreenColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25)),
+                                        child: const Text('Add to Cart'),
                                       ),
                                     )
                                   ],

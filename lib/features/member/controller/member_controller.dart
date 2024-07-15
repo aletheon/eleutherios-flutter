@@ -175,7 +175,7 @@ class MemberController extends StateNotifier<bool> {
 
     if (forum != null && service != null) {
       // ensure service is not already a member
-      if (forum.members.contains(serviceId) == false) {
+      if (forum.services.contains(serviceId) == false) {
         final user = await _ref
             .read(authControllerProvider.notifier)
             .getUserData(service.uid)
@@ -352,7 +352,7 @@ class MemberController extends StateNotifier<bool> {
       state = false;
       res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
-          showSnackBar(context, 'Member removed successfully!', false);
+          showSnackBar(context, 'Member deleted successfully!', false);
         }
       });
     } else {

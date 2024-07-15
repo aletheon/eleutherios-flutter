@@ -12,4 +12,6 @@ class FirebaseConstants {
   static const servicesCollection = 'services';
   static const usersCollection = 'users';
   static const managersCollection = 'managers';
+  static const shoppingCartsCollection = 'shoppingcarts';
+  static const shoppingCartItemsCollection = 'shoppingcartitems';
 }

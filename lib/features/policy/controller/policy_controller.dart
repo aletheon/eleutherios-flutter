@@ -441,7 +441,7 @@ class PolicyController extends StateNotifier<bool> {
       resPolicy.fold(
         (l) => showSnackBar(context, l.message, true),
         (r) {
-          showSnackBar(context, 'Policy removed successfully!', false);
+          showSnackBar(context, 'Policy deleted successfully!', false);
         },
       );
     } else {
