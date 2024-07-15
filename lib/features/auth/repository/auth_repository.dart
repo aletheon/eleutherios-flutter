@@ -76,6 +76,7 @@ class AuthRepository {
           forums: [],
           services: [],
           favorites: [],
+          shoppingCartUserIds: [],
           tags: [],
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
           lastUpdateDate: DateTime.now(),

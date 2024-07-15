@@ -24,6 +24,8 @@ class UserModel {
   final List<String> forums;
   final List<String> services;
   final List<String> favorites;
+  final List<String>
+      shoppingCartUserIds; // shopping cart users this user has member permission to add items too
   final List<String> tags;
   final String profilePic;
   final DateTime lastUpdateDate;
@@ -52,6 +54,7 @@ class UserModel {
     required this.forums,
     required this.services,
     required this.favorites,
+    required this.shoppingCartUserIds,
     required this.tags,
     required this.profilePic,
     required this.lastUpdateDate,
@@ -82,6 +85,7 @@ class UserModel {
     List<String>? forums,
     List<String>? services,
     List<String>? favorites,
+    List<String>? shoppingCartUserIds,
     List<String>? tags,
     String? profilePic,
     DateTime? lastUpdateDate,
@@ -112,6 +116,7 @@ class UserModel {
       forums: forums ?? this.forums,
       services: services ?? this.services,
       favorites: favorites ?? this.favorites,
+      shoppingCartUserIds: shoppingCartUserIds ?? this.shoppingCartUserIds,
       tags: tags ?? this.tags,
       profilePic: profilePic ?? this.profilePic,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -144,6 +149,7 @@ class UserModel {
       'forums': forums,
       'services': services,
       'favorites': favorites,
+      'shoppingCartUserIds': shoppingCartUserIds,
       'tags': tags,
       'profilePic': profilePic,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
@@ -176,6 +182,7 @@ class UserModel {
       forums: List<String>.from(map['forums']),
       services: List<String>.from(map['services']),
       favorites: List<String>.from(map['favorites']),
+      shoppingCartUserIds: List<String>.from(map['shoppingCartUserIds']),
       tags: List<String>.from(map['tags']),
       profilePic: map['profilePic'] as String,
       lastUpdateDate:
@@ -187,7 +194,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, shoppingCartUserIds: $shoppingCartUserIds, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -217,6 +224,7 @@ class UserModel {
         listEquals(other.forums, forums) &&
         listEquals(other.services, services) &&
         listEquals(other.favorites, favorites) &&
+        listEquals(other.shoppingCartUserIds, shoppingCartUserIds) &&
         listEquals(other.tags, tags) &&
         other.profilePic == profilePic &&
         other.lastUpdateDate == lastUpdateDate &&
@@ -248,6 +256,7 @@ class UserModel {
         forums.hashCode ^
         services.hashCode ^
         favorites.hashCode ^
+        shoppingCartUserIds.hashCode ^
         tags.hashCode ^
         profilePic.hashCode ^
         lastUpdateDate.hashCode ^
