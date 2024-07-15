@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/shoppingCartItems/repository/shopping_cart_item_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
+import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
@@ -107,11 +109,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
 
   void createShoppingCartItem(
     String shoppingCartId,
+    String? forumId,
     String? memberId,
     String serviceId,
     BuildContext context,
   ) async {
     state = true;
+    Forum? forum; // placeholder for forum
     Member? member; // placeholder for member
     ShoppingCart? shoppingCart = await _ref
         .read(shoppingCartControllerProvider.notifier)
@@ -127,6 +131,12 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     if (shoppingCart != null && service != null) {
       // ensure service is not already an item
       if (shoppingCart.services.contains(serviceId) == false) {
+        if (forumId != null) {
+          forum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(forumId)
+              .first;
+        }
         if (memberId != null) {
           member = await _ref
               .read(memberControllerProvider.notifier)
@@ -135,13 +145,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         }
         String shoppingCartItemId = const Uuid().v1().replaceAll('-', '');
 
-        // create shoppingCartItem
+        // create shopping cart item
         ShoppingCartItem shoppingCartItem = ShoppingCartItem(
           shoppingCartItemId: shoppingCartItemId,
           shoppingCartId: shoppingCartId,
           shoppingCartUid: shoppingCart.uid,
-          forumId: '',
-          forumUid: '',
+          forumId: forum != null ? forum.forumId : '',
+          forumUid: forum != null ? forum.uid : '',
           memberId: member != null ? member.memberId : '',
           serviceId: serviceId,
           serviceUid: service.uid,
