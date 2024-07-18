@@ -250,7 +250,7 @@ class RuleMemberController extends StateNotifier<bool> {
           .getUserData(ruleMember.serviceUid)
           .first;
 
-      // update forum
+      // update rule
       rule.members.remove(ruleMemberId);
       rule.services.remove(ruleMember.serviceId);
       await _ruleRepository.updateRule(rule);

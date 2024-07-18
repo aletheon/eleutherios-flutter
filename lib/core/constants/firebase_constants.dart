@@ -14,4 +14,7 @@ class FirebaseConstants {
   static const managersCollection = 'managers';
   static const shoppingCartsCollection = 'shoppingcarts';
   static const shoppingCartItemsCollection = 'shoppingcartitems';
+  static const shoppingCartForumsCollection = 'shoppingcartforums';
+  static const shoppingCartUsersCollection = 'shoppingcartusers';
+  static const shoppingCartMembersCollection = 'shoppingcartmembers';
 }
