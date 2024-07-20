@@ -57,6 +57,20 @@ class ShoppingCartUserRepository {
     }
   }
 
+  FutureVoid updateShoppingCartUser(ShoppingCartUser shoppingCartUser) async {
+    try {
+      return right(_shoppingCartUsers
+          .doc(shoppingCartUser.shoppingCartUserId)
+          .update(shoppingCartUser.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(
+        Failure(e.toString()),
+      );
+    }
+  }
+
   FutureVoid deleteShoppingCartUser(String shoppingCartUserId) async {
     try {
       return right(_shoppingCartUsers.doc(shoppingCartUserId).delete());

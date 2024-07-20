@@ -1,14 +1,18 @@
+import 'package:flutter/foundation.dart';
+
 class ShoppingCartUser {
   final String shoppingCartUserId; // primary key
   final String uid;
   final String
       cartUid; // owner of the cart user has permission to add items too
+  final List<String> forums; // copy of forums for redundancy sake
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   ShoppingCartUser({
     required this.shoppingCartUserId,
     required this.uid,
     required this.cartUid,
+    required this.forums,
     required this.lastUpdateDate,
     required this.creationDate,
   });
@@ -17,6 +21,7 @@ class ShoppingCartUser {
     String? shoppingCartUserId,
     String? uid,
     String? cartUid,
+    List<String>? forums,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
@@ -24,6 +29,7 @@ class ShoppingCartUser {
       shoppingCartUserId: shoppingCartUserId ?? this.shoppingCartUserId,
       uid: uid ?? this.uid,
       cartUid: cartUid ?? this.cartUid,
+      forums: forums ?? this.forums,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
     );
@@ -34,6 +40,7 @@ class ShoppingCartUser {
       'shoppingCartUserId': shoppingCartUserId,
       'uid': uid,
       'cartUid': cartUid,
+      'forums': forums,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
     };
@@ -44,6 +51,7 @@ class ShoppingCartUser {
       shoppingCartUserId: map['shoppingCartUserId'] as String,
       uid: map['uid'] as String,
       cartUid: map['cartUid'] as String,
+      forums: List<String>.from(map['forums']),
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
       creationDate:
@@ -53,7 +61,7 @@ class ShoppingCartUser {
 
   @override
   String toString() {
-    return 'ShoppingCartUser(shoppingCartUserId: $shoppingCartUserId, uid: $uid, cartUid: $cartUid, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartUser(shoppingCartUserId: $shoppingCartUserId, uid: $uid, cartUid: $cartUid, forums: $forums, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -63,6 +71,7 @@ class ShoppingCartUser {
     return other.shoppingCartUserId == shoppingCartUserId &&
         other.uid == uid &&
         other.cartUid == cartUid &&
+        listEquals(other.forums, forums) &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
   }
@@ -72,6 +81,7 @@ class ShoppingCartUser {
     return shoppingCartUserId.hashCode ^
         uid.hashCode ^
         cartUid.hashCode ^
+        forums.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
   }

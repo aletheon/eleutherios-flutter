@@ -371,8 +371,8 @@ class ManagerController extends StateNotifier<bool> {
     );
   }
 
-  Future<void> deleteManagersByPolicId(String policyId) {
-    return _managerRepository.deleteManagersByPolicId(policyId);
+  Future<void> deleteManagersByPoliceId(String policyId) {
+    return _managerRepository.deleteManagersByPoliceId(policyId);
   }
 
   Stream<List<Manager>> getManagers(String policyId) {

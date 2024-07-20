@@ -5,17 +5,18 @@ class ShoppingCartForum {
   final String shoppingCartUserId; // foreign key
   final String
       forumId; // forum user has been given permission to add items to cart
-  final List<String> services; // copy of member services for redundancy sake
   final List<String>
       members; // potential members (i.e. services) that will serve in this rule
+  final List<String> services; // copy of member services for redundancy sake
+
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   ShoppingCartForum({
     required this.shoppingCartForumId,
     required this.shoppingCartUserId,
     required this.forumId,
-    required this.services,
     required this.members,
+    required this.services,
     required this.lastUpdateDate,
     required this.creationDate,
   });
@@ -24,8 +25,8 @@ class ShoppingCartForum {
     String? shoppingCartForumId,
     String? shoppingCartUserId,
     String? forumId,
-    List<String>? services,
     List<String>? members,
+    List<String>? services,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
@@ -33,8 +34,8 @@ class ShoppingCartForum {
       shoppingCartForumId: shoppingCartForumId ?? this.shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId ?? this.shoppingCartUserId,
       forumId: forumId ?? this.forumId,
-      services: services ?? this.services,
       members: members ?? this.members,
+      services: services ?? this.services,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
     );
@@ -45,8 +46,8 @@ class ShoppingCartForum {
       'shoppingCartForumId': shoppingCartForumId,
       'shoppingCartUserId': shoppingCartUserId,
       'forumId': forumId,
-      'services': services,
       'members': members,
+      'services': services,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
     };
@@ -57,8 +58,8 @@ class ShoppingCartForum {
       shoppingCartForumId: map['shoppingCartForumId'] as String,
       shoppingCartUserId: map['shoppingCartUserId'] as String,
       forumId: map['forumId'] as String,
-      services: List<String>.from(map['services']),
       members: List<String>.from(map['members']),
+      services: List<String>.from(map['services']),
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
       creationDate:
@@ -68,7 +69,7 @@ class ShoppingCartForum {
 
   @override
   String toString() {
-    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, forumId: $forumId, services: $services, members: $members, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, forumId: $forumId, members: $members, services: $services, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -78,8 +79,8 @@ class ShoppingCartForum {
     return other.shoppingCartForumId == shoppingCartForumId &&
         other.shoppingCartUserId == shoppingCartUserId &&
         other.forumId == forumId &&
-        listEquals(other.services, services) &&
         listEquals(other.members, members) &&
+        listEquals(other.services, services) &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
   }
@@ -89,8 +90,8 @@ class ShoppingCartForum {
     return shoppingCartForumId.hashCode ^
         shoppingCartUserId.hashCode ^
         forumId.hashCode ^
-        services.hashCode ^
         members.hashCode ^
+        services.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
   }

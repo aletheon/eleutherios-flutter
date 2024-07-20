@@ -19,6 +19,20 @@ class ShoppingCartMemberRepository {
   CollectionReference get _shoppingCartMembers =>
       _firestore.collection(FirebaseConstants.shoppingCartMembersCollection);
 
+  Future<void> deleteShoppingCartMembersByShoppingCartForumId(
+      String shoppingCartForumId) {
+    WriteBatch batch = _firestore.batch();
+    return _shoppingCartMembers
+        .where('shoppingCartForumId', isEqualTo: shoppingCartForumId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
+
   Stream<ShoppingCartMember?> getShoppingCartMemberById(
       String shoppingCartMemberId) {
     if (shoppingCartMemberId.isNotEmpty) {

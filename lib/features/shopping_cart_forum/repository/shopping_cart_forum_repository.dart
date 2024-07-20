@@ -19,6 +19,20 @@ class ShoppingCartForumRepository {
   CollectionReference get _shoppingCartForums =>
       _firestore.collection(FirebaseConstants.shoppingCartForumsCollection);
 
+  Future<void> deleteShoppingCartForumsByShoppingCartUserId(
+      String shoppingCartUserId) {
+    WriteBatch batch = _firestore.batch();
+    return _shoppingCartForums
+        .where('shoppingCartUserId', isEqualTo: shoppingCartUserId)
+        .get()
+        .then((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      return batch.commit();
+    });
+  }
+
   Stream<ShoppingCartForum?> getShoppingCartForumById(
       String shoppingCartForumId) {
     if (shoppingCartForumId.isNotEmpty) {
@@ -40,9 +54,10 @@ class ShoppingCartForumRepository {
     }
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForums(String uid) {
+  Stream<List<ShoppingCartForum>> getShoppingCartForums(
+      String shoppingCartUserId) {
     return _shoppingCartForums
-        .where('uid', isEqualTo: uid)
+        .where('shoppingCartUserId', isEqualTo: shoppingCartUserId)
         .snapshots()
         .map((event) {
       List<ShoppingCartForum> shoppingCartForums = [];

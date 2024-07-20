@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/features/shopping_cart_forum/repository/shopping
 import 'package:reddit_tutorial/features/shopping_cart_member/repository/shopping_cart_member_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/models/shopping_cart_member.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getShoppingCartMemberByIdProvider =
@@ -18,10 +19,10 @@ final getShoppingCartMemberByIdProvider =
 });
 
 final shoppingCartMembersProvider =
-    StreamProvider.family.autoDispose((ref, String uid) {
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
       .watch(shoppingCartMemberControllerProvider.notifier)
-      .getShoppingCartMembers(uid);
+      .getShoppingCartMembers(params.item1, params.item2);
 });
 
 final shoppingCartMemberControllerProvider =
@@ -185,6 +186,12 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
             'Shopping cart forum or shopping cart member does not exist', true);
       }
     }
+  }
+
+  Future<void> deleteShoppingCartMembersByShoppingCartForumId(
+      String shoppingCartForumId) {
+    return _shoppingCartMemberRepository
+        .deleteShoppingCartMembersByShoppingCartForumId(shoppingCartForumId);
   }
 
   Stream<List<ShoppingCartMember>> getShoppingCartMembers(

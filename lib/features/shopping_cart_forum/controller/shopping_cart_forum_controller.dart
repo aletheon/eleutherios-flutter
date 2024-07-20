@@ -1,6 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/shopping_cart_forum/repository/shopping_cart_forum_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/features/shopping_cart_member/controller/shopping_cart_member_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/controller/shopping_cart_user_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/repository/shopping_cart_user_repository.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
+import 'package:reddit_tutorial/models/shopping_cart_user.dart';
 import 'package:uuid/uuid.dart';
 
 final getShoppingCartForumByIdProvider =
@@ -22,17 +28,25 @@ final shoppingCartForumControllerProvider =
     StateNotifierProvider<ShoppingCartForumController, bool>((ref) {
   final shoppingCartForumRepository =
       ref.watch(shoppingCartForumRepositoryProvider);
+  final shoppingCartUserRepository =
+      ref.watch(shoppingCartUserRepositoryProvider);
   return ShoppingCartForumController(
-      shoppingCartForumRepository: shoppingCartForumRepository, ref: ref);
+    shoppingCartForumRepository: shoppingCartForumRepository,
+    shoppingCartUserRepository: shoppingCartUserRepository,
+    ref: ref,
+  );
 });
 
 class ShoppingCartForumController extends StateNotifier<bool> {
   final ShoppingCartForumRepository _shoppingCartForumRepository;
+  final ShoppingCartUserRepository _shoppingCartUserRepository;
   final Ref _ref;
   ShoppingCartForumController(
       {required ShoppingCartForumRepository shoppingCartForumRepository,
+      required ShoppingCartUserRepository shoppingCartUserRepository,
       required Ref ref})
       : _shoppingCartForumRepository = shoppingCartForumRepository,
+        _shoppingCartUserRepository = shoppingCartUserRepository,
         _ref = ref,
         super(false);
 
@@ -45,8 +59,8 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       shoppingCartForumId: shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId,
       forumId: forumId,
-      services: [],
       members: [],
+      services: [],
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -55,8 +69,78 @@ class ShoppingCartForumController extends StateNotifier<bool> {
     state = false;
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForums(String uid) {
-    return _shoppingCartForumRepository.getShoppingCartForums(uid);
+  void updateShoppingCartForum(
+      {required ShoppingCartForum shoppingCartForum,
+      required BuildContext context}) async {
+    state = true;
+    final shoppingCartForumRes = await _shoppingCartForumRepository
+        .updateShoppingCartForum(shoppingCartForum);
+    state = false;
+    shoppingCartForumRes.fold((l) => showSnackBar(context, l.message, true),
+        (r) {
+      showSnackBar(context, 'Shopping cart forum updated successfully!', false);
+    });
+  }
+
+  void deleteShoppingCartForum(String shoppingCartUserId,
+      String shoppingCartForumId, BuildContext context) async {
+    state = true;
+
+    // get shopping cart user
+    ShoppingCartUser? shoppingCartUser = await _ref
+        .read(shoppingCartUserControllerProvider.notifier)
+        .getShoppingCartUserById(shoppingCartUserId)
+        .first;
+
+    // get shopping cart forum
+    final shoppingCartForum = await _ref
+        .watch(shoppingCartForumControllerProvider.notifier)
+        .getShoppingCartForumById(shoppingCartForumId)
+        .first;
+
+    if (shoppingCartUser != null && shoppingCartForum != null) {
+      // delete forum
+      final res = await _shoppingCartForumRepository
+          .deleteShoppingCartForum(shoppingCartForumId);
+
+      // update shopping cart forum
+      shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+      await _shoppingCartUserRepository
+          .updateShoppingCartUser(shoppingCartUser);
+
+      // remove shopping cart members from shopping cart forum
+      if (shoppingCartForum.members.isNotEmpty) {
+        await _ref
+            .read(shoppingCartMemberControllerProvider.notifier)
+            .deleteShoppingCartMembersByShoppingCartForumId(
+                shoppingCartForumId);
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
+        if (context.mounted) {
+          showSnackBar(
+              context, 'Shopping cart forum deleted successfully!', false);
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context,
+            'Shopping cart user or shopping cart forum does not exist', true);
+      }
+    }
+  }
+
+  Future<void> deleteShoppingCartForumsByShoppingCartUserId(
+      String shoppingCartUserId) {
+    return _shoppingCartForumRepository
+        .deleteShoppingCartForumsByShoppingCartUserId(shoppingCartUserId);
+  }
+
+  Stream<List<ShoppingCartForum>> getShoppingCartForums(
+      String shoppingCartUserId) {
+    return _shoppingCartForumRepository
+        .getShoppingCartForums(shoppingCartUserId);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumById(
