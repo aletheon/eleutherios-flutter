@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/features/shopping_cart_user/controller/shopping_
 import 'package:reddit_tutorial/features/shopping_cart_user/repository/shopping_cart_user_repository.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
 import 'package:reddit_tutorial/models/shopping_cart_user.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getShoppingCartForumByIdProvider =
@@ -15,6 +16,28 @@ final getShoppingCartForumByIdProvider =
       ref.watch(shoppingCartForumRepositoryProvider);
   return shoppingCartForumRepository
       .getShoppingCartForumById(shoppingCartForumId);
+});
+
+final getShoppingCartForumByForumMemberIdProvider =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartForumControllerProvider.notifier)
+        .getShoppingCartForumByForumMemberId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final getShoppingCartForumByForumMemberIdProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartForumControllerProvider.notifier)
+        .getShoppingCartForumByForumMemberId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
 });
 
 final shoppingCartForumsProvider =
@@ -147,5 +170,11 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       String shoppingCartForumId) {
     return _shoppingCartForumRepository
         .getShoppingCartForumById(shoppingCartForumId);
+  }
+
+  Stream<ShoppingCartForum?> getShoppingCartForumByForumMemberId(
+      String forumId, String memberId) {
+    return _shoppingCartForumRepository.getShoppingCartForumByForumMemberId(
+        forumId, memberId);
   }
 }

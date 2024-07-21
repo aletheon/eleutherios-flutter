@@ -71,6 +71,30 @@ class ShoppingCartForumRepository {
     });
   }
 
+  Stream<ShoppingCartForum?> getShoppingCartForumByForumMemberId(
+      String forumId, String memberId) {
+    if (forumId.isNotEmpty && memberId.isNotEmpty) {
+      return _shoppingCartForums
+          .where('forumId', isEqualTo: forumId)
+          .where('members', arrayContains: memberId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<ShoppingCartForum> shoppingCartForums = [];
+          for (var doc in event.docs) {
+            shoppingCartForums.add(
+                ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return shoppingCartForums.first;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   FutureVoid createShoppingCartForum(
       ShoppingCartForum shoppingCartForum) async {
     try {

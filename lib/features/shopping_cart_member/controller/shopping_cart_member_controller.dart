@@ -18,6 +18,28 @@ final getShoppingCartMemberByIdProvider =
       .getShoppingCartMemberById(shoppingCartMemberId);
 });
 
+final getShoppingCartMemberByMemberIdProvider =
+    StreamProvider.family.autoDispose((ref, String memberId) {
+  try {
+    return ref
+        .watch(shoppingCartMemberControllerProvider.notifier)
+        .getShoppingCartMemberByMemberId(memberId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final getShoppingCartMemberByMemberIdProvider2 =
+    Provider.family.autoDispose((ref, String memberId) {
+  try {
+    return ref
+        .watch(shoppingCartMemberControllerProvider.notifier)
+        .getShoppingCartMemberByMemberId(memberId);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final shoppingCartMembersProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
@@ -116,20 +138,20 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
         .updateShoppingCartMember(shoppingCartMember);
   }
 
-  void deleteShoppingCartMember(String shoppingCartMemberId,
-      String shoppingCartForumId, BuildContext context) async {
+  void deleteShoppingCartMember(String shoppingCartForumId,
+      String shoppingCartMemberId, BuildContext context) async {
     state = true;
-
-    // get shopping cart member
-    ShoppingCartMember? shoppingCartMember = await _ref
-        .read(shoppingCartMemberControllerProvider.notifier)
-        .getShoppingCartMemberById(shoppingCartMemberId)
-        .first;
 
     // get shopping cart forum
     final shoppingCartForum = await _ref
         .watch(shoppingCartForumControllerProvider.notifier)
         .getShoppingCartForumById(shoppingCartForumId)
+        .first;
+
+    // get shopping cart member
+    ShoppingCartMember? shoppingCartMember = await _ref
+        .read(shoppingCartMemberControllerProvider.notifier)
+        .getShoppingCartMemberById(shoppingCartMemberId)
         .first;
 
     if (shoppingCartForum != null && shoppingCartMember != null) {
@@ -210,6 +232,11 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
       String shoppingCartForumId, String uid) {
     return _shoppingCartMemberRepository.getShoppingCartMemberCount(
         shoppingCartForumId, uid);
+  }
+
+  Stream<ShoppingCartMember?> getShoppingCartMemberByMemberId(String memberId) {
+    return _shoppingCartMemberRepository
+        .getShoppingCartMemberByMemberId(memberId);
   }
 
   Stream<ShoppingCartMember?> getSelectedShoppingCartMember(

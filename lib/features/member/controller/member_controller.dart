@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/features/forum_activity/controller/forum_activit
 import 'package:reddit_tutorial/features/forum_activity/repository/forum_activity_repository.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_member/controller/shopping_cart_member_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/member.dart';
@@ -257,6 +258,26 @@ class MemberController extends StateNotifier<bool> {
   void updateMember(
       {required Member member, required BuildContext context}) async {
     state = true;
+
+    // get shopping cart member
+    final shoppingCartMember = await _ref
+        .read(shoppingCartMemberControllerProvider.notifier)
+        .getShoppingCartMemberByMemberId(member.memberId)
+        .first;
+
+    if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+        member.permissions.contains(MemberPermissions.removefromcart.value)) {
+      if (shoppingCartMember == null) {
+        // create shopping cart user if it doesn't exit
+        // create shopping cart forum if it doesn't exist
+        // create shopping cart member
+      }
+    } else {
+      // remove shopping cart member
+      // remove shopping cart forum if there are no more members for this user
+      // remove shopping cart user if there are no forums for this user
+    }
+
     final memberRes = await _memberRepository.updateMember(member);
     state = false;
     memberRes.fold((l) => showSnackBar(context, l.message, true), (r) {

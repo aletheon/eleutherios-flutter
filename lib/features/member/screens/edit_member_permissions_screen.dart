@@ -28,6 +28,7 @@ class EditMemberPermissionsScreen extends ConsumerStatefulWidget {
 class _EditMemberPermissionsScreenState
     extends ConsumerState<EditMemberPermissionsScreen> {
   final GlobalKey _scaffold = GlobalKey();
+
   void save(Member member, List<String> permissions) {
     member = member.copyWith(permissions: permissions);
     ref

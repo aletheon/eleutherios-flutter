@@ -54,6 +54,28 @@ class ShoppingCartMemberRepository {
     }
   }
 
+  Stream<ShoppingCartMember?> getShoppingCartMemberByMemberId(String memberId) {
+    if (memberId.isNotEmpty) {
+      return _shoppingCartMembers
+          .where('memberId', isEqualTo: memberId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<ShoppingCartMember> shoppingCartMembers = [];
+          for (var doc in event.docs) {
+            shoppingCartMembers.add(
+                ShoppingCartMember.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return shoppingCartMembers.first;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   Stream<List<ShoppingCartMember>> getShoppingCartMembers(
     String shoppingCartForumId,
     String uid,

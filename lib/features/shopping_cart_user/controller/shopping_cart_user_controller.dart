@@ -135,6 +135,10 @@ class ShoppingCartUserController extends StateNotifier<bool> {
         .getShoppingCartUserById(shoppingCartUserId);
   }
 
+  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(String uid) {
+    return _shoppingCartUserRepository.getShoppingCartUserByUserId(uid);
+  }
+
   Stream<List<ShoppingCartUser>> getShoppingCartUsers() {
     return _shoppingCartUserRepository.getShoppingCartUsers();
   }

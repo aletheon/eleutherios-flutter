@@ -30,6 +30,24 @@ class ShoppingCartUserRepository {
     });
   }
 
+  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(String uid) {
+    return _shoppingCartUsers
+        .where('uid', isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        List<ShoppingCartUser> shoppingCartUsers = [];
+        for (var doc in event.docs) {
+          shoppingCartUsers.add(
+              ShoppingCartUser.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return shoppingCartUsers.first;
+      } else {
+        return null;
+      }
+    });
+  }
+
   Stream<List<ShoppingCartUser>> getShoppingCartUsers() {
     return _shoppingCartUsers.snapshots().map((event) {
       List<ShoppingCartUser> shoppingCartUsers = [];
