@@ -30,9 +30,11 @@ class ShoppingCartUserRepository {
     });
   }
 
-  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(String uid) {
+  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(
+      String uid, String cartUid) {
     return _shoppingCartUsers
         .where('uid', isEqualTo: uid)
+        .where('cartUid', isEqualTo: cartUid)
         .snapshots()
         .map((event) {
       if (event.docs.isNotEmpty) {

@@ -9,11 +9,19 @@ import 'package:reddit_tutorial/features/forum_activity/controller/forum_activit
 import 'package:reddit_tutorial/features/forum_activity/repository/forum_activity_repository.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_forum/repository/shopping_cart_forum_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart_member/controller/shopping_cart_member_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_member/repository/shopping_cart_member_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/controller/shopping_cart_user_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/repository/shopping_cart_user_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
+import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
+import 'package:reddit_tutorial/models/shopping_cart_member.dart';
+import 'package:reddit_tutorial/models/shopping_cart_user.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -134,11 +142,21 @@ final memberControllerProvider =
   final forumRepository = ref.watch(forumRepositoryProvider);
   final userProfileRepository = ref.watch(userProfileRepositoryProvider);
   final forumActivityRepository = ref.watch(forumActivityRepositoryProvider);
+  final shoppingCartUserRepository =
+      ref.watch(shoppingCartUserRepositoryProvider);
+  final shoppingCartForumRepository =
+      ref.watch(shoppingCartForumRepositoryProvider);
+  final shoppingCartMemberRepository =
+      ref.watch(shoppingCartMemberRepositoryProvider);
+
   return MemberController(
       memberRepository: memberRepository,
       forumRepository: forumRepository,
       userProfileRepository: userProfileRepository,
       forumActivityRepository: forumActivityRepository,
+      shoppingCartUserRepository: shoppingCartUserRepository,
+      shoppingCartForumRepository: shoppingCartForumRepository,
+      shoppingCartMemberRepository: shoppingCartMemberRepository,
       ref: ref);
 });
 
@@ -147,17 +165,26 @@ class MemberController extends StateNotifier<bool> {
   final ForumRepository _forumRepository;
   final UserProfileRepository _userProfileRepository;
   final ForumActivityRepository _forumActivityRepository;
+  final ShoppingCartUserRepository _shoppingCartUserRepository;
+  final ShoppingCartForumRepository _shoppingCartForumRepository;
+  final ShoppingCartMemberRepository _shoppingCartMemberRepository;
   final Ref _ref;
   MemberController(
       {required MemberRepository memberRepository,
       required ForumRepository forumRepository,
       required UserProfileRepository userProfileRepository,
       required ForumActivityRepository forumActivityRepository,
+      required ShoppingCartUserRepository shoppingCartUserRepository,
+      required ShoppingCartForumRepository shoppingCartForumRepository,
+      required ShoppingCartMemberRepository shoppingCartMemberRepository,
       required Ref ref})
       : _forumRepository = forumRepository,
         _memberRepository = memberRepository,
         _userProfileRepository = userProfileRepository,
         _forumActivityRepository = forumActivityRepository,
+        _shoppingCartUserRepository = shoppingCartUserRepository,
+        _shoppingCartForumRepository = shoppingCartForumRepository,
+        _shoppingCartMemberRepository = shoppingCartMemberRepository,
         _ref = ref,
         super(false);
 
@@ -259,25 +286,133 @@ class MemberController extends StateNotifier<bool> {
       {required Member member, required BuildContext context}) async {
     state = true;
 
+    // get shopping cart user
+    final shoppingCartUser = await _ref
+        .read(shoppingCartUserControllerProvider.notifier)
+        .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+        .first;
+
+    // get shopping cart forum
+    final shoppingCartForum = await _ref
+        .read(shoppingCartForumControllerProvider.notifier)
+        .getShoppingCartForumByForumId(member.forumId)
+        .first;
+
     // get shopping cart member
     final shoppingCartMember = await _ref
         .read(shoppingCartMemberControllerProvider.notifier)
         .getShoppingCartMemberByMemberId(member.memberId)
         .first;
 
+    String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
+    String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
+    String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
+
+    // create shopping cart user
+    ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+      shoppingCartUserId: shoppingCartUserId,
+      uid: member.forumUid,
+      cartUid: member.serviceUid,
+      forums: [member.forumId],
+      lastUpdateDate: DateTime.now(),
+      creationDate: DateTime.now(),
+    );
+
+    // create shopping cart forum
+    ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
+      shoppingCartForumId: shoppingCartForumId,
+      shoppingCartUserId: shoppingCartUserId,
+      forumId: member.forumId,
+      members: [member.memberId],
+      services: [member.serviceId],
+      lastUpdateDate: DateTime.now(),
+      creationDate: DateTime.now(),
+    );
+
+    // create shopping cart member
+    ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
+      shoppingCartMemberId: shoppingCartMemberId,
+      shoppingCartForumId: shoppingCartForumId,
+      memberId: member.memberId,
+      serviceId: member.serviceId,
+      serviceUid: member.serviceUid,
+      selected: true,
+      lastUpdateDate: DateTime.now(),
+      creationDate: DateTime.now(),
+    );
+
     if (member.permissions.contains(MemberPermissions.addtocart.value) ||
         member.permissions.contains(MemberPermissions.removefromcart.value)) {
       if (shoppingCartMember == null) {
-        // create shopping cart user if it doesn't exit
-        // create shopping cart forum if it doesn't exist
+        // create shopping cart user
+        if (shoppingCartUser == null) {
+          await _shoppingCartUserRepository
+              .createShoppingCartUser(newShoppingCartUser);
+        }
+        // create shopping cart forum
+        if (shoppingCartForum == null) {
+          await _shoppingCartForumRepository
+              .createShoppingCartForum(newShoppingCartForum);
+        }
         // create shopping cart member
+        await _shoppingCartMemberRepository
+            .createShoppingCartMember(newShoppingCartMember);
       }
     } else {
-      // remove shopping cart member
-      // remove shopping cart forum if there are no more members for this user
-      // remove shopping cart user if there are no forums for this user
-    }
+      // delete shopping cart member
+      if (shoppingCartForum != null && shoppingCartMember != null) {
+        await _shoppingCartMemberRepository
+            .deleteShoppingCartMember(shoppingCartMemberId);
 
+        // update shopping cart forum
+        shoppingCartForum.members.remove(shoppingCartMemberId);
+        shoppingCartForum.services.remove(shoppingCartMember.serviceId);
+        await _shoppingCartForumRepository
+            .updateShoppingCartForum(shoppingCartForum);
+
+        // get this users shopping cart member count
+        final shoppingCartMemberCount = await _ref
+            .read(shoppingCartMemberControllerProvider.notifier)
+            .getShoppingCartMemberCount(
+                shoppingCartForumId, shoppingCartMember.serviceUid)
+            .first;
+
+        if (shoppingCartMemberCount > 0) {
+          // set next available shopping cart member as default
+          if (shoppingCartMember.selected) {
+            // get the rest of the users shopping cart members
+            final userShoppingCartMembers = await _ref
+                .read(shoppingCartMemberControllerProvider.notifier)
+                .getShoppingCartMembers(
+                    shoppingCartForumId, shoppingCartMember.serviceUid)
+                .first;
+
+            userShoppingCartMembers[0] =
+                userShoppingCartMembers[0].copyWith(selected: true);
+            await _shoppingCartMemberRepository
+                .updateShoppingCartMember(userShoppingCartMembers[0]);
+          }
+        } else {
+          // delete shopping cart forum
+          await _shoppingCartForumRepository
+              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+
+          if (shoppingCartUser != null) {
+            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+
+            if (shoppingCartUser.forums.isEmpty) {
+              // remove shopping cart user
+              await _shoppingCartUserRepository
+                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+            } else {
+              // update shopping cart user
+              await _shoppingCartUserRepository
+                  .updateShoppingCartUser(shoppingCartUser);
+            }
+          }
+        }
+      }
+    }
     final memberRes = await _memberRepository.updateMember(member);
     state = false;
     memberRes.fold((l) => showSnackBar(context, l.message, true), (r) {

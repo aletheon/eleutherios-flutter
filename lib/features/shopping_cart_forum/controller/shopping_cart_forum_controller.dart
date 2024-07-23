@@ -122,14 +122,22 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         .first;
 
     if (shoppingCartUser != null && shoppingCartForum != null) {
-      // delete forum
+      // delete shopping cart forum
       final res = await _shoppingCartForumRepository
           .deleteShoppingCartForum(shoppingCartForumId);
 
-      // update shopping cart forum
+      // update shopping cart user
       shoppingCartUser.forums.remove(shoppingCartForum.forumId);
-      await _shoppingCartUserRepository
-          .updateShoppingCartUser(shoppingCartUser);
+
+      if (shoppingCartUser.forums.isEmpty) {
+        // remove shopping cart user
+        await _shoppingCartUserRepository
+            .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+      } else {
+        // update shopping cart user
+        await _shoppingCartUserRepository
+            .updateShoppingCartUser(shoppingCartUser);
+      }
 
       // remove shopping cart members from shopping cart forum
       if (shoppingCartForum.members.isNotEmpty) {
@@ -170,6 +178,10 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       String shoppingCartForumId) {
     return _shoppingCartForumRepository
         .getShoppingCartForumById(shoppingCartForumId);
+  }
+
+  Stream<ShoppingCartForum?> getShoppingCartForumByForumId(String forumId) {
+    return _shoppingCartForumRepository.getShoppingCartForumByForumId(forumId);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumByForumMemberId(

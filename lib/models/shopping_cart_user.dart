@@ -2,9 +2,8 @@ import 'package:flutter/foundation.dart';
 
 class ShoppingCartUser {
   final String shoppingCartUserId; // primary key
-  final String uid;
-  final String
-      cartUid; // owner of the cart user has permission to add items too
+  final String uid; // user who has permission to add items to cart
+  final String cartUid; // owner of the cart
   final List<String> forums; // copy of forums for redundancy sake
   final DateTime lastUpdateDate;
   final DateTime creationDate;

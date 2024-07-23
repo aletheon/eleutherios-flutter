@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/features/user_profile/repository/user_profile_re
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
 import 'package:reddit_tutorial/models/shopping_cart_user.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 final getShoppingCartUserByIdProvider =
@@ -14,6 +15,28 @@ final getShoppingCartUserByIdProvider =
   final shoppingCartUserRepository =
       ref.watch(shoppingCartUserRepositoryProvider);
   return shoppingCartUserRepository.getShoppingCartUserById(shoppingCartUserId);
+});
+
+final getShoppingCartUserByUserIdProvider =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartUserControllerProvider.notifier)
+        .getShoppingCartUserByUserId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final getShoppingCartUserByUserIdProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartUserControllerProvider.notifier)
+        .getShoppingCartUserByUserId(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
 });
 
 final shoppingCartUsersProvider =
@@ -135,8 +158,10 @@ class ShoppingCartUserController extends StateNotifier<bool> {
         .getShoppingCartUserById(shoppingCartUserId);
   }
 
-  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(String uid) {
-    return _shoppingCartUserRepository.getShoppingCartUserByUserId(uid);
+  Stream<ShoppingCartUser?> getShoppingCartUserByUserId(
+      String uid, String cartUid) {
+    return _shoppingCartUserRepository.getShoppingCartUserByUserId(
+        uid, cartUid);
   }
 
   Stream<List<ShoppingCartUser>> getShoppingCartUsers() {
