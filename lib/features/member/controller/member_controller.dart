@@ -208,10 +208,12 @@ class MemberController extends StateNotifier<bool> {
             .read(authControllerProvider.notifier)
             .getUserData(service.uid)
             .first;
+
         final memberCount = await _ref
             .read(memberControllerProvider.notifier)
             .getUserMemberCount(forum.forumId, service.uid)
             .first;
+
         String memberId = const Uuid().v1().replaceAll('-', '');
         List<String> defaultPermissions = [MemberPermissions.createpost.value];
 
@@ -226,6 +228,15 @@ class MemberController extends StateNotifier<bool> {
           defaultPermissions.add(MemberPermissions.removefromcart.value);
           defaultPermissions.add(MemberPermissions.editmemberpermissions.value);
         }
+
+        // ****************************************************************
+        // ****************************************************************
+        // ****************************************************************
+        // HERE ROB ADD shopping cart user, forum and member routines here
+        // and in delete member routine as well
+        // ****************************************************************
+        // ****************************************************************
+        // ****************************************************************
 
         // create member
         Member member = Member(
@@ -286,6 +297,12 @@ class MemberController extends StateNotifier<bool> {
       {required Member member, required BuildContext context}) async {
     state = true;
 
+    // get service user
+    final user = await _ref
+        .read(authControllerProvider.notifier)
+        .getUserData(member.serviceUid)
+        .first;
+
     // get shopping cart user
     final shoppingCartUser = await _ref
         .read(shoppingCartUserControllerProvider.notifier)
@@ -311,8 +328,8 @@ class MemberController extends StateNotifier<bool> {
     // create shopping cart user
     ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
       shoppingCartUserId: shoppingCartUserId,
-      uid: member.forumUid,
-      cartUid: member.serviceUid,
+      uid: member.serviceUid,
+      cartUid: member.forumUid,
       forums: [member.forumId],
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
@@ -348,6 +365,10 @@ class MemberController extends StateNotifier<bool> {
         if (shoppingCartUser == null) {
           await _shoppingCartUserRepository
               .createShoppingCartUser(newShoppingCartUser);
+
+          // add uid to users shopping cart user ids list
+          user!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+          await _userProfileRepository.updateUser(user);
         }
         // create shopping cart forum
         if (shoppingCartForum == null) {
@@ -404,6 +425,10 @@ class MemberController extends StateNotifier<bool> {
               // remove shopping cart user
               await _shoppingCartUserRepository
                   .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+
+              // add uid to users shopping cart user ids list
+              user!.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
+              await _userProfileRepository.updateUser(user);
             } else {
               // update shopping cart user
               await _shoppingCartUserRepository

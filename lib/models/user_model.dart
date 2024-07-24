@@ -24,8 +24,8 @@ class UserModel {
   final List<String> forums;
   final List<String> services;
   final List<String> favorites;
-  final List<String>
-      shoppingCartUserIds; // shopping cart users this user has member permission to add items too
+  // shopping cart users this user has member permission to add items too
+  final List<String> shoppingCartUserIds;
   final List<String> tags;
   final String profilePic;
   final DateTime lastUpdateDate;
