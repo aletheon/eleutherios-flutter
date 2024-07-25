@@ -254,10 +254,9 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
         .getShoppingCartMemberById(shoppingCartMemberId);
   }
 
-  Stream<int> getShoppingCartMemberCount(
-      String shoppingCartForumId, String uid) {
+  Stream<int> getShoppingCartMemberCount(String forumId, String uid) {
     return _shoppingCartMemberRepository.getShoppingCartMemberCount(
-        shoppingCartForumId, uid);
+        forumId, uid);
   }
 
   Stream<ShoppingCartMember?> getShoppingCartMemberByMemberId(String memberId) {
@@ -266,8 +265,8 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
   }
 
   Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
-      String shoppingCartForumId, String uid) {
+      String forumId, String uid) {
     return _shoppingCartMemberRepository.getSelectedShoppingCartMember(
-        shoppingCartForumId, uid);
+        forumId, uid);
   }
 }

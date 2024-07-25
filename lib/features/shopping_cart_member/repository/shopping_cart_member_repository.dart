@@ -97,9 +97,9 @@ class ShoppingCartMemberRepository {
   }
 
   Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
-      String shoppingCartForumId, String uid) {
+      String forumId, String uid) {
     return _shoppingCartMembers
-        .where('shoppingCartForumId', isEqualTo: shoppingCartForumId)
+        .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .where('selected', isEqualTo: true)
         .snapshots()
@@ -117,10 +117,9 @@ class ShoppingCartMemberRepository {
     });
   }
 
-  Stream<int> getShoppingCartMemberCount(
-      String shoppingCartForumId, String uid) {
+  Stream<int> getShoppingCartMemberCount(String forumId, String uid) {
     return _shoppingCartMembers
-        .where('shoppingCartForumId', isEqualTo: shoppingCartForumId)
+        .where('forumId', isEqualTo: forumId)
         .where('serviceUid', isEqualTo: uid)
         .snapshots()
         .map((event) {
