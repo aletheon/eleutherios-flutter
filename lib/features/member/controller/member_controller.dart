@@ -229,15 +229,6 @@ class MemberController extends StateNotifier<bool> {
           defaultPermissions.add(MemberPermissions.editmemberpermissions.value);
         }
 
-        // ****************************************************************
-        // ****************************************************************
-        // ****************************************************************
-        // HERE ROB ADD shopping cart user, forum and member routines here
-        // and in delete member routine as well
-        // ****************************************************************
-        // ****************************************************************
-        // ****************************************************************
-
         // create member
         Member member = Member(
           memberId: memberId,
@@ -267,17 +258,90 @@ class MemberController extends StateNotifier<bool> {
           // add activity to users forum activity list
           user.forumActivities.add(forumId);
           await _userProfileRepository.updateUser(user);
-
-          state = false;
-          res.fold((l) => showSnackBar(context, l.message, true), (r) {
-            showSnackBar(context, 'Member added successfully!', false);
-          });
-        } else {
-          state = false;
-          res.fold((l) => showSnackBar(context, l.message, true), (r) {
-            showSnackBar(context, 'Member added successfully!', false);
-          });
         }
+
+        if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+            member.permissions
+                .contains(MemberPermissions.removefromcart.value)) {
+          String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
+          String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
+          String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
+
+          // create shopping cart user
+          ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+            shoppingCartUserId: shoppingCartUserId,
+            uid: member.serviceUid,
+            cartUid: member.forumUid,
+            forums: [member.forumId],
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // create shopping cart forum
+          ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
+            shoppingCartForumId: shoppingCartForumId,
+            shoppingCartUserId: shoppingCartUserId,
+            forumId: member.forumId,
+            members: [member.memberId],
+            services: [member.serviceId],
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // create shopping cart member
+          ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
+            shoppingCartMemberId: shoppingCartMemberId,
+            shoppingCartForumId: shoppingCartForumId,
+            memberId: member.memberId,
+            serviceId: member.serviceId,
+            serviceUid: member.serviceUid,
+            selected: true,
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // get service user
+          final user = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(member.serviceUid)
+              .first;
+
+          // get shopping cart user
+          final shoppingCartUser = await _ref
+              .read(shoppingCartUserControllerProvider.notifier)
+              .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+              .first;
+
+          // get shopping cart forum
+          final shoppingCartForum = await _ref
+              .read(shoppingCartForumControllerProvider.notifier)
+              .getShoppingCartForumByForumId(member.forumId)
+              .first;
+
+          // create shopping cart user
+          if (shoppingCartUser == null) {
+            await _shoppingCartUserRepository
+                .createShoppingCartUser(newShoppingCartUser);
+
+            // add uid to users shopping cart user ids list
+            user!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+            await _userProfileRepository.updateUser(user);
+          }
+
+          // create shopping cart forum
+          if (shoppingCartForum == null) {
+            await _shoppingCartForumRepository
+                .createShoppingCartForum(newShoppingCartForum);
+          }
+
+          // create shopping cart member
+          await _shoppingCartMemberRepository
+              .createShoppingCartMember(newShoppingCartMember);
+        }
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message, true), (r) {
+          showSnackBar(context, 'Member added successfully!', false);
+        });
       } else {
         state = false;
         if (context.mounted) {
@@ -370,11 +434,13 @@ class MemberController extends StateNotifier<bool> {
           user!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
           await _userProfileRepository.updateUser(user);
         }
+
         // create shopping cart forum
         if (shoppingCartForum == null) {
           await _shoppingCartForumRepository
               .createShoppingCartForum(newShoppingCartForum);
         }
+
         // create shopping cart member
         await _shoppingCartMemberRepository
             .createShoppingCartMember(newShoppingCartMember);
