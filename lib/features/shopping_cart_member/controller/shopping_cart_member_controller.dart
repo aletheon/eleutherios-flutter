@@ -97,6 +97,7 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
       shoppingCartMemberId: shoppingCartMemberId,
       shoppingCartForumId: shoppingCartForumId,
       memberId: memberId,
+      forumId: member != null ? member.forumId : '',
       serviceId: member != null ? member.serviceId : '',
       serviceUid: member != null ? member.serviceUid : '',
       selected: false,
