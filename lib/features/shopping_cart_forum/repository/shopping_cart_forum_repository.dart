@@ -71,9 +71,11 @@ class ShoppingCartForumRepository {
     });
   }
 
-  Stream<ShoppingCartForum?> getShoppingCartForumByForumId(String forumId) {
+  Stream<ShoppingCartForum?> getShoppingCartForumByUserId(
+      String uid, String forumId) {
     if (forumId.isNotEmpty) {
       return _shoppingCartForums
+          .where('uid', isEqualTo: uid)
           .where('forumId', isEqualTo: forumId)
           .snapshots()
           .map((event) {

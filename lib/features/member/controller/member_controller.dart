@@ -288,6 +288,7 @@ class MemberController extends StateNotifier<bool> {
           ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
             shoppingCartForumId: shoppingCartForumId,
             shoppingCartUserId: shoppingCartUserId,
+            uid: member.serviceUid,
             forumId: member.forumId,
             members: [member.memberId],
             services: [member.serviceId],
@@ -323,7 +324,7 @@ class MemberController extends StateNotifier<bool> {
           // get shopping cart forum
           final shoppingCartForum = await _ref
               .read(shoppingCartForumControllerProvider.notifier)
-              .getShoppingCartForumByForumId(member.forumId)
+              .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
               .first;
 
           // create shopping cart user
@@ -349,8 +350,7 @@ class MemberController extends StateNotifier<bool> {
                 .createShoppingCartForum(newShoppingCartForum);
           } else {
             // update shopping cart forum
-            shoppingCartForum.members
-                .add(newShoppingCartMember.shoppingCartMemberId);
+            shoppingCartForum.members.add(newShoppingCartMember.memberId);
             shoppingCartForum.services.add(newShoppingCartMember.serviceId);
             await _shoppingCartForumRepository
                 .updateShoppingCartForum(shoppingCartForum);
@@ -398,7 +398,7 @@ class MemberController extends StateNotifier<bool> {
     // get shopping cart forum
     final shoppingCartForum = await _ref
         .read(shoppingCartForumControllerProvider.notifier)
-        .getShoppingCartForumByForumId(member.forumId)
+        .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
         .first;
 
     // get shopping cart member
@@ -425,6 +425,7 @@ class MemberController extends StateNotifier<bool> {
     ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
       shoppingCartForumId: shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId,
+      uid: member.serviceUid,
       forumId: member.forumId,
       members: [member.memberId],
       services: [member.serviceId],
@@ -472,8 +473,7 @@ class MemberController extends StateNotifier<bool> {
               .createShoppingCartForum(newShoppingCartForum);
         } else {
           // update shopping cart forum
-          shoppingCartForum.members
-              .add(newShoppingCartMember.shoppingCartMemberId);
+          shoppingCartForum.members.add(newShoppingCartMember.memberId);
           shoppingCartForum.services.add(newShoppingCartMember.serviceId);
           await _shoppingCartForumRepository
               .updateShoppingCartForum(shoppingCartForum);
@@ -501,8 +501,7 @@ class MemberController extends StateNotifier<bool> {
             .deleteShoppingCartMember(shoppingCartMember.shoppingCartMemberId);
 
         // update shopping cart forum
-        shoppingCartForum.members
-            .remove(shoppingCartMember.shoppingCartMemberId);
+        shoppingCartForum.members.remove(shoppingCartMember.memberId);
         shoppingCartForum.services.remove(shoppingCartMember.serviceId);
         await _shoppingCartForumRepository
             .updateShoppingCartForum(shoppingCartForum);
@@ -659,7 +658,7 @@ class MemberController extends StateNotifier<bool> {
         // get shopping cart forum
         final shoppingCartForum = await _ref
             .read(shoppingCartForumControllerProvider.notifier)
-            .getShoppingCartForumByForumId(member.forumId)
+            .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
             .first;
 
         // get shopping cart member
@@ -674,8 +673,7 @@ class MemberController extends StateNotifier<bool> {
               shoppingCartMember.shoppingCartMemberId);
 
           // update shopping cart forum
-          shoppingCartForum.members
-              .remove(shoppingCartMember.shoppingCartMemberId);
+          shoppingCartForum.members.remove(shoppingCartMember.memberId);
           shoppingCartForum.services.remove(shoppingCartMember.serviceId);
           await _shoppingCartForumRepository
               .updateShoppingCartForum(shoppingCartForum);

@@ -18,23 +18,23 @@ final getShoppingCartForumByIdProvider =
       .getShoppingCartForumById(shoppingCartForumId);
 });
 
-final getShoppingCartForumByForumMemberIdProvider =
+final getShoppingCartForumByUserIdProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(shoppingCartForumControllerProvider.notifier)
-        .getShoppingCartForumByForumMemberId(params.item1, params.item2);
+        .getShoppingCartForumByUserId(params.item1, params.item2);
   } catch (e) {
     rethrow;
   }
 });
 
-final getShoppingCartForumByForumMemberIdProvider2 =
+final getShoppingCartForumByUserIdProvider2 =
     Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(shoppingCartForumControllerProvider.notifier)
-        .getShoppingCartForumByForumMemberId(params.item1, params.item2);
+        .getShoppingCartForumByUserId(params.item1, params.item2);
   } catch (e) {
     rethrow;
   }
@@ -74,13 +74,14 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         super(false);
 
   void createShoppingCartForum(
-      String shoppingCartUserId, String forumId) async {
+      String shoppingCartUserId, String uid, String forumId) async {
     state = true;
     String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
 
     ShoppingCartForum shoppingCartForum = ShoppingCartForum(
       shoppingCartForumId: shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId,
+      uid: uid,
       forumId: forumId,
       members: [],
       services: [],
@@ -180,8 +181,10 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         .getShoppingCartForumById(shoppingCartForumId);
   }
 
-  Stream<ShoppingCartForum?> getShoppingCartForumByForumId(String forumId) {
-    return _shoppingCartForumRepository.getShoppingCartForumByForumId(forumId);
+  Stream<ShoppingCartForum?> getShoppingCartForumByUserId(
+      String uid, String forumId) {
+    return _shoppingCartForumRepository.getShoppingCartForumByUserId(
+        uid, forumId);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumByForumMemberId(

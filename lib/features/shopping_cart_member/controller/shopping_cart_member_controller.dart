@@ -169,7 +169,7 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
           .deleteShoppingCartMember(shoppingCartMemberId);
 
       // update shopping cart forum
-      shoppingCartForum.members.remove(shoppingCartMemberId);
+      shoppingCartForum.members.remove(shoppingCartMember.memberId);
       shoppingCartForum.services.remove(shoppingCartMember.serviceId);
       await _shoppingCartForumRepository
           .updateShoppingCartForum(shoppingCartForum);
