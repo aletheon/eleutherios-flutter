@@ -315,8 +315,9 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
         .first;
 
     if (policy!.uid != user.uid) {
-      if (manager!.permissions.contains(ManagerPermissions.addmanager.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions.contains(ManagerPermissions.addmanager.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,

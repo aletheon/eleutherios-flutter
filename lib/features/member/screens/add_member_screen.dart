@@ -316,8 +316,9 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
         .first;
 
     if (forum!.uid != user.uid || forum.public == false) {
-      if (member!.permissions.contains(MemberPermissions.addmember.value) ==
-          false) {
+      if (member != null &&
+          member.permissions.contains(MemberPermissions.addmember.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
               'You do not have permission to add a member to this forum', true);

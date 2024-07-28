@@ -40,9 +40,10 @@ class _MemberPermissionsScreenState
         .first;
 
     if (forum!.uid != user.uid) {
-      if (member!.permissions
-              .contains(MemberPermissions.editmemberpermissions.value) ==
-          false) {
+      if (member != null &&
+          member.permissions
+                  .contains(MemberPermissions.editmemberpermissions.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,

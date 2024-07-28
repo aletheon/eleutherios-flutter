@@ -45,9 +45,10 @@ class _EditManagerPermissionsScreenState
         .first;
 
     if (policy!.uid != user.uid) {
-      if (manager!.permissions
-              .contains(ManagerPermissions.editmanagerpermissions.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions
+                  .contains(ManagerPermissions.editmanagerpermissions.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,

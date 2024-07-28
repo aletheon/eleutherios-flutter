@@ -320,9 +320,10 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
         .first;
 
     if (rule!.uid != user.uid) {
-      if (manager!.permissions
-              .contains(ManagerPermissions.addpotentialmember.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions
+                  .contains(ManagerPermissions.addpotentialmember.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
               'You do not have permission to add a member to this rule', true);

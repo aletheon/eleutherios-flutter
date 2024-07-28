@@ -48,9 +48,10 @@ class _EditPotentialMemberPermissionsScreenState
         .first;
 
     if (rule!.uid != user.uid) {
-      if (manager!.permissions.contains(
-              ManagerPermissions.editpotentialmemberpermissions.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions.contains(
+                  ManagerPermissions.editpotentialmemberpermissions.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,

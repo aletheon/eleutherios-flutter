@@ -108,8 +108,9 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
         .first;
 
     if (policy!.uid != user.uid) {
-      if (manager!.permissions.contains(ManagerPermissions.editrule.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions.contains(ManagerPermissions.editrule.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,
               'You do not have permission to make changes to this rule', true);

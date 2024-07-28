@@ -65,21 +65,14 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
 
     if (policy != null) {
       if (policy.uid != user.uid) {
-        if (manager != null) {
-          if (manager.permissions
-                  .contains(ManagerPermissions.createrule.value) ==
-              false) {
-            Future.delayed(Duration.zero, () {
-              showSnackBar(
-                  context,
-                  'You do not have permission to create a rule for this policy',
-                  true);
-              Routemaster.of(context).pop();
-            });
-          }
-        } else {
+        if (manager != null &&
+            manager.permissions.contains(ManagerPermissions.createrule.value) ==
+                false) {
           Future.delayed(Duration.zero, () {
-            showSnackBar(context, 'Manager does not exist', true);
+            showSnackBar(
+                context,
+                'You do not have permission to create a rule for this policy',
+                true);
             Routemaster.of(context).pop();
           });
         }

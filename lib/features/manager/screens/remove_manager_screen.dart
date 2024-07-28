@@ -45,9 +45,10 @@ class _RemoveManagerScreenState extends ConsumerState<RemoveManagerScreen> {
         .first;
 
     if (policy!.uid != user.uid) {
-      if (manager!.permissions
-              .contains(ManagerPermissions.removemanager.value) ==
-          false) {
+      if (manager != null &&
+          manager.permissions
+                  .contains(ManagerPermissions.removemanager.value) ==
+              false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,

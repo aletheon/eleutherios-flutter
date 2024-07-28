@@ -45,21 +45,14 @@ class _RemoveRuleScreenState extends ConsumerState<RemoveRuleScreen> {
 
     if (policy != null) {
       if (policy.uid != user.uid) {
-        if (manager != null) {
-          if (manager.permissions
-                  .contains(ManagerPermissions.removerule.value) ==
-              false) {
-            Future.delayed(Duration.zero, () {
-              showSnackBar(
-                  context,
-                  'You do not have permission to remove a rule from this policy',
-                  true);
-              Routemaster.of(context).pop();
-            });
-          }
-        } else {
+        if (manager != null &&
+            manager.permissions.contains(ManagerPermissions.removerule.value) ==
+                false) {
           Future.delayed(Duration.zero, () {
-            showSnackBar(context, 'Manager does not exist', true);
+            showSnackBar(
+                context,
+                'You do not have permission to remove a rule from this policy',
+                true);
             Routemaster.of(context).pop();
           });
         }
