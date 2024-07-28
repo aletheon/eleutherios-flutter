@@ -77,11 +77,11 @@ class ShoppingCartMemberRepository {
   }
 
   Stream<List<ShoppingCartMember>> getShoppingCartMembers(
-    String shoppingCartForumId,
+    String forumId,
     String uid,
   ) {
     return _shoppingCartMembers
-        .where('shoppingCartForumId', isEqualTo: shoppingCartForumId)
+        .where('forumId', isEqualTo: forumId)
         .where('uid', isEqualTo: uid)
         .snapshots()
         .map((event) {

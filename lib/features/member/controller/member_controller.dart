@@ -508,48 +508,51 @@ class MemberController extends StateNotifier<bool> {
         await _shoppingCartForumRepository
             .updateShoppingCartForum(shoppingCartForum);
 
-        // get this users shopping cart member count
-        final shoppingCartMemberCount = await _ref
-            .read(shoppingCartMemberControllerProvider.notifier)
-            .getShoppingCartMemberCount(
-                shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-            .first;
+        if (shoppingCartMember.selected) {
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(
+                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+              .first;
 
-        if (shoppingCartMemberCount > 0) {
           // set next available shopping cart member as default
-          if (shoppingCartMember.selected) {
+          if (shoppingCartMemberCount > 0) {
             // get the rest of the users shopping cart members
             final userShoppingCartMembers = await _ref
                 .read(shoppingCartMemberControllerProvider.notifier)
-                .getShoppingCartMembers(shoppingCartForum.shoppingCartForumId,
-                    shoppingCartMember.serviceUid)
+                .getShoppingCartMembers(
+                    shoppingCartMember.forumId, shoppingCartMember.serviceUid)
                 .first;
 
-            userShoppingCartMembers[0] =
-                userShoppingCartMembers[0].copyWith(selected: true);
-            await _shoppingCartMemberRepository
-                .updateShoppingCartMember(userShoppingCartMembers[0]);
-          }
-        } else {
-          // delete shopping cart forum
-          await _shoppingCartForumRepository
-              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+            if (userShoppingCartMembers.isNotEmpty) {
+              userShoppingCartMembers[0] =
+                  userShoppingCartMembers[0].copyWith(selected: true);
+              await _shoppingCartMemberRepository
+                  .updateShoppingCartMember(userShoppingCartMembers[0]);
+            }
+          } else {
+            // delete shopping cart forum
+            await _shoppingCartForumRepository
+                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
 
-          if (shoppingCartUser != null) {
-            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+            if (shoppingCartUser != null) {
+              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-            if (shoppingCartUser.forums.isEmpty) {
-              // remove shopping cart user
-              await _shoppingCartUserRepository
-                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+              if (shoppingCartUser.forums.isEmpty) {
+                // remove shopping cart user
+                await _shoppingCartUserRepository.deleteShoppingCartUser(
+                    shoppingCartUser.shoppingCartUserId);
 
-              // add uid to users shopping cart user ids list
-              memberUser!.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
-              await _userProfileRepository.updateUser(memberUser);
-            } else {
-              // update shopping cart user
-              await _shoppingCartUserRepository
-                  .updateShoppingCartUser(shoppingCartUser);
+                // add uid to users shopping cart user ids list
+                memberUser!.shoppingCartUserIds
+                    .remove(shoppingCartUser.cartUid);
+                await _userProfileRepository.updateUser(memberUser);
+              } else {
+                // update shopping cart user
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
+              }
             }
           }
         }
@@ -680,48 +683,51 @@ class MemberController extends StateNotifier<bool> {
           await _shoppingCartForumRepository
               .updateShoppingCartForum(shoppingCartForum);
 
-          // get this users shopping cart member count
-          final shoppingCartMemberCount = await _ref
-              .read(shoppingCartMemberControllerProvider.notifier)
-              .getShoppingCartMemberCount(
-                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-              .first;
+          if (shoppingCartMember.selected) {
+            // get this users shopping cart member count
+            final shoppingCartMemberCount = await _ref
+                .read(shoppingCartMemberControllerProvider.notifier)
+                .getShoppingCartMemberCount(
+                    shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+                .first;
 
-          if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
-            if (shoppingCartMember.selected) {
+            if (shoppingCartMemberCount > 0) {
               // get the rest of the users shopping cart members
               final userShoppingCartMembers = await _ref
                   .read(shoppingCartMemberControllerProvider.notifier)
-                  .getShoppingCartMembers(shoppingCartForum.shoppingCartForumId,
-                      shoppingCartMember.serviceUid)
+                  .getShoppingCartMembers(
+                      shoppingCartMember.forumId, shoppingCartMember.serviceUid)
                   .first;
 
-              userShoppingCartMembers[0] =
-                  userShoppingCartMembers[0].copyWith(selected: true);
-              await _shoppingCartMemberRepository
-                  .updateShoppingCartMember(userShoppingCartMembers[0]);
-            }
-          } else {
-            // delete shopping cart forum
-            await _shoppingCartForumRepository
-                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+              if (userShoppingCartMembers.isNotEmpty) {
+                userShoppingCartMembers[0] =
+                    userShoppingCartMembers[0].copyWith(selected: true);
+                await _shoppingCartMemberRepository
+                    .updateShoppingCartMember(userShoppingCartMembers[0]);
+              }
+            } else {
+              // delete shopping cart forum
+              await _shoppingCartForumRepository.deleteShoppingCartForum(
+                  shoppingCartForum.shoppingCartForumId);
 
-            if (shoppingCartUser != null) {
-              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+              if (shoppingCartUser != null) {
+                shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-              if (shoppingCartUser.forums.isEmpty) {
-                // remove shopping cart user
-                await _shoppingCartUserRepository.deleteShoppingCartUser(
-                    shoppingCartUser.shoppingCartUserId);
+                if (shoppingCartUser.forums.isEmpty) {
+                  // remove shopping cart user
+                  await _shoppingCartUserRepository.deleteShoppingCartUser(
+                      shoppingCartUser.shoppingCartUserId);
 
-                // add uid to users shopping cart user ids list
-                memberUser.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
-                await _userProfileRepository.updateUser(memberUser);
-              } else {
-                // update shopping cart user
-                await _shoppingCartUserRepository
-                    .updateShoppingCartUser(shoppingCartUser);
+                  // add uid to users shopping cart user ids list
+                  memberUser.shoppingCartUserIds
+                      .remove(shoppingCartUser.cartUid);
+                  await _userProfileRepository.updateUser(memberUser);
+                } else {
+                  // update shopping cart user
+                  await _shoppingCartUserRepository
+                      .updateShoppingCartUser(shoppingCartUser);
+                }
               }
             }
           }

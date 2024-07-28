@@ -174,50 +174,52 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
       await _shoppingCartForumRepository
           .updateShoppingCartForum(shoppingCartForum);
 
-      // get this users member count
-      final shoppingCartMemberCount = await _ref
-          .read(shoppingCartMemberControllerProvider.notifier)
-          .getShoppingCartMemberCount(
-              shoppingCartForumId, shoppingCartMember.serviceUid)
-          .first;
+      if (shoppingCartMember.selected) {
+        // get this users member count
+        final shoppingCartMemberCount = await _ref
+            .read(shoppingCartMemberControllerProvider.notifier)
+            .getShoppingCartMemberCount(
+                shoppingCartForumId, shoppingCartMember.serviceUid)
+            .first;
 
-      if (shoppingCartMemberCount > 0) {
         // set next available shopping cart member as default
-        if (shoppingCartMember.selected) {
+        if (shoppingCartMemberCount > 0) {
           // get the rest of the users shopping cart members
           final userShoppingCartMembers = await _ref
               .read(shoppingCartMemberControllerProvider.notifier)
               .getShoppingCartMembers(
-                  shoppingCartForumId, shoppingCartMember.serviceUid)
+                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
               .first;
 
-          userShoppingCartMembers[0] =
-              userShoppingCartMembers[0].copyWith(selected: true);
-          await _shoppingCartMemberRepository
-              .updateShoppingCartMember(userShoppingCartMembers[0]);
-        }
-      } else {
-        // delete shopping cart forum
-        await _shoppingCartForumRepository
-            .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+          if (userShoppingCartMembers.isNotEmpty) {
+            userShoppingCartMembers[0] =
+                userShoppingCartMembers[0].copyWith(selected: true);
+            await _shoppingCartMemberRepository
+                .updateShoppingCartMember(userShoppingCartMembers[0]);
+          }
+        } else {
+          // delete shopping cart forum
+          await _shoppingCartForumRepository
+              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
 
-        // get shopping cart user
-        final shoppingCartUser = await _ref
-            .read(shoppingCartUserControllerProvider.notifier)
-            .getShoppingCartUserById(shoppingCartForum.shoppingCartUserId)
-            .first;
+          // get shopping cart user
+          final shoppingCartUser = await _ref
+              .read(shoppingCartUserControllerProvider.notifier)
+              .getShoppingCartUserById(shoppingCartForum.shoppingCartUserId)
+              .first;
 
-        if (shoppingCartUser != null) {
-          shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+          if (shoppingCartUser != null) {
+            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-          if (shoppingCartUser.forums.isEmpty) {
-            // remove shopping cart user
-            await _shoppingCartUserRepository
-                .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
-          } else {
-            // update shopping cart user
-            await _shoppingCartUserRepository
-                .updateShoppingCartUser(shoppingCartUser);
+            if (shoppingCartUser.forums.isEmpty) {
+              // remove shopping cart user
+              await _shoppingCartUserRepository
+                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+            } else {
+              // update shopping cart user
+              await _shoppingCartUserRepository
+                  .updateShoppingCartUser(shoppingCartUser);
+            }
           }
         }
       }
@@ -244,9 +246,8 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
   }
 
   Stream<List<ShoppingCartMember>> getShoppingCartMembers(
-      String shoppingCartForumId, String uid) {
-    return _shoppingCartMemberRepository.getShoppingCartMembers(
-        shoppingCartForumId, uid);
+      String forumId, String uid) {
+    return _shoppingCartMemberRepository.getShoppingCartMembers(forumId, uid);
   }
 
   Stream<ShoppingCartMember?> getShoppingCartMemberById(
