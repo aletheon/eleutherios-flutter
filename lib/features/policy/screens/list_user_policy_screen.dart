@@ -15,18 +15,18 @@ class ListUserPolicyScreen extends ConsumerWidget {
   const ListUserPolicyScreen({super.key});
 
   void deletePolicy(BuildContext context, WidgetRef ref, Policy policy) async {
-    final int managerCount = await ref
+    final int? managerCount = await ref
         .read(managerControllerProvider.notifier)
         .getManagerCount(policy.policyId);
 
-    if (policy.consumers.isNotEmpty || managerCount > 0) {
+    if (policy.consumers.isNotEmpty || managerCount! > 0) {
       showDialog(
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
           String message = "";
 
-          if (policy.consumers.isNotEmpty && managerCount > 0) {
+          if (policy.consumers.isNotEmpty && managerCount! > 0) {
             message +=
                 "This policy has ${policy.consumers.length} service(s) consuming it and ";
             message += "$managerCount manager(s) serving in it.";

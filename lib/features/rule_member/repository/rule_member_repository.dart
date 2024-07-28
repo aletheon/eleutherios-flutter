@@ -135,7 +135,7 @@ class RuleMemberRepository {
     });
   }
 
-  Future<int> getRuleMembersByServiceIdCount(String serviceId) async {
+  Future<int?> getRuleMembersByServiceIdCount(String serviceId) async {
     AggregateQuerySnapshot query = await _ruleMembers
         .where('serviceId', isEqualTo: serviceId)
         .count()
@@ -143,7 +143,7 @@ class RuleMemberRepository {
     return query.count;
   }
 
-  Future<int> getRuleMemberCount(String ruleId) async {
+  Future<int?> getRuleMemberCount(String ruleId) async {
     AggregateQuerySnapshot query =
         await _ruleMembers.where('ruleId', isEqualTo: ruleId).count().get();
     return query.count;

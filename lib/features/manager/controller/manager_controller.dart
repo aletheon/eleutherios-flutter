@@ -351,7 +351,7 @@ class ManagerController extends StateNotifier<bool> {
     }
   }
 
-  Future<int> getManagersByServiceIdCount(String serviceId) {
+  Future<int?> getManagersByServiceIdCount(String serviceId) {
     state = true;
     return _managerRepository.getManagersByServiceIdCount(serviceId).then(
       (value) {
@@ -361,7 +361,7 @@ class ManagerController extends StateNotifier<bool> {
     );
   }
 
-  Future<int> getManagerCount(String policyId) {
+  Future<int?> getManagerCount(String policyId) {
     state = true;
     return _managerRepository.getManagerCount(policyId).then(
       (value) {

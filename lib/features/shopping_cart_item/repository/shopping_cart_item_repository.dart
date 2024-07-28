@@ -120,7 +120,7 @@ class ShoppingCartItemRepository {
     });
   }
 
-  Future<int> getShoppingCartItemsByServiceIdCount(String serviceId) async {
+  Future<int?> getShoppingCartItemsByServiceIdCount(String serviceId) async {
     AggregateQuerySnapshot query = await _shoppingCartItems
         .where('serviceId', isEqualTo: serviceId)
         .count()
@@ -128,7 +128,7 @@ class ShoppingCartItemRepository {
     return query.count;
   }
 
-  Future<int> getShoppingCartItemCount(String shoppingCartId) async {
+  Future<int?> getShoppingCartItemCount(String shoppingCartId) async {
     AggregateQuerySnapshot query = await _shoppingCartItems
         .where('shoppingCartId', isEqualTo: shoppingCartId)
         .count()

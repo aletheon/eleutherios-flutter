@@ -26,11 +26,11 @@ class PolicyScreen extends ConsumerWidget {
 
   void deleteRule(
       BuildContext context, WidgetRef ref, String uid, String ruleId) async {
-    final int ruleMemberCount = await ref
+    final int? ruleMemberCount = await ref
         .read(ruleMemberControllerProvider.notifier)
         .getRuleMemberCount(ruleId);
 
-    if (ruleMemberCount > 0) {
+    if (ruleMemberCount! > 0) {
       showDialog(
         context: _scaffold.currentContext!,
         barrierDismissible: true,

@@ -345,16 +345,11 @@ class MemberController extends StateNotifier<bool> {
             }
           }
 
-          print('shoppingCartForum $shoppingCartForum');
-
           // create shopping cart forum
           if (shoppingCartForum == null) {
-            print('shoppingCartForum is null');
             await _shoppingCartForumRepository
                 .createShoppingCartForum(newShoppingCartForum);
           } else {
-            print('shoppingCartForum is not null');
-
             // set shopping cart member - shopping cart forum id to existing id
             newShoppingCartMember = newShoppingCartMember.copyWith(
                 shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
@@ -365,8 +360,6 @@ class MemberController extends StateNotifier<bool> {
             await _shoppingCartForumRepository
                 .updateShoppingCartForum(shoppingCartForum);
           }
-          print('newShoppingCartMember $newShoppingCartMember');
-
           // create shopping cart member
           await _shoppingCartMemberRepository
               .createShoppingCartMember(newShoppingCartMember);
@@ -745,7 +738,6 @@ class MemberController extends StateNotifier<bool> {
           }
         }
       }
-
       state = false;
       res.fold((l) => showSnackBar(context, l.message, true), (r) {
         if (context.mounted) {
@@ -760,7 +752,7 @@ class MemberController extends StateNotifier<bool> {
     }
   }
 
-  Future<int> getMembersByServiceIdCount(String serviceId) {
+  Future<int?> getMembersByServiceIdCount(String serviceId) {
     state = true;
     return _memberRepository.getMembersByServiceIdCount(serviceId).then(
       (value) {
@@ -770,7 +762,7 @@ class MemberController extends StateNotifier<bool> {
     );
   }
 
-  Future<int> getMemberCount(String forumId) {
+  Future<int?> getMemberCount(String forumId) {
     state = true;
     return _memberRepository.getMemberCount(forumId).then(
       (value) {

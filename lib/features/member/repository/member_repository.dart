@@ -155,13 +155,13 @@ class MemberRepository {
     });
   }
 
-  Future<int> getMembersByServiceIdCount(String serviceId) async {
+  Future<int?> getMembersByServiceIdCount(String serviceId) async {
     AggregateQuerySnapshot query =
         await _members.where('serviceId', isEqualTo: serviceId).count().get();
     return query.count;
   }
 
-  Future<int> getMemberCount(String forumId) async {
+  Future<int?> getMemberCount(String forumId) async {
     AggregateQuerySnapshot query =
         await _members.where('forumId', isEqualTo: forumId).count().get();
     return query.count;

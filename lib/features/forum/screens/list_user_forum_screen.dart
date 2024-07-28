@@ -15,11 +15,11 @@ class ListUserForumScreen extends ConsumerWidget {
 
   void deleteForum(
       BuildContext context, WidgetRef ref, String uid, String forumId) async {
-    final int memberCount = await ref
+    final int? memberCount = await ref
         .read(memberControllerProvider.notifier)
         .getMemberCount(forumId);
 
-    if (memberCount > 0) {
+    if (memberCount! > 0) {
       showDialog(
         context: _scaffold.currentContext!,
         barrierDismissible: true,

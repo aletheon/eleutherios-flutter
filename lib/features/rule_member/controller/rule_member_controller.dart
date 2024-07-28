@@ -288,7 +288,7 @@ class RuleMemberController extends StateNotifier<bool> {
     }
   }
 
-  Future<int> getRuleMembersByServiceIdCount(String serviceId) {
+  Future<int?> getRuleMembersByServiceIdCount(String serviceId) {
     state = true;
     return _ruleMemberRepository.getRuleMembersByServiceIdCount(serviceId).then(
       (value) {
@@ -298,7 +298,7 @@ class RuleMemberController extends StateNotifier<bool> {
     );
   }
 
-  Future<int> getRuleMemberCount(String ruleId) {
+  Future<int?> getRuleMemberCount(String ruleId) {
     state = true;
     return _ruleMemberRepository.getRuleMemberCount(ruleId).then(
       (value) {

@@ -142,13 +142,13 @@ class ManagerRepository {
     });
   }
 
-  Future<int> getManagersByServiceIdCount(String serviceId) async {
+  Future<int?> getManagersByServiceIdCount(String serviceId) async {
     AggregateQuerySnapshot query =
         await _managers.where('serviceId', isEqualTo: serviceId).count().get();
     return query.count;
   }
 
-  Future<int> getManagerCount(String policyId) async {
+  Future<int?> getManagerCount(String policyId) async {
     AggregateQuerySnapshot query =
         await _managers.where('policyId', isEqualTo: policyId).count().get();
     return query.count;

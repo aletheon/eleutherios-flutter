@@ -17,31 +17,31 @@ class ListUserServiceScreen extends ConsumerWidget {
 
   void deleteService(
       BuildContext context, WidgetRef ref, String serviceId) async {
-    final int managerCount = await ref
+    final int? managerCount = await ref
         .read(managerControllerProvider.notifier)
         .getManagersByServiceIdCount(serviceId);
 
-    final int memberCount = await ref
+    final int? memberCount = await ref
         .read(memberControllerProvider.notifier)
         .getMembersByServiceIdCount(serviceId);
 
-    final int ruleMemberCount = await ref
+    final int? ruleMemberCount = await ref
         .read(ruleMemberControllerProvider.notifier)
         .getRuleMembersByServiceIdCount(serviceId);
 
-    if (ruleMemberCount > 0 || memberCount > 0 || managerCount > 0) {
+    if (ruleMemberCount! > 0 || memberCount! > 0 || managerCount! > 0) {
       showDialog(
         context: _scaffold.currentContext!,
         barrierDismissible: true,
         builder: (context) {
           String message = "";
 
-          if (managerCount > 0 && memberCount > 0 && ruleMemberCount > 0) {
+          if (managerCount! > 0 && memberCount! > 0 && ruleMemberCount > 0) {
             message +=
                 "This service is serving as a manager in $managerCount policy(s), a ";
             message += "member in $memberCount forum(s) and a ";
             message += "rule member in $ruleMemberCount rule(s).";
-          } else if (managerCount > 0 && memberCount > 0) {
+          } else if (managerCount > 0 && memberCount! > 0) {
             message +=
                 "This service is serving as a manager in $managerCount policy(s) and a ";
             message += "member in $memberCount forum(s).";
@@ -49,7 +49,7 @@ class ListUserServiceScreen extends ConsumerWidget {
             message +=
                 "This service is serving as a manager in $managerCount policy(s) and a ";
             message += "rule member in $ruleMemberCount rule(s).";
-          } else if (memberCount > 0 && ruleMemberCount > 0) {
+          } else if (memberCount! > 0 && ruleMemberCount > 0) {
             message +=
                 "This service is serving as a member in $memberCount forum(s) and a ";
             message += "rule member in $ruleMemberCount rule(s).";

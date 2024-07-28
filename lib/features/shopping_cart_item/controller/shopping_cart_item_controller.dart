@@ -242,7 +242,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     }
   }
 
-  Future<int> getShoppingCartItemsByServiceIdCount(String serviceId) {
+  Future<int?> getShoppingCartItemsByServiceIdCount(String serviceId) {
     state = true;
     return _shoppingCartItemRepository
         .getShoppingCartItemsByServiceIdCount(serviceId)
@@ -254,7 +254,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     );
   }
 
-  Future<int> getShoppingCartItemCount(String shoppingCartId) {
+  Future<int?> getShoppingCartItemCount(String shoppingCartId) {
     state = true;
     return _shoppingCartItemRepository
         .getShoppingCartItemCount(shoppingCartId)
