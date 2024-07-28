@@ -73,8 +73,8 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
-  void createShoppingCartForum(
-      String shoppingCartUserId, String uid, String forumId) async {
+  void createShoppingCartForum(String shoppingCartUserId, String uid,
+      String cartUid, String forumId) async {
     state = true;
     String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
 
@@ -82,6 +82,7 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       shoppingCartForumId: shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId,
       uid: uid,
+      cartUid: cartUid,
       forumId: forumId,
       members: [],
       services: [],

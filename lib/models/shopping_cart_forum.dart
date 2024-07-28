@@ -4,6 +4,7 @@ class ShoppingCartForum {
   final String shoppingCartForumId; // primary key
   final String shoppingCartUserId; // foreign key
   final String uid; // owner of shopping cart forum (not the same as cartUid)
+  final String cartUid; // owner of the cart
   final String
       forumId; // forum user has been given permission to add items to cart
   final List<String>
@@ -16,6 +17,7 @@ class ShoppingCartForum {
     required this.shoppingCartForumId,
     required this.shoppingCartUserId,
     required this.uid,
+    required this.cartUid,
     required this.forumId,
     required this.members,
     required this.services,
@@ -27,6 +29,7 @@ class ShoppingCartForum {
     String? shoppingCartForumId,
     String? shoppingCartUserId,
     String? uid,
+    String? cartUid,
     String? forumId,
     List<String>? members,
     List<String>? services,
@@ -37,6 +40,7 @@ class ShoppingCartForum {
       shoppingCartForumId: shoppingCartForumId ?? this.shoppingCartForumId,
       shoppingCartUserId: shoppingCartUserId ?? this.shoppingCartUserId,
       uid: uid ?? this.uid,
+      cartUid: cartUid ?? this.cartUid,
       forumId: forumId ?? this.forumId,
       members: members ?? this.members,
       services: services ?? this.services,
@@ -50,6 +54,7 @@ class ShoppingCartForum {
       'shoppingCartForumId': shoppingCartForumId,
       'shoppingCartUserId': shoppingCartUserId,
       'uid': uid,
+      'cartUid': cartUid,
       'forumId': forumId,
       'members': members,
       'services': services,
@@ -63,6 +68,7 @@ class ShoppingCartForum {
       shoppingCartForumId: map['shoppingCartForumId'] as String,
       shoppingCartUserId: map['shoppingCartUserId'] as String,
       uid: map['uid'] as String,
+      cartUid: map['cartUid'] as String,
       forumId: map['forumId'] as String,
       members: List<String>.from(map['members']),
       services: List<String>.from(map['services']),
@@ -75,7 +81,7 @@ class ShoppingCartForum {
 
   @override
   String toString() {
-    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, uid: $uid, forumId: $forumId, members: $members, services: $services, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, uid: $uid, cartUid: $cartUid,forumId: $forumId, members: $members, services: $services, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -85,6 +91,7 @@ class ShoppingCartForum {
     return other.shoppingCartForumId == shoppingCartForumId &&
         other.shoppingCartUserId == shoppingCartUserId &&
         other.uid == uid &&
+        other.cartUid == cartUid &&
         other.forumId == forumId &&
         listEquals(other.members, members) &&
         listEquals(other.services, services) &&
@@ -97,6 +104,7 @@ class ShoppingCartForum {
     return shoppingCartForumId.hashCode ^
         shoppingCartUserId.hashCode ^
         uid.hashCode ^
+        cartUid.hashCode ^
         forumId.hashCode ^
         members.hashCode ^
         services.hashCode ^
