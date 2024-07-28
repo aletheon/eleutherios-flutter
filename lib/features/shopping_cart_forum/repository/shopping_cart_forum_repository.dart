@@ -35,23 +35,18 @@ class ShoppingCartForumRepository {
 
   Stream<ShoppingCartForum?> getShoppingCartForumById(
       String shoppingCartForumId) {
-    if (shoppingCartForumId.isNotEmpty) {
-      final DocumentReference documentReference =
-          _shoppingCartForums.doc(shoppingCartForumId);
+    final DocumentReference documentReference =
+        _shoppingCartForums.doc(shoppingCartForumId);
 
-      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-      return documentStream.map((event) {
-        if (event.exists) {
-          return ShoppingCartForum.fromMap(
-              event.data() as Map<String, dynamic>);
-        } else {
-          return null;
-        }
-      });
-    } else {
-      return const Stream.empty();
-    }
+    return documentStream.map((event) {
+      if (event.exists) {
+        return ShoppingCartForum.fromMap(event.data() as Map<String, dynamic>);
+      } else {
+        return null;
+      }
+    });
   }
 
   Stream<List<ShoppingCartForum>> getShoppingCartForums(
@@ -73,50 +68,42 @@ class ShoppingCartForumRepository {
 
   Stream<ShoppingCartForum?> getShoppingCartForumByUserId(
       String uid, String forumId) {
-    if (forumId.isNotEmpty) {
-      return _shoppingCartForums
-          .where('uid', isEqualTo: uid)
-          .where('forumId', isEqualTo: forumId)
-          .snapshots()
-          .map((event) {
-        if (event.docs.isNotEmpty) {
-          List<ShoppingCartForum> shoppingCartForums = [];
-          for (var doc in event.docs) {
-            shoppingCartForums.add(
-                ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
-          }
-          return shoppingCartForums.first;
-        } else {
-          return null;
+    return _shoppingCartForums
+        .where('uid', isEqualTo: uid)
+        .where('forumId', isEqualTo: forumId)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        List<ShoppingCartForum> shoppingCartForums = [];
+        for (var doc in event.docs) {
+          shoppingCartForums.add(
+              ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
         }
-      });
-    } else {
-      return const Stream.empty();
-    }
+        return shoppingCartForums.first;
+      } else {
+        return null;
+      }
+    });
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumByForumMemberId(
       String forumId, String memberId) {
-    if (forumId.isNotEmpty && memberId.isNotEmpty) {
-      return _shoppingCartForums
-          .where('forumId', isEqualTo: forumId)
-          .where('members', arrayContains: memberId)
-          .snapshots()
-          .map((event) {
-        if (event.docs.isNotEmpty) {
-          List<ShoppingCartForum> shoppingCartForums = [];
-          for (var doc in event.docs) {
-            shoppingCartForums.add(
-                ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
-          }
-          return shoppingCartForums.first;
-        } else {
-          return null;
+    return _shoppingCartForums
+        .where('forumId', isEqualTo: forumId)
+        .where('members', arrayContains: memberId)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        List<ShoppingCartForum> shoppingCartForums = [];
+        for (var doc in event.docs) {
+          shoppingCartForums.add(
+              ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
         }
-      });
-    } else {
-      return const Stream.empty();
-    }
+        return shoppingCartForums.first;
+      } else {
+        return null;
+      }
+    });
   }
 
   FutureVoid createShoppingCartForum(

@@ -35,45 +35,36 @@ class ShoppingCartMemberRepository {
 
   Stream<ShoppingCartMember?> getShoppingCartMemberById(
       String shoppingCartMemberId) {
-    if (shoppingCartMemberId.isNotEmpty) {
-      final DocumentReference documentReference =
-          _shoppingCartMembers.doc(shoppingCartMemberId);
+    final DocumentReference documentReference =
+        _shoppingCartMembers.doc(shoppingCartMemberId);
 
-      Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
+    Stream<DocumentSnapshot> documentStream = documentReference.snapshots();
 
-      return documentStream.map((event) {
-        if (event.exists) {
-          return ShoppingCartMember.fromMap(
-              event.data() as Map<String, dynamic>);
-        } else {
-          return null;
-        }
-      });
-    } else {
-      return const Stream.empty();
-    }
+    return documentStream.map((event) {
+      if (event.exists) {
+        return ShoppingCartMember.fromMap(event.data() as Map<String, dynamic>);
+      } else {
+        return null;
+      }
+    });
   }
 
   Stream<ShoppingCartMember?> getShoppingCartMemberByMemberId(String memberId) {
-    if (memberId.isNotEmpty) {
-      return _shoppingCartMembers
-          .where('memberId', isEqualTo: memberId)
-          .snapshots()
-          .map((event) {
-        if (event.docs.isNotEmpty) {
-          List<ShoppingCartMember> shoppingCartMembers = [];
-          for (var doc in event.docs) {
-            shoppingCartMembers.add(
-                ShoppingCartMember.fromMap(doc.data() as Map<String, dynamic>));
-          }
-          return shoppingCartMembers.first;
-        } else {
-          return null;
+    return _shoppingCartMembers
+        .where('memberId', isEqualTo: memberId)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        List<ShoppingCartMember> shoppingCartMembers = [];
+        for (var doc in event.docs) {
+          shoppingCartMembers.add(
+              ShoppingCartMember.fromMap(doc.data() as Map<String, dynamic>));
         }
-      });
-    } else {
-      return const Stream.empty();
-    }
+        return shoppingCartMembers.first;
+      } else {
+        return null;
+      }
+    });
   }
 
   Stream<List<ShoppingCartMember>> getShoppingCartMembers(
