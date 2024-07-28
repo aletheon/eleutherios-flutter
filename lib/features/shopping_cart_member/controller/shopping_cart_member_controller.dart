@@ -174,16 +174,16 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
       await _shoppingCartForumRepository
           .updateShoppingCartForum(shoppingCartForum);
 
-      if (shoppingCartMember.selected) {
-        // get this users member count
-        final shoppingCartMemberCount = await _ref
-            .read(shoppingCartMemberControllerProvider.notifier)
-            .getShoppingCartMemberCount(
-                shoppingCartForumId, shoppingCartMember.serviceUid)
-            .first;
+      // get this users member count
+      final shoppingCartMemberCount = await _ref
+          .read(shoppingCartMemberControllerProvider.notifier)
+          .getShoppingCartMemberCount(
+              shoppingCartForumId, shoppingCartMember.serviceUid)
+          .first;
 
+      if (shoppingCartMemberCount > 0) {
         // set next available shopping cart member as default
-        if (shoppingCartMemberCount > 0) {
+        if (shoppingCartMember.selected) {
           // get the rest of the users shopping cart members
           final userShoppingCartMembers = await _ref
               .read(shoppingCartMemberControllerProvider.notifier)
@@ -197,29 +197,29 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
             await _shoppingCartMemberRepository
                 .updateShoppingCartMember(userShoppingCartMembers[0]);
           }
-        } else {
-          // delete shopping cart forum
-          await _shoppingCartForumRepository
-              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+        }
+      } else {
+        // delete shopping cart forum
+        await _shoppingCartForumRepository
+            .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
 
-          // get shopping cart user
-          final shoppingCartUser = await _ref
-              .read(shoppingCartUserControllerProvider.notifier)
-              .getShoppingCartUserById(shoppingCartForum.shoppingCartUserId)
-              .first;
+        // get shopping cart user
+        final shoppingCartUser = await _ref
+            .read(shoppingCartUserControllerProvider.notifier)
+            .getShoppingCartUserById(shoppingCartForum.shoppingCartUserId)
+            .first;
 
-          if (shoppingCartUser != null) {
-            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+        if (shoppingCartUser != null) {
+          shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-            if (shoppingCartUser.forums.isEmpty) {
-              // remove shopping cart user
-              await _shoppingCartUserRepository
-                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
-            } else {
-              // update shopping cart user
-              await _shoppingCartUserRepository
-                  .updateShoppingCartUser(shoppingCartUser);
-            }
+          if (shoppingCartUser.forums.isEmpty) {
+            // remove shopping cart user
+            await _shoppingCartUserRepository
+                .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
+          } else {
+            // update shopping cart user
+            await _shoppingCartUserRepository
+                .updateShoppingCartUser(shoppingCartUser);
           }
         }
       }

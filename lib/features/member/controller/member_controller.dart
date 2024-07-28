@@ -347,9 +347,12 @@ class MemberController extends StateNotifier<bool> {
 
           // create shopping cart forum
           if (shoppingCartForum == null) {
+            print('shoppingCartForum is null');
             await _shoppingCartForumRepository
                 .createShoppingCartForum(newShoppingCartForum);
           } else {
+            print('shoppingCartForum is not null');
+
             // set shopping cart member - shopping cart forum id to existing id
             newShoppingCartMember.copyWith(
                 shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
@@ -360,6 +363,8 @@ class MemberController extends StateNotifier<bool> {
             await _shoppingCartForumRepository
                 .updateShoppingCartForum(shoppingCartForum);
           }
+          print('newShoppingCartMember $newShoppingCartMember');
+
           // create shopping cart member
           await _shoppingCartMemberRepository
               .createShoppingCartMember(newShoppingCartMember);
@@ -515,16 +520,16 @@ class MemberController extends StateNotifier<bool> {
         await _shoppingCartForumRepository
             .updateShoppingCartForum(shoppingCartForum);
 
-        if (shoppingCartMember.selected) {
-          // get this users shopping cart member count
-          final shoppingCartMemberCount = await _ref
-              .read(shoppingCartMemberControllerProvider.notifier)
-              .getShoppingCartMemberCount(
-                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-              .first;
+        // get this users shopping cart member count
+        final shoppingCartMemberCount = await _ref
+            .read(shoppingCartMemberControllerProvider.notifier)
+            .getShoppingCartMemberCount(
+                shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+            .first;
 
+        if (shoppingCartMemberCount > 0) {
           // set next available shopping cart member as default
-          if (shoppingCartMemberCount > 0) {
+          if (shoppingCartMember.selected) {
             // get the rest of the users shopping cart members
             final userShoppingCartMembers = await _ref
                 .read(shoppingCartMemberControllerProvider.notifier)
@@ -538,28 +543,27 @@ class MemberController extends StateNotifier<bool> {
               await _shoppingCartMemberRepository
                   .updateShoppingCartMember(userShoppingCartMembers[0]);
             }
-          } else {
-            // delete shopping cart forum
-            await _shoppingCartForumRepository
-                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+          }
+        } else {
+          // delete shopping cart forum
+          await _shoppingCartForumRepository
+              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
 
-            if (shoppingCartUser != null) {
-              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+          if (shoppingCartUser != null) {
+            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-              if (shoppingCartUser.forums.isEmpty) {
-                // remove shopping cart user
-                await _shoppingCartUserRepository.deleteShoppingCartUser(
-                    shoppingCartUser.shoppingCartUserId);
+            if (shoppingCartUser.forums.isEmpty) {
+              // remove shopping cart user
+              await _shoppingCartUserRepository
+                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
 
-                // add uid to users shopping cart user ids list
-                memberUser!.shoppingCartUserIds
-                    .remove(shoppingCartUser.cartUid);
-                await _userProfileRepository.updateUser(memberUser);
-              } else {
-                // update shopping cart user
-                await _shoppingCartUserRepository
-                    .updateShoppingCartUser(shoppingCartUser);
-              }
+              // add uid to users shopping cart user ids list
+              memberUser!.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
+              await _userProfileRepository.updateUser(memberUser);
+            } else {
+              // update shopping cart user
+              await _shoppingCartUserRepository
+                  .updateShoppingCartUser(shoppingCartUser);
             }
           }
         }
@@ -690,16 +694,16 @@ class MemberController extends StateNotifier<bool> {
           await _shoppingCartForumRepository
               .updateShoppingCartForum(shoppingCartForum);
 
-          if (shoppingCartMember.selected) {
-            // get this users shopping cart member count
-            final shoppingCartMemberCount = await _ref
-                .read(shoppingCartMemberControllerProvider.notifier)
-                .getShoppingCartMemberCount(
-                    shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-                .first;
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(
+                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+              .first;
 
+          if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
-            if (shoppingCartMemberCount > 0) {
+            if (shoppingCartMember.selected) {
               // get the rest of the users shopping cart members
               final userShoppingCartMembers = await _ref
                   .read(shoppingCartMemberControllerProvider.notifier)
@@ -713,28 +717,27 @@ class MemberController extends StateNotifier<bool> {
                 await _shoppingCartMemberRepository
                     .updateShoppingCartMember(userShoppingCartMembers[0]);
               }
-            } else {
-              // delete shopping cart forum
-              await _shoppingCartForumRepository.deleteShoppingCartForum(
-                  shoppingCartForum.shoppingCartForumId);
+            }
+          } else {
+            // delete shopping cart forum
+            await _shoppingCartForumRepository
+                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
 
-              if (shoppingCartUser != null) {
-                shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+            if (shoppingCartUser != null) {
+              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
 
-                if (shoppingCartUser.forums.isEmpty) {
-                  // remove shopping cart user
-                  await _shoppingCartUserRepository.deleteShoppingCartUser(
-                      shoppingCartUser.shoppingCartUserId);
+              if (shoppingCartUser.forums.isEmpty) {
+                // remove shopping cart user
+                await _shoppingCartUserRepository.deleteShoppingCartUser(
+                    shoppingCartUser.shoppingCartUserId);
 
-                  // add uid to users shopping cart user ids list
-                  memberUser.shoppingCartUserIds
-                      .remove(shoppingCartUser.cartUid);
-                  await _userProfileRepository.updateUser(memberUser);
-                } else {
-                  // update shopping cart user
-                  await _shoppingCartUserRepository
-                      .updateShoppingCartUser(shoppingCartUser);
-                }
+                // add uid to users shopping cart user ids list
+                memberUser.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
+                await _userProfileRepository.updateUser(memberUser);
+              } else {
+                // update shopping cart user
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
               }
             }
           }
