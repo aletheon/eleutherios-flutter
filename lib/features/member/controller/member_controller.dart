@@ -345,6 +345,8 @@ class MemberController extends StateNotifier<bool> {
             }
           }
 
+          print('shoppingCartForum $shoppingCartForum');
+
           // create shopping cart forum
           if (shoppingCartForum == null) {
             print('shoppingCartForum is null');
