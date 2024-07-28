@@ -350,13 +350,16 @@ class MemberController extends StateNotifier<bool> {
             await _shoppingCartForumRepository
                 .createShoppingCartForum(newShoppingCartForum);
           } else {
+            // set shopping cart member - shopping cart forum id to existing id
+            newShoppingCartMember.copyWith(
+                shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+
             // update shopping cart forum
             shoppingCartForum.members.add(newShoppingCartMember.memberId);
             shoppingCartForum.services.add(newShoppingCartMember.serviceId);
             await _shoppingCartForumRepository
                 .updateShoppingCartForum(shoppingCartForum);
           }
-
           // create shopping cart member
           await _shoppingCartMemberRepository
               .createShoppingCartMember(newShoppingCartMember);
@@ -474,6 +477,10 @@ class MemberController extends StateNotifier<bool> {
           await _shoppingCartForumRepository
               .createShoppingCartForum(newShoppingCartForum);
         } else {
+          // set shopping cart member - shopping cart forum id to existing id
+          newShoppingCartMember.copyWith(
+              shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+
           // update shopping cart forum
           shoppingCartForum.members.add(newShoppingCartMember.memberId);
           shoppingCartForum.services.add(newShoppingCartMember.serviceId);
