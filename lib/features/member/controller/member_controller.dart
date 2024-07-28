@@ -356,7 +356,7 @@ class MemberController extends StateNotifier<bool> {
             print('shoppingCartForum is not null');
 
             // set shopping cart member - shopping cart forum id to existing id
-            newShoppingCartMember.copyWith(
+            newShoppingCartMember = newShoppingCartMember.copyWith(
                 shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
 
             // update shopping cart forum
@@ -485,7 +485,7 @@ class MemberController extends StateNotifier<bool> {
               .createShoppingCartForum(newShoppingCartForum);
         } else {
           // set shopping cart member - shopping cart forum id to existing id
-          newShoppingCartMember.copyWith(
+          newShoppingCartMember = newShoppingCartMember.copyWith(
               shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
 
           // update shopping cart forum
@@ -503,7 +503,7 @@ class MemberController extends StateNotifier<bool> {
             .first;
 
         // set whether this member is selected or not
-        newShoppingCartMember.copyWith(
+        newShoppingCartMember = newShoppingCartMember.copyWith(
             selected: shoppingCartMemberCount == 0 ? true : false);
 
         // create shopping cart member
