@@ -17,8 +17,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseFirestore.instance.settings =
-      const Settings(persistenceEnabled: false);
+  // FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: false);
   runApp(const ProviderScope(child: MyApp()));
 }
 
