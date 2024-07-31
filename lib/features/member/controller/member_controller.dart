@@ -595,174 +595,161 @@ class MemberController extends StateNotifier<bool> {
       String forumId, String memberId, BuildContext context) async {
     state = true;
 
-    // get shopping cart member
-    final shoppingCartMember = await _ref
-        .read(shoppingCartMemberControllerProvider.notifier)
-        .getShoppingCartMemberByMemberId(memberId)
+    // get member
+    final member = await _ref
+        .read(memberControllerProvider.notifier)
+        .getMemberById(memberId)
         .first;
 
-    print('shoppingCartMember = $shoppingCartMember\n');
+    // get forum
+    final forum = await _ref
+        .watch(forumControllerProvider.notifier)
+        .getForumById(forumId)
+        .first;
 
-    state = false;
-    if (context.mounted) {
-      showSnackBar(context, 'Member deleted successfully!', false);
+    if (forum != null && member != null) {
+      // delete member
+      final res = await _memberRepository.deleteMember(memberId);
+
+      // get user
+      final memberUser = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(member.serviceUid)
+          .first;
+
+      // update forum
+      forum.members.remove(memberId);
+      forum.services.remove(member.serviceId);
+      await _forumRepository.updateForum(forum);
+
+      // get this users member count
+      final memberCount = await _ref
+          .read(memberControllerProvider.notifier)
+          .getUserMemberCount(forumId, memberUser!.uid)
+          .first;
+
+      // remove forum activity if no user members are left
+      if (memberCount == 0) {
+        // get forum activity
+        final forumActivity = await _ref
+            .read(forumActivityControllerProvider.notifier)
+            .getUserForumActivityByForumId(forumId, memberUser.uid)
+            .first;
+
+        // now remove it
+        await _forumActivityRepository
+            .deleteForumActivity(forumActivity!.forumActivityId);
+
+        // remove the activity from the users forum activity list
+        memberUser.forumActivities.remove(forumId);
+        await _userProfileRepository.updateUser(memberUser);
+      } else {
+        // set next available member as default
+        if (member.selected) {
+          // get the rest of the users members
+          final userMembers = await _ref
+              .read(memberControllerProvider.notifier)
+              .getUserMembers(forumId, memberUser.uid)
+              .first;
+
+          userMembers[0] = userMembers[0].copyWith(selected: true);
+          await _memberRepository.updateMember(userMembers[0]);
+        }
+      }
+
+      // remove any shopping cart references
+      if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+          member.permissions.contains(MemberPermissions.removefromcart.value)) {
+        // get shopping cart user
+        final shoppingCartUser = await _ref
+            .read(shoppingCartUserControllerProvider.notifier)
+            .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+            .first;
+
+        // get shopping cart forum
+        final shoppingCartForum = await _ref
+            .read(shoppingCartForumControllerProvider.notifier)
+            .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
+            .first;
+
+        // get shopping cart member
+        final shoppingCartMember = await _ref
+            .read(shoppingCartMemberControllerProvider.notifier)
+            .getShoppingCartMemberByMemberId(member.memberId)
+            .first;
+
+        // delete shopping cart member
+        if (shoppingCartForum != null && shoppingCartMember != null) {
+          await _shoppingCartMemberRepository.deleteShoppingCartMember(
+              shoppingCartMember.shoppingCartMemberId);
+
+          // update shopping cart forum
+          shoppingCartForum.members.remove(shoppingCartMember.memberId);
+          shoppingCartForum.services.remove(shoppingCartMember.serviceId);
+          await _shoppingCartForumRepository
+              .updateShoppingCartForum(shoppingCartForum);
+
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(
+                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+              .first;
+
+          if (shoppingCartMemberCount > 0) {
+            // set next available shopping cart member as default
+            if (shoppingCartMember.selected) {
+              // get the rest of the users shopping cart members
+              final userShoppingCartMembers = await _ref
+                  .read(shoppingCartMemberControllerProvider.notifier)
+                  .getShoppingCartMembers(
+                      shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+                  .first;
+
+              if (userShoppingCartMembers.isNotEmpty) {
+                userShoppingCartMembers[0] =
+                    userShoppingCartMembers[0].copyWith(selected: true);
+                await _shoppingCartMemberRepository
+                    .updateShoppingCartMember(userShoppingCartMembers[0]);
+              }
+            }
+          } else {
+            // delete shopping cart forum
+            await _shoppingCartForumRepository
+                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+
+            if (shoppingCartUser != null) {
+              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+
+              if (shoppingCartUser.forums.isEmpty) {
+                // remove shopping cart user
+                await _shoppingCartUserRepository.deleteShoppingCartUser(
+                    shoppingCartUser.shoppingCartUserId);
+
+                // add uid to users shopping cart user ids list
+                memberUser.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
+                await _userProfileRepository.updateUser(memberUser);
+              } else {
+                // update shopping cart user
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
+              }
+            }
+          }
+        }
+      }
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
+        if (context.mounted) {
+          showSnackBar(context, 'Member deleted successfully!', false);
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Forum or member does not exist', true);
+      }
     }
-
-    // // get member
-    // final member = await _ref
-    //     .read(memberControllerProvider.notifier)
-    //     .getMemberById(memberId)
-    //     .first;
-
-    // // get forum
-    // final forum = await _ref
-    //     .watch(forumControllerProvider.notifier)
-    //     .getForumById(forumId)
-    //     .first;
-
-    // if (forum != null && member != null) {
-    //   // delete member
-    //   final res = await _memberRepository.deleteMember(memberId);
-
-    //   // get user
-    //   final memberUser = await _ref
-    //       .read(authControllerProvider.notifier)
-    //       .getUserData(member.serviceUid)
-    //       .first;
-
-    //   // update forum
-    //   forum.members.remove(memberId);
-    //   forum.services.remove(member.serviceId);
-    //   await _forumRepository.updateForum(forum);
-
-    //   // get this users member count
-    //   final memberCount = await _ref
-    //       .read(memberControllerProvider.notifier)
-    //       .getUserMemberCount(forumId, memberUser!.uid)
-    //       .first;
-
-    //   // remove forum activity if no user members are left
-    //   if (memberCount == 0) {
-    //     // get forum activity
-    //     final forumActivity = await _ref
-    //         .read(forumActivityControllerProvider.notifier)
-    //         .getUserForumActivityByForumId(forumId, memberUser.uid)
-    //         .first;
-
-    //     // now remove it
-    //     await _forumActivityRepository
-    //         .deleteForumActivity(forumActivity!.forumActivityId);
-
-    //     // remove the activity from the users forum activity list
-    //     memberUser.forumActivities.remove(forumId);
-    //     await _userProfileRepository.updateUser(memberUser);
-    //   } else {
-    //     // set next available member as default
-    //     if (member.selected) {
-    //       // get the rest of the users members
-    //       final userMembers = await _ref
-    //           .read(memberControllerProvider.notifier)
-    //           .getUserMembers(forumId, memberUser.uid)
-    //           .first;
-
-    //       userMembers[0] = userMembers[0].copyWith(selected: true);
-    //       await _memberRepository.updateMember(userMembers[0]);
-    //     }
-    //   }
-
-    //   // remove any shopping cart references
-    //   if (member.permissions.contains(MemberPermissions.addtocart.value) ||
-    //       member.permissions.contains(MemberPermissions.removefromcart.value)) {
-    //     // get shopping cart user
-    //     final shoppingCartUser = await _ref
-    //         .read(shoppingCartUserControllerProvider.notifier)
-    //         .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
-    //         .first;
-
-    //     // get shopping cart forum
-    //     final shoppingCartForum = await _ref
-    //         .read(shoppingCartForumControllerProvider.notifier)
-    //         .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
-    //         .first;
-
-    //     // get shopping cart member
-    //     final shoppingCartMember = await _ref
-    //         .read(shoppingCartMemberControllerProvider.notifier)
-    //         .getShoppingCartMemberByMemberId(member.memberId)
-    //         .first;
-
-    //     // delete shopping cart member
-    //     if (shoppingCartForum != null && shoppingCartMember != null) {
-    //       await _shoppingCartMemberRepository.deleteShoppingCartMember(
-    //           shoppingCartMember.shoppingCartMemberId);
-
-    //       // update shopping cart forum
-    //       shoppingCartForum.members.remove(shoppingCartMember.memberId);
-    //       shoppingCartForum.services.remove(shoppingCartMember.serviceId);
-    //       await _shoppingCartForumRepository
-    //           .updateShoppingCartForum(shoppingCartForum);
-
-    //       // get this users shopping cart member count
-    //       final shoppingCartMemberCount = await _ref
-    //           .read(shoppingCartMemberControllerProvider.notifier)
-    //           .getShoppingCartMemberCount(
-    //               shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-    //           .first;
-
-    //       if (shoppingCartMemberCount > 0) {
-    //         // set next available shopping cart member as default
-    //         if (shoppingCartMember.selected) {
-    //           // get the rest of the users shopping cart members
-    //           final userShoppingCartMembers = await _ref
-    //               .read(shoppingCartMemberControllerProvider.notifier)
-    //               .getShoppingCartMembers(
-    //                   shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-    //               .first;
-
-    //           if (userShoppingCartMembers.isNotEmpty) {
-    //             userShoppingCartMembers[0] =
-    //                 userShoppingCartMembers[0].copyWith(selected: true);
-    //             await _shoppingCartMemberRepository
-    //                 .updateShoppingCartMember(userShoppingCartMembers[0]);
-    //           }
-    //         }
-    //       } else {
-    //         // delete shopping cart forum
-    //         await _shoppingCartForumRepository
-    //             .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
-
-    //         if (shoppingCartUser != null) {
-    //           shoppingCartUser.forums.remove(shoppingCartForum.forumId);
-
-    //           if (shoppingCartUser.forums.isEmpty) {
-    //             // remove shopping cart user
-    //             await _shoppingCartUserRepository.deleteShoppingCartUser(
-    //                 shoppingCartUser.shoppingCartUserId);
-
-    //             // add uid to users shopping cart user ids list
-    //             memberUser.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
-    //             await _userProfileRepository.updateUser(memberUser);
-    //           } else {
-    //             // update shopping cart user
-    //             await _shoppingCartUserRepository
-    //                 .updateShoppingCartUser(shoppingCartUser);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   state = false;
-    //   res.fold((l) => showSnackBar(context, l.message, true), (r) {
-    //     if (context.mounted) {
-    //       showSnackBar(context, 'Member deleted successfully!', false);
-    //     }
-    //   });
-    // } else {
-    //   state = false;
-    //   if (context.mounted) {
-    //     showSnackBar(context, 'Forum or member does not exist', true);
-    //   }
-    // }
   }
 
   Future<int?> getMembersByServiceIdCount(String serviceId) {
