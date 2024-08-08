@@ -697,9 +697,6 @@ class MemberController extends StateNotifier<bool> {
                   shoppingCartMember.forumId, shoppingCartMember.serviceUid)
               .first;
 
-          print('shoppingCartMemberCount = $shoppingCartMemberCount');
-          print('shoppingCartMember = $shoppingCartMember');
-
           if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
             if (shoppingCartMember.selected) {
@@ -711,15 +708,10 @@ class MemberController extends StateNotifier<bool> {
                   .first;
 
               if (userShoppingCartMembers.isNotEmpty) {
-                print('userShoppingCartMembers is not empty');
-                print(
-                    'userShoppingCartMembers[0] = ${userShoppingCartMembers[0]}');
                 userShoppingCartMembers[0] =
                     userShoppingCartMembers[0].copyWith(selected: true);
                 await _shoppingCartMemberRepository
                     .updateShoppingCartMember(userShoppingCartMembers[0]);
-              } else {
-                print('userShoppingCartMembers is empty');
               }
             }
           } else {
