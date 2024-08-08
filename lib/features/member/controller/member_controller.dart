@@ -269,9 +269,10 @@ class MemberController extends StateNotifier<bool> {
           String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
 
           // get this users shopping cart member count
-          final shoppingCartMemberCount = await _ref
+          final userSelectedShoppingCartMember = await _ref
               .read(shoppingCartMemberControllerProvider.notifier)
-              .getShoppingCartMemberCount(member.forumId, member.serviceUid)
+              .getUserSelectedShoppingCartMember(
+                  member.forumId, member.serviceUid)
               .first;
 
           // create shopping cart user
@@ -305,7 +306,7 @@ class MemberController extends StateNotifier<bool> {
             memberId: member.memberId,
             serviceId: member.serviceId,
             serviceUid: member.serviceUid,
-            selected: shoppingCartMemberCount == 0 ? true : false,
+            selected: userSelectedShoppingCartMember == null ? true : false,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -489,15 +490,15 @@ class MemberController extends StateNotifier<bool> {
         }
 
         // get this users shopping cart member count
-        final shoppingCartMemberCount = await _ref
+        final userSelectedShoppingCartMember = await _ref
             .read(shoppingCartMemberControllerProvider.notifier)
-            .getShoppingCartMemberCount(
+            .getUserSelectedShoppingCartMember(
                 newShoppingCartMember.forumId, newShoppingCartMember.serviceUid)
             .first;
 
         // set whether this member is selected or not
         newShoppingCartMember = newShoppingCartMember.copyWith(
-            selected: shoppingCartMemberCount == 0 ? true : false);
+            selected: userSelectedShoppingCartMember == null ? true : false);
 
         // create shopping cart member
         await _shoppingCartMemberRepository
@@ -696,6 +697,9 @@ class MemberController extends StateNotifier<bool> {
                   shoppingCartMember.forumId, shoppingCartMember.serviceUid)
               .first;
 
+          print('shoppingCartMemberCount = $shoppingCartMemberCount');
+          print('shoppingCartMember = $shoppingCartMember');
+
           if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
             if (shoppingCartMember.selected) {
@@ -707,10 +711,15 @@ class MemberController extends StateNotifier<bool> {
                   .first;
 
               if (userShoppingCartMembers.isNotEmpty) {
+                print('userShoppingCartMembers is not empty');
+                print(
+                    'userShoppingCartMembers[0] = ${userShoppingCartMembers[0]}');
                 userShoppingCartMembers[0] =
                     userShoppingCartMembers[0].copyWith(selected: true);
                 await _shoppingCartMemberRepository
                     .updateShoppingCartMember(userShoppingCartMembers[0]);
+              } else {
+                print('userShoppingCartMembers is empty');
               }
             }
           } else {

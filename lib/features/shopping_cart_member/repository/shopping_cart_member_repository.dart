@@ -73,7 +73,7 @@ class ShoppingCartMemberRepository {
   ) {
     return _shoppingCartMembers
         .where('forumId', isEqualTo: forumId)
-        .where('uid', isEqualTo: uid)
+        .where('serviceUid', isEqualTo: uid)
         .snapshots()
         .map((event) {
       List<ShoppingCartMember> shoppingCartMembers = [];
@@ -87,7 +87,7 @@ class ShoppingCartMemberRepository {
     });
   }
 
-  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
+  Stream<ShoppingCartMember?> getUserSelectedShoppingCartMember(
       String forumId, String uid) {
     return _shoppingCartMembers
         .where('forumId', isEqualTo: forumId)

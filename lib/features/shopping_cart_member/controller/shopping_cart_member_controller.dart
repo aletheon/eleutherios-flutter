@@ -133,7 +133,8 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
     // get old rule member and unselect it
     ShoppingCartMember? selectedShoppingCartMember = await _ref
         .read(shoppingCartMemberControllerProvider.notifier)
-        .getSelectedShoppingCartMember(shoppingCartMember!.shoppingCartForumId,
+        .getUserSelectedShoppingCartMember(
+            shoppingCartMember!.shoppingCartForumId,
             shoppingCartMember.serviceUid)
         .first;
 
@@ -266,9 +267,9 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
         .getShoppingCartMemberByMemberId(memberId);
   }
 
-  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
+  Stream<ShoppingCartMember?> getUserSelectedShoppingCartMember(
       String forumId, String uid) {
-    return _shoppingCartMemberRepository.getSelectedShoppingCartMember(
+    return _shoppingCartMemberRepository.getUserSelectedShoppingCartMember(
         forumId, uid);
   }
 }
