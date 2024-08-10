@@ -26,7 +26,7 @@ class MemberScreen extends ConsumerWidget {
   }
 
   void addToCart(BuildContext context, WidgetRef ref, Service service) {
-    Routemaster.of(context).push('edit');
+    Routemaster.of(context).push('add-to-cart');
   }
 
   void editService(BuildContext context) {

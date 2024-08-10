@@ -17,7 +17,7 @@ class ServiceScreen extends ConsumerWidget {
   const ServiceScreen({super.key, required this.serviceId});
 
   void addToCart(BuildContext context, WidgetRef ref, Service service) {
-    Routemaster.of(context).push('edit');
+    Routemaster.of(context).push('add-to-cart');
   }
 
   void editService(BuildContext context) {
