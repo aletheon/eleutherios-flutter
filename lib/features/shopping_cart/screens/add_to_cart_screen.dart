@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class AddToCartScreen extends ConsumerStatefulWidget {
-  const AddToCartScreen({super.key});
+  final String serviceId;
+  const AddToCartScreen({super.key, required this.serviceId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -22,7 +23,7 @@ class _AddToCartScreenState extends ConsumerState<AddToCartScreen> {
       backgroundColor: currentTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'Add to Cart',
+          'Add to Cart ${widget.serviceId}',
           style: TextStyle(
             color: currentTheme.textTheme.bodyMedium!.color!,
           ),

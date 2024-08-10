@@ -84,8 +84,10 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/favorite/:serviceid/add-to-cart': (route) => const MaterialPage(
-        child: AddToCartScreen(),
+  '/favorite/:serviceid/add-to-cart': (route) => MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   // **************************************************
   // ViewForum / AddForum
@@ -103,6 +105,12 @@ final loggedInRoute = RouteMap(routes: {
   '/viewforum/:forumid/member/:memberid': (route) => MaterialPage(
         child: MemberScreen(
           memberId: route.pathParameters['memberid']!,
+        ),
+      ),
+  '/viewforum/:forumid/member/:memberid/add-to-cart/:serviceid': (route) =>
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   '/viewforum/:forumid/edit': (route) => MaterialPage(
@@ -143,8 +151,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/forum/:forumid/leave-forum/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/forum/:forumid/forum-tools': (route) => MaterialPage(
         child: ForumToolsScreen(
@@ -174,8 +184,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/forum/:forumid/forum-tools/add-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/forum/:forumid/forum-tools/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -202,8 +214,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/forum/:forumid/forum-tools/remove-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/forum/:forumid/forum-tools/remove-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -252,8 +266,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/forum/:forumid/forum-tools/member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/forum/:forumid/forum-tools/edit': (route) => MaterialPage(
         child: EditForumScreen(
@@ -270,6 +286,12 @@ final loggedInRoute = RouteMap(routes: {
           memberId: route.pathParameters['memberid']!,
         ),
       ),
+  '/forum/:forumid/forum-tools/view/member/:memberid/add-to-cart/:serviceid':
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/forum/:forumid/forum-tools/view/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -296,8 +318,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/forum/:forumid/add-member/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/forum/:forumid/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -323,8 +347,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/forum/:forumid/remove-member/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/forum/:forumid/remove-member/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -346,6 +372,12 @@ final loggedInRoute = RouteMap(routes: {
   '/forum/:forumid/view/member/:memberid': (route) => MaterialPage(
         child: MemberScreen(
           memberId: route.pathParameters['memberid']!,
+        ),
+      ),
+  '/forum/:forumid/view/member/:memberid/add-to-cart/:serviceid': (route) =>
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   '/forum/:forumid/view/edit': (route) => MaterialPage(
@@ -384,8 +416,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/user/forum/list/:forumid/leave-forum/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/forum-tools': (route) => MaterialPage(
         child: ForumToolsScreen(
@@ -416,8 +450,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/forum-tools/add-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -444,8 +480,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/forum-tools/remove-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -495,8 +533,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/forum/list/:forumid/forum-tools/member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/forum-tools/edit': (route) => MaterialPage(
         child: EditForumScreen(
@@ -514,6 +554,12 @@ final loggedInRoute = RouteMap(routes: {
           memberId: route.pathParameters['memberid']!,
         ),
       ),
+  '/user/forum/list/:forumid/forum-tools/view/member/:memberid/add-to-cart/:serviceid':
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/:forumid/forum-tools/view/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -542,8 +588,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/user/forum/list/:forumid/add-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/add-member/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -570,8 +618,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/user/forum/list/:forumid/remove-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/forum/list/:forumid/remove-member/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -595,6 +645,12 @@ final loggedInRoute = RouteMap(routes: {
           memberId: route.pathParameters['memberid']!,
         ),
       ),
+  '/user/forum/list/:forumid/view/member/:memberid/add-to-cart/:serviceid':
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
+          ),
   '/user/forum/list/:forumid/view/edit': (route) => MaterialPage(
         child: EditForumScreen(
           forumId: route.pathParameters['forumid']!,
@@ -668,8 +724,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member': (route) =>
       MaterialPage(
@@ -698,8 +756,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -726,8 +786,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -780,8 +842,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/rule-tools/:ruleid/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -808,8 +872,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/rule-tools/:ruleid/remove-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -840,8 +906,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/policy/:policyid/leave-policy/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/policy/:policyid/add-consumer': (route) => MaterialPage(
         child: AddConsumerScreen(
@@ -886,8 +954,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/add-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/policy-tools/add-manager/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -914,8 +984,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/remove-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/policy-tools/remove-manager/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -956,8 +1028,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/policy/:policyid/add-manager/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/policy/:policyid/add-manager/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -984,8 +1058,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/policy/:policyid/remove-manager/service/:serviceid/add-to-cart': (route) =>
-      const MaterialPage(
-        child: AddToCartScreen(),
+      MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/policy/:policyid/remove-manager/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -1064,8 +1140,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
@@ -1094,8 +1172,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1122,8 +1202,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1162,8 +1244,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/policy/:policyid/policy-tools/manager-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list': (_) => const MaterialPage(
         child: ListUserPolicyScreen(),
@@ -1232,8 +1316,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
@@ -1262,8 +1348,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1290,8 +1378,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1323,8 +1413,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/user/policy/list/:policyid/leave-policy/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/add-consumer': (route) => MaterialPage(
         child: AddConsumerScreen(
@@ -1421,8 +1513,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member':
       (route) => MaterialPage(
@@ -1451,8 +1545,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/add-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1479,8 +1575,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/remove-rule-member/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1519,8 +1617,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/add-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/policy-tools/add-manager/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1547,8 +1647,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/policy-tools/remove-manager/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1585,8 +1687,10 @@ final loggedInRoute = RouteMap(routes: {
         ),
       ),
   '/user/policy/list/:policyid/add-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/add-manager/service/:serviceid/likes': (route) =>
       MaterialPage(
@@ -1613,8 +1717,10 @@ final loggedInRoute = RouteMap(routes: {
             ),
           ),
   '/user/policy/list/:policyid/remove-manager/service/:serviceid/add-to-cart':
-      (route) => const MaterialPage(
-            child: AddToCartScreen(),
+      (route) => MaterialPage(
+            child: AddToCartScreen(
+              serviceId: route.pathParameters['serviceid']!,
+            ),
           ),
   '/user/policy/list/:policyid/remove-manager/service/:serviceid/likes':
       (route) => MaterialPage(
@@ -1644,8 +1750,10 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/service/:serviceid/add-to-cart': (route) => const MaterialPage(
-        child: AddToCartScreen(),
+  '/service/:serviceid/add-to-cart': (route) => MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/service/:serviceid/likes': (route) => MaterialPage(
         child: ServiceLikesScreen(
@@ -1705,8 +1813,10 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/user/service/list/:serviceid/add-to-cart': (route) => const MaterialPage(
-        child: AddToCartScreen(),
+  '/user/service/list/:serviceid/add-to-cart': (route) => MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
+        ),
       ),
   '/user/service/list/:serviceid/likes': (route) => MaterialPage(
         child: ServiceLikesScreen(
@@ -1764,6 +1874,11 @@ final loggedInRoute = RouteMap(routes: {
   '/member/:memberid': (route) => MaterialPage(
         child: MemberScreen(
           memberId: route.pathParameters['memberid']!,
+        ),
+      ),
+  '/member/:memberid/add-to-cart/:serviceid': (route) => MaterialPage(
+        child: AddToCartScreen(
+          serviceId: route.pathParameters['serviceid']!,
         ),
       ),
   // **************************************************
