@@ -29,11 +29,11 @@ class ManagerScreen extends ConsumerWidget {
     if (result.isEmpty) {
       ref
           .read(favoriteControllerProvider.notifier)
-          .createFavorite(service.serviceId, service.uid, context);
+          .createFavorite(context, service.serviceId, service.uid);
     } else {
       ref
           .read(favoriteControllerProvider.notifier)
-          .deleteFavorite(service.serviceId, context);
+          .deleteFavorite(context, service.serviceId);
     }
   }
 

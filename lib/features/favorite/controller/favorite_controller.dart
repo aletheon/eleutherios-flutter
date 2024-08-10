@@ -52,7 +52,7 @@ class FavoriteController extends StateNotifier<bool> {
         super(false);
 
   void createFavorite(
-      String serviceId, String serviceUid, BuildContext context) async {
+      BuildContext context, String serviceId, String serviceUid) async {
     state = true;
     final user = _ref.read(userProvider)!;
     String favoriteId = const Uuid().v1().replaceAll('-', '');
@@ -90,7 +90,7 @@ class FavoriteController extends StateNotifier<bool> {
     }
   }
 
-  void deleteFavorite(String serviceId, BuildContext context) async {
+  void deleteFavorite(BuildContext context, String serviceId) async {
     state = true;
     final user = _ref.read(userProvider)!;
 

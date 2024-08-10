@@ -14,7 +14,7 @@ class ListUserFavoriteScreen extends ConsumerWidget {
   void removeFavorite(BuildContext context, WidgetRef ref, String serviceId) {
     ref
         .watch(favoriteControllerProvider.notifier)
-        .deleteFavorite(serviceId, context);
+        .deleteFavorite(context, serviceId);
   }
 
   void showServiceDetails(BuildContext context, String serviceId) {

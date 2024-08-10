@@ -43,11 +43,11 @@ class ServiceScreen extends ConsumerWidget {
     if (result.isEmpty) {
       ref
           .read(favoriteControllerProvider.notifier)
-          .createFavorite(serviceId, service.uid, context);
+          .createFavorite(context, serviceId, service.uid);
     } else {
       ref
           .read(favoriteControllerProvider.notifier)
-          .deleteFavorite(serviceId, context);
+          .deleteFavorite(context, serviceId);
     }
   }
 

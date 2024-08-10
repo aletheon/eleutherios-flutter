@@ -16,7 +16,7 @@ class ListUserServiceScreen extends ConsumerWidget {
   const ListUserServiceScreen({super.key});
 
   void deleteService(
-      BuildContext context, WidgetRef ref, String serviceId) async {
+      String serviceId, BuildContext context, WidgetRef ref) async {
     final int? managerCount = await ref
         .read(managerControllerProvider.notifier)
         .getManagersByServiceIdCount(serviceId);
@@ -97,7 +97,7 @@ class ListUserServiceScreen extends ConsumerWidget {
     }
   }
 
-  void showServiceDetails(BuildContext context, String serviceId) {
+  void showServiceDetails(String serviceId, BuildContext context) {
     Routemaster.of(context).push(serviceId);
   }
 
@@ -172,10 +172,10 @@ class ListUserServiceScreen extends ConsumerWidget {
                                   trailing: IconButton(
                                     icon: const Icon(Icons.delete),
                                     onPressed: () => deleteService(
-                                        context, ref, service.serviceId),
+                                        service.serviceId, context, ref),
                                   ),
                                   onTap: () => showServiceDetails(
-                                      context, service.serviceId),
+                                      service.serviceId, context),
                                 ),
                                 service.tags.isNotEmpty
                                     ? Padding(
