@@ -7,6 +7,7 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
@@ -14,37 +15,62 @@ import 'package:routemaster/routemaster.dart';
 
 class ServiceScreen extends ConsumerWidget {
   final String serviceId;
-  const ServiceScreen({super.key, required this.serviceId});
+  const ServiceScreen({
+    super.key,
+    required this.serviceId,
+  });
 
   void addToCart(
-      BuildContext context, WidgetRef ref, UserModel user, Service service) {
+    BuildContext context,
+    WidgetRef ref,
+    UserModel user,
+  ) {
     if (user.shoppingCartUserIds.isEmpty) {
       // add service item to logged in users cart
-      // ref
-      //     .read(shoppingCartControllerProvider.notifier)
-      //     .cre(context, serviceId, service.uid);
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .createShoppingCartItem(
+            user.shoppingCartId,
+            null,
+            null,
+            serviceId,
+            context,
+          );
     } else {
       Routemaster.of(context).push('add-to-cart');
     }
   }
 
-  void editService(BuildContext context) {
+  void editService(
+    BuildContext context,
+  ) {
     Routemaster.of(context).push('edit');
   }
 
-  void navigateToServiceTools(BuildContext context) {
+  void navigateToServiceTools(
+    BuildContext context,
+  ) {
     Routemaster.of(context).push('/service/$serviceId/service-tools');
   }
 
-  void navigateToPolicy(BuildContext context, String policyId) {
+  void navigateToPolicy(
+    BuildContext context,
+    String policyId,
+  ) {
     Routemaster.of(context).push('/policy/$policyId');
   }
 
-  void navigateToLikes(BuildContext context) {
+  void navigateToLikes(
+    BuildContext context,
+  ) {
     Routemaster.of(context).push('likes');
   }
 
-  void likeService(BuildContext context, WidgetRef ref, Service service) {
+  void likeService(
+    BuildContext context,
+    WidgetRef ref,
+    Service service,
+  ) {
     UserModel userModel = ref.read(userProvider)!;
     var result =
         userModel.favorites.where((f) => f == service.serviceId).toList();
@@ -59,8 +85,11 @@ class ServiceScreen extends ConsumerWidget {
     }
   }
 
-  void addForum(BuildContext context, WidgetRef ref, Service service) {
-    Routemaster.of(context).push('/addforum/${service.serviceId}');
+  void addForum(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    Routemaster.of(context).push('/addforum/$serviceId');
   }
 
   @override
@@ -333,8 +362,10 @@ class ServiceScreen extends ConsumerWidget {
                                     Container(
                                       margin: const EdgeInsets.only(right: 10),
                                       child: OutlinedButton(
-                                        onPressed: () =>
-                                            addForum(context, ref, service),
+                                        onPressed: () => addForum(
+                                          context,
+                                          ref,
+                                        ),
                                         style: ElevatedButton.styleFrom(
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
@@ -350,7 +381,10 @@ class ServiceScreen extends ConsumerWidget {
                                       margin: const EdgeInsets.only(right: 10),
                                       child: OutlinedButton(
                                         onPressed: () => addToCart(
-                                            context, ref, user, service),
+                                          context,
+                                          ref,
+                                          user,
+                                        ),
                                         style: ElevatedButton.styleFrom(
                                             // side: BorderSide(
                                             //   width: 1.0,
