@@ -13,6 +13,7 @@ class UserModel {
   final bool isAuthenticated;
   final String banner;
   final int cert;
+  final String shoppingCartId;
   final String stripeCustomerId;
   final String stripeAccountId;
   final String stripeOnboardingStatus;
@@ -43,6 +44,7 @@ class UserModel {
     required this.isAuthenticated,
     required this.banner,
     required this.cert,
+    required this.shoppingCartId,
     required this.stripeCustomerId,
     required this.stripeAccountId,
     required this.stripeOnboardingStatus,
@@ -74,6 +76,7 @@ class UserModel {
     bool? isAuthenticated,
     String? banner,
     int? cert,
+    String? shoppingCartId,
     String? stripeCustomerId,
     String? stripeAccountId,
     String? stripeOnboardingStatus,
@@ -104,6 +107,7 @@ class UserModel {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       banner: banner ?? this.banner,
       cert: cert ?? this.cert,
+      shoppingCartId: shoppingCartId ?? this.shoppingCartId,
       stripeCustomerId: stripeCustomerId ?? this.stripeCustomerId,
       stripeAccountId: stripeAccountId ?? this.stripeAccountId,
       stripeOnboardingStatus:
@@ -138,6 +142,7 @@ class UserModel {
       'isAuthenticated': isAuthenticated,
       'banner': banner,
       'cert': cert,
+      'shoppingCartId': shoppingCartId,
       'stripeCustomerId': stripeCustomerId,
       'stripeAccountId': stripeAccountId,
       'stripeOnboardingStatus': stripeOnboardingStatus,
@@ -171,6 +176,7 @@ class UserModel {
       isAuthenticated: map['isAuthenticated'] as bool,
       banner: map['banner'] as String,
       cert: map['cert'] as int,
+      shoppingCartId: map['shoppingCartId'] as String,
       stripeCustomerId: map['stripeCustomerId'] as String,
       stripeAccountId: map['stripeAccountId'] as String,
       stripeOnboardingStatus: map['stripeOnboardingStatus'] as String,
@@ -194,7 +200,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, shoppingCartUserIds: $shoppingCartUserIds, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, shoppingCartId: $shoppingCartId, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, shoppingCartUserIds: $shoppingCartUserIds, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -213,6 +219,7 @@ class UserModel {
         other.isAuthenticated == isAuthenticated &&
         other.banner == banner &&
         other.cert == cert &&
+        other.shoppingCartId == shoppingCartId &&
         other.stripeCustomerId == stripeCustomerId &&
         other.stripeAccountId == stripeAccountId &&
         other.stripeOnboardingStatus == stripeOnboardingStatus &&
@@ -245,6 +252,7 @@ class UserModel {
         isAuthenticated.hashCode ^
         banner.hashCode ^
         cert.hashCode ^
+        shoppingCartId.hashCode ^
         stripeCustomerId.hashCode ^
         stripeAccountId.hashCode ^
         stripeOnboardingStatus.hashCode ^

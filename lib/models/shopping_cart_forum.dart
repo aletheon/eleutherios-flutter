@@ -9,7 +9,7 @@ class ShoppingCartForum {
       forumId; // forum user has been given permission to add items to cart
   final List<String>
       members; // potential members (i.e. services) that will serve in this rule
-  final List<String> services; // copy of member services for redundancy sake
+  final List<String> services; // list of member services for redundancy sake
 
   final DateTime lastUpdateDate;
   final DateTime creationDate;

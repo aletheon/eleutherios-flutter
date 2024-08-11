@@ -65,6 +65,7 @@ class AuthRepository {
           isAuthenticated: false,
           banner: Constants.bannerDefault,
           cert: 1,
+          shoppingCartId: '',
           stripeCustomerId: '',
           stripeAccountId: '',
           stripeOnboardingStatus: '',

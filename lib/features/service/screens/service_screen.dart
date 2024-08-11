@@ -16,8 +16,16 @@ class ServiceScreen extends ConsumerWidget {
   final String serviceId;
   const ServiceScreen({super.key, required this.serviceId});
 
-  void addToCart(BuildContext context, WidgetRef ref, Service service) {
-    Routemaster.of(context).push('add-to-cart');
+  void addToCart(
+      BuildContext context, WidgetRef ref, UserModel user, Service service) {
+    if (user.shoppingCartUserIds.isEmpty) {
+      // add service item to logged in users cart
+      // ref
+      //     .read(shoppingCartControllerProvider.notifier)
+      //     .cre(context, serviceId, service.uid);
+    } else {
+      Routemaster.of(context).push('add-to-cart');
+    }
   }
 
   void editService(BuildContext context) {
@@ -341,8 +349,8 @@ class ServiceScreen extends ConsumerWidget {
                                     Container(
                                       margin: const EdgeInsets.only(right: 10),
                                       child: OutlinedButton(
-                                        onPressed: () =>
-                                            addToCart(context, ref, service),
+                                        onPressed: () => addToCart(
+                                            context, ref, user, service),
                                         style: ElevatedButton.styleFrom(
                                             // side: BorderSide(
                                             //   width: 1.0,

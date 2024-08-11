@@ -268,7 +268,7 @@ class MemberController extends StateNotifier<bool> {
           String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
           String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
 
-          // get this users shopping cart member count
+          // get selected user shopping cart member
           final userSelectedShoppingCartMember = await _ref
               .read(shoppingCartMemberControllerProvider.notifier)
               .getUserSelectedShoppingCartMember(

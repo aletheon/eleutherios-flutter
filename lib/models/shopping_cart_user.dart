@@ -4,7 +4,7 @@ class ShoppingCartUser {
   final String shoppingCartUserId; // primary key
   final String uid; // user who has permission to add items to cart
   final String cartUid; // owner of the cart
-  final List<String> forums; // copy of forums for redundancy sake
+  final List<String> forums; // list of forums for redundancy sake
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   ShoppingCartUser({
