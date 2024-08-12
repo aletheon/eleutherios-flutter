@@ -60,10 +60,10 @@ class AuthController extends StateNotifier<bool> {
 
   void signInWithGoogle(BuildContext context) async {
     state = true;
-    final eitherUser = await _authRepository.signInWithGoogle();
+    final eitherUserModel = await _authRepository.signInWithGoogle();
 
-    if (eitherUser.isRight()) {
-      UserModel? user = eitherUser.toOption().toNullable();
+    if (eitherUserModel.isRight()) {
+      UserModel? user = eitherUserModel.toOption().toNullable();
 
       // create a shopping cart for this user
       String shoppingCartId = const Uuid().v1().replaceAll('-', '');
@@ -80,7 +80,7 @@ class AuthController extends StateNotifier<bool> {
       await _userProfileRepository.updateUser(user);
     }
     state = false;
-    eitherUser.fold(
+    eitherUserModel.fold(
         (l) => showSnackBar(context, l.message, false),
         (userModel) =>
             _ref.read(userProvider.notifier).update((state) => userModel));

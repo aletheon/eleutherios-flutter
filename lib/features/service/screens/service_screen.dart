@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -13,31 +14,48 @@ import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class ServiceScreen extends ConsumerWidget {
+class ServiceScreen extends ConsumerStatefulWidget {
   final String serviceId;
-  const ServiceScreen({
-    super.key,
-    required this.serviceId,
-  });
+  const ServiceScreen({super.key, required this.serviceId});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ServiceScreenState();
+}
+
+class _ServiceScreenState extends ConsumerState<ServiceScreen> {
+  int quantity = 0;
 
   void addToCart(
     BuildContext context,
     WidgetRef ref,
     UserModel user,
+    Service service,
   ) {
-    if (user.shoppingCartUserIds.isEmpty) {
-      // add service item to logged in users cart
-      ref
-          .read(shoppingCartItemControllerProvider.notifier)
-          .createShoppingCartItem(
-            user.shoppingCartId,
-            null,
-            null,
-            serviceId,
-            context,
-          );
+    if (quantity == 0) {
+      showSnackBar(context, 'Quantity cannot be empty', true);
     } else {
-      Routemaster.of(context).push('add-to-cart');
+      if (service.quantity == 0) {
+        showSnackBar(context,
+            'There are no more of this service available to purchase', true);
+      } else {
+        if (user.shoppingCartUserIds.isEmpty) {
+          // add service to the currently logged in users cart
+          ref
+              .read(shoppingCartItemControllerProvider.notifier)
+              .createShoppingCartItem(
+                user.shoppingCartId,
+                null,
+                null,
+                service.serviceId,
+                quantity,
+                context,
+              );
+        } else {
+          // let the user choose which cart they want to add the service too
+          // including their own cart
+          Routemaster.of(context).push('add-to-cart');
+        }
+      }
     }
   }
 
@@ -50,7 +68,7 @@ class ServiceScreen extends ConsumerWidget {
   void navigateToServiceTools(
     BuildContext context,
   ) {
-    Routemaster.of(context).push('/service/$serviceId/service-tools');
+    Routemaster.of(context).push('/service/${widget.serviceId}/service-tools');
   }
 
   void navigateToPolicy(
@@ -77,11 +95,11 @@ class ServiceScreen extends ConsumerWidget {
     if (result.isEmpty) {
       ref
           .read(favoriteControllerProvider.notifier)
-          .createFavorite(context, serviceId, service.uid);
+          .createFavorite(context, widget.serviceId, service.uid);
     } else {
       ref
           .read(favoriteControllerProvider.notifier)
-          .deleteFavorite(context, serviceId);
+          .deleteFavorite(context, widget.serviceId);
     }
   }
 
@@ -89,15 +107,15 @@ class ServiceScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    Routemaster.of(context).push('/addforum/$serviceId');
+    Routemaster.of(context).push('/addforum/${widget.serviceId}');
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
-      body: ref.watch(getServiceByIdProvider(serviceId)).when(
+      body: ref.watch(getServiceByIdProvider(widget.serviceId)).when(
           data: (service) => NestedScrollView(
                 headerSliverBuilder: ((context, innerBoxIsScrolled) {
                   return [
@@ -244,6 +262,7 @@ class ServiceScreen extends ConsumerWidget {
                                   ],
                                 ),
                                 Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     // like button
                                     service.uid == user.uid
@@ -296,7 +315,8 @@ class ServiceScreen extends ConsumerWidget {
                                                           .watch(userProvider)!
                                                           .favorites
                                                           .where((f) =>
-                                                              f == serviceId)
+                                                              f ==
+                                                              widget.serviceId)
                                                           .toList()
                                                           .isEmpty
                                                       ? const Icon(
@@ -376,33 +396,76 @@ class ServiceScreen extends ConsumerWidget {
                                         child: const Text('Add Forum'),
                                       ),
                                     ),
-                                    // add to cart button
-                                    Container(
-                                      margin: const EdgeInsets.only(right: 10),
-                                      child: OutlinedButton(
-                                        onPressed: () => addToCart(
-                                          context,
-                                          ref,
-                                          user,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                            // side: BorderSide(
-                                            //   width: 1.0,
-                                            //   color: service.price == -1
-                                            //       ? Pallete.freeServiceTagColor
-                                            //       : Pallete.paidServiceTagColor,
-                                            // ),
-                                            backgroundColor:
-                                                Pallete.darkGreenColor,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                    // add to cart button(s)
+                                    Row(
+                                      children: [
+                                        Card(
+                                          color: Colors.blue,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: SizedBox(
+                                            height: 35,
+                                            width: 120,
+                                            child: AnimatedSwitcher(
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                        Icons.remove),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (quantity > 0) {
+                                                          quantity--;
+                                                        }
+                                                      });
+                                                    },
+                                                  ),
+                                                  Text(quantity.toString()),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.add),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        quantity++;
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 25)),
-                                        child: const Text('Add to Cart'),
-                                      ),
-                                    )
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          child: OutlinedButton(
+                                            onPressed: () => addToCart(
+                                              context,
+                                              ref,
+                                              user,
+                                              service,
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Pallete.darkGreenColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 25)),
+                                            child: const Text('Add to Cart'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                                 // #####################################################

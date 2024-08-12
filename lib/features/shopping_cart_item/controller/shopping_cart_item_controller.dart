@@ -4,6 +4,7 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart_item/repository/shopping_cart_item_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
@@ -88,22 +89,27 @@ final shoppingCartItemControllerProvider =
   final shoppingCartItemRepository =
       ref.watch(shoppingCartItemRepositoryProvider);
   final shoppingCartRepository = ref.watch(shoppingCartRepositoryProvider);
+  final serviceRepository = ref.watch(serviceRepositoryProvider);
   return ShoppingCartItemController(
       shoppingCartItemRepository: shoppingCartItemRepository,
       shoppingCartRepository: shoppingCartRepository,
+      serviceRepository: serviceRepository,
       ref: ref);
 });
 
 class ShoppingCartItemController extends StateNotifier<bool> {
   final ShoppingCartItemRepository _shoppingCartItemRepository;
   final ShoppingCartRepository _shoppingCartRepository;
+  final ServiceRepository _serviceRepository;
   final Ref _ref;
   ShoppingCartItemController(
       {required ShoppingCartItemRepository shoppingCartItemRepository,
       required ShoppingCartRepository shoppingCartRepository,
+      required ServiceRepository serviceRepository,
       required Ref ref})
       : _shoppingCartItemRepository = shoppingCartItemRepository,
         _shoppingCartRepository = shoppingCartRepository,
+        _serviceRepository = serviceRepository,
         _ref = ref,
         super(false);
 
@@ -112,6 +118,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     String? forumId,
     String? memberId,
     String serviceId,
+    int quantity,
     BuildContext context,
   ) async {
     state = true;
@@ -155,7 +162,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           memberId: member != null ? member.memberId : '',
           serviceId: serviceId,
           serviceUid: service.uid,
-          quantity: 0,
+          quantity: quantity,
           lastUpdateDate: DateTime.now(),
           creationDate: DateTime.now(),
         );
@@ -166,6 +173,10 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         shoppingCart.items.add(shoppingCartItemId);
         shoppingCart.services.add(serviceId);
         await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+        // reduce service quantity
+        service = service.copyWith(quantity: service.quantity - quantity);
+        await _serviceRepository.updateService(service);
 
         state = false;
         res.fold((l) => showSnackBar(context, l.message, true), (r) {
