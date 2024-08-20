@@ -211,6 +211,126 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     });
   }
 
+  void updateShoppingCartItemQuantity(
+    String shoppingCartId,
+    Service service,
+    int quantity,
+    BuildContext context,
+  ) async {
+    state = true;
+    ShoppingCartItem? shoppingCartItem = await _ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .getShoppingCartItemByServiceId(shoppingCartId, service.serviceId)
+        .first;
+
+    if (shoppingCartItem != null) {
+      // 0) if quantity is zero then remove shoppingCartItem
+      // 1) check service.quantity > quantity
+      if (quantity == 0) {
+        // remove shopping cart item
+      }
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Shopping cart item does not exist', true);
+      }
+    }
+
+    //
+    // otherwise swap quantity with new quantity
+
+    // final shoppingCartItemRes = await _shoppingCartItemRepository
+    //     .updateShoppingCartItem(shoppingCartItem);
+    state = false;
+    // shoppingCartItemRes.fold((l) => showSnackBar(context, l.message, true),
+    //     (r) {
+    //   showSnackBar(context, 'Shopping cart item updated successfully!', false);
+    // });
+  }
+
+  void removeShoppingCartItem(
+      String shoppingCartId, Service service, BuildContext context) async {
+    state = true;
+
+    // get shopping cart
+    final shoppingCart = await _ref
+        .watch(shoppingCartControllerProvider.notifier)
+        .getShoppingCartById(shoppingCartId)
+        .first;
+
+    // get shopping cart item
+    ShoppingCartItem? shoppingCartItem = await _ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .getShoppingCartItemByServiceId(shoppingCartId, service.serviceId)
+        .first;
+
+    if (shoppingCart != null && shoppingCartItem != null) {
+      // delete shopping cart item
+      final res = await _shoppingCartItemRepository
+          .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
+
+      // update shopping cart
+      shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+      shoppingCart.services.remove(shoppingCartItem.serviceId);
+      await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+      // update service
+      service = service.copyWith(
+          quantity: service.quantity + shoppingCartItem.quantity);
+      await _serviceRepository.updateService(service);
+
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message, true), (r) {
+        if (context.mounted) {
+          showSnackBar(
+              context, 'Item removed from shopping cart successfully!', false);
+        }
+      });
+    } else {
+      state = false;
+      if (context.mounted) {
+        showSnackBar(context, 'Shopping cart item does not exist', true);
+      }
+    }
+
+    // // get shopping cart item
+    // final shoppingCartItem = await _ref
+    //     .read(shoppingCartItemControllerProvider.notifier)
+    //     .getShoppingCartItemById(shoppingCartItemId)
+    //     .first;
+
+    // // get shopping cart
+    // final shoppingCart = await _ref
+    //     .watch(shoppingCartControllerProvider.notifier)
+    //     .getShoppingCartById(shoppingCartId)
+    //     .first;
+
+    // if (shoppingCart != null && shoppingCartItem != null) {
+    //   // delete shopping cart item
+    //   final res = await _shoppingCartItemRepository
+    //       .deleteShoppingCartItem(shoppingCartItemId);
+
+    //   // update policy
+    //   shoppingCart.items.remove(shoppingCartItemId);
+    //   shoppingCart.services.remove(shoppingCartItem.serviceId);
+    //   await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+    //   state = false;
+    //   res.fold((l) => showSnackBar(context, l.message, true), (r) {
+    //     if (context.mounted) {
+    //       showSnackBar(
+    //           context, 'Shopping cart item deleted successfully!', false);
+    //     }
+    //   });
+    // } else {
+    //   state = false;
+    //   if (context.mounted) {
+    //     showSnackBar(context,
+    //         'Shopping cart or shopping cart item does not exist', true);
+    //   }
+    // }
+  }
+
   void deleteShoppingCartItem(String shoppingCartId, String shoppingCartItemId,
       BuildContext context) async {
     state = true;
