@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
-import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -33,30 +32,37 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     UserModel user,
     Service service,
   ) {
-    if (shoppingCart.services.contains(service.serviceId)) {
-      if (quantity == 0) {
-        ref
-            .read(shoppingCartItemControllerProvider.notifier)
-            .removeShoppingCartItem(
-              user.shoppingCartId,
-              service,
-              context,
-            );
-      } else if (quantity > service.quantity) {
-        showSnackBar(
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .updateShoppingCartItemQuantity(
+          shoppingCart,
+          service,
+          quantity,
+          context,
+        );
+  }
+
+  void addToCart(
+    BuildContext context,
+    ShoppingCart shoppingCart,
+    UserModel user,
+    Service service,
+  ) {
+    if (user.shoppingCartUserIds.isEmpty) {
+      // add service to the currently logged in user
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .createShoppingCartItem(
+            shoppingCart,
+            null,
+            null,
+            service.serviceId,
+            quantity,
             context,
-            'Not enough items to purchase there are only ${service.quantity} left',
-            true);
-      } else {
-        ref
-            .read(shoppingCartItemControllerProvider.notifier)
-            .updateShoppingCartItemQuantity(
-              user.shoppingCartId,
-              service,
-              quantity,
-              context,
-            );
-      }
+          );
+    } else {
+      // let the user choose which cart they want to add the service to including their own cart
+      Routemaster.of(context).push('add-to-cart');
     }
   }
 
@@ -66,20 +72,18 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     UserModel user,
     Service service,
   ) {
-    if (shoppingCart.services.contains(service.serviceId) == true) {
-      if (user.shoppingCartUserIds.isEmpty) {
-        // remove service from the currently logged in user
-        ref
-            .read(shoppingCartItemControllerProvider.notifier)
-            .removeShoppingCartItem(
-              user.shoppingCartId,
-              service,
-              context,
-            );
-      } else {
-        // let the user choose which cart they want to remove the service from including their own cart
-        Routemaster.of(context).push('remove-from-cart');
-      }
+    if (user.shoppingCartUserIds.isEmpty) {
+      // remove service from the currently logged in user
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .removeShoppingCartItem(
+            shoppingCart,
+            service,
+            context,
+          );
+    } else {
+      // let the user choose which cart they want to remove the service from including their own cart
+      Routemaster.of(context).push('remove-from-cart');
     }
   }
 

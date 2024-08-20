@@ -114,7 +114,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         super(false);
 
   void createShoppingCartItem(
-    String shoppingCartId,
+    ShoppingCart shoppingCart,
     String? forumId,
     String? memberId,
     String serviceId,
@@ -124,10 +124,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     state = true;
     Forum? forum; // placeholder for forum
     Member? member; // placeholder for member
-    ShoppingCart? shoppingCart = await _ref
-        .read(shoppingCartControllerProvider.notifier)
-        .getShoppingCartById(shoppingCartId)
-        .first;
 
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
@@ -135,54 +131,71 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         .first;
 
     // ensure shoppingCart and service exist
-    if (shoppingCart != null && service != null) {
+    if (service != null) {
       // ensure service is not already an item
       if (shoppingCart.services.contains(serviceId) == false) {
-        if (forumId != null) {
-          forum = await _ref
-              .read(forumControllerProvider.notifier)
-              .getForumById(forumId)
-              .first;
+        if (quantity > 0) {
+          if (service.quantity > 0 && service.quantity < quantity) {
+            if (forumId != null) {
+              forum = await _ref
+                  .read(forumControllerProvider.notifier)
+                  .getForumById(forumId)
+                  .first;
+            }
+            if (memberId != null) {
+              member = await _ref
+                  .read(memberControllerProvider.notifier)
+                  .getMemberById(memberId)
+                  .first;
+            }
+            String shoppingCartItemId = const Uuid().v1().replaceAll('-', '');
+
+            // create shopping cart item
+            ShoppingCartItem shoppingCartItem = ShoppingCartItem(
+              shoppingCartItemId: shoppingCartItemId,
+              shoppingCartId: shoppingCart.shoppingCartId,
+              shoppingCartUid: shoppingCart.uid,
+              forumId: forum != null ? forum.forumId : '',
+              forumUid: forum != null ? forum.uid : '',
+              memberId: member != null ? member.memberId : '',
+              serviceId: serviceId,
+              serviceUid: service.uid,
+              quantity: quantity,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
+            final res = await _shoppingCartItemRepository
+                .createShoppingCartItem(shoppingCartItem);
+
+            // add service to shopping cart items and service list
+            shoppingCart.items.add(shoppingCartItemId);
+            shoppingCart.services.add(serviceId);
+            await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+            // reduce service quantity
+            service = service.copyWith(quantity: service.quantity - quantity);
+            await _serviceRepository.updateService(service);
+
+            state = false;
+            res.fold((l) => showSnackBar(context, l.message, true), (r) {
+              showSnackBar(
+                  context, 'Shopping cart item added successfully!', false);
+            });
+          } else {
+            state = false;
+            if (context.mounted) {
+              showSnackBar(
+                  context,
+                  'There are no more of this service available to purchase',
+                  true);
+            }
+          }
+        } else {
+          state = false;
+          if (context.mounted) {
+            showSnackBar(context, 'Quantity cannot be empty', true);
+          }
         }
-        if (memberId != null) {
-          member = await _ref
-              .read(memberControllerProvider.notifier)
-              .getMemberById(memberId)
-              .first;
-        }
-        String shoppingCartItemId = const Uuid().v1().replaceAll('-', '');
-
-        // create shopping cart item
-        ShoppingCartItem shoppingCartItem = ShoppingCartItem(
-          shoppingCartItemId: shoppingCartItemId,
-          shoppingCartId: shoppingCartId,
-          shoppingCartUid: shoppingCart.uid,
-          forumId: forum != null ? forum.forumId : '',
-          forumUid: forum != null ? forum.uid : '',
-          memberId: member != null ? member.memberId : '',
-          serviceId: serviceId,
-          serviceUid: service.uid,
-          quantity: quantity,
-          lastUpdateDate: DateTime.now(),
-          creationDate: DateTime.now(),
-        );
-        final res = await _shoppingCartItemRepository
-            .createShoppingCartItem(shoppingCartItem);
-
-        // add service to shopping cart items and service list
-        shoppingCart.items.add(shoppingCartItemId);
-        shoppingCart.services.add(serviceId);
-        await _shoppingCartRepository.updateShoppingCart(shoppingCart);
-
-        // reduce service quantity
-        service = service.copyWith(quantity: service.quantity - quantity);
-        await _serviceRepository.updateService(service);
-
-        state = false;
-        res.fold((l) => showSnackBar(context, l.message, true), (r) {
-          showSnackBar(
-              context, 'Shopping cart item added successfully!', false);
-        });
       } else {
         state = false;
         if (context.mounted) {
@@ -212,123 +225,112 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void updateShoppingCartItemQuantity(
-    String shoppingCartId,
+    ShoppingCart shoppingCart,
     Service service,
     int quantity,
     BuildContext context,
   ) async {
     state = true;
+
     ShoppingCartItem? shoppingCartItem = await _ref
         .read(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(shoppingCartId, service.serviceId)
+        .getShoppingCartItemByServiceId(
+            shoppingCart.shoppingCartId, service.serviceId)
         .first;
 
     if (shoppingCartItem != null) {
-      // 0) if quantity is zero then remove shoppingCartItem
-      // 1) check service.quantity > quantity
-      if (quantity == 0) {
-        // remove shopping cart item
+      if (shoppingCart.services.contains(service.serviceId)) {
+        if (quantity == 0) {
+          // delete shopping cart item
+          final res = await _shoppingCartItemRepository
+              .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
+
+          // update shopping cart
+          shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+          shoppingCart.services.remove(shoppingCartItem.serviceId);
+          await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+          // update service
+          service = service.copyWith(
+              quantity: service.quantity + shoppingCartItem.quantity);
+          await _serviceRepository.updateService(service);
+
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            if (context.mounted) {
+              showSnackBar(
+                  context, 'Shopping cart item removed successfully!', false);
+            }
+          });
+        } else if (service.quantity >= quantity) {
+          shoppingCartItem = shoppingCartItem.copyWith(
+              quantity: shoppingCartItem.quantity + quantity);
+          final res = await _shoppingCartItemRepository
+              .updateShoppingCartItem(shoppingCartItem);
+
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            if (context.mounted) {
+              showSnackBar(
+                  context, 'Shopping cart item updated successfully!', false);
+            }
+          });
+        } else {
+          if (context.mounted) {
+            showSnackBar(
+                context,
+                'Not enough items to purchase there are only ${service.quantity} left',
+                true);
+          }
+        }
+      } else {
+        state = false;
       }
     } else {
       state = false;
-      if (context.mounted) {
-        showSnackBar(context, 'Shopping cart item does not exist', true);
-      }
     }
-
-    //
-    // otherwise swap quantity with new quantity
-
-    // final shoppingCartItemRes = await _shoppingCartItemRepository
-    //     .updateShoppingCartItem(shoppingCartItem);
-    state = false;
-    // shoppingCartItemRes.fold((l) => showSnackBar(context, l.message, true),
-    //     (r) {
-    //   showSnackBar(context, 'Shopping cart item updated successfully!', false);
-    // });
   }
 
   void removeShoppingCartItem(
-      String shoppingCartId, Service service, BuildContext context) async {
+      ShoppingCart shoppingCart, Service service, BuildContext context) async {
     state = true;
-
-    // get shopping cart
-    final shoppingCart = await _ref
-        .watch(shoppingCartControllerProvider.notifier)
-        .getShoppingCartById(shoppingCartId)
-        .first;
 
     // get shopping cart item
     ShoppingCartItem? shoppingCartItem = await _ref
         .read(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(shoppingCartId, service.serviceId)
+        .getShoppingCartItemByServiceId(
+            shoppingCart.shoppingCartId, service.serviceId)
         .first;
 
-    if (shoppingCart != null && shoppingCartItem != null) {
-      // delete shopping cart item
-      final res = await _shoppingCartItemRepository
-          .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
+    if (shoppingCartItem != null) {
+      if (shoppingCart.services.contains(service.serviceId) == true) {
+        // delete shopping cart item
+        final res = await _shoppingCartItemRepository
+            .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
 
-      // update shopping cart
-      shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
-      shoppingCart.services.remove(shoppingCartItem.serviceId);
-      await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+        // update shopping cart
+        shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+        shoppingCart.services.remove(shoppingCartItem.serviceId);
+        await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
-      // update service
-      service = service.copyWith(
-          quantity: service.quantity + shoppingCartItem.quantity);
-      await _serviceRepository.updateService(service);
+        // update service
+        service = service.copyWith(
+            quantity: service.quantity + shoppingCartItem.quantity);
+        await _serviceRepository.updateService(service);
 
-      state = false;
-      res.fold((l) => showSnackBar(context, l.message, true), (r) {
-        if (context.mounted) {
-          showSnackBar(
-              context, 'Item removed from shopping cart successfully!', false);
-        }
-      });
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message, true), (r) {
+          if (context.mounted) {
+            showSnackBar(
+                context, 'Shopping cart item removed successfully!', false);
+          }
+        });
+      } else {
+        state = false;
+      }
     } else {
       state = false;
-      if (context.mounted) {
-        showSnackBar(context, 'Shopping cart item does not exist', true);
-      }
     }
-
-    // // get shopping cart item
-    // final shoppingCartItem = await _ref
-    //     .read(shoppingCartItemControllerProvider.notifier)
-    //     .getShoppingCartItemById(shoppingCartItemId)
-    //     .first;
-
-    // // get shopping cart
-    // final shoppingCart = await _ref
-    //     .watch(shoppingCartControllerProvider.notifier)
-    //     .getShoppingCartById(shoppingCartId)
-    //     .first;
-
-    // if (shoppingCart != null && shoppingCartItem != null) {
-    //   // delete shopping cart item
-    //   final res = await _shoppingCartItemRepository
-    //       .deleteShoppingCartItem(shoppingCartItemId);
-
-    //   // update policy
-    //   shoppingCart.items.remove(shoppingCartItemId);
-    //   shoppingCart.services.remove(shoppingCartItem.serviceId);
-    //   await _shoppingCartRepository.updateShoppingCart(shoppingCart);
-
-    //   state = false;
-    //   res.fold((l) => showSnackBar(context, l.message, true), (r) {
-    //     if (context.mounted) {
-    //       showSnackBar(
-    //           context, 'Shopping cart item deleted successfully!', false);
-    //     }
-    //   });
-    // } else {
-    //   state = false;
-    //   if (context.mounted) {
-    //     showSnackBar(context,
-    //         'Shopping cart or shopping cart item does not exist', true);
-    //   }
-    // }
   }
 
   void deleteShoppingCartItem(String shoppingCartId, String shoppingCartItemId,
