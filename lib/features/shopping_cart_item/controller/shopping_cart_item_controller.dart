@@ -135,7 +135,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
       // ensure service is not already an item
       if (shoppingCart.services.contains(serviceId) == false) {
         if (quantity > 0) {
-          if (service.quantity > 0 && service.quantity < quantity) {
+          if (service.quantity > 0 && service.quantity > quantity) {
             if (forumId != null) {
               forum = await _ref
                   .read(forumControllerProvider.notifier)
