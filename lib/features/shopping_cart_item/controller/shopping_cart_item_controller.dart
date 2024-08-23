@@ -264,8 +264,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
               .updateShoppingCartItem(shoppingCartItem);
 
           // update service
-          service =
-              service.copyWith(quantity: shoppingCartItem.quantity + quantity);
+          service = service.copyWith(quantity: service.quantity - quantity);
           await _serviceRepository.updateService(service);
 
           state = false;

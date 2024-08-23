@@ -616,8 +616,13 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                         service,
                                                                       );
                                                                     }),
-                                                                Text(quantity
-                                                                    .toString()),
+                                                                shoppingCartItem !=
+                                                                        null
+                                                                    ? Text((shoppingCartItem.quantity +
+                                                                            quantity)
+                                                                        .toString())
+                                                                    : Text(quantity
+                                                                        .toString()),
                                                                 IconButton(
                                                                     icon: const Icon(
                                                                         Icons
@@ -642,7 +647,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                         ),
                                                       )
                                                     : const SizedBox(),
-                                                shoppingCart!.services.contains(
+                                                shoppingCart.services.contains(
                                                             service
                                                                 .serviceId) ==
                                                         false
