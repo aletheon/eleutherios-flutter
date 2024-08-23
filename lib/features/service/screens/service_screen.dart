@@ -12,9 +12,11 @@ import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_
 import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
+import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:tuple/tuple.dart';
 
 class ServiceScreen extends ConsumerStatefulWidget {
   final String serviceId;
@@ -29,7 +31,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
 
   void updateQuantity(
     BuildContext context,
-    ShoppingCart shoppingCart,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
     UserModel user,
     Service service,
   ) {
@@ -37,6 +40,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
         .read(shoppingCartItemControllerProvider.notifier)
         .updateShoppingCartItemQuantity(
           shoppingCart,
+          shoppingCartItem,
           service,
           quantity,
           context,
@@ -45,7 +49,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
 
   void addToCart(
     BuildContext context,
-    ShoppingCart shoppingCart,
+    ShoppingCart? shoppingCart,
     UserModel user,
     Service service,
   ) {
@@ -69,7 +73,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
 
   void removeFromCart(
     BuildContext context,
-    ShoppingCart shoppingCart,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
     UserModel user,
     Service service,
   ) {
@@ -79,6 +84,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
           .read(shoppingCartItemControllerProvider.notifier)
           .removeShoppingCartItem(
             shoppingCart,
+            shoppingCartItem,
             service,
             context,
           );
@@ -147,492 +153,578 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
       body: ref.watch(getShoppingCartByUidProvider(user.uid)).when(
             data: (shoppingCart) {
               return ref.watch(getServiceByIdProvider(widget.serviceId)).when(
-                    data: (service) => NestedScrollView(
-                      headerSliverBuilder: ((context, innerBoxIsScrolled) {
-                        return [
-                          SliverAppBar(
-                            expandedHeight: 150,
-                            flexibleSpace: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: service!.banner ==
-                                          Constants.serviceBannerDefault
-                                      ? Image.asset(
-                                          service.banner,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.network(
-                                          service.banner,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            return loadingProgress
-                                                        ?.cumulativeBytesLoaded ==
-                                                    loadingProgress
-                                                        ?.expectedTotalBytes
-                                                ? child
-                                                : const CircularProgressIndicator();
-                                          },
-                                        ),
-                                )
-                              ],
-                            ),
-                            floating: true,
-                            snap: true,
-                          ),
-                          SliverPadding(
-                            padding: const EdgeInsets.all(16),
-                            sliver: SliverList(
-                              delegate: SliverChildListDelegate.fixed(
-                                [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                    data: (service) {
+                      return ref
+                          .watch(getShoppingCartItemByServiceIdProvider(Tuple2(
+                              shoppingCart!.shoppingCartId, widget.serviceId)))
+                          .when(
+                            // HERE ROB
+                            // HERE ROB
+                            // HERE ROB
+                            // HERE ROB
+                            // HERE ROB
+                            data: (shoppingCartItem) {
+                              return NestedScrollView(
+                                headerSliverBuilder:
+                                    ((context, innerBoxIsScrolled) {
+                                  return [
+                                    SliverAppBar(
+                                      expandedHeight: 150,
+                                      flexibleSpace: Stack(
                                         children: [
-                                          service.image ==
-                                                  Constants.avatarDefault
-                                              ? CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.asset(service.image)
-                                                          .image,
-                                                  radius: 35,
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundImage: NetworkImage(
-                                                      service.image),
-                                                  radius: 35,
-                                                ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  service.title,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
+                                          Positioned.fill(
+                                            child: service!.banner ==
+                                                    Constants
+                                                        .serviceBannerDefault
+                                                ? Image.asset(
+                                                    service.banner,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.network(
+                                                    service.banner,
+                                                    fit: BoxFit.cover,
+                                                    loadingBuilder: (context,
+                                                        child,
+                                                        loadingProgress) {
+                                                      return loadingProgress
+                                                                  ?.cumulativeBytesLoaded ==
+                                                              loadingProgress
+                                                                  ?.expectedTotalBytes
+                                                          ? child
+                                                          : const CircularProgressIndicator();
+                                                    },
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              service.price > 0
-                                                  ? Container(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 10),
-                                                      child: Text(
-                                                        NumberFormat.currency(
-                                                                symbol:
-                                                                    '${service.currency} ',
-                                                                locale: 'en_US',
-                                                                decimalDigits:
-                                                                    2)
-                                                            .format(
-                                                                service.price),
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
-
-                                              //ServiceType.nonphysical.value
-
-                                              service.public
-                                                  ? const Icon(
-                                                      Icons.lock_open_outlined)
-                                                  : const Icon(
-                                                      Icons.lock_outlined,
-                                                      color: Pallete.greyColor),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          service.tags.isNotEmpty
-                                              ? Wrap(
-                                                  alignment: WrapAlignment.end,
-                                                  direction: Axis.horizontal,
-                                                  children:
-                                                      service.tags.map((e) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 5),
-                                                      child: FilterChip(
-                                                        visualDensity:
-                                                            const VisualDensity(
-                                                                vertical: -4,
-                                                                horizontal: -4),
-                                                        onSelected: (value) {},
-                                                        backgroundColor: service
-                                                                    .price ==
-                                                                -1
-                                                            ? Pallete
-                                                                .freeServiceTagColor
-                                                            : Pallete
-                                                                .paidServiceTagColor,
-                                                        label: Text(
-                                                          '#$e',
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 12,
+                                          )
+                                        ],
+                                      ),
+                                      floating: true,
+                                      snap: true,
+                                    ),
+                                    SliverPadding(
+                                      padding: const EdgeInsets.all(16),
+                                      sliver: SliverList(
+                                        delegate: SliverChildListDelegate.fixed(
+                                          [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    service.image ==
+                                                            Constants
+                                                                .avatarDefault
+                                                        ? CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.asset(service
+                                                                        .image)
+                                                                    .image,
+                                                            radius: 35,
+                                                          )
+                                                        : CircleAvatar(
+                                                            backgroundImage:
+                                                                NetworkImage(
+                                                                    service
+                                                                        .image),
+                                                            radius: 35,
+                                                          ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            service.title,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                )
-                                              : const SizedBox(),
-                                          service.description.isNotEmpty
-                                              ? Wrap(
-                                                  children: [
-                                                    Text(service.description),
-                                                    const SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                  ],
-                                                )
-                                              : const SizedBox(),
-                                        ],
-                                      ),
-                                      Wrap(
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.center,
-                                        children: [
-                                          // like button
-                                          service.uid == user.uid
-                                              ? Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 5),
-                                                  child: OutlinedButton(
-                                                    onPressed: () =>
-                                                        navigateToLikes(
-                                                            context),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        25)),
-                                                    child: Text(
-                                                        'Likes(${service.likes.length})'),
-                                                  ),
-                                                )
-                                              : Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 5),
-                                                  child: OutlinedButton(
-                                                    onPressed: () =>
-                                                        likeService(context,
-                                                            ref, service),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        25)),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        const Text(
-                                                          'Like',
-                                                        ),
                                                         const SizedBox(
-                                                          width: 5,
+                                                          width: 10,
                                                         ),
-                                                        ref
-                                                                .watch(
-                                                                    userProvider)!
-                                                                .favorites
-                                                                .where((f) =>
-                                                                    f ==
-                                                                    widget
-                                                                        .serviceId)
-                                                                .toList()
-                                                                .isEmpty
-                                                            ? const Icon(
-                                                                Icons
-                                                                    .favorite_outline,
+                                                        service.price > 0
+                                                            ? Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        right:
+                                                                            10),
+                                                                child: Text(
+                                                                  NumberFormat.currency(
+                                                                          symbol:
+                                                                              '${service.currency} ',
+                                                                          locale:
+                                                                              'en_US',
+                                                                          decimalDigits:
+                                                                              2)
+                                                                      .format(service
+                                                                          .price),
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        16,
+                                                                  ),
+                                                                ),
                                                               )
+                                                            : const SizedBox(),
+                                                        service.public
+                                                            ? const Icon(Icons
+                                                                .lock_open_outlined)
                                                             : const Icon(
-                                                                Icons.favorite,
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
+                                                                Icons
+                                                                    .lock_outlined,
+                                                                color: Pallete
+                                                                    .greyColor),
                                                       ],
                                                     ),
-                                                  ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    service.tags.isNotEmpty
+                                                        ? Wrap(
+                                                            alignment:
+                                                                WrapAlignment
+                                                                    .end,
+                                                            direction:
+                                                                Axis.horizontal,
+                                                            children: service
+                                                                .tags
+                                                                .map((e) {
+                                                              return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        right:
+                                                                            5),
+                                                                child:
+                                                                    FilterChip(
+                                                                  visualDensity:
+                                                                      const VisualDensity(
+                                                                          vertical:
+                                                                              -4,
+                                                                          horizontal:
+                                                                              -4),
+                                                                  onSelected:
+                                                                      (value) {},
+                                                                  backgroundColor: service
+                                                                              .price ==
+                                                                          -1
+                                                                      ? Pallete
+                                                                          .freeServiceTagColor
+                                                                      : Pallete
+                                                                          .paidServiceTagColor,
+                                                                  label: Text(
+                                                                    '#$e',
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          )
+                                                        : const SizedBox(),
+                                                    service.description
+                                                            .isNotEmpty
+                                                        ? Wrap(
+                                                            children: [
+                                                              Text(service
+                                                                  .description),
+                                                              const SizedBox(
+                                                                height: 30,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : const SizedBox(),
+                                                  ],
                                                 ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          // tools button
-                                          user.uid == service.uid
-                                              ? Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 5),
-                                                  child: OutlinedButton(
-                                                    onPressed: () =>
-                                                        navigateToServiceTools(
-                                                            context),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            padding:
+                                                Wrap(
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                  children: [
+                                                    // like button
+                                                    service.uid == user.uid
+                                                        ? Container(
+                                                            margin:
                                                                 const EdgeInsets
+                                                                    .only(
+                                                                    right: 5),
+                                                            child:
+                                                                OutlinedButton(
+                                                              onPressed: () =>
+                                                                  navigateToLikes(
+                                                                      context),
+                                                              style: ElevatedButton
+                                                                  .styleFrom(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              25)),
+                                                              child: Text(
+                                                                  'Likes(${service.likes.length})'),
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    right: 5),
+                                                            child:
+                                                                OutlinedButton(
+                                                              onPressed: () =>
+                                                                  likeService(
+                                                                      context,
+                                                                      ref,
+                                                                      service),
+                                                              style: ElevatedButton
+                                                                  .styleFrom(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              25)),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceEvenly,
+                                                                children: [
+                                                                  const Text(
+                                                                    'Like',
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 5,
+                                                                  ),
+                                                                  ref
+                                                                          .watch(
+                                                                              userProvider)!
+                                                                          .favorites
+                                                                          .where((f) =>
+                                                                              f ==
+                                                                              widget.serviceId)
+                                                                          .toList()
+                                                                          .isEmpty
+                                                                      ? const Icon(
+                                                                          Icons
+                                                                              .favorite_outline,
+                                                                        )
+                                                                      : const Icon(
+                                                                          Icons
+                                                                              .favorite,
+                                                                          color:
+                                                                              Colors.red,
+                                                                        ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    // tools button
+                                                    user.uid == service.uid
+                                                        ? Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    right: 5),
+                                                            child:
+                                                                OutlinedButton(
+                                                              onPressed: () =>
+                                                                  navigateToServiceTools(
+                                                                      context),
+                                                              style: ElevatedButton
+                                                                  .styleFrom(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              25)),
+                                                              child: const Text(
+                                                                  'Service Tools'),
+                                                            ),
+                                                          )
+                                                        : const SizedBox(),
+                                                    // edit service button
+                                                    user.uid == service.uid
+                                                        ? Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    right: 5),
+                                                            child:
+                                                                OutlinedButton(
+                                                              onPressed: () =>
+                                                                  editService(
+                                                                      context),
+                                                              style: ElevatedButton
+                                                                  .styleFrom(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              25)),
+                                                              child: const Text(
+                                                                  'Edit'),
+                                                            ),
+                                                          )
+                                                        : const SizedBox(),
+                                                    // add to forum button
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              right: 10),
+                                                      child: OutlinedButton(
+                                                        onPressed: () =>
+                                                            addForum(
+                                                          context,
+                                                          ref,
+                                                        ),
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                padding: const EdgeInsets
                                                                     .symmetric(
                                                                     horizontal:
                                                                         25)),
-                                                    child: const Text(
-                                                        'Service Tools'),
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          // edit service button
-                                          user.uid == service.uid
-                                              ? Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 5),
-                                                  child: OutlinedButton(
-                                                    onPressed: () =>
-                                                        editService(context),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        25)),
-                                                    child: const Text('Edit'),
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          // add to forum button
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 10),
-                                            child: OutlinedButton(
-                                              onPressed: () => addForum(
-                                                context,
-                                                ref,
-                                              ),
-                                              style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 25)),
-                                              child: const Text('Add Forum'),
+                                                        child: const Text(
+                                                            'Add Forum'),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(
+                                              width: 100.00,
+                                              child: Divider(
+                                                  color: Colors.grey,
+                                                  thickness: 1.0),
+                                            ),
+                                            // add to cart button(s)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                service.type ==
+                                                            ServiceType
+                                                                .nonphysical
+                                                                .value &&
+                                                        service.quantity > 0
+                                                    ? Container(
+                                                        margin: const EdgeInsets
+                                                            .only(right: 10),
+                                                        child: Text(
+                                                            '(${service.quantity} left)'),
+                                                      )
+                                                    : service.type ==
+                                                            ServiceType
+                                                                .physical.value
+                                                        ? Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    right: 10),
+                                                            child: Text(
+                                                                '(${service.quantity} left)'),
+                                                          )
+                                                        : const SizedBox(),
+                                                service.type ==
+                                                            ServiceType.physical
+                                                                .value ||
+                                                        (service.type ==
+                                                                ServiceType
+                                                                    .nonphysical
+                                                                    .value &&
+                                                            service.quantity >
+                                                                0)
+                                                    ? Card(
+                                                        color: Colors.blue,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: SizedBox(
+                                                          height: 35,
+                                                          width: 120,
+                                                          child:
+                                                              AnimatedSwitcher(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                IconButton(
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .remove),
+                                                                    onPressed:
+                                                                        () {
+                                                                      setState(
+                                                                          () {
+                                                                        quantity--;
+                                                                      });
+                                                                      updateQuantity(
+                                                                        context,
+                                                                        shoppingCart,
+                                                                        shoppingCartItem,
+                                                                        user,
+                                                                        service,
+                                                                      );
+                                                                    }),
+                                                                Text(quantity
+                                                                    .toString()),
+                                                                IconButton(
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .add),
+                                                                    onPressed:
+                                                                        () {
+                                                                      setState(
+                                                                          () {
+                                                                        quantity++;
+                                                                      });
+                                                                      updateQuantity(
+                                                                        context,
+                                                                        shoppingCart,
+                                                                        shoppingCartItem,
+                                                                        user,
+                                                                        service,
+                                                                      );
+                                                                    }),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
+                                                shoppingCart!.services.contains(
+                                                            service
+                                                                .serviceId) ==
+                                                        false
+                                                    ? Container(
+                                                        margin: const EdgeInsets
+                                                            .only(
+                                                            left: 5, right: 5),
+                                                        child: OutlinedButton(
+                                                          onPressed: () =>
+                                                              addToCart(
+                                                            context,
+                                                            shoppingCart,
+                                                            user,
+                                                            service,
+                                                          ),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      Pallete
+                                                                          .darkGreenColor,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                          child: const Text(
+                                                              'Add to Cart'),
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        margin: const EdgeInsets
+                                                            .only(
+                                                            left: 5, right: 5),
+                                                        child: OutlinedButton(
+                                                          onPressed: () =>
+                                                              removeFromCart(
+                                                            context,
+                                                            shoppingCart,
+                                                            shoppingCartItem,
+                                                            user,
+                                                            service,
+                                                          ),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      Pallete
+                                                                          .redPinkColor,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          25)),
+                                                          child: const Text(
+                                                              'Remove from Cart'),
+                                                        ),
+                                                      ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 100.00,
-                                    child: Divider(
-                                        color: Colors.grey, thickness: 1.0),
-                                  ),
-                                  // add to cart button(s)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      service.type ==
-                                                  ServiceType
-                                                      .nonphysical.value &&
-                                              service.quantity > 0
-                                          ? Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 10),
-                                              child: Text(
-                                                  '(${service.quantity} left)'),
-                                            )
-                                          : service.type ==
-                                                  ServiceType.physical.value
-                                              ? Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 10),
-                                                  child: Text(
-                                                      '(${service.quantity} left)'),
-                                                )
-                                              : const SizedBox(),
-
-                                      // HERE ROB
-                                      // HERE ROB
-                                      // HERE ROB
-                                      // HERE ROB
-
-                                      service.type ==
-                                                  ServiceType.physical.value ||
-                                              (service.type ==
-                                                      ServiceType
-                                                          .nonphysical.value &&
-                                                  service.quantity > 0)
-                                          ? Card(
-                                              color: Colors.blue,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: SizedBox(
-                                                height: 35,
-                                                width: 120,
-                                                child: AnimatedSwitcher(
-                                                  duration: const Duration(
-                                                      milliseconds: 500),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      IconButton(
-                                                          icon: const Icon(
-                                                              Icons.remove),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              quantity--;
-                                                            });
-                                                            updateQuantity(
-                                                              context,
-                                                              shoppingCart!,
-                                                              user,
-                                                              service,
-                                                            );
-                                                          }),
-                                                      Text(quantity.toString()),
-                                                      IconButton(
-                                                          icon: const Icon(
-                                                              Icons.add),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              quantity++;
-                                                            });
-                                                            updateQuantity(
-                                                              context,
-                                                              shoppingCart!,
-                                                              user,
-                                                              service,
-                                                            );
-                                                          }),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                      shoppingCart!.services.contains(
-                                                  service.serviceId) ==
-                                              false
-                                          ? Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              child: OutlinedButton(
-                                                onPressed: () => addToCart(
-                                                  context,
-                                                  shoppingCart,
-                                                  user,
-                                                  service,
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Pallete.darkGreenColor,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 25)),
-                                                child:
-                                                    const Text('Add to Cart'),
-                                              ),
-                                            )
-                                          : Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              child: OutlinedButton(
-                                                onPressed: () => removeFromCart(
-                                                  context,
-                                                  shoppingCart,
-                                                  user,
-                                                  service,
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Pallete.redPinkColor,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 25)),
-                                                child: const Text(
-                                                    'Remove from Cart'),
-                                              ),
-                                            ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ];
-                      }),
-                      body: const SizedBox(),
-                    ),
+                                    ),
+                                  ];
+                                }),
+                                body: const SizedBox(),
+                              );
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
+                    },
                     error: (error, stackTrace) =>
                         ErrorText(error: error.toString()),
                     loading: () => const Loader(),

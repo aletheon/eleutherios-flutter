@@ -114,7 +114,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         super(false);
 
   void createShoppingCartItem(
-    ShoppingCart shoppingCart,
+    ShoppingCart? shoppingCart,
     String? forumId,
     String? memberId,
     String serviceId,
@@ -131,11 +131,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         .first;
 
     // ensure shoppingCart and service exist
-    if (service != null) {
+    if (shoppingCart != null && service != null) {
       // ensure service is not already an item
       if (shoppingCart.services.contains(serviceId) == false) {
         if (quantity > 0) {
-          if (service.quantity > 0 && service.quantity > quantity) {
+          if (service.quantity > 0 && service.quantity >= quantity) {
             if (forumId != null) {
               forum = await _ref
                   .read(forumControllerProvider.notifier)
@@ -225,20 +225,15 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void updateShoppingCartItemQuantity(
-    ShoppingCart shoppingCart,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
     Service service,
     int quantity,
     BuildContext context,
   ) async {
     state = true;
 
-    ShoppingCartItem? shoppingCartItem = await _ref
-        .read(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(
-            shoppingCart.shoppingCartId, service.serviceId)
-        .first;
-
-    if (shoppingCartItem != null) {
+    if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId)) {
         if (quantity == 0) {
           // delete shopping cart item
@@ -268,6 +263,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           final res = await _shoppingCartItemRepository
               .updateShoppingCartItem(shoppingCartItem);
 
+          // update service
+          service =
+              service.copyWith(quantity: shoppingCartItem.quantity + quantity);
+          await _serviceRepository.updateService(service);
+
           state = false;
           res.fold((l) => showSnackBar(context, l.message, true), (r) {
             if (context.mounted) {
@@ -292,17 +292,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void removeShoppingCartItem(
-      ShoppingCart shoppingCart, Service service, BuildContext context) async {
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    Service service,
+    BuildContext context,
+  ) async {
     state = true;
-
-    // get shopping cart item
-    ShoppingCartItem? shoppingCartItem = await _ref
-        .read(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(
-            shoppingCart.shoppingCartId, service.serviceId)
-        .first;
-
-    if (shoppingCartItem != null) {
+    if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId) == true) {
         // delete shopping cart item
         final res = await _shoppingCartItemRepository
@@ -333,8 +329,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     }
   }
 
-  void deleteShoppingCartItem(String shoppingCartId, String shoppingCartItemId,
-      BuildContext context) async {
+  void deleteShoppingCartItem(
+    String shoppingCartId,
+    String shoppingCartItemId,
+    BuildContext context,
+  ) async {
     state = true;
 
     // get shopping cart item
