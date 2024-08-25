@@ -186,7 +186,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             if (context.mounted) {
               showSnackBar(
                   context,
-                  'There are no more of this service available to purchase',
+                  'There is not enough of this service to purchase there are only ${service.quantity} available',
                   true);
             }
           }
@@ -224,47 +224,24 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     });
   }
 
-  void updateShoppingCartItemQuantity(
+  void increaseShoppingCartItemQuantity(
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
     Service service,
-    int quantity,
     BuildContext context,
   ) async {
     state = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId)) {
-        if (quantity == 0) {
-          // delete shopping cart item
-          final res = await _shoppingCartItemRepository
-              .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
-
-          // update shopping cart
-          shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
-          shoppingCart.services.remove(shoppingCartItem.serviceId);
-          await _shoppingCartRepository.updateShoppingCart(shoppingCart);
-
-          // update service
-          service = service.copyWith(
-              quantity: service.quantity + shoppingCartItem.quantity);
-          await _serviceRepository.updateService(service);
-
-          state = false;
-          res.fold((l) => showSnackBar(context, l.message, true), (r) {
-            if (context.mounted) {
-              showSnackBar(
-                  context, 'Shopping cart item removed successfully!', false);
-            }
-          });
-        } else if (service.quantity >= quantity) {
+        if ((shoppingCartItem.quantity + 1) > service.quantity) {
           shoppingCartItem = shoppingCartItem.copyWith(
-              quantity: shoppingCartItem.quantity + quantity);
+              quantity: shoppingCartItem.quantity + 1);
           final res = await _shoppingCartItemRepository
               .updateShoppingCartItem(shoppingCartItem);
 
           // update service
-          service = service.copyWith(quantity: service.quantity - quantity);
+          service = service.copyWith(quantity: service.quantity - 1);
           await _serviceRepository.updateService(service);
 
           state = false;
@@ -278,9 +255,66 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           if (context.mounted) {
             showSnackBar(
                 context,
-                'Not enough items to purchase there are only ${service.quantity} left',
+                'There is not enough of this service to purchase there are only ${service.quantity} available',
                 true);
           }
+        }
+      } else {
+        state = false;
+      }
+    } else {
+      state = false;
+    }
+  }
+
+  void decreaseShoppingCartItemQuantity(
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    Service service,
+    BuildContext context,
+  ) async {
+    state = true;
+
+    if (shoppingCart != null && shoppingCartItem != null) {
+      if (shoppingCart.services.contains(service.serviceId)) {
+        if (shoppingCartItem.quantity == 1) {
+          // delete shopping cart item
+          final res = await _shoppingCartItemRepository
+              .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
+
+          // update shopping cart
+          shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+          shoppingCart.services.remove(shoppingCartItem.serviceId);
+          await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+          // update service
+          service = service.copyWith(quantity: service.quantity + 1);
+          await _serviceRepository.updateService(service);
+
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            if (context.mounted) {
+              showSnackBar(
+                  context, 'Shopping cart item removed successfully!', false);
+            }
+          });
+        } else {
+          shoppingCartItem = shoppingCartItem.copyWith(
+              quantity: shoppingCartItem.quantity - 1);
+          final res = await _shoppingCartItemRepository
+              .updateShoppingCartItem(shoppingCartItem);
+
+          // update service
+          service = service.copyWith(quantity: service.quantity + 1);
+          await _serviceRepository.updateService(service);
+
+          state = false;
+          res.fold((l) => showSnackBar(context, l.message, true), (r) {
+            if (context.mounted) {
+              showSnackBar(
+                  context, 'Shopping cart item updated successfully!', false);
+            }
+          });
         }
       } else {
         state = false;
@@ -348,22 +382,40 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         .first;
 
     if (shoppingCart != null && shoppingCartItem != null) {
-      // delete shopping cart item
-      final res = await _shoppingCartItemRepository
-          .deleteShoppingCartItem(shoppingCartItemId);
+      // get service
+      Service? service = await _ref
+          .watch(serviceControllerProvider.notifier)
+          .getServiceById(shoppingCartItem.serviceId)
+          .first;
 
-      // update policy
-      shoppingCart.items.remove(shoppingCartItemId);
-      shoppingCart.services.remove(shoppingCartItem.serviceId);
-      await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+      if (service != null) {
+        // delete shopping cart item
+        final res = await _shoppingCartItemRepository
+            .deleteShoppingCartItem(shoppingCartItemId);
 
-      state = false;
-      res.fold((l) => showSnackBar(context, l.message, true), (r) {
+        // update shopping cart
+        shoppingCart.items.remove(shoppingCartItemId);
+        shoppingCart.services.remove(shoppingCartItem.serviceId);
+        await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+        // update service
+        service = service.copyWith(
+            quantity: service.quantity + shoppingCartItem.quantity);
+        await _serviceRepository.updateService(service);
+
+        state = false;
+        res.fold((l) => showSnackBar(context, l.message, true), (r) {
+          if (context.mounted) {
+            showSnackBar(
+                context, 'Shopping cart item deleted successfully!', false);
+          }
+        });
+      } else {
+        state = false;
         if (context.mounted) {
-          showSnackBar(
-              context, 'Shopping cart item deleted successfully!', false);
+          showSnackBar(context, 'Service does not exist', true);
         }
-      });
+      }
     } else {
       state = false;
       if (context.mounted) {

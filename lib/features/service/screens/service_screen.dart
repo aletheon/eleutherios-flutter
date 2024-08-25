@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
-import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -29,7 +28,7 @@ class ServiceScreen extends ConsumerStatefulWidget {
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   int quantity = 0;
 
-  void updateQuantity(
+  void increaseQuantity(
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
@@ -38,11 +37,27 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   ) {
     ref
         .read(shoppingCartItemControllerProvider.notifier)
-        .updateShoppingCartItemQuantity(
+        .increaseShoppingCartItemQuantity(
           shoppingCart,
           shoppingCartItem,
           service,
-          quantity,
+          context,
+        );
+  }
+
+  void decreaseQuantity(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    UserModel user,
+    Service service,
+  ) {
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .decreaseShoppingCartItemQuantity(
+          shoppingCart,
+          shoppingCartItem,
+          service,
           context,
         );
   }
@@ -158,11 +173,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                           .watch(getShoppingCartItemByServiceIdProvider(Tuple2(
                               shoppingCart!.shoppingCartId, widget.serviceId)))
                           .when(
-                            // HERE ROB
-                            // HERE ROB
-                            // HERE ROB
-                            // HERE ROB
-                            // HERE ROB
                             data: (shoppingCartItem) {
                               return NestedScrollView(
                                 headerSliverBuilder:
@@ -541,112 +551,77 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
-                                                service.type ==
-                                                            ServiceType
-                                                                .nonphysical
-                                                                .value &&
-                                                        service.quantity > 0
-                                                    ? Container(
-                                                        margin: const EdgeInsets
-                                                            .only(right: 10),
-                                                        child: Text(
-                                                            '(${service.quantity} left)'),
-                                                      )
-                                                    : service.type ==
-                                                            ServiceType
-                                                                .physical.value
-                                                        ? Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right: 10),
-                                                            child: Text(
-                                                                '(${service.quantity} left)'),
-                                                          )
-                                                        : const SizedBox(),
-                                                service.type ==
-                                                            ServiceType.physical
-                                                                .value ||
-                                                        (service.type ==
-                                                                ServiceType
-                                                                    .nonphysical
-                                                                    .value &&
-                                                            service.quantity >
-                                                                0)
-                                                    ? Card(
-                                                        color: Colors.blue,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: SizedBox(
-                                                          height: 35,
-                                                          width: 120,
-                                                          child:
-                                                              AnimatedSwitcher(
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        500),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                IconButton(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .remove),
-                                                                    onPressed:
-                                                                        () {
-                                                                      setState(
-                                                                          () {
-                                                                        quantity--;
-                                                                      });
-                                                                      updateQuantity(
-                                                                        context,
-                                                                        shoppingCart,
-                                                                        shoppingCartItem,
-                                                                        user,
-                                                                        service,
-                                                                      );
-                                                                    }),
-                                                                shoppingCartItem !=
-                                                                        null
-                                                                    ? Text((shoppingCartItem.quantity +
-                                                                            quantity)
-                                                                        .toString())
-                                                                    : Text(quantity
-                                                                        .toString()),
-                                                                IconButton(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .add),
-                                                                    onPressed:
-                                                                        () {
-                                                                      setState(
-                                                                          () {
-                                                                        quantity++;
-                                                                      });
-                                                                      updateQuantity(
-                                                                        context,
-                                                                        shoppingCart,
-                                                                        shoppingCartItem,
-                                                                        user,
-                                                                        service,
-                                                                      );
-                                                                    }),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 10),
+                                                  child: Text(
+                                                      '${service.quantity} available'),
+                                                ),
+                                                Card(
+                                                  color: Colors.blue,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    width: 120,
+                                                    child: AnimatedSwitcher(
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          IconButton(
+                                                              icon: const Icon(
+                                                                  Icons.remove),
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  if (quantity >
+                                                                      0) {
+                                                                    quantity--;
+                                                                  }
+                                                                });
+                                                                decreaseQuantity(
+                                                                  context,
+                                                                  shoppingCart,
+                                                                  shoppingCartItem,
+                                                                  user,
+                                                                  service,
+                                                                );
+                                                              }),
+                                                          shoppingCartItem !=
+                                                                  null
+                                                              ? Text((shoppingCartItem
+                                                                      .quantity)
+                                                                  .toString())
+                                                              : Text(quantity
+                                                                  .toString()),
+                                                          IconButton(
+                                                              icon: const Icon(
+                                                                  Icons.add),
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  quantity++;
+                                                                });
+                                                                increaseQuantity(
+                                                                  context,
+                                                                  shoppingCart,
+                                                                  shoppingCartItem,
+                                                                  user,
+                                                                  service,
+                                                                );
+                                                              }),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                                 shoppingCart.services.contains(
                                                             service
                                                                 .serviceId) ==
