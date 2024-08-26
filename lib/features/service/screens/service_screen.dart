@@ -28,6 +28,55 @@ class ServiceScreen extends ConsumerStatefulWidget {
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   int quantity = 0;
 
+  void addToCart(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    UserModel user,
+    Service service,
+  ) {
+    if (user.shoppingCartUserIds.isEmpty) {
+      // add service to the currently logged in user
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .createShoppingCartItem(
+            user,
+            shoppingCart,
+            null,
+            null,
+            service.serviceId,
+            quantity,
+            context,
+          );
+    } else {
+      // let the user choose which cart they want to add the service to including their own cart
+      Routemaster.of(context).push('add-to-cart');
+    }
+  }
+
+  void removeFromCart(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    UserModel user,
+    Service service,
+  ) {
+    if (user.shoppingCartUserIds.isEmpty) {
+      // remove service from the currently logged in user
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .deleteShoppingCartItem(
+            user,
+            shoppingCart,
+            shoppingCartItem,
+            service,
+            context,
+          );
+    } else {
+      // let the user choose which cart they want to remove the service from including their own cart
+      Routemaster.of(context).push('remove-from-cart');
+    }
+  }
+
   void increaseQuantity(
     BuildContext context,
     ShoppingCart? shoppingCart,
@@ -60,53 +109,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
           service,
           context,
         );
-  }
-
-  void addToCart(
-    BuildContext context,
-    ShoppingCart? shoppingCart,
-    UserModel user,
-    Service service,
-  ) {
-    if (user.shoppingCartUserIds.isEmpty) {
-      // add service to the currently logged in user
-      ref
-          .read(shoppingCartItemControllerProvider.notifier)
-          .createShoppingCartItem(
-            shoppingCart,
-            null,
-            null,
-            service.serviceId,
-            quantity,
-            context,
-          );
-    } else {
-      // let the user choose which cart they want to add the service to including their own cart
-      Routemaster.of(context).push('add-to-cart');
-    }
-  }
-
-  void removeFromCart(
-    BuildContext context,
-    ShoppingCart? shoppingCart,
-    ShoppingCartItem? shoppingCartItem,
-    UserModel user,
-    Service service,
-  ) {
-    if (user.shoppingCartUserIds.isEmpty) {
-      // remove service from the currently logged in user
-      ref
-          .read(shoppingCartItemControllerProvider.notifier)
-          .removeShoppingCartItem(
-            shoppingCart,
-            shoppingCartItem,
-            service,
-            context,
-          );
-    } else {
-      // let the user choose which cart they want to remove the service from including their own cart
-      Routemaster.of(context).push('remove-from-cart');
-    }
   }
 
   void editService(

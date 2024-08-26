@@ -193,7 +193,7 @@ class ServiceController extends StateNotifier<bool> {
       creationDate: DateTime.now(),
     );
     final res = await _serviceRepository.createService(service);
-    user!.services.add(serviceId);
+    user.services.add(serviceId);
     await _userProfileRepository.updateUser(user);
     state = false;
     res.fold((l) => showSnackBar(context, l.message, true), (r) {

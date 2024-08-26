@@ -8,11 +8,13 @@ import 'package:reddit_tutorial/features/service/repository/service_repository.d
 import 'package:reddit_tutorial/features/shopping_cart_item/repository/shopping_cart_item_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
+import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/member.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
@@ -86,11 +88,13 @@ final getUserShoppingCartItemsCountProvider =
 
 final shoppingCartItemControllerProvider =
     StateNotifierProvider<ShoppingCartItemController, bool>((ref) {
+  final userProfileRepository = ref.watch(userProfileRepositoryProvider);
   final shoppingCartItemRepository =
       ref.watch(shoppingCartItemRepositoryProvider);
   final shoppingCartRepository = ref.watch(shoppingCartRepositoryProvider);
   final serviceRepository = ref.watch(serviceRepositoryProvider);
   return ShoppingCartItemController(
+      userProfileRepository: userProfileRepository,
       shoppingCartItemRepository: shoppingCartItemRepository,
       shoppingCartRepository: shoppingCartRepository,
       serviceRepository: serviceRepository,
@@ -98,22 +102,26 @@ final shoppingCartItemControllerProvider =
 });
 
 class ShoppingCartItemController extends StateNotifier<bool> {
+  final UserProfileRepository _userProfileRepository;
   final ShoppingCartItemRepository _shoppingCartItemRepository;
   final ShoppingCartRepository _shoppingCartRepository;
   final ServiceRepository _serviceRepository;
   final Ref _ref;
   ShoppingCartItemController(
-      {required ShoppingCartItemRepository shoppingCartItemRepository,
+      {required UserProfileRepository userProfileRepository,
+      required ShoppingCartItemRepository shoppingCartItemRepository,
       required ShoppingCartRepository shoppingCartRepository,
       required ServiceRepository serviceRepository,
       required Ref ref})
-      : _shoppingCartItemRepository = shoppingCartItemRepository,
+      : _userProfileRepository = userProfileRepository,
+        _shoppingCartItemRepository = shoppingCartItemRepository,
         _shoppingCartRepository = shoppingCartRepository,
         _serviceRepository = serviceRepository,
         _ref = ref,
         super(false);
 
   void createShoppingCartItem(
+    UserModel user,
     ShoppingCart? shoppingCart,
     String? forumId,
     String? memberId,
@@ -171,6 +179,10 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             shoppingCart.items.add(shoppingCartItemId);
             shoppingCart.services.add(serviceId);
             await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+            // add shopping cart item to users shoppingCartItems list
+            user.shoppingCartItemIds.add(shoppingCartItemId);
+            await _userProfileRepository.updateUser(user);
 
             // reduce service quantity
             service = service.copyWith(quantity: service.quantity - quantity);
@@ -324,7 +336,8 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     }
   }
 
-  void removeShoppingCartItem(
+  void deleteShoppingCartItem(
+    UserModel user,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
     Service service,
@@ -341,6 +354,10 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
         shoppingCart.services.remove(shoppingCartItem.serviceId);
         await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+        // remove shopping cart item from users shoppingCartItems list
+        user.shoppingCartItemIds.add(shoppingCartItem.shoppingCartItemId);
+        await _userProfileRepository.updateUser(user);
 
         // update service
         service = service.copyWith(
@@ -359,69 +376,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
       }
     } else {
       state = false;
-    }
-  }
-
-  void deleteShoppingCartItem(
-    String shoppingCartId,
-    String shoppingCartItemId,
-    BuildContext context,
-  ) async {
-    state = true;
-
-    // get shopping cart item
-    final shoppingCartItem = await _ref
-        .read(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemById(shoppingCartItemId)
-        .first;
-
-    // get shopping cart
-    final shoppingCart = await _ref
-        .watch(shoppingCartControllerProvider.notifier)
-        .getShoppingCartById(shoppingCartId)
-        .first;
-
-    if (shoppingCart != null && shoppingCartItem != null) {
-      // get service
-      Service? service = await _ref
-          .watch(serviceControllerProvider.notifier)
-          .getServiceById(shoppingCartItem.serviceId)
-          .first;
-
-      if (service != null) {
-        // delete shopping cart item
-        final res = await _shoppingCartItemRepository
-            .deleteShoppingCartItem(shoppingCartItemId);
-
-        // update shopping cart
-        shoppingCart.items.remove(shoppingCartItemId);
-        shoppingCart.services.remove(shoppingCartItem.serviceId);
-        await _shoppingCartRepository.updateShoppingCart(shoppingCart);
-
-        // update service
-        service = service.copyWith(
-            quantity: service.quantity + shoppingCartItem.quantity);
-        await _serviceRepository.updateService(service);
-
-        state = false;
-        res.fold((l) => showSnackBar(context, l.message, true), (r) {
-          if (context.mounted) {
-            showSnackBar(
-                context, 'Shopping cart item deleted successfully!', false);
-          }
-        });
-      } else {
-        state = false;
-        if (context.mounted) {
-          showSnackBar(context, 'Service does not exist', true);
-        }
-      }
-    } else {
-      state = false;
-      if (context.mounted) {
-        showSnackBar(context,
-            'Shopping cart or shopping cart item does not exist', true);
-      }
     }
   }
 

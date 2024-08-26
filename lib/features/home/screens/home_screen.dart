@@ -12,6 +12,7 @@ import 'package:reddit_tutorial/features/home/drawers/profile_drawer.dart';
 import 'package:reddit_tutorial/features/policy/controller/policy_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:badges/badges.dart' as mybadge;
 
 class HomeScreen extends ConsumerStatefulWidget {
   final String? forumId;
@@ -74,12 +75,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             },
             icon: const Icon(Icons.search),
           ),
-          IconButton(
-            onPressed: () {
-              showCart(context);
-            },
-            icon: const Icon(Icons.shopping_cart),
-          ),
+          user.shoppingCartItemIds.isNotEmpty
+              ? mybadge.Badge(
+                  badgeContent: Text('${user.shoppingCartItemIds.length}'),
+                  position: mybadge.BadgePosition.topEnd(top: 0, end: 3),
+                  badgeAnimation: const mybadge.BadgeAnimation.scale(),
+                  child: IconButton(
+                    onPressed: () {
+                      showCart(context);
+                    },
+                    icon: const Icon(Icons.shopping_cart),
+                  ),
+                )
+              : IconButton(
+                  onPressed: () {
+                    showCart(context);
+                  },
+                  icon: const Icon(Icons.shopping_cart),
+                ),
           Builder(builder: (context) {
             return IconButton(
               onPressed: () {
