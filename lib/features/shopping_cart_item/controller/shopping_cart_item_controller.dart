@@ -296,6 +296,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void decreaseShoppingCartItemQuantity(
+    UserModel user,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
     Service service,
@@ -314,6 +315,26 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
           shoppingCart.services.remove(shoppingCartItem.serviceId);
           await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+          // remove shopping cart item from users shoppingCartItems list
+          user.shoppingCartItemIds.remove(shoppingCartItem.shoppingCartItemId);
+          await _userProfileRepository.updateUser(user);
+
+          // check if we need to remove shopping cart item from owners shoppingCartItems list
+          if (shoppingCart.uid != user.uid) {
+            // get owner
+            UserModel? owner = await _ref
+                .read(authControllerProvider.notifier)
+                .getUserData(shoppingCart.uid)
+                .first;
+
+            if (owner != null) {
+              // remove shopping cart item from owners shoppingCartItems list
+              owner.shoppingCartItemIds
+                  .remove(shoppingCartItem.shoppingCartItemId);
+              await _userProfileRepository.updateUser(owner);
+            }
+          }
 
           // update service
           service = service.copyWith(quantity: service.quantity + 1);

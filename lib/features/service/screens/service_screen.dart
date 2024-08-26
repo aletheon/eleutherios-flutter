@@ -104,6 +104,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     ref
         .read(shoppingCartItemControllerProvider.notifier)
         .decreaseShoppingCartItemQuantity(
+          user,
           shoppingCart,
           shoppingCartItem,
           service,
