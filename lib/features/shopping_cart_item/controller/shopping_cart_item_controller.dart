@@ -186,7 +186,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             if (context.mounted) {
               showSnackBar(
                   context,
-                  'There is not enough of this service to purchase there are only ${service.quantity} available',
+                  'There is not enough of this service to purchase only ${service.quantity} available',
                   true);
             }
           }
@@ -234,7 +234,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
 
     if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId)) {
-        if ((shoppingCartItem.quantity + 1) > service.quantity) {
+        if (service.quantity > 0) {
           shoppingCartItem = shoppingCartItem.copyWith(
               quantity: shoppingCartItem.quantity + 1);
           final res = await _shoppingCartItemRepository
@@ -255,7 +255,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           if (context.mounted) {
             showSnackBar(
                 context,
-                'There is not enough of this service to purchase there are only ${service.quantity} available',
+                'There is not enough of this service to purchase only ${service.quantity} available',
                 true);
           }
         }
