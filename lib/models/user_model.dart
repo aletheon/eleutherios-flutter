@@ -27,6 +27,7 @@ class UserModel {
   final List<String> favorites;
   // shopping cart users this user has member permission to add items too
   final List<String> shoppingCartUserIds;
+  final List<String> shoppingCartItemIds;
   final List<String> tags;
   final String profilePic;
   final DateTime lastUpdateDate;
@@ -57,6 +58,7 @@ class UserModel {
     required this.services,
     required this.favorites,
     required this.shoppingCartUserIds,
+    required this.shoppingCartItemIds,
     required this.tags,
     required this.profilePic,
     required this.lastUpdateDate,
@@ -89,6 +91,7 @@ class UserModel {
     List<String>? services,
     List<String>? favorites,
     List<String>? shoppingCartUserIds,
+    List<String>? shoppingCartItemIds,
     List<String>? tags,
     String? profilePic,
     DateTime? lastUpdateDate,
@@ -121,6 +124,7 @@ class UserModel {
       services: services ?? this.services,
       favorites: favorites ?? this.favorites,
       shoppingCartUserIds: shoppingCartUserIds ?? this.shoppingCartUserIds,
+      shoppingCartItemIds: shoppingCartItemIds ?? this.shoppingCartItemIds,
       tags: tags ?? this.tags,
       profilePic: profilePic ?? this.profilePic,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
@@ -155,6 +159,7 @@ class UserModel {
       'services': services,
       'favorites': favorites,
       'shoppingCartUserIds': shoppingCartUserIds,
+      'shoppingCartItemIds': shoppingCartItemIds,
       'tags': tags,
       'profilePic': profilePic,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
@@ -189,6 +194,7 @@ class UserModel {
       services: List<String>.from(map['services']),
       favorites: List<String>.from(map['favorites']),
       shoppingCartUserIds: List<String>.from(map['shoppingCartUserIds']),
+      shoppingCartItemIds: List<String>.from(map['shoppingCartItemIds']),
       tags: List<String>.from(map['tags']),
       profilePic: map['profilePic'] as String,
       lastUpdateDate:
@@ -200,7 +206,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, shoppingCartId: $shoppingCartId, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, shoppingCartUserIds: $shoppingCartUserIds, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'UserModel(uid: $uid, fullName: $fullName, userName: $userName, businessName: $businessName, businessDescription: $businessDescription, personalWebsite: $personalWebsite, businessWebsite: $businessWebsite, useBusinessProfile: $useBusinessProfile, email: $email, isAuthenticated: $isAuthenticated, banner: $banner, cert: $cert, shoppingCartId: $shoppingCartId, stripeCustomerId: $stripeCustomerId, stripeAccountId: $stripeAccountId, stripeOnboardingStatus: $stripeOnboardingStatus, stripeCurrency: $stripeCurrency, fcmToken: $fcmToken, forumActivities: $forumActivities, policyActivities: $policyActivities, policies: $policies, forums: $forums, services: $services, favorites: $favorites, shoppingCartUserIds: $shoppingCartUserIds, shoppingCartItemIds: $shoppingCartItemIds, tags: $tags, profilePic: $profilePic, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -232,6 +238,7 @@ class UserModel {
         listEquals(other.services, services) &&
         listEquals(other.favorites, favorites) &&
         listEquals(other.shoppingCartUserIds, shoppingCartUserIds) &&
+        listEquals(other.shoppingCartItemIds, shoppingCartItemIds) &&
         listEquals(other.tags, tags) &&
         other.profilePic == profilePic &&
         other.lastUpdateDate == lastUpdateDate &&
@@ -265,6 +272,7 @@ class UserModel {
         services.hashCode ^
         favorites.hashCode ^
         shoppingCartUserIds.hashCode ^
+        shoppingCartItemIds.hashCode ^
         tags.hashCode ^
         profilePic.hashCode ^
         lastUpdateDate.hashCode ^

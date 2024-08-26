@@ -78,6 +78,7 @@ class AuthRepository {
           services: [],
           favorites: [],
           shoppingCartUserIds: [], // ensure each uid is unique and not a duplicate
+          shoppingCartItemIds: [], // ids of shopping cart items including those the user has been given permission to store into other users shopping carts
           tags: [],
           profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
           lastUpdateDate: DateTime.now(),
