@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -184,6 +185,21 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             user.shoppingCartItemIds.add(shoppingCartItemId);
             await _userProfileRepository.updateUser(user);
 
+            // check if we need to add shopping cart item to owners shoppingCartItems list
+            if (shoppingCart.uid != user.uid) {
+              // get owner
+              UserModel? owner = await _ref
+                  .read(authControllerProvider.notifier)
+                  .getUserData(shoppingCart.uid)
+                  .first;
+
+              if (owner != null) {
+                // add shopping cart item to owners shoppingCartItems list
+                owner.shoppingCartItemIds.add(shoppingCartItemId);
+                await _userProfileRepository.updateUser(owner);
+              }
+            }
+
             // reduce service quantity
             service = service.copyWith(quantity: service.quantity - quantity);
             await _serviceRepository.updateService(service);
@@ -356,8 +372,24 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
         // remove shopping cart item from users shoppingCartItems list
-        user.shoppingCartItemIds.add(shoppingCartItem.shoppingCartItemId);
+        user.shoppingCartItemIds.remove(shoppingCartItem.shoppingCartItemId);
         await _userProfileRepository.updateUser(user);
+
+        // check if we need to remove shopping cart item from owners shoppingCartItems list
+        if (shoppingCart.uid != user.uid) {
+          // get owner
+          UserModel? owner = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(shoppingCart.uid)
+              .first;
+
+          if (owner != null) {
+            // remove shopping cart item from owners shoppingCartItems list
+            owner.shoppingCartItemIds
+                .remove(shoppingCartItem.shoppingCartItemId);
+            await _userProfileRepository.updateUser(owner);
+          }
+        }
 
         // update service
         service = service.copyWith(
