@@ -185,6 +185,18 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             user.shoppingCartItemIds.add(shoppingCartItemId);
             await _userProfileRepository.updateUser(user);
 
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+            // HERE ROB VALIDATE ADDING AND REMOVING FROM OWNERS CART
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+            // *********************************************************
+
             // check if we need to add shopping cart item to owners shoppingCartItems list
             if (shoppingCart.uid != user.uid) {
               // get owner

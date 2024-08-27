@@ -419,9 +419,9 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                           horizontal:
                                                                               25)),
                                                               child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
                                                                 children: [
                                                                   const Text(
                                                                     'Like',

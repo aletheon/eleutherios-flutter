@@ -280,9 +280,8 @@ class MemberScreen extends ConsumerWidget {
                                                                     horizontal:
                                                                         25)),
                                                     child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
                                                       children: [
                                                         const Text(
                                                           'Like',
