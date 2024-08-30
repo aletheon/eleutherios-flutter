@@ -153,8 +153,25 @@ class ServiceController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
-  void createService(String title, String description, bool public,
-      List<String>? tags, BuildContext context) async {
+  void createService(
+    String title,
+    String description,
+    bool public,
+    List<String>? tags,
+    String type,
+    bool canBeOrdered,
+    double price,
+    int quantity,
+    double frequency,
+    String frequencyUnit,
+    double length,
+    double width,
+    double height,
+    double weight,
+    String sizeUnit,
+    String? weightUnit,
+    BuildContext context,
+  ) async {
     state = true;
     final uid = _ref.read(userProvider)?.uid ?? '';
     final user = _ref.read(userProvider);
@@ -173,18 +190,18 @@ class ServiceController extends StateNotifier<bool> {
       bannerFileType: 'image/jpeg',
       bannerFileName: Constants.serviceBannerDefault.split('/').last,
       public: public,
-      canBeOrdered: false, // whether service can be ordered or not
-      price: -1,
-      type: ServiceType.nonphysical.value,
-      frequency: 0,
-      frequencyUnit: '',
-      quantity: 0,
-      height: 0,
-      length: 0,
-      width: 0,
-      sizeUnit: '',
-      weight: 0,
-      weightUnit: '',
+      canBeOrdered: canBeOrdered, // whether service can be ordered or not
+      price: price,
+      type: type,
+      frequency: frequency,
+      frequencyUnit: frequencyUnit,
+      quantity: quantity,
+      height: height,
+      length: length,
+      width: width,
+      sizeUnit: sizeUnit,
+      weight: weight,
+      weightUnit: weightUnit!,
       currency: user!.stripeCurrency,
       tags: tags != null && tags.isNotEmpty ? tags : [],
       likes: [],
