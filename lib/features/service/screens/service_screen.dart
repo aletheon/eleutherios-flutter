@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
@@ -34,22 +35,29 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     UserModel user,
     Service service,
   ) {
-    if (user.shoppingCartUserIds.isEmpty) {
-      // add service to the currently logged in user
-      ref
-          .read(shoppingCartItemControllerProvider.notifier)
-          .createShoppingCartItem(
-            user,
-            shoppingCart,
-            null,
-            null,
-            service.serviceId,
-            quantity,
-            context,
-          );
+    if (service.quantity > 0) {
+      if (user.shoppingCartUserIds.isEmpty) {
+        // add service to the currently logged in user
+        ref
+            .read(shoppingCartItemControllerProvider.notifier)
+            .createShoppingCartItem(
+              user,
+              shoppingCart,
+              null,
+              null,
+              service.serviceId,
+              quantity,
+              context,
+            );
+      } else {
+        // let the user choose which cart they want to add the service to including their own cart
+        Routemaster.of(context).push('add-to-cart');
+      }
     } else {
-      // let the user choose which cart they want to add the service to including their own cart
-      Routemaster.of(context).push('add-to-cart');
+      showSnackBar(
+          context,
+          'There is not enough of this service to purchase there is zero available',
+          true);
     }
   }
 
@@ -543,7 +551,15 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                 ),
                                               ],
                                             ),
-                                            service.uid != user.uid
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            //  HERE ROB
+                                            service.uid != user.uid &&
+                                                    service.canBeOrdered == true
                                                 ? Column(
                                                     children: [
                                                       SizedBox(

@@ -295,7 +295,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           if (context.mounted) {
             showSnackBar(
                 context,
-                'There is not enough of this service to purchase only ${service.quantity} available',
+                'There is not enough of this service to purchase there is zero available',
                 true);
           }
         }
