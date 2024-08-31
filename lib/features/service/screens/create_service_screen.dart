@@ -146,31 +146,33 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
       }
     }
 
+    // title
+    if (_titleController.text.trim().isEmpty) {
+      errorMessage.write('Title is required.');
+    }
+
     if (errorMessage.isNotEmpty) {
       showSnackBar(context, errorMessage.toString(), true);
     } else {
       List<String>? tags = _stringTagController.getTags;
-
-      if (_titleController.text.trim().isNotEmpty) {
-        ref.read(serviceControllerProvider.notifier).createService(
-            _titleController.text.trim(),
-            _descriptionController.text.trim(),
-            isPublic,
-            tags,
-            type,
-            canBeOrdered,
-            price,
-            quantity,
-            frequency,
-            frequencyUnit,
-            length,
-            width,
-            height,
-            weight,
-            sizeUnit,
-            weightUnit,
-            _scaffold.currentContext!);
-      }
+      ref.read(serviceControllerProvider.notifier).createService(
+          _titleController.text.trim(),
+          _descriptionController.text.trim(),
+          isPublic,
+          tags,
+          type,
+          canBeOrdered,
+          price,
+          quantity,
+          frequency,
+          frequencyUnit,
+          length,
+          width,
+          height,
+          weight,
+          sizeUnit,
+          weightUnit,
+          _scaffold.currentContext!);
     }
   }
 
