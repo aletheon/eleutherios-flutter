@@ -309,7 +309,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            maxLines: 5,
+                            maxLines: 3,
                             maxLength: 1000,
                           ),
                           const SizedBox(
