@@ -358,9 +358,9 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                                       width: 8,
                                                                     ),
                                                                     service.title.length >
-                                                                            20
+                                                                            15
                                                                         ? Text(
-                                                                            '${service.title.substring(0, 20)}...',
+                                                                            '${service.title.substring(0, 15)}...',
                                                                             style:
                                                                                 const TextStyle(fontSize: 11),
                                                                           )
@@ -630,7 +630,7 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                   // ************************************************************
                   ExpansionTile(
                     title: Text(
-                      'Services(${forum.members.length})',
+                      'Members(${forum.members.length})',
                       style: const TextStyle(
                         fontSize: 13,
                       ),
@@ -678,9 +678,9 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      service.title.length > 20
+                                                      service.title.length > 15
                                                           ? Text(
-                                                              '${service.title.substring(0, 20)}...')
+                                                              '${service.title.substring(0, 15)}...')
                                                           : Text(service.title),
                                                     ],
                                                   ),
@@ -804,9 +804,9 @@ class _ViewForumScreenState extends ConsumerState<ViewForumScreen> {
                                                   const SizedBox(
                                                     width: 8,
                                                   ),
-                                                  service.title.length > 12
+                                                  service.title.length > 11
                                                       ? Text(
-                                                          '${service.title.substring(0, 12)}...',
+                                                          '${service.title.substring(0, 11)}...',
                                                           style:
                                                               const TextStyle(
                                                             fontSize: 14,

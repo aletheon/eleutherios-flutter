@@ -358,6 +358,9 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                             }).toList(),
                                                           )
                                                         : const SizedBox(),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
                                                     service.description
                                                             .isNotEmpty
                                                         ? Wrap(
