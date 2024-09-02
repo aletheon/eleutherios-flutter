@@ -87,6 +87,7 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
         ? -1
         : double.parse(
             _priceController.text.replaceAll(RegExp(r'[^0-9.]'), ''));
+
     int quantity = _quantityController.text.isEmpty
         ? -1
         : int.parse(_quantityController.text);
@@ -136,6 +137,18 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
           double.parse(_weightController.text) <= 0) {
         errorMessage.write('Weight is required in the format 9.99.\n');
       }
+    } else {
+      frequency = _frequencyController.text.isEmpty
+          ? -1
+          : double.parse(_frequencyController.text);
+      frequencyUnit =
+          selectedFrequencyUnit == 'None' ? '' : selectedFrequencyUnit;
+      sizeUnit = '';
+      length = 0;
+      width = 0;
+      height = 0;
+      weightUnit = '';
+      weight = 0;
     }
 
     // validate price
