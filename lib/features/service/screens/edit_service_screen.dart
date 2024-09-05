@@ -912,9 +912,14 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                 contentPadding: const EdgeInsets.all(18),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: service!.price == -1
-                                        ? Pallete.freeServiceTagColor
-                                        : Pallete.paidServiceTagColor,
+                                    color: _priceController.text.isNotEmpty &&
+                                            double.parse(_priceController.text
+                                                    .replaceAll(
+                                                        RegExp(r'[^0-9.]'),
+                                                        '')) >
+                                                0
+                                        ? Pallete.paidServiceTagColor
+                                        : Pallete.freeServiceTagColor,
                                   ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -933,9 +938,14 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                 contentPadding: const EdgeInsets.all(18),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: service.price == -1
-                                        ? Pallete.freeServiceTagColor
-                                        : Pallete.paidServiceTagColor,
+                                    color: _priceController.text.isNotEmpty &&
+                                            double.parse(_priceController.text
+                                                    .replaceAll(
+                                                        RegExp(r'[^0-9.]'),
+                                                        '')) >
+                                                0
+                                        ? Pallete.paidServiceTagColor
+                                        : Pallete.freeServiceTagColor,
                                   ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -949,7 +959,7 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                             TextFieldTags<String>(
                               textfieldTagsController: _stringTagController,
                               initialTags:
-                                  service.tags.isNotEmpty ? service.tags : [],
+                                  service!.tags.isNotEmpty ? service.tags : [],
                               textSeparators: const [' ', ','],
                               letterCase: LetterCase.small,
                               validator: (String tag) {
@@ -976,16 +986,30 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                     isDense: true,
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: service.price == -1
-                                            ? Pallete.freeServiceTagColor
-                                            : Pallete.paidServiceTagColor,
+                                        color: _priceController
+                                                    .text.isNotEmpty &&
+                                                double.parse(_priceController
+                                                        .text
+                                                        .replaceAll(
+                                                            RegExp(r'[^0-9.]'),
+                                                            '')) >
+                                                    0
+                                            ? Pallete.paidServiceTagColor
+                                            : Pallete.freeServiceTagColor,
                                       ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: service.price == -1
-                                            ? Pallete.freeServiceTagColor
-                                            : Pallete.paidServiceTagColor,
+                                        color: _priceController
+                                                    .text.isNotEmpty &&
+                                                double.parse(_priceController
+                                                        .text
+                                                        .replaceAll(
+                                                            RegExp(r'[^0-9.]'),
+                                                            '')) >
+                                                    0
+                                            ? Pallete.paidServiceTagColor
+                                            : Pallete.freeServiceTagColor,
                                       ),
                                     ),
                                     hintText: inputFieldValues.tags.isNotEmpty
@@ -1018,12 +1042,20 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                                                                 .all(
                                                           Radius.circular(20.0),
                                                         ),
-                                                        color: service.price ==
-                                                                -1
+                                                        color: _priceController
+                                                                    .text
+                                                                    .isNotEmpty &&
+                                                                double.parse(_priceController
+                                                                        .text
+                                                                        .replaceAll(
+                                                                            RegExp(
+                                                                                r'[^0-9.]'),
+                                                                            '')) >
+                                                                    0
                                                             ? Pallete
-                                                                .freeServiceTagColor
+                                                                .paidServiceTagColor
                                                             : Pallete
-                                                                .paidServiceTagColor,
+                                                                .freeServiceTagColor,
                                                       ),
                                                       margin: const EdgeInsets
                                                           .symmetric(
