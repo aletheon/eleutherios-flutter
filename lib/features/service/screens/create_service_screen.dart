@@ -108,6 +108,11 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
         : double.parse(_weightController.text);
     String? weightUnit = selectedWeightUnit == '' ? null : selectedWeightUnit;
 
+    // title
+    if (_titleController.text.trim().isEmpty) {
+      errorMessage.write('Title is required.');
+    }
+
     // validate physical properties
     if (selectedType == ServiceType.physical.value) {
       // length
@@ -157,11 +162,6 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
           .hasMatch(_priceController.text.replaceAll(RegExp(r'[^0-9.]'), ''))) {
         errorMessage.write('Price is invalid and must be in the format 9.99.');
       }
-    }
-
-    // title
-    if (_titleController.text.trim().isEmpty) {
-      errorMessage.write('Title is required.');
     }
 
     if (errorMessage.isNotEmpty) {
@@ -266,7 +266,8 @@ class _CreateServiceScreenState extends ConsumerState<CreateServiceScreen> {
       body: isLoading
           ? const Loader()
           : Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.only(
+                  top: 10.0, right: 10.0, left: 10.0, bottom: 50.0),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
