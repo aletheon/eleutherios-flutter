@@ -11,10 +11,6 @@ class ServiceToolsScreen extends ConsumerWidget {
     Routemaster.of(context).push('edit');
   }
 
-  void editPrice(BuildContext context) {
-    Routemaster.of(context).push('edit-price');
-  }
-
   void addPolicy(BuildContext context) {
     Routemaster.of(context).push('add-policy');
   }
@@ -49,11 +45,6 @@ class ServiceToolsScreen extends ConsumerWidget {
           onTap: () => editService(context),
           leading: const Icon(Icons.edit_note_outlined),
           title: const Text('Edit Service'),
-        ),
-        ListTile(
-          onTap: () => editPrice(context),
-          leading: const Icon(Icons.paid_outlined),
-          title: const Text('Edit Price & Type'),
         ),
         ListTile(
           onTap: () => addPolicy(context),

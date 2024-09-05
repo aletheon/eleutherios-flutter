@@ -39,7 +39,6 @@ import 'package:reddit_tutorial/features/rule_member/screens/potential_member_pe
 import 'package:reddit_tutorial/features/rule_member/screens/remove_rule_member_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/add_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/create_service_screen.dart';
-import 'package:reddit_tutorial/features/service/screens/edit_price_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/edit_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/list_user_service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_remove_policy_screen.dart';
@@ -1775,11 +1774,6 @@ final loggedInRoute = RouteMap(routes: {
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
-  '/service/:serviceid/service-tools/edit-price': (route) => MaterialPage(
-        child: EditPriceScreen(
-          serviceId: route.pathParameters['serviceid']!,
-        ),
-      ),
   '/service/:serviceid/service-tools/add-policy': (route) => MaterialPage(
         child: AddPolicyScreen(
           serviceId: route.pathParameters['serviceid']!,
@@ -1835,12 +1829,6 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/user/service/list/:serviceid/service-tools/edit': (route) => MaterialPage(
         child: EditServiceScreen(
-          serviceId: route.pathParameters['serviceid']!,
-        ),
-      ),
-  '/user/service/list/:serviceid/service-tools/edit-price': (route) =>
-      MaterialPage(
-        child: EditPriceScreen(
           serviceId: route.pathParameters['serviceid']!,
         ),
       ),
