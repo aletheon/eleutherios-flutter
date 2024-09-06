@@ -263,10 +263,4 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
     return _shoppingCartMemberRepository
         .getShoppingCartMemberByMemberId(memberId);
   }
-
-  Stream<ShoppingCartMember?> getUserSelectedShoppingCartMember(
-      String forumId, String uid) {
-    return _shoppingCartMemberRepository.getUserSelectedShoppingCartMember(
-        forumId, uid);
-  }
 }
