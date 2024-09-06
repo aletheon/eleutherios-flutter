@@ -28,6 +28,8 @@ class ServiceScreen extends ConsumerStatefulWidget {
 
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   int quantity = 0;
+  String? dropdownUserValue;
+  String? dropdownForumValue;
 
   void addToCart(
     BuildContext context,
@@ -170,6 +172,14 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   ) {
     Routemaster.of(context).push('/addforum/${widget.serviceId}');
   }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     getSelectedMember();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -574,6 +584,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                             color: Colors.grey,
                                                             thickness: 1.0),
                                                       ),
+
                                                       // add to cart button(s)
                                                       Row(
                                                         mainAxisAlignment:

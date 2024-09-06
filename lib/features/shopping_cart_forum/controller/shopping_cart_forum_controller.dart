@@ -86,6 +86,7 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       forumId: forumId,
       members: [],
       services: [],
+      selectedMemberId: '',
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );

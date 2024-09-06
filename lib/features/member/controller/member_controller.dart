@@ -268,19 +268,13 @@ class MemberController extends StateNotifier<bool> {
           String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
           String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
 
-          // get selected user shopping cart member
-          final userSelectedShoppingCartMember = await _ref
-              .read(shoppingCartMemberControllerProvider.notifier)
-              .getUserSelectedShoppingCartMember(
-                  member.forumId, member.serviceUid)
-              .first;
-
           // create shopping cart user
           ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
             shoppingCartUserId: shoppingCartUserId,
             uid: member.serviceUid,
             cartUid: member.forumUid,
             forums: [member.forumId],
+            selectedForumId: member.forumId,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -294,6 +288,7 @@ class MemberController extends StateNotifier<bool> {
             forumId: member.forumId,
             members: [member.memberId],
             services: [member.serviceId],
+            selectedMemberId: member.memberId,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -306,7 +301,6 @@ class MemberController extends StateNotifier<bool> {
             memberId: member.memberId,
             serviceId: member.serviceId,
             serviceUid: member.serviceUid,
-            selected: userSelectedShoppingCartMember == null ? true : false,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -401,7 +395,7 @@ class MemberController extends StateNotifier<bool> {
         .first;
 
     // get shopping cart forum
-    final shoppingCartForum = await _ref
+    ShoppingCartForum? shoppingCartForum = await _ref
         .read(shoppingCartForumControllerProvider.notifier)
         .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
         .first;
@@ -422,6 +416,7 @@ class MemberController extends StateNotifier<bool> {
       uid: member.serviceUid,
       cartUid: member.forumUid,
       forums: [member.forumId],
+      selectedForumId: member.forumId,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -435,6 +430,7 @@ class MemberController extends StateNotifier<bool> {
       forumId: member.forumId,
       members: [member.memberId],
       services: [member.serviceId],
+      selectedMemberId: member.memberId,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -447,7 +443,6 @@ class MemberController extends StateNotifier<bool> {
       memberId: member.memberId,
       serviceId: member.serviceId,
       serviceUid: member.serviceUid,
-      selected: true,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -489,17 +484,6 @@ class MemberController extends StateNotifier<bool> {
               .updateShoppingCartForum(shoppingCartForum);
         }
 
-        // get this users shopping cart member count
-        final userSelectedShoppingCartMember = await _ref
-            .read(shoppingCartMemberControllerProvider.notifier)
-            .getUserSelectedShoppingCartMember(
-                newShoppingCartMember.forumId, newShoppingCartMember.serviceUid)
-            .first;
-
-        // set whether this member is selected or not
-        newShoppingCartMember = newShoppingCartMember.copyWith(
-            selected: userSelectedShoppingCartMember == null ? true : false);
-
         // create shopping cart member
         await _shoppingCartMemberRepository
             .createShoppingCartMember(newShoppingCartMember);
@@ -525,7 +509,8 @@ class MemberController extends StateNotifier<bool> {
 
         if (shoppingCartMemberCount > 0) {
           // set next available shopping cart member as default
-          if (shoppingCartMember.selected) {
+          if (shoppingCartForum.selectedMemberId ==
+              shoppingCartMember.memberId) {
             // get the rest of the users shopping cart members
             final userShoppingCartMembers = await _ref
                 .read(shoppingCartMemberControllerProvider.notifier)
@@ -534,10 +519,10 @@ class MemberController extends StateNotifier<bool> {
                 .first;
 
             if (userShoppingCartMembers.isNotEmpty) {
-              userShoppingCartMembers[0] =
-                  userShoppingCartMembers[0].copyWith(selected: true);
-              await _shoppingCartMemberRepository
-                  .updateShoppingCartMember(userShoppingCartMembers[0]);
+              shoppingCartForum = shoppingCartForum.copyWith(
+                  selectedMemberId: userShoppingCartMembers[0].memberId);
+              await _shoppingCartForumRepository
+                  .updateShoppingCartForum(shoppingCartForum);
             }
           }
         } else {
@@ -668,7 +653,7 @@ class MemberController extends StateNotifier<bool> {
             .first;
 
         // get shopping cart forum
-        final shoppingCartForum = await _ref
+        ShoppingCartForum? shoppingCartForum = await _ref
             .read(shoppingCartForumControllerProvider.notifier)
             .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
             .first;
@@ -699,7 +684,8 @@ class MemberController extends StateNotifier<bool> {
 
           if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
-            if (shoppingCartMember.selected) {
+            if (shoppingCartForum.selectedMemberId ==
+                shoppingCartMember.memberId) {
               // get the rest of the users shopping cart members
               final userShoppingCartMembers = await _ref
                   .read(shoppingCartMemberControllerProvider.notifier)
@@ -708,10 +694,10 @@ class MemberController extends StateNotifier<bool> {
                   .first;
 
               if (userShoppingCartMembers.isNotEmpty) {
-                userShoppingCartMembers[0] =
-                    userShoppingCartMembers[0].copyWith(selected: true);
-                await _shoppingCartMemberRepository
-                    .updateShoppingCartMember(userShoppingCartMembers[0]);
+                shoppingCartForum = shoppingCartForum.copyWith(
+                    selectedMemberId: userShoppingCartMembers[0].memberId);
+                await _shoppingCartForumRepository
+                    .updateShoppingCartForum(shoppingCartForum);
               }
             }
           } else {
