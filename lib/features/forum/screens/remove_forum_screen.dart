@@ -47,9 +47,9 @@ class _RemoveForumScreenState extends ConsumerState<RemoveForumScreen> {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : forum!.forums.isEmpty
+          body: Stack(
+            children: <Widget>[
+              forum!.forums.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Container(
@@ -161,6 +161,11 @@ class _RemoveForumScreenState extends ConsumerState<RemoveForumScreen> {
                         },
                       ),
                     ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

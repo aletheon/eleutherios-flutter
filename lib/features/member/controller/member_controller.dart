@@ -325,6 +325,7 @@ class MemberController extends StateNotifier<bool> {
 
           // create shopping cart user
           if (shoppingCartUser == null) {
+            print('creating shopping cart user 1');
             await _shoppingCartUserRepository
                 .createShoppingCartUser(newShoppingCartUser);
 
@@ -453,6 +454,7 @@ class MemberController extends StateNotifier<bool> {
       if (shoppingCartMember == null) {
         // create shopping cart user
         if (shoppingCartUser == null) {
+          print('creating shopping cart user 2');
           await _shoppingCartUserRepository
               .createShoppingCartUser(newShoppingCartUser);
 

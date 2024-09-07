@@ -53,116 +53,119 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : serviceForumsProv.when(
-                  data: (serviceForums) {
-                    if (serviceForums.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          child: const Text(
-                            'No forums',
-                            style: TextStyle(fontSize: 14),
-                          ),
+          body: Stack(
+            children: <Widget>[
+              serviceForumsProv.when(
+                data: (serviceForums) {
+                  if (serviceForums.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          'No forums',
+                          style: TextStyle(fontSize: 14),
                         ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: ListView.builder(
-                          itemCount: serviceForums.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final forum = serviceForums[index];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                ListTile(
-                                  title: Row(
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          forum!.title,
-                                          textWidthBasis:
-                                              TextWidthBasis.longestLine,
-                                        ),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: ListView.builder(
+                        itemCount: serviceForums.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final forum = serviceForums[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        forum!.title,
+                                        textWidthBasis:
+                                            TextWidthBasis.longestLine,
                                       ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      forum.public
-                                          ? const Icon(
-                                              Icons.lock_open_outlined,
-                                              size: 18,
-                                            )
-                                          : const Icon(Icons.lock_outlined,
-                                              size: 18,
-                                              color: Pallete.greyColor),
-                                    ],
-                                  ),
-                                  leading: forum.image ==
-                                          Constants.avatarDefault
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              Image.asset(forum.image).image,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(forum.image),
-                                        ),
-                                  trailing: TextButton(
-                                    onPressed: () =>
-                                        removeServiceForum(ref, forum.forumId),
-                                    child: const Text(
-                                      'Remove',
                                     ),
-                                  ),
-                                  onTap: () =>
-                                      showForumDetails(context, forum.forumId),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    forum.public
+                                        ? const Icon(
+                                            Icons.lock_open_outlined,
+                                            size: 18,
+                                          )
+                                        : const Icon(Icons.lock_outlined,
+                                            size: 18, color: Pallete.greyColor),
+                                  ],
                                 ),
-                                forum.tags.isNotEmpty
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 0, right: 20, left: 10),
-                                        child: Wrap(
-                                          alignment: WrapAlignment.end,
-                                          direction: Axis.horizontal,
-                                          children: forum.tags.map((e) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 5),
-                                              child: FilterChip(
-                                                visualDensity:
-                                                    const VisualDensity(
-                                                        vertical: -4,
-                                                        horizontal: -4),
-                                                onSelected: (value) {},
-                                                backgroundColor:
-                                                    Pallete.forumTagColor,
-                                                label: Text(
-                                                  '#$e',
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                  ),
+                                leading: forum.image == Constants.avatarDefault
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            Image.asset(forum.image).image,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(forum.image),
+                                      ),
+                                trailing: TextButton(
+                                  onPressed: () =>
+                                      removeServiceForum(ref, forum.forumId),
+                                  child: const Text(
+                                    'Remove',
+                                  ),
+                                ),
+                                onTap: () =>
+                                    showForumDetails(context, forum.forumId),
+                              ),
+                              forum.tags.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, right: 20, left: 10),
+                                      child: Wrap(
+                                        alignment: WrapAlignment.end,
+                                        direction: Axis.horizontal,
+                                        children: forum.tags.map((e) {
+                                          return Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: FilterChip(
+                                              visualDensity:
+                                                  const VisualDensity(
+                                                      vertical: -4,
+                                                      horizontal: -4),
+                                              onSelected: (value) {},
+                                              backgroundColor:
+                                                  Pallete.forumTagColor,
+                                              label: Text(
+                                                '#$e',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
                                                 ),
                                               ),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            );
-                          },
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

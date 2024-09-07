@@ -358,63 +358,65 @@ class _AddManagerScreenState extends ConsumerState<AddManagerScreen> {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text("Private"),
-                        Radio(
-                            value: "Private",
-                            groupValue: searchRadioProv,
-                            onChanged: (newValue) {
-                              ref.read(searchRadioProvider.notifier).state =
-                                  newValue.toString();
-                            }),
-                        const Text("Public"),
-                        Radio(
-                            value: "Public",
-                            groupValue: searchRadioProv,
-                            onChanged: (newValue) {
-                              ref.read(searchRadioProvider.notifier).state =
-                                  newValue.toString();
-                            }),
-                        const Text("Favorite"),
-                        Radio(
-                            value: "Favorite",
-                            groupValue: searchRadioProv,
-                            onChanged: (newValue) {
-                              ref.read(searchRadioProvider.notifier).state =
-                                  newValue.toString();
-                            }),
-                        IconButton(
-                          onPressed: () {
-                            showSearch(
-                              context: context,
-                              delegate: SearchManagerDelegate(
-                                  ref,
-                                  user,
-                                  widget.policyId,
-                                  ref
-                                              .read(
-                                                  searchRadioProvider.notifier)
-                                              .state ==
-                                          "Favorite"
-                                      ? "Private"
-                                      : ref
-                                          .read(searchRadioProvider.notifier)
-                                          .state),
-                            );
-                          },
-                          icon: const Icon(Icons.search),
-                        ),
-                      ],
-                    ),
-                    showServices(ref, policy!, searchRadioProv)
-                  ],
-                ),
+          body: Stack(
+            children: <Widget>[
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Text("Private"),
+                      Radio(
+                          value: "Private",
+                          groupValue: searchRadioProv,
+                          onChanged: (newValue) {
+                            ref.read(searchRadioProvider.notifier).state =
+                                newValue.toString();
+                          }),
+                      const Text("Public"),
+                      Radio(
+                          value: "Public",
+                          groupValue: searchRadioProv,
+                          onChanged: (newValue) {
+                            ref.read(searchRadioProvider.notifier).state =
+                                newValue.toString();
+                          }),
+                      const Text("Favorite"),
+                      Radio(
+                          value: "Favorite",
+                          groupValue: searchRadioProv,
+                          onChanged: (newValue) {
+                            ref.read(searchRadioProvider.notifier).state =
+                                newValue.toString();
+                          }),
+                      IconButton(
+                        onPressed: () {
+                          showSearch(
+                            context: context,
+                            delegate: SearchManagerDelegate(
+                                ref,
+                                user,
+                                widget.policyId,
+                                ref.read(searchRadioProvider.notifier).state ==
+                                        "Favorite"
+                                    ? "Private"
+                                    : ref
+                                        .read(searchRadioProvider.notifier)
+                                        .state),
+                          );
+                        },
+                        icon: const Icon(Icons.search),
+                      ),
+                    ],
+                  ),
+                  showServices(ref, policy!, searchRadioProv)
+                ],
+              ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

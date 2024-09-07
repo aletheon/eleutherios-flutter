@@ -51,176 +51,168 @@ class _ManagerLeaveScreenState extends ConsumerState<ManagerLeaveScreen> {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : managersProv.when(
-                  data: (managers) {
-                    if (managers.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          child: const Text(
-                            'No managers',
-                            style: TextStyle(fontSize: 14),
-                          ),
+          body: Stack(
+            children: <Widget>[
+              managersProv.when(
+                data: (managers) {
+                  if (managers.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: const Text(
+                          'No managers',
+                          style: TextStyle(fontSize: 14),
                         ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: ListView.builder(
-                          itemCount: managers.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final manager = managers[index];
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: ListView.builder(
+                        itemCount: managers.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final manager = managers[index];
 
-                            if (manager.serviceUid == user.uid) {
-                              return ref
-                                  .watch(
-                                      getServiceByIdProvider(manager.serviceId))
-                                  .when(
-                                    data: (service) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          ListTile(
-                                            title: Row(
-                                              children: [
-                                                Flexible(
-                                                  child: Text(
-                                                    service!.title,
-                                                    textWidthBasis:
-                                                        TextWidthBasis
-                                                            .longestLine,
-                                                  ),
+                          if (manager.serviceUid == user.uid) {
+                            return ref
+                                .watch(
+                                    getServiceByIdProvider(manager.serviceId))
+                                .when(
+                                  data: (service) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        ListTile(
+                                          title: Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  service!.title,
+                                                  textWidthBasis: TextWidthBasis
+                                                      .longestLine,
                                                 ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                service.public
-                                                    ? const Icon(
-                                                        Icons
-                                                            .lock_open_outlined,
-                                                        size: 18,
-                                                      )
-                                                    : const Icon(
-                                                        Icons.lock_outlined,
-                                                        size: 18,
-                                                        color:
-                                                            Pallete.greyColor),
-                                                manager.selected == true
-                                                    ? const Row(
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 5,
-                                                          ),
-                                                          Icon(
-                                                            Icons.check,
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    3,
-                                                                    233,
-                                                                    33),
-                                                          )
-                                                        ],
-                                                      )
-                                                    : const SizedBox(),
-                                              ],
-                                            ),
-                                            leading: service.image ==
-                                                    Constants.avatarDefault
-                                                ? CircleAvatar(
-                                                    backgroundImage:
-                                                        Image.asset(
-                                                                service.image)
-                                                            .image,
-                                                  )
-                                                : CircleAvatar(
-                                                    backgroundImage:
-                                                        NetworkImage(
-                                                            service.image),
-                                                  ),
-                                            trailing: TextButton(
-                                              onPressed: () =>
-                                                  removeManagerService(
-                                                context,
-                                                ref,
-                                                policy!.policyId,
-                                                manager.managerId,
                                               ),
-                                              child: const Text(
-                                                'Remove',
+                                              const SizedBox(
+                                                width: 5,
                                               ),
-                                            ),
-                                            onTap: () => showServiceDetails(
-                                                context, service.serviceId),
+                                              service.public
+                                                  ? const Icon(
+                                                      Icons.lock_open_outlined,
+                                                      size: 18,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.lock_outlined,
+                                                      size: 18,
+                                                      color: Pallete.greyColor),
+                                              manager.selected == true
+                                                  ? const Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Icon(
+                                                          Icons.check,
+                                                          color: Color.fromARGB(
+                                                              255, 3, 233, 33),
+                                                        )
+                                                      ],
+                                                    )
+                                                  : const SizedBox(),
+                                            ],
                                           ),
-                                          service.tags.isNotEmpty
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 0,
-                                                          right: 20,
-                                                          left: 10),
-                                                  child: Wrap(
-                                                    alignment:
-                                                        WrapAlignment.end,
-                                                    direction: Axis.horizontal,
-                                                    children:
-                                                        service.tags.map((e) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(right: 5),
-                                                        child: FilterChip(
-                                                          visualDensity:
-                                                              const VisualDensity(
-                                                                  vertical: -4,
-                                                                  horizontal:
-                                                                      -4),
-                                                          onSelected:
-                                                              (value) {},
-                                                          backgroundColor: service
-                                                                      .price ==
-                                                                  -1
-                                                              ? Pallete
-                                                                  .freeServiceTagColor
-                                                              : Pallete
-                                                                  .paidServiceTagColor,
-                                                          label: Text(
-                                                            '#$e',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 12,
-                                                            ),
+                                          leading: service.image ==
+                                                  Constants.avatarDefault
+                                              ? CircleAvatar(
+                                                  backgroundImage:
+                                                      Image.asset(service.image)
+                                                          .image,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      service.image),
+                                                ),
+                                          trailing: TextButton(
+                                            onPressed: () =>
+                                                removeManagerService(
+                                              context,
+                                              ref,
+                                              policy!.policyId,
+                                              manager.managerId,
+                                            ),
+                                            child: const Text(
+                                              'Remove',
+                                            ),
+                                          ),
+                                          onTap: () => showServiceDetails(
+                                              context, service.serviceId),
+                                        ),
+                                        service.tags.isNotEmpty
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 0,
+                                                    right: 20,
+                                                    left: 10),
+                                                child: Wrap(
+                                                  alignment: WrapAlignment.end,
+                                                  direction: Axis.horizontal,
+                                                  children:
+                                                      service.tags.map((e) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 5),
+                                                      child: FilterChip(
+                                                        visualDensity:
+                                                            const VisualDensity(
+                                                                vertical: -4,
+                                                                horizontal: -4),
+                                                        onSelected: (value) {},
+                                                        backgroundColor: service
+                                                                    .price ==
+                                                                -1
+                                                            ? Pallete
+                                                                .freeServiceTagColor
+                                                            : Pallete
+                                                                .paidServiceTagColor,
+                                                        label: Text(
+                                                          '#$e',
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 12,
                                                           ),
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                        ],
-                                      );
-                                    },
-                                    error: (error, stackTrace) =>
-                                        ErrorText(error: error.toString()),
-                                    loading: () => const Loader(),
-                                  );
-                            } else {
-                              return const SizedBox();
-                            }
-                          },
-                        ),
-                      );
-                    }
-                  },
-                  error: (error, stackTrace) =>
-                      ErrorText(error: error.toString()),
-                  loading: () => const Loader(),
-                ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    );
+                                  },
+                                  error: (error, stackTrace) =>
+                                      ErrorText(error: error.toString()),
+                                  loading: () => const Loader(),
+                                );
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      ),
+                    );
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

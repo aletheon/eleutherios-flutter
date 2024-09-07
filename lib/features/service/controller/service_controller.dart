@@ -206,6 +206,7 @@ class ServiceController extends StateNotifier<bool> {
       tags: tags != null && tags.isNotEmpty ? tags : [],
       likes: [],
       policies: [],
+      expiryDate: DateTime.now(),
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );

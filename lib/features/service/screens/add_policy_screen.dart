@@ -174,47 +174,49 @@ class AddPolicyScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text("Private"),
-                        Radio(
-                            value: "Private",
-                            groupValue: searchRadioProv,
-                            onChanged: (newValue) {
-                              ref.read(searchRadioProvider.notifier).state =
-                                  newValue.toString();
-                            }),
-                        const Text("Public"),
-                        Radio(
-                            value: "Public",
-                            groupValue: searchRadioProv,
-                            onChanged: (newValue) {
-                              ref.read(searchRadioProvider.notifier).state =
-                                  newValue.toString();
-                            }),
-                        IconButton(
-                          onPressed: () {
-                            showSearch(
-                              context: context,
-                              delegate: SearchPolicyDelegate(
-                                  ref,
-                                  user,
-                                  service!,
-                                  ref.read(searchRadioProvider.notifier).state),
-                            );
-                          },
-                          icon: const Icon(Icons.search),
-                        ),
-                      ],
-                    ),
-                    showPolicies(ref, service!, searchRadioProv)
-                  ],
-                ),
+          body: Stack(
+            children: <Widget>[
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Text("Private"),
+                      Radio(
+                          value: "Private",
+                          groupValue: searchRadioProv,
+                          onChanged: (newValue) {
+                            ref.read(searchRadioProvider.notifier).state =
+                                newValue.toString();
+                          }),
+                      const Text("Public"),
+                      Radio(
+                          value: "Public",
+                          groupValue: searchRadioProv,
+                          onChanged: (newValue) {
+                            ref.read(searchRadioProvider.notifier).state =
+                                newValue.toString();
+                          }),
+                      IconButton(
+                        onPressed: () {
+                          showSearch(
+                            context: context,
+                            delegate: SearchPolicyDelegate(ref, user, service!,
+                                ref.read(searchRadioProvider.notifier).state),
+                          );
+                        },
+                        icon: const Icon(Icons.search),
+                      ),
+                    ],
+                  ),
+                  showPolicies(ref, service!, searchRadioProv)
+                ],
+              ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),

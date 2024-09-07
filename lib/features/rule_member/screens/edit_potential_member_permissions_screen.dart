@@ -100,218 +100,221 @@ class _EditPotentialMemberPermissionsScreenState
                           ),
                         ],
                       ),
-                      body: isLoading
-                          ? const Loader()
-                          : Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      service!.image == Constants.avatarDefault
-                                          ? CircleAvatar(
-                                              backgroundImage:
-                                                  Image.asset(service.image)
-                                                      .image,
-                                              radius: 25,
-                                            )
-                                          : CircleAvatar(
-                                              backgroundImage:
-                                                  NetworkImage(service.image),
-                                              radius: 25,
-                                            ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          service.title,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                      body: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    service!.image == Constants.avatarDefault
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                Image.asset(service.image)
+                                                    .image,
+                                            radius: 25,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage:
+                                                NetworkImage(service.image),
+                                            radius: 25,
                                           ),
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        service.title,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount:
-                                          MemberPermissions.values.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final permission =
-                                            MemberPermissions.values[index];
-                                        List<Widget> _icons = [];
-
-                                        switch (permission.value) {
-                                          case 'editforum':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.edit,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'addmember':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.construction,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'removemember':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.construction,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'createforum':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.forum,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'removeforum':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.forum,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'createpost':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.article,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'removepost':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.article,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'editmemberpermissions':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.auto_fix_normal,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          default:
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.lock,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                        }
-
-                                        final permissionIcon = CircleAvatar(
-                                          radius: 14,
-                                          backgroundColor: Pallete.greyColor,
-                                          child: CircleAvatar(
-                                            radius: 13,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: _icons,
-                                            ),
-                                          ),
-                                        );
-
-                                        return CheckboxListTile(
-                                          secondary: permissionIcon,
-                                          title: Text(permission.value),
-                                          value: permissions
-                                                  .contains(permission.value)
-                                              ? true
-                                              : false,
-                                          onChanged: (isChecked) {
-                                            setState(() {
-                                              if (isChecked!) {
-                                                permissions
-                                                    .add(permission.value);
-                                              } else {
-                                                permissions
-                                                    .remove(permission.value);
-                                              }
-                                            });
-                                          },
-                                          controlAffinity:
-                                              ListTileControlAffinity.trailing,
-                                          activeColor: Pallete.forumColor,
-                                        );
-                                      },
                                     ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: MemberPermissions.values.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final permission =
+                                          MemberPermissions.values[index];
+                                      List<Widget> _icons = [];
+
+                                      switch (permission.value) {
+                                        case 'editforum':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'addmember':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.construction,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'removemember':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.construction,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'createforum':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.forum,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'removeforum':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.forum,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'createpost':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.article,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'removepost':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.article,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'editmemberpermissions':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.auto_fix_normal,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        default:
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.lock,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                      }
+
+                                      final permissionIcon = CircleAvatar(
+                                        radius: 14,
+                                        backgroundColor: Pallete.greyColor,
+                                        child: CircleAvatar(
+                                          radius: 13,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: _icons,
+                                          ),
+                                        ),
+                                      );
+
+                                      return CheckboxListTile(
+                                        secondary: permissionIcon,
+                                        title: Text(permission.value),
+                                        value: permissions
+                                                .contains(permission.value)
+                                            ? true
+                                            : false,
+                                        onChanged: (isChecked) {
+                                          setState(() {
+                                            if (isChecked!) {
+                                              permissions.add(permission.value);
+                                            } else {
+                                              permissions
+                                                  .remove(permission.value);
+                                            }
+                                          });
+                                        },
+                                        controlAffinity:
+                                            ListTileControlAffinity.trailing,
+                                        activeColor: Pallete.forumColor,
+                                      );
+                                    },
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
+                          ),
+                          Container(
+                            child: isLoading ? const Loader() : Container(),
+                          )
+                        ],
+                      ),
                     );
                   },
                   error: (error, stackTrace) => ErrorText(

@@ -274,36 +274,52 @@ class _CreateForumScreenState extends ConsumerState<CreateForumScreen> {
       return ref.watch(getForumByIdProvider(widget.forumId!)).when(
             data: (forum) {
               return Scaffold(
-                  key: _scaffold,
-                  backgroundColor: currentTheme.scaffoldBackgroundColor,
-                  appBar: AppBar(
-                    title: Text(
-                      'Create Forum in ${forum!.title}',
-                      softWrap: true,
-                      maxLines: 5,
-                      style: TextStyle(
-                        color: currentTheme.textTheme.bodyMedium!.color!,
-                      ),
+                key: _scaffold,
+                backgroundColor: currentTheme.scaffoldBackgroundColor,
+                appBar: AppBar(
+                  title: Text(
+                    'Create Forum in ${forum!.title}',
+                    softWrap: true,
+                    maxLines: 5,
+                    style: TextStyle(
+                      color: currentTheme.textTheme.bodyMedium!.color!,
                     ),
                   ),
-                  body: isLoading ? const Loader() : bodyOfScaffold());
+                ),
+                body: Stack(
+                  children: <Widget>[
+                    bodyOfScaffold(),
+                    Container(
+                      child: isLoading ? const Loader() : Container(),
+                    )
+                  ],
+                ),
+              );
             },
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),
           );
     } else {
       return Scaffold(
-          key: _scaffold,
-          backgroundColor: currentTheme.scaffoldBackgroundColor,
-          appBar: AppBar(
-            title: Text(
-              'Create Forum',
-              style: TextStyle(
-                color: currentTheme.textTheme.bodyMedium!.color!,
-              ),
+        key: _scaffold,
+        backgroundColor: currentTheme.scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: Text(
+            'Create Forum',
+            style: TextStyle(
+              color: currentTheme.textTheme.bodyMedium!.color!,
             ),
           ),
-          body: isLoading ? const Loader() : bodyOfScaffold());
+        ),
+        body: Stack(
+          children: <Widget>[
+            bodyOfScaffold(),
+            Container(
+              child: isLoading ? const Loader() : Container(),
+            )
+          ],
+        ),
+      );
     }
   }
 }

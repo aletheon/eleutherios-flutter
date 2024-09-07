@@ -384,21 +384,27 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                 .when(
                   data: (manager) {
                     return Scaffold(
-                        key: _scaffold,
-                        backgroundColor: currentTheme.scaffoldBackgroundColor,
-                        appBar: AppBar(
-                          title: Text(
-                            'Create Rule for ${policy!.title}',
-                            softWrap: true,
-                            maxLines: 5,
-                            style: TextStyle(
-                              color: currentTheme.textTheme.bodyMedium!.color!,
-                            ),
+                      key: _scaffold,
+                      backgroundColor: currentTheme.scaffoldBackgroundColor,
+                      appBar: AppBar(
+                        title: Text(
+                          'Create Rule for ${policy!.title}',
+                          softWrap: true,
+                          maxLines: 5,
+                          style: TextStyle(
+                            color: currentTheme.textTheme.bodyMedium!.color!,
                           ),
                         ),
-                        body: isLoading
-                            ? const Loader()
-                            : bodyOfScaffold(policy, manager));
+                      ),
+                      body: Stack(
+                        children: <Widget>[
+                          bodyOfScaffold(policy, manager),
+                          Container(
+                            child: isLoading ? const Loader() : Container(),
+                          )
+                        ],
+                      ),
+                    );
                   },
                   error: (error, stackTrace) =>
                       ErrorText(error: error.toString()),

@@ -122,181 +122,181 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ],
               ),
-              body: isLoading
-                  ? const Loader()
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 180,
-                            child: Stack(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => selectBannerImage(),
-                                  child: DottedBorder(
-                                    color: currentTheme
-                                        .textTheme.bodyMedium!.color!,
-                                    borderType: BorderType.RRect,
-                                    radius: const Radius.circular(10),
-                                    dashPattern: const [6, 4],
-                                    strokeCap: StrokeCap.round,
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: bannerFile != null
-                                          ? Image.file(bannerFile!)
-                                          : user!.banner.isEmpty ||
-                                                  user.banner ==
-                                                      Constants.bannerDefault
-                                              ? const Center(
-                                                  child: Icon(
-                                                    Icons.camera_alt_outlined,
-                                                    size: 40,
-                                                  ),
-                                                )
-                                              : Image.network(
-                                                  user.banner,
-                                                  loadingBuilder: (context,
-                                                      child, loadingProgress) {
-                                                    return loadingProgress
-                                                                ?.cumulativeBytesLoaded ==
-                                                            loadingProgress
-                                                                ?.expectedTotalBytes
-                                                        ? child
-                                                        : const CircularProgressIndicator();
-                                                  },
-                                                ),
+              body: Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 180,
+                          child: Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () => selectBannerImage(),
+                                child: DottedBorder(
+                                  color:
+                                      currentTheme.textTheme.bodyMedium!.color!,
+                                  borderType: BorderType.RRect,
+                                  radius: const Radius.circular(10),
+                                  dashPattern: const [6, 4],
+                                  strokeCap: StrokeCap.round,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 10,
-                                  left: 20,
-                                  child: GestureDetector(
-                                    onTap: () => selectProfileImage(),
-                                    child: profileFile != null
-                                        ? CircleAvatar(
-                                            backgroundImage:
-                                                FileImage(profileFile!),
-                                            radius: 32,
-                                          )
-                                        : user!.profilePic ==
-                                                Constants.avatarDefault
-                                            ? CircleAvatar(
-                                                backgroundImage:
-                                                    Image.asset(user.profilePic)
-                                                        .image,
-                                                radius: 32,
+                                    child: bannerFile != null
+                                        ? Image.file(bannerFile!)
+                                        : user!.banner.isEmpty ||
+                                                user.banner ==
+                                                    Constants.bannerDefault
+                                            ? const Center(
+                                                child: Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  size: 40,
+                                                ),
                                               )
-                                            : CircleAvatar(
-                                                backgroundImage: NetworkImage(
-                                                    user.profilePic),
-                                                radius: 32,
+                                            : Image.network(
+                                                user.banner,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  return loadingProgress
+                                                              ?.cumulativeBytesLoaded ==
+                                                          loadingProgress
+                                                              ?.expectedTotalBytes
+                                                      ? child
+                                                      : const CircularProgressIndicator();
+                                                },
                                               ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          TextField(
-                            controller: fullNameController,
-                            decoration: InputDecoration(
-                              hintText: 'Full name',
-                              filled: true,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ),
-                            maxLength: 40,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            controller: businessNameController,
-                            decoration: InputDecoration(
-                              hintText: 'Business name (Optional)',
-                              filled: true,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
+                              Positioned(
+                                bottom: 10,
+                                left: 20,
+                                child: GestureDetector(
+                                  onTap: () => selectProfileImage(),
+                                  child: profileFile != null
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              FileImage(profileFile!),
+                                          radius: 32,
+                                        )
+                                      : user!.profilePic ==
+                                              Constants.avatarDefault
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  Image.asset(user.profilePic)
+                                                      .image,
+                                              radius: 32,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(user.profilePic),
+                                              radius: 32,
+                                            ),
+                                ),
                               ),
-                            ),
-                            maxLength: 40,
+                            ],
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            controller: businessDescriptionController,
-                            decoration: InputDecoration(
-                              hintText: 'Business description (Optional)',
-                              filled: true,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            maxLength: 280,
-                            maxLines: 5,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            controller: personalWebsiteController,
-                            decoration: InputDecoration(
-                              hintText: 'Personal website (Optional)',
-                              filled: true,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                        ),
+                        TextField(
+                          controller: fullNameController,
+                          decoration: InputDecoration(
+                            hintText: 'Full name',
+                            filled: true,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            controller: businessWebsiteController,
-                            decoration: InputDecoration(
-                              hintText: 'Business website (Optional)',
-                              filled: true,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                          maxLength: 40,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: businessNameController,
+                          decoration: InputDecoration(
+                            hintText: 'Business name (Optional)',
+                            filled: true,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
+                          maxLength: 40,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: businessDescriptionController,
+                          decoration: InputDecoration(
+                            hintText: 'Business description (Optional)',
+                            filled: true,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        ],
-                      ),
+                          maxLength: 280,
+                          maxLines: 5,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: personalWebsiteController,
+                          decoration: InputDecoration(
+                            hintText: 'Personal website (Optional)',
+                            filled: true,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: businessWebsiteController,
+                          decoration: InputDecoration(
+                            hintText: 'Business website (Optional)',
+                            filled: true,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
                     ),
+                  ),
+                  Container(
+                    child: isLoading ? const Loader() : Container(),
+                  )
+                ],
+              ),
             );
           },
           error: (error, stackTrace) => ErrorText(error: error.toString()),

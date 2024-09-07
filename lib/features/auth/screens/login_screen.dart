@@ -30,48 +30,53 @@ class LoginScreen extends ConsumerWidget {
           )
         ],
       ),
-      body: isLoading
-          ? const Loader()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 30,
+      body: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 30,
+              ),
+              const Text(
+                Constants.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
-                const Text(
-                  Constants.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
+              ),
+              const Text(
+                Constants.subtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
-                const Text(
-                  Constants.subtitle,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
-                  ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  Constants.loginPath,
+                  height: 400,
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    Constants.loginPath,
-                    height: 400,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SignInButton(),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const SignInButton(),
+            ],
+          ),
+          Container(
+            child: isLoading ? const Loader() : Container(),
+          )
+        ],
+      ),
     );
   }
 }

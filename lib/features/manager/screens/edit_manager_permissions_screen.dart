@@ -97,268 +97,271 @@ class _EditManagerPermissionsScreenState
                           ),
                         ],
                       ),
-                      body: isLoading
-                          ? const Loader()
-                          : Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      service!.image == Constants.avatarDefault
-                                          ? CircleAvatar(
-                                              backgroundImage:
-                                                  Image.asset(service.image)
-                                                      .image,
-                                              radius: 25,
-                                            )
-                                          : CircleAvatar(
-                                              backgroundImage:
-                                                  NetworkImage(service.image),
-                                              radius: 25,
-                                            ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          service.title,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                      body: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    service!.image == Constants.avatarDefault
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                Image.asset(service.image)
+                                                    .image,
+                                            radius: 25,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage:
+                                                NetworkImage(service.image),
+                                            radius: 25,
                                           ),
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        service.title,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount:
-                                          ManagerPermissions.values.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final permission =
-                                            ManagerPermissions.values[index];
-                                        List<Widget> _icons = [];
-
-                                        switch (permission.value) {
-                                          case 'Edit Policy':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.edit,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Add Manager':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.handyman,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Remove Manager':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.handyman,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Create Rule':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.account_balance,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Edit Rule':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.edit,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Remove Rule':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.account_balance,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Add Member':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.construction,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Remove Member':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.construction,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Edit Member Permissions':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.auto_fix_high,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Add Consumer':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.miscellaneous_services,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Remove Consumer':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.miscellaneous_services,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          case 'Edit Manager Permissions':
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.auto_fix_normal,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                            break;
-                                          default:
-                                            _icons.add(
-                                              const Icon(
-                                                Icons.lock,
-                                                color: Colors.white,
-                                                size: 10,
-                                              ),
-                                            );
-                                        }
-
-                                        final permissionIcon = CircleAvatar(
-                                          radius: 14,
-                                          backgroundColor: Pallete.greyColor,
-                                          child: CircleAvatar(
-                                            radius: 13,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: _icons,
-                                            ),
-                                          ),
-                                        );
-
-                                        return CheckboxListTile(
-                                          secondary: permissionIcon,
-                                          title: Text(permission.value),
-                                          value: permissions
-                                                  .contains(permission.value)
-                                              ? true
-                                              : false,
-                                          onChanged: (isChecked) {
-                                            setState(() {
-                                              if (isChecked!) {
-                                                permissions
-                                                    .add(permission.value);
-                                              } else {
-                                                permissions
-                                                    .remove(permission.value);
-                                              }
-                                            });
-                                          },
-                                          controlAffinity:
-                                              ListTileControlAffinity.trailing,
-                                          activeColor: Pallete.policyColor,
-                                        );
-                                      },
                                     ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: ManagerPermissions.values.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final permission =
+                                          ManagerPermissions.values[index];
+                                      List<Widget> _icons = [];
+
+                                      switch (permission.value) {
+                                        case 'Edit Policy':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Add Manager':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.handyman,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Remove Manager':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.handyman,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Create Rule':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.account_balance,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Edit Rule':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Remove Rule':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.account_balance,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Add Member':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.construction,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Remove Member':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.construction,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Edit Member Permissions':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.auto_fix_high,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Add Consumer':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.miscellaneous_services,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Remove Consumer':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.miscellaneous_services,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.remove,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        case 'Edit Manager Permissions':
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.auto_fix_normal,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                          break;
+                                        default:
+                                          _icons.add(
+                                            const Icon(
+                                              Icons.lock,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          );
+                                      }
+
+                                      final permissionIcon = CircleAvatar(
+                                        radius: 14,
+                                        backgroundColor: Pallete.greyColor,
+                                        child: CircleAvatar(
+                                          radius: 13,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: _icons,
+                                          ),
+                                        ),
+                                      );
+
+                                      return CheckboxListTile(
+                                        secondary: permissionIcon,
+                                        title: Text(permission.value),
+                                        value: permissions
+                                                .contains(permission.value)
+                                            ? true
+                                            : false,
+                                        onChanged: (isChecked) {
+                                          setState(() {
+                                            if (isChecked!) {
+                                              permissions.add(permission.value);
+                                            } else {
+                                              permissions
+                                                  .remove(permission.value);
+                                            }
+                                          });
+                                        },
+                                        controlAffinity:
+                                            ListTileControlAffinity.trailing,
+                                        activeColor: Pallete.policyColor,
+                                      );
+                                    },
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
+                          ),
+                          Container(
+                            child: isLoading ? const Loader() : Container(),
+                          )
+                        ],
+                      ),
                     );
                   },
                   error: (error, stackTrace) => ErrorText(

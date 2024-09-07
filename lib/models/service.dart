@@ -1,5 +1,17 @@
 import 'package:flutter/foundation.dart';
 
+// ***********************************************
+// ***********************************************
+// ***********************************************
+// ***********************************************
+// ***********************************************
+// HERE ROB ADD EXPIRY DATE
+// ***********************************************
+// ***********************************************
+// ***********************************************
+// ***********************************************
+// ***********************************************
+
 // Abstract representation of energy or a person, place or thing.
 class Service {
   final String serviceId;
@@ -30,6 +42,7 @@ class Service {
   final List<String> tags;
   final List<String> likes;
   final List<String> policies;
+  final DateTime expiryDate;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   Service({
@@ -61,6 +74,7 @@ class Service {
     required this.tags,
     required this.likes,
     required this.policies,
+    required this.expiryDate,
     required this.lastUpdateDate,
     required this.creationDate,
   });
@@ -94,6 +108,7 @@ class Service {
     List<String>? tags,
     List<String>? likes,
     List<String>? policies,
+    DateTime? expiryDate,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
@@ -126,6 +141,7 @@ class Service {
       tags: tags ?? this.tags,
       likes: likes ?? this.likes,
       policies: policies ?? this.policies,
+      expiryDate: expiryDate ?? this.expiryDate,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
     );
@@ -161,6 +177,7 @@ class Service {
       'tags': tags,
       'likes': likes,
       'policies': policies,
+      'expiryDate': expiryDate.millisecondsSinceEpoch,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
     };
@@ -196,6 +213,7 @@ class Service {
       tags: List<String>.from(map['tags']),
       likes: List<String>.from(map['likes']),
       policies: List<String>.from(map['policies']),
+      expiryDate: DateTime.fromMillisecondsSinceEpoch(map['expiryDate'] as int),
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
       creationDate:
@@ -205,7 +223,7 @@ class Service {
 
   @override
   String toString() {
-    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBeOrdered: $canBeOrdered, price: $price, type: $type, frequency: $frequency, frequencyUnit: $frequencyUnit, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, currency: $currency, tags: $tags, likes: $likes, policies: $policies, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Service(serviceId: $serviceId, uid: $uid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, canBeOrdered: $canBeOrdered, price: $price, type: $type, frequency: $frequency, frequencyUnit: $frequencyUnit, quantity: $quantity, height: $height, length: $length, width: $width, sizeUnit: $sizeUnit, weight: $weight, weightUnit: $weightUnit, currency: $currency, tags: $tags, likes: $likes, policies: $policies, expiryDate: $expiryDate, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -240,6 +258,7 @@ class Service {
         listEquals(other.tags, tags) &&
         listEquals(other.likes, likes) &&
         listEquals(other.policies, policies) &&
+        other.expiryDate == expiryDate &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
   }
@@ -274,6 +293,7 @@ class Service {
         tags.hashCode ^
         likes.hashCode ^
         policies.hashCode ^
+        expiryDate.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
   }

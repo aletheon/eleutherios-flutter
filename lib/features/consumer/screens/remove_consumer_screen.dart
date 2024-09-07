@@ -99,9 +99,9 @@ class _RemoveConsumerScreenState extends ConsumerState<RemoveConsumerScreen> {
               ),
             ),
           ),
-          body: isLoading
-              ? const Loader()
-              : policy!.consumers.isEmpty
+          body: Stack(
+            children: <Widget>[
+              policy!.consumers.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Container(
@@ -219,6 +219,11 @@ class _RemoveConsumerScreenState extends ConsumerState<RemoveConsumerScreen> {
                         },
                       ),
                     ),
+              Container(
+                child: isLoading ? const Loader() : Container(),
+              )
+            ],
+          ),
         );
       },
       error: (error, stackTrace) => ErrorText(error: error.toString()),
