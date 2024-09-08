@@ -18,6 +18,13 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
+// ***********************************************************************
+// ***********************************************************************
+// HERE ROB VALIDATE WHY shoppingCartUsers keeps being created so many times???
+// ***********************************************************************
+// ***********************************************************************
+// ***********************************************************************
+
 final searchRadioProvider = StateProvider<String>((ref) => 'Private');
 
 class AddMemberScreen extends ConsumerStatefulWidget {

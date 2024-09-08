@@ -564,13 +564,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                 ),
                                               ],
                                             ),
-                                            //  HERE ROB
-                                            //  HERE ROB
-                                            //  HERE ROB
-                                            //  HERE ROB
-                                            //  HERE ROB
-                                            //  HERE ROB
-                                            //  HERE ROB
                                             service.uid != user.uid &&
                                                     service.canBeOrdered == true
                                                 ? Column(
@@ -584,159 +577,159 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                             color: Colors.grey,
                                                             thickness: 1.0),
                                                       ),
-
                                                       // add to cart button(s)
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    right: 10),
-                                                            child: Text(
-                                                                '${service.quantity} available'),
-                                                          ),
-                                                          Card(
-                                                            color: Colors.blue,
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: Wrap(
+                                                          crossAxisAlignment:
+                                                              WrapCrossAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      right:
                                                                           10),
+                                                              child: Text(
+                                                                '${service.quantity} available',
+                                                                softWrap: true,
+                                                              ),
                                                             ),
-                                                            child: SizedBox(
-                                                              height: 35,
-                                                              width: 120,
-                                                              child:
-                                                                  AnimatedSwitcher(
-                                                                duration:
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            500),
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    IconButton(
-                                                                        icon: const Icon(Icons
-                                                                            .remove),
-                                                                        onPressed:
-                                                                            () {
-                                                                          setState(
+                                                            Card(
+                                                              color:
+                                                                  Colors.blue,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: SizedBox(
+                                                                height: 35,
+                                                                width: 130,
+                                                                child:
+                                                                    AnimatedSwitcher(
+                                                                  duration: const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      IconButton(
+                                                                          icon: const Icon(Icons
+                                                                              .remove),
+                                                                          onPressed:
                                                                               () {
-                                                                            if (quantity >
-                                                                                0) {
-                                                                              quantity--;
-                                                                            }
-                                                                          });
-                                                                          decreaseQuantity(
-                                                                            context,
-                                                                            shoppingCart,
-                                                                            shoppingCartItem,
-                                                                            user,
-                                                                            service,
-                                                                          );
-                                                                        }),
-                                                                    shoppingCartItem !=
-                                                                            null
-                                                                        ? Text((shoppingCartItem.quantity)
-                                                                            .toString())
-                                                                        : Text(quantity
-                                                                            .toString()),
-                                                                    IconButton(
-                                                                        icon: const Icon(Icons
-                                                                            .add),
-                                                                        onPressed:
-                                                                            () {
-                                                                          setState(
+                                                                            setState(() {
+                                                                              if (quantity > 0) {
+                                                                                quantity--;
+                                                                              }
+                                                                            });
+                                                                            decreaseQuantity(
+                                                                              context,
+                                                                              shoppingCart,
+                                                                              shoppingCartItem,
+                                                                              user,
+                                                                              service,
+                                                                            );
+                                                                          }),
+                                                                      shoppingCartItem !=
+                                                                              null
+                                                                          ? Text((shoppingCartItem.quantity)
+                                                                              .toString())
+                                                                          : Text(
+                                                                              quantity.toString()),
+                                                                      IconButton(
+                                                                          icon: const Icon(Icons
+                                                                              .add),
+                                                                          onPressed:
                                                                               () {
-                                                                            quantity++;
-                                                                          });
-                                                                          increaseQuantity(
-                                                                            context,
-                                                                            shoppingCart,
-                                                                            shoppingCartItem,
-                                                                            user,
-                                                                            service,
-                                                                          );
-                                                                        }),
-                                                                  ],
+                                                                            setState(() {
+                                                                              quantity++;
+                                                                            });
+                                                                            increaseQuantity(
+                                                                              context,
+                                                                              shoppingCart,
+                                                                              shoppingCartItem,
+                                                                              user,
+                                                                              service,
+                                                                            );
+                                                                          }),
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          shoppingCart.services
-                                                                      .contains(
-                                                                          service
-                                                                              .serviceId) ==
-                                                                  false
-                                                              ? Container(
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          left:
-                                                                              5,
-                                                                          right:
-                                                                              5),
-                                                                  child:
-                                                                      OutlinedButton(
-                                                                    onPressed: () =>
-                                                                        addToCart(
-                                                                      context,
-                                                                      shoppingCart,
-                                                                      user,
-                                                                      service,
+                                                            shoppingCart.services
+                                                                        .contains(
+                                                                            service.serviceId) ==
+                                                                    false
+                                                                ? Container(
+                                                                    margin: const EdgeInsets
+                                                                        .only(
+                                                                        left: 5,
+                                                                        right:
+                                                                            5),
+                                                                    child:
+                                                                        OutlinedButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              addToCart(
+                                                                        context,
+                                                                        shoppingCart,
+                                                                        user,
+                                                                        service,
+                                                                      ),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                          backgroundColor: Pallete.darkGreenColor,
+                                                                          shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                      child: const Text(
+                                                                          'Add to Cart'),
                                                                     ),
-                                                                    style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: Pallete.darkGreenColor,
-                                                                        shape: RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                    child: const Text(
-                                                                        'Add to Cart'),
-                                                                  ),
-                                                                )
-                                                              : Container(
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          left:
-                                                                              5,
-                                                                          right:
-                                                                              5),
-                                                                  child:
-                                                                      OutlinedButton(
-                                                                    onPressed: () =>
-                                                                        removeFromCart(
-                                                                      context,
-                                                                      shoppingCart,
-                                                                      shoppingCartItem,
-                                                                      user,
-                                                                      service,
+                                                                  )
+                                                                : Container(
+                                                                    margin: const EdgeInsets
+                                                                        .only(
+                                                                        left: 5,
+                                                                        right:
+                                                                            5),
+                                                                    child:
+                                                                        OutlinedButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              removeFromCart(
+                                                                        context,
+                                                                        shoppingCart,
+                                                                        shoppingCartItem,
+                                                                        user,
+                                                                        service,
+                                                                      ),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                          backgroundColor: Pallete.redPinkColor,
+                                                                          shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                      child: const Text(
+                                                                          'Remove from Cart'),
                                                                     ),
-                                                                    style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: Pallete.redPinkColor,
-                                                                        shape: RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                    child: const Text(
-                                                                        'Remove from Cart'),
                                                                   ),
-                                                                ),
-                                                        ],
-                                                      ),
+                                                          ],
+                                                        ),
+                                                      )
                                                     ],
                                                   )
                                                 : const SizedBox(),
