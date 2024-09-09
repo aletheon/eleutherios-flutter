@@ -18,13 +18,6 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
-// ***********************************************************************
-// ***********************************************************************
-// HERE ROB VALIDATE WHY shoppingCartUsers keeps being created so many times???
-// ***********************************************************************
-// ***********************************************************************
-// ***********************************************************************
-
 class ServiceScreen extends ConsumerStatefulWidget {
   final String serviceId;
   const ServiceScreen({super.key, required this.serviceId});
@@ -616,7 +609,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                               ),
                                                               child: SizedBox(
                                                                 height: 35,
-                                                                width: 130,
+                                                                width: 120,
                                                                 child:
                                                                     AnimatedSwitcher(
                                                                   duration: const Duration(
@@ -680,11 +673,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                             service.serviceId) ==
                                                                     false
                                                                 ? Container(
-                                                                    margin: const EdgeInsets
-                                                                        .only(
-                                                                        left: 5,
-                                                                        right:
-                                                                            5),
+                                                                    margin:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      left: 5,
+                                                                    ),
                                                                     child:
                                                                         OutlinedButton(
                                                                       onPressed:
@@ -707,11 +700,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                     ),
                                                                   )
                                                                 : Container(
-                                                                    margin: const EdgeInsets
-                                                                        .only(
-                                                                        left: 5,
-                                                                        right:
-                                                                            5),
+                                                                    margin:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      left: 5,
+                                                                    ),
                                                                     child:
                                                                         OutlinedButton(
                                                                       onPressed:
