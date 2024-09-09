@@ -65,19 +65,23 @@ class AuthController extends StateNotifier<bool> {
     if (eitherUserModel.isRight()) {
       UserModel? user = eitherUserModel.toOption().toNullable();
 
-      // create a shopping cart for this user
-      String shoppingCartId = const Uuid().v1().replaceAll('-', '');
-      ShoppingCart shoppingCart = ShoppingCart(
-        shoppingCartId: shoppingCartId,
-        uid: user!.uid,
-        services: [],
-        items: [],
-        lastUpdateDate: DateTime.now(),
-        creationDate: DateTime.now(),
-      );
-      await _shoppingCartRepository.createShoppingCart(shoppingCart);
-      user = user.copyWith(shoppingCartId: shoppingCartId);
-      await _userProfileRepository.updateUser(user);
+      if (user != null) {
+        if (user.shoppingCartId.isEmpty) {
+          // create a shopping cart for this user
+          String shoppingCartId = const Uuid().v1().replaceAll('-', '');
+          ShoppingCart shoppingCart = ShoppingCart(
+            shoppingCartId: shoppingCartId,
+            uid: user.uid,
+            services: [],
+            items: [],
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+          await _shoppingCartRepository.createShoppingCart(shoppingCart);
+          user = user.copyWith(shoppingCartId: shoppingCartId);
+          await _userProfileRepository.updateUser(user);
+        }
+      }
     }
     state = false;
     eitherUserModel.fold(

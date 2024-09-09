@@ -70,6 +70,8 @@ class ShoppingCartController extends StateNotifier<bool> {
     state = true;
     String shoppingCartId = const Uuid().v1().replaceAll('-', '');
 
+    print('created shopping cart');
+
     // create shopping cart
     ShoppingCart shoppingCart = ShoppingCart(
       shoppingCartId: shoppingCartId,
@@ -91,6 +93,9 @@ class ShoppingCartController extends StateNotifier<bool> {
       {required ShoppingCart shoppingCart,
       required BuildContext context}) async {
     state = true;
+
+    print('updating shopping cart ${shoppingCart.shoppingCartId}');
+
     final shoppingCartRes =
         await _shoppingCartRepository.updateShoppingCart(shoppingCart);
     state = false;
@@ -101,6 +106,8 @@ class ShoppingCartController extends StateNotifier<bool> {
 
   void deleteShoppingCart(String shoppingCartId, BuildContext context) async {
     state = true;
+
+    print('deleting shopping cart $shoppingCartId');
 
     // get shopping cart
     final shoppingCart = await _ref
