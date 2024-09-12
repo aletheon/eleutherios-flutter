@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
@@ -17,6 +18,9 @@ import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
+
+// HERE ROB LIST EACH SHOPPING CART USER WITH ADD AND REMOVE BUTTON ON THIS PAGE TO
+// ENABLE END USER TO SELECT WHICH CART THEY WANT TO ADD THE SERVICE TOO
 
 class ServiceScreen extends ConsumerStatefulWidget {
   final String serviceId;
@@ -37,7 +41,34 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     UserModel user,
     Service service,
   ) {
-    if (service.quantity > 0) {
+    // add physical item to shopping cart
+    if (service.type == ServiceType.physical.value) {
+      if (service.quantity > 0) {
+        if (user.shoppingCartUserIds.isEmpty) {
+          // add service to the currently logged in user
+          ref
+              .read(shoppingCartItemControllerProvider.notifier)
+              .createShoppingCartItem(
+                user,
+                shoppingCart,
+                null,
+                null,
+                service.serviceId,
+                quantity,
+                context,
+              );
+        } else {
+          // let the user choose which cart they want to add the service to including their own cart
+          Routemaster.of(context).push('add-to-cart');
+        }
+      } else {
+        showSnackBar(
+            context,
+            'There is not enough of this service to purchase there is zero available',
+            true);
+      }
+    } else {
+      // add non-physical item to shopping cart
       if (user.shoppingCartUserIds.isEmpty) {
         // add service to the currently logged in user
         ref
@@ -48,18 +79,13 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
               null,
               null,
               service.serviceId,
-              quantity,
+              1,
               context,
             );
       } else {
         // let the user choose which cart they want to add the service to including their own cart
         Routemaster.of(context).push('add-to-cart');
       }
-    } else {
-      showSnackBar(
-          context,
-          'There is not enough of this service to purchase there is zero available',
-          true);
     }
   }
 
@@ -586,88 +612,87 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                               WrapCrossAlignment
                                                                   .center,
                                                           children: [
-                                                            Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right:
-                                                                          10),
-                                                              child: Text(
-                                                                '${service.quantity} available',
-                                                                softWrap: true,
-                                                              ),
-                                                            ),
-                                                            Card(
-                                                              color:
-                                                                  Colors.blue,
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
+                                                            service.quantity !=
+                                                                    -1
+                                                                ? Container(
+                                                                    margin: const EdgeInsets
+                                                                        .only(
+                                                                        right:
                                                                             10),
-                                                              ),
-                                                              child: SizedBox(
-                                                                height: 35,
-                                                                width: 120,
-                                                                child:
-                                                                    AnimatedSwitcher(
-                                                                  duration: const Duration(
-                                                                      milliseconds:
-                                                                          500),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
-                                                                    children: [
-                                                                      IconButton(
-                                                                          icon: const Icon(Icons
-                                                                              .remove),
-                                                                          onPressed:
-                                                                              () {
-                                                                            setState(() {
-                                                                              if (quantity > 0) {
-                                                                                quantity--;
-                                                                              }
-                                                                            });
-                                                                            decreaseQuantity(
-                                                                              context,
-                                                                              shoppingCart,
-                                                                              shoppingCartItem,
-                                                                              user,
-                                                                              service,
-                                                                            );
-                                                                          }),
-                                                                      shoppingCartItem !=
-                                                                              null
-                                                                          ? Text((shoppingCartItem.quantity)
-                                                                              .toString())
-                                                                          : Text(
-                                                                              quantity.toString()),
-                                                                      IconButton(
-                                                                          icon: const Icon(Icons
-                                                                              .add),
-                                                                          onPressed:
-                                                                              () {
-                                                                            setState(() {
-                                                                              quantity++;
-                                                                            });
-                                                                            increaseQuantity(
-                                                                              context,
-                                                                              shoppingCart,
-                                                                              shoppingCartItem,
-                                                                              user,
-                                                                              service,
-                                                                            );
-                                                                          }),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
+                                                                    child: Text(
+                                                                      '${service.quantity} available',
+                                                                      softWrap:
+                                                                          true,
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox(),
+                                                            service.quantity !=
+                                                                    -1
+                                                                ? Card(
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10),
+                                                                    ),
+                                                                    child:
+                                                                        SizedBox(
+                                                                      height:
+                                                                          35,
+                                                                      width:
+                                                                          120,
+                                                                      child:
+                                                                          AnimatedSwitcher(
+                                                                        duration:
+                                                                            const Duration(milliseconds: 500),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            IconButton(
+                                                                                icon: const Icon(Icons.remove),
+                                                                                onPressed: () {
+                                                                                  setState(() {
+                                                                                    if (quantity > 0) {
+                                                                                      quantity--;
+                                                                                    }
+                                                                                  });
+                                                                                  decreaseQuantity(
+                                                                                    context,
+                                                                                    shoppingCart,
+                                                                                    shoppingCartItem,
+                                                                                    user,
+                                                                                    service,
+                                                                                  );
+                                                                                }),
+                                                                            shoppingCartItem != null
+                                                                                ? Text((shoppingCartItem.quantity).toString())
+                                                                                : Text(quantity.toString()),
+                                                                            IconButton(
+                                                                                icon: const Icon(Icons.add),
+                                                                                onPressed: () {
+                                                                                  setState(() {
+                                                                                    quantity++;
+                                                                                  });
+                                                                                  increaseQuantity(
+                                                                                    context,
+                                                                                    shoppingCart,
+                                                                                    shoppingCartItem,
+                                                                                    user,
+                                                                                    service,
+                                                                                  );
+                                                                                }),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox(),
                                                             shoppingCart.services
                                                                         .contains(
                                                                             service.serviceId) ==

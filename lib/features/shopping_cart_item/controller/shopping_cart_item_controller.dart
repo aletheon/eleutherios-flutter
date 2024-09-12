@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
@@ -133,6 +134,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     state = true;
     Forum? forum; // placeholder for forum
     Member? member; // placeholder for member
+    bool canAddServiceToCart = true;
 
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
@@ -143,36 +145,100 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     if (shoppingCart != null && service != null) {
       // ensure service is not already an item
       if (shoppingCart.services.contains(serviceId) == false) {
-        if (quantity > 0) {
-          if (service.quantity > 0 && service.quantity >= quantity) {
-            if (forumId != null) {
-              forum = await _ref
-                  .read(forumControllerProvider.notifier)
-                  .getForumById(forumId)
-                  .first;
-            }
-            if (memberId != null) {
-              member = await _ref
-                  .read(memberControllerProvider.notifier)
-                  .getMemberById(memberId)
-                  .first;
-            }
-            String shoppingCartItemId = const Uuid().v1().replaceAll('-', '');
+        if (forumId != null) {
+          forum = await _ref
+              .read(forumControllerProvider.notifier)
+              .getForumById(forumId)
+              .first;
+        }
+        if (memberId != null) {
+          member = await _ref
+              .read(memberControllerProvider.notifier)
+              .getMemberById(memberId)
+              .first;
+        }
+        String shoppingCartItemId = const Uuid().v1().replaceAll('-', '');
 
+        // declare shopping cart item
+        ShoppingCartItem shoppingCartItem = ShoppingCartItem(
+          shoppingCartItemId: shoppingCartItemId,
+          shoppingCartId: shoppingCart.shoppingCartId,
+          shoppingCartUid: shoppingCart.uid,
+          forumId: forum != null ? forum.forumId : '',
+          forumUid: forum != null ? forum.uid : '',
+          memberId: member != null ? member.memberId : '',
+          serviceId: serviceId,
+          serviceUid: service.uid,
+          quantity: quantity,
+          lastUpdateDate: DateTime.now(),
+          creationDate: DateTime.now(),
+        );
+
+        if (member != null &&
+            member.permissions.contains(MemberPermissions.addtocart.value) ==
+                false) {
+          canAddServiceToCart = false;
+        }
+
+        if (canAddServiceToCart) {
+          if (service.type == ServiceType.physical.value) {
+            if (quantity > 0) {
+              if (service.quantity > 0 && service.quantity >= quantity) {
+                // create shopping cart item
+                final res = await _shoppingCartItemRepository
+                    .createShoppingCartItem(shoppingCartItem);
+
+                // add service to shopping cart items and service list
+                shoppingCart.items.add(shoppingCartItemId);
+                shoppingCart.services.add(serviceId);
+                await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+                // add shopping cart item to users shoppingCartItems list
+                user.shoppingCartItemIds.add(shoppingCartItemId);
+                await _userProfileRepository.updateUser(user);
+
+                // check if we need to add shopping cart item to owners shoppingCartItems list
+                if (shoppingCart.uid != user.uid) {
+                  // get owner
+                  UserModel? owner = await _ref
+                      .read(authControllerProvider.notifier)
+                      .getUserData(shoppingCart.uid)
+                      .first;
+
+                  if (owner != null) {
+                    // add shopping cart item to owners shoppingCartItems list
+                    owner.shoppingCartItemIds.add(shoppingCartItemId);
+                    await _userProfileRepository.updateUser(owner);
+                  }
+                }
+
+                // reduce service quantity
+                service =
+                    service.copyWith(quantity: service.quantity - quantity);
+                await _serviceRepository.updateService(service);
+
+                state = false;
+                res.fold((l) => showSnackBar(context, l.message, true), (r) {
+                  showSnackBar(
+                      context, 'Shopping cart item added successfully!', false);
+                });
+              } else {
+                state = false;
+                if (context.mounted) {
+                  showSnackBar(
+                      context,
+                      'There is not enough of this service to purchase only ${service.quantity} available',
+                      true);
+                }
+              }
+            } else {
+              state = false;
+              if (context.mounted) {
+                showSnackBar(context, 'Quantity cannot be empty', true);
+              }
+            }
+          } else {
             // create shopping cart item
-            ShoppingCartItem shoppingCartItem = ShoppingCartItem(
-              shoppingCartItemId: shoppingCartItemId,
-              shoppingCartId: shoppingCart.shoppingCartId,
-              shoppingCartUid: shoppingCart.uid,
-              forumId: forum != null ? forum.forumId : '',
-              forumUid: forum != null ? forum.uid : '',
-              memberId: member != null ? member.memberId : '',
-              serviceId: serviceId,
-              serviceUid: service.uid,
-              quantity: quantity,
-              lastUpdateDate: DateTime.now(),
-              creationDate: DateTime.now(),
-            );
             final res = await _shoppingCartItemRepository
                 .createShoppingCartItem(shoppingCartItem);
 
@@ -184,18 +250,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             // add shopping cart item to users shoppingCartItems list
             user.shoppingCartItemIds.add(shoppingCartItemId);
             await _userProfileRepository.updateUser(user);
-
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
-            // HERE ROB VALIDATE ADDING AND REMOVING FROM OWNERS CART
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
-            // *********************************************************
 
             // check if we need to add shopping cart item to owners shoppingCartItems list
             if (shoppingCart.uid != user.uid) {
@@ -211,29 +265,19 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 await _userProfileRepository.updateUser(owner);
               }
             }
-
-            // reduce service quantity
-            service = service.copyWith(quantity: service.quantity - quantity);
-            await _serviceRepository.updateService(service);
-
             state = false;
             res.fold((l) => showSnackBar(context, l.message, true), (r) {
               showSnackBar(
                   context, 'Shopping cart item added successfully!', false);
             });
-          } else {
-            state = false;
-            if (context.mounted) {
-              showSnackBar(
-                  context,
-                  'There is not enough of this service to purchase only ${service.quantity} available',
-                  true);
-            }
           }
         } else {
           state = false;
           if (context.mounted) {
-            showSnackBar(context, 'Quantity cannot be empty', true);
+            showSnackBar(
+                context,
+                'Member does not have permission to add item to shopping cart',
+                true);
           }
         }
       } else {
