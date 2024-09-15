@@ -468,11 +468,12 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           }
         }
 
-        // update service
-        service = service.copyWith(
-            quantity: service.quantity + shoppingCartItem.quantity);
-        await _serviceRepository.updateService(service);
-
+        if (service.type == ServiceType.physical.value) {
+          // update service
+          service = service.copyWith(
+              quantity: service.quantity + shoppingCartItem.quantity);
+          await _serviceRepository.updateService(service);
+        }
         state = false;
         res.fold((l) => showSnackBar(context, l.message, true), (r) {
           if (context.mounted) {
