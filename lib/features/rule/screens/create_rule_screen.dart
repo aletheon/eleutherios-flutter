@@ -298,12 +298,23 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
               },
             ),
             const SizedBox(
-              height: 10,
+              height: 15,
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(bottom: 5),
+              child: const Text(
+                'Initialization',
+                style: TextStyle(
+                  color: Pallete.greyColor,
+                  fontSize: 16,
+                ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Icon(Icons.build_outlined, size: 21),
+                const Icon(Icons.workspaces_outlined, size: 21),
                 const SizedBox(
                   width: 12,
                 ),
@@ -311,7 +322,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Create a separate forum for each service when this rule is instantiated.",
+                      "Put all services into separate forums",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
@@ -328,7 +339,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Icon(Icons.attach_money_outlined, size: 22),
+                const Icon(Icons.hub_outlined, size: 22),
                 const SizedBox(
                   width: 12,
                 ),
@@ -336,7 +347,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Create a single forum for all services when this rule is instantiated.",
+                      "Put all services into the same forum",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
@@ -350,6 +361,9 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                     }),
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width,
               child: const Divider(color: Colors.grey, thickness: 1.0),
@@ -357,10 +371,21 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             const SizedBox(
               height: 10,
             ),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(bottom: 5),
+              child: const Text(
+                'Consumption',
+                style: TextStyle(
+                  color: Pallete.greyColor,
+                  fontSize: 16,
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Icon(Icons.build_outlined, size: 21),
+                const Icon(Icons.sms_outlined, size: 21),
                 const SizedBox(
                   width: 12,
                 ),
@@ -368,7 +393,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Create forum immediately when policy is consumed by a service.",
+                      "Create forum immediately",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
@@ -393,7 +418,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Create forum when service consuming policy is ordered by another service.  For example a patient paying to see a doctor.",
+                      "Create forum when service is ordered",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
