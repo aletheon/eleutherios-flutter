@@ -322,7 +322,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Put all services into separate forums",
+                      "Put services into separate forums",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
@@ -347,7 +347,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      "Put all services into the same forum",
+                      "Put services into the same forum",
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                   ),
