@@ -20,6 +20,8 @@ import 'package:routemaster/routemaster.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:tuple/tuple.dart';
 
+final ruleTypeRadioProvider =
+    StateProvider<String>((ref) => RuleType.multiple.value);
 final instantiationTypeRadioProvider =
     StateProvider<String>((ref) => InstantiationType.consume.value);
 
@@ -81,6 +83,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
         title: titleController.text.trim(),
         titleLowercase: titleController.text.trim().toLowerCase(),
         description: descriptionController.text.trim(),
+        ruleType: ref.read(ruleTypeRadioProvider.notifier).state,
         instantiationType:
             ref.read(instantiationTypeRadioProvider.notifier).state,
         public: isChecked,
@@ -146,6 +149,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(ruleControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
+    final ruleTypeRadioProv = ref.watch(ruleTypeRadioProvider.notifier).state;
     final instantiationTypeRadioProv =
         ref.watch(instantiationTypeRadioProvider.notifier).state;
 
@@ -481,6 +485,66 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: const Text(
+                                    "Create a separate forum for each service when this rule is instantiated.",
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                  ),
+                                ),
+                              ),
+                              Radio(
+                                  value: RuleType.multiple.value,
+                                  groupValue: ruleTypeRadioProv,
+                                  onChanged: (newValue) {
+                                    ref
+                                        .read(ruleTypeRadioProvider.notifier)
+                                        .state = newValue.toString();
+                                  }),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.attach_money_outlined, size: 22),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
+                                    "Create a single forum for all services when this rule is instantiated.",
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                  ),
+                                ),
+                              ),
+                              Radio(
+                                  value: RuleType.single.value,
+                                  groupValue: ruleTypeRadioProv,
+                                  onChanged: (newValue) {
+                                    ref
+                                        .read(ruleTypeRadioProvider.notifier)
+                                        .state = newValue.toString();
+                                  }),
+                            ],
+                          ),
+                          SizedBox(
+                            width: MediaQuery.sizeOf(context).width,
+                            child: const Divider(
+                                color: Colors.grey, thickness: 1.0),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.build_outlined, size: 21),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
                                     "Create forum immediately when policy is consumed by a service.",
                                     textWidthBasis: TextWidthBasis.longestLine,
                                   ),
@@ -508,7 +572,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: const Text(
-                                    "Create forum when service consuming policy is ordered by another service.  For example a patient paying for a consultancy service from a doctor.",
+                                    "Create forum when service consuming policy is ordered by another service.  For example a patient paying to see a doctor.",
                                     textWidthBasis: TextWidthBasis.longestLine,
                                   ),
                                 ),

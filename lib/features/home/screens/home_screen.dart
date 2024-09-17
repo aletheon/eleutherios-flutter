@@ -78,9 +78,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           user.shoppingCartItemIds.isNotEmpty
               ? mybadge.Badge(
                   badgeContent: Text('${user.shoppingCartItemIds.length}'),
-                  position: mybadge.BadgePosition.topEnd(top: 0, end: 3),
+                  position: mybadge.BadgePosition.topEnd(top: 2, end: 3),
                   badgeAnimation: const mybadge.BadgeAnimation.scale(),
                   child: IconButton(
+                    alignment: Alignment.bottomCenter,
                     onPressed: () {
                       showCart(context);
                     },

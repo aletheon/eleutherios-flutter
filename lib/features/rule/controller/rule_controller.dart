@@ -90,6 +90,7 @@ class RuleController extends StateNotifier<bool> {
       String description,
       bool public,
       List<String>? tags,
+      String? ruleType,
       String? instantiationType,
       DateTime? instantiationDate,
       BuildContext context) async {
@@ -129,6 +130,7 @@ class RuleController extends StateNotifier<bool> {
         bannerFileType: 'image/jpeg',
         bannerFileName: Constants.ruleBannerDefault.split('/').last,
         public: public,
+        ruleType: ruleType ?? '',
         instantiationType: instantiationType ?? '',
         instantiationDate: instantiationDate ?? DateTime.now(),
         services: [],

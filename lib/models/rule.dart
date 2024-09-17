@@ -2,6 +2,16 @@ import 'package:flutter/foundation.dart';
 
 // A rule gets converted to a forum either when a user saves the policy to their service or
 // when another service orders the service or when a particular datetime for the rule is reached.
+
+// HERE ROB ADD ANOTHER OPTION TO ENABLE SERVICE TO BE A PART OF THE SAME RULE / FORUM WHEN THIS POLICY
+// IS CONSUMED OR A PART OF THEIR OWN RULE / FORUM WHEN THEY CONSUME THE POLICY
+// IE:
+// - When policy is consumed create a separate forum for this rule
+// - When policy is consumed use the same forum for this rule
+// This new field is important for allowing a service to share their data in the same forum
+// without having to recreate or share the data with each new consumer.  They can just have it in one
+// place for everybody to grab at
+
 class Rule {
   final String ruleId;
   final String uid; // owner or superuser of this rule
@@ -19,6 +29,7 @@ class Rule {
   final String bannerFileType;
   final String bannerFileName;
   final bool public; // visibility of rule
+  final String ruleType; // separate, single
   final String instantiationType; // consume, order, date
   final DateTime instantiationDate;
   final List<String> services; // copy of member services for redundancy sake
@@ -44,6 +55,7 @@ class Rule {
     required this.bannerFileType,
     required this.bannerFileName,
     required this.public,
+    required this.ruleType,
     required this.instantiationType,
     required this.instantiationDate,
     required this.services,
@@ -70,6 +82,7 @@ class Rule {
     String? bannerFileType,
     String? bannerFileName,
     bool? public,
+    String? ruleType,
     String? instantiationType,
     DateTime? instantiationDate,
     List<String>? services,
@@ -95,6 +108,7 @@ class Rule {
       bannerFileType: bannerFileType ?? this.bannerFileType,
       bannerFileName: bannerFileName ?? this.bannerFileName,
       public: public ?? this.public,
+      ruleType: ruleType ?? this.ruleType,
       instantiationType: instantiationType ?? this.instantiationType,
       instantiationDate: instantiationDate ?? this.instantiationDate,
       services: services ?? this.services,
@@ -123,6 +137,7 @@ class Rule {
       'bannerFileType': bannerFileType,
       'bannerFileName': bannerFileName,
       'public': public,
+      'ruleType': ruleType,
       'instantiationType': instantiationType,
       'instantiationDate': instantiationDate.millisecondsSinceEpoch,
       'services': services,
@@ -151,6 +166,7 @@ class Rule {
       bannerFileType: map['bannerFileType'] as String,
       bannerFileName: map['bannerFileName'] as String,
       public: map['public'] as bool,
+      ruleType: map['ruleType'] as String,
       instantiationType: map['instantiationType'] as String,
       instantiationDate:
           DateTime.fromMillisecondsSinceEpoch(map['instantiationDate'] as int),
@@ -166,7 +182,7 @@ class Rule {
 
   @override
   String toString() {
-    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, instantiationType: $instantiationType, instantiationDate: $instantiationDate, services: $services, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'Rule(ruleId: $ruleId, uid: $uid, policyId: $policyId, policyUid: $policyUid, managerId: $managerId, managerUid: $managerUid, title: $title, titleLowercase: $titleLowercase, description: $description, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, public: $public, instantiationType: $instantiationType, ruleType: $ruleType, instantiationDate: $instantiationDate, services: $services, members: $members, tags: $tags, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -189,6 +205,7 @@ class Rule {
         other.bannerFileType == bannerFileType &&
         other.bannerFileName == bannerFileName &&
         other.public == public &&
+        other.ruleType == ruleType &&
         other.instantiationType == instantiationType &&
         other.instantiationDate == instantiationDate &&
         listEquals(other.services, services) &&
@@ -216,6 +233,7 @@ class Rule {
         bannerFileType.hashCode ^
         bannerFileName.hashCode ^
         public.hashCode ^
+        ruleType.hashCode ^
         instantiationType.hashCode ^
         instantiationDate.hashCode ^
         services.hashCode ^

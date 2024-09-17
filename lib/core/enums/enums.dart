@@ -120,6 +120,22 @@ extension PaymentMethodValue on PaymentMethod {
   }
 }
 
+enum RuleType<String> {
+  single,
+  multiple,
+}
+
+extension RuleTypeValue on RuleType {
+  String get value {
+    switch (this) {
+      case RuleType.single:
+        return 'Single';
+      case RuleType.multiple:
+        return 'Multiple';
+    }
+  }
+}
+
 enum InstantiationType<String> {
   consume,
   order,
