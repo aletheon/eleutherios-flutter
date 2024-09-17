@@ -298,7 +298,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
               },
             ),
             const SizedBox(
-              height: 15,
+              height: 20,
             ),
             Container(
               alignment: Alignment.topLeft,
@@ -339,7 +339,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Icon(Icons.hub_outlined, size: 22),
+                const Icon(Icons.radio_button_unchecked_outlined, size: 22),
                 const SizedBox(
                   width: 12,
                 ),
@@ -362,7 +362,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width,
