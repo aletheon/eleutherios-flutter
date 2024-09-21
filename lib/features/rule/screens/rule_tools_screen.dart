@@ -36,8 +36,8 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
     Routemaster.of(context).push('remove-rule-member');
   }
 
-  void potentialMemberPermissions(BuildContext context) {
-    Routemaster.of(context).push('potential-member-permissions');
+  void ruleMemberPermissions(BuildContext context) {
+    Routemaster.of(context).push('rule-member-permissions');
   }
 
   validateUser() async {
@@ -104,7 +104,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                 user.uid == policy.uid ||
                                         manager!.permissions.contains(
                                             ManagerPermissions
-                                                .addpotentialmember.value)
+                                                .addrulemember.value)
                                     ? ListTile(
                                         onTap: () => addMember(context),
                                         leading: const Icon(
@@ -115,7 +115,7 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                 user.uid == policy.uid ||
                                         manager!.permissions.contains(
                                             ManagerPermissions
-                                                .removepotentialmember.value)
+                                                .removerulemember.value)
                                     ? ListTile(
                                         onTap: () => removeMember(context),
                                         leading: const Icon(
@@ -126,11 +126,11 @@ class _RuleToolsScreenState extends ConsumerState<RuleToolsScreen> {
                                 user.uid == policy.uid ||
                                         manager!.permissions.contains(
                                             ManagerPermissions
-                                                .editpotentialmemberpermissions
+                                                .editrulememberpermissions
                                                 .value)
                                     ? ListTile(
                                         onTap: () =>
-                                            potentialMemberPermissions(context),
+                                            ruleMemberPermissions(context),
                                         leading:
                                             const Icon(Icons.list_alt_outlined),
                                         title: const Text('Member Permissions'),

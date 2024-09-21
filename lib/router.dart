@@ -34,8 +34,8 @@ import 'package:reddit_tutorial/features/rule/screens/remove_rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/rule_screen.dart';
 import 'package:reddit_tutorial/features/rule/screens/rule_tools_screen.dart';
 import 'package:reddit_tutorial/features/rule_member/screens/add_rule_member_screen.dart';
-import 'package:reddit_tutorial/features/rule_member/screens/edit_potential_member_permissions_screen.dart';
-import 'package:reddit_tutorial/features/rule_member/screens/potential_member_permissions_screen.dart';
+import 'package:reddit_tutorial/features/rule_member/screens/edit_rule_member_permissions_screen.dart';
+import 'package:reddit_tutorial/features/rule_member/screens/rule_member_permissions_screen.dart';
 import 'package:reddit_tutorial/features/rule_member/screens/remove_rule_member_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/add_policy_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/create_service_screen.dart';
@@ -695,34 +695,34 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
+  '/policy/:policyid/rule/:ruleid/rule-tools/rule-member-permissions':
       (route) => MaterialPage(
-            child: PotentialMemberPermissionsScreen(
+            child: RuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
+  '/policy/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
-            child: EditPotentialMemberPermissionsScreen(
+            child: EditRuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
               ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+  '/policy/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+  '/policy/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/edit':
       (route) => MaterialPage(
             child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/policy/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
+  '/policy/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/add-to-cart':
       (route) => MaterialPage(
             child: AddToCartScreen(
               serviceId: route.pathParameters['serviceid']!,
@@ -1111,34 +1111,34 @@ final loggedInRoute = RouteMap(routes: {
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions':
       (route) => MaterialPage(
-            child: PotentialMemberPermissionsScreen(
+            child: RuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
-            child: EditPotentialMemberPermissionsScreen(
+            child: EditRuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
               ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/edit':
       (route) => MaterialPage(
             child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
+  '/policy/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/add-to-cart':
       (route) => MaterialPage(
             child: AddToCartScreen(
               serviceId: route.pathParameters['serviceid']!,
@@ -1287,34 +1287,34 @@ final loggedInRoute = RouteMap(routes: {
           ruleId: route.pathParameters['ruleid']!,
         ),
       ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/rule-member-permissions':
       (route) => MaterialPage(
-            child: PotentialMemberPermissionsScreen(
+            child: RuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
-            child: EditPotentialMemberPermissionsScreen(
+            child: EditRuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
               ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/edit':
       (route) => MaterialPage(
             child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
+  '/user/policy/list/:policyid/rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/add-to-cart':
       (route) => MaterialPage(
             child: AddToCartScreen(
               serviceId: route.pathParameters['serviceid']!,
@@ -1484,34 +1484,34 @@ final loggedInRoute = RouteMap(routes: {
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions':
       (route) => MaterialPage(
-            child: PotentialMemberPermissionsScreen(
+            child: RuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/edit/:rulememberid':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/edit/:rulememberid':
       (route) => MaterialPage(
-            child: EditPotentialMemberPermissionsScreen(
+            child: EditRuleMemberPermissionsScreen(
               policyId: route.pathParameters['policyid']!,
               ruleId: route.pathParameters['ruleid']!,
               ruleMemberId: route.pathParameters['rulememberid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid':
       (route) => MaterialPage(
             child: ServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/edit':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/edit':
       (route) => MaterialPage(
             child: EditServiceScreen(
               serviceId: route.pathParameters['serviceid']!,
             ),
           ),
-  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/potential-member-permissions/service/:serviceid/add-to-cart':
+  '/user/policy/list/:policyid/policy-tools/remove-rule/:ruleid/rule-tools/rule-member-permissions/service/:serviceid/add-to-cart':
       (route) => MaterialPage(
             child: AddToCartScreen(
               serviceId: route.pathParameters['serviceid']!,

@@ -322,7 +322,7 @@ class _AddRuleMemberScreenState extends ConsumerState<AddRuleMemberScreen> {
     if (rule!.uid != user.uid) {
       if (manager != null &&
           manager.permissions
-                  .contains(ManagerPermissions.addpotentialmember.value) ==
+                  .contains(ManagerPermissions.addrulemember.value) ==
               false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(context,

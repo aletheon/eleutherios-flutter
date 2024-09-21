@@ -14,19 +14,19 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
-class PotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
+class RuleMemberPermissionsScreen extends ConsumerStatefulWidget {
   final String policyId;
   final String ruleId;
-  const PotentialMemberPermissionsScreen(
+  const RuleMemberPermissionsScreen(
       {super.key, required this.policyId, required this.ruleId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _PotentialMemberPermissionsScreenState();
+      _RuleMemberPermissionsScreenState();
 }
 
-class _PotentialMemberPermissionsScreenState
-    extends ConsumerState<PotentialMemberPermissionsScreen> {
+class _RuleMemberPermissionsScreenState
+    extends ConsumerState<RuleMemberPermissionsScreen> {
   void editPermissions(
       BuildContext context, WidgetRef ref, String ruleMemberId) {
     Routemaster.of(context).push('edit/$ruleMemberId');
@@ -47,7 +47,7 @@ class _PotentialMemberPermissionsScreenState
     if (rule!.uid != user.uid) {
       if (manager != null &&
           manager.permissions.contains(
-                  ManagerPermissions.editpotentialmemberpermissions.value) ==
+                  ManagerPermissions.editrulememberpermissions.value) ==
               false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(

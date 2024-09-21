@@ -331,8 +331,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .addpotentialmember
-                                                      .value) ==
+                                                      .addrulemember.value) ==
                                               true
                                           ? Container(
                                               padding: const EdgeInsets.only(
@@ -369,7 +368,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .removepotentialmember
+                                                      .removerulemember
                                                       .value) ==
                                               true
                                           ? Container(
@@ -407,7 +406,7 @@ class _ManagerPermissionsScreenState
                                           : const SizedBox(),
                                       manager.permissions.contains(
                                                   ManagerPermissions
-                                                      .editpotentialmemberpermissions
+                                                      .editrulememberpermissions
                                                       .value) ==
                                               true
                                           ? Container(

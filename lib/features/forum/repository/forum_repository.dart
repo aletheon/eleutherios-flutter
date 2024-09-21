@@ -38,6 +38,27 @@ class ForumRepository {
     }
   }
 
+  Stream<Forum?> getForumByRuleId(String ruleId) {
+    if (ruleId.isNotEmpty) {
+      return _forums
+          .where('ruleId', isEqualTo: ruleId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<Forum> forums = [];
+          for (var doc in event.docs) {
+            forums.add(Forum.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return forums.first;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return const Stream.empty();
+    }
+  }
+
   Stream<List<Forum>> getForums() {
     return _forums.where('public', isEqualTo: true).snapshots().map((event) {
       List<Forum> forums = [];

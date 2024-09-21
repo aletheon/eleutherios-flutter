@@ -10,8 +10,11 @@ import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/forum/repository/forum_repository.dart';
+import 'package:reddit_tutorial/features/forum_activity/controller/forum_activity_controller.dart';
 import 'package:reddit_tutorial/features/manager/controller/manager_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/member/repository/member_repository.dart';
 import 'package:reddit_tutorial/features/policy/repository/policy_repository.dart';
 import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
@@ -268,14 +271,6 @@ class PolicyController extends StateNotifier<bool> {
     }
   }
 
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-  // HERE ROB
-  // *******************************************************************
-  // *******************************************************************
-  // *******************************************************************
-
   void addPolicyToService(
       String serviceId, String policyId, BuildContext context) async {
     state = true;
@@ -302,108 +297,264 @@ class PolicyController extends StateNotifier<bool> {
       if (rules.isNotEmpty) {
         for (Rule rule in rules) {
           if (rule.instantiationType == InstantiationType.consume.value) {
-            String forumId = const Uuid().v1().replaceAll('-', '');
+            Forum? forum;
 
-            Forum forum = Forum(
-              forumId: forumId,
-              uid: user!.uid,
-              parentId: '',
-              parentUid: '',
-              policyId: policy.policyId,
-              policyUid: policy.uid,
-              ruleId: rule.ruleId,
-              title: rule.title,
-              titleLowercase: rule.title.toLowerCase(),
-              description: rule.description,
-              image: Constants.avatarDefault,
-              imageFileType: 'image/jpeg',
-              imageFileName: Constants.avatarDefault.split('/').last,
-              banner: Constants.forumBannerDefault,
-              bannerFileType: 'image/jpeg',
-              bannerFileName: Constants.forumBannerDefault.split('/').last,
-              public: rule.public,
-              tags: [],
-              services: [],
-              members: [],
-              posts: [],
-              forums: [],
-              breadcrumbs: [],
-              breadcrumbReferences: [],
-              recentPostId: '',
-              lastUpdateDate: DateTime.now(),
-              creationDate: DateTime.now(),
-            );
+            if (rule.ruleType == RuleType.single.value) {
+              // check if the forum for this rule already exists
+              forum = await _ref
+                  .read(forumControllerProvider.notifier)
+                  .getForumByRuleId(rule.ruleId)
+                  .first;
 
-            if (rule.image != Constants.avatarDefault) {
-              final profileGetResponse = await http.get(Uri.parse(rule.image));
-              Directory profileTempDir = await getTemporaryDirectory();
-              final profileFile = File(join(profileTempDir.path,
-                  const Uuid().v1().replaceAll('-', '') + rule.imageFileName));
-              profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
+              if (forum != null) {
+                // forum exists so just put the service in this forum
+                // add the service consuming this policy to the forum
+                if (forum.services.contains(service.serviceId) == false) {
+                  final memberCount = await _ref
+                      .read(memberControllerProvider.notifier)
+                      .getUserMemberCount(forum!.forumId, service.uid)
+                      .first;
 
-              // forums/profile/123456
-              final profileStorageResponse = await _storageRepository.storeFile(
-                  path: 'forums/profile', id: forum.forumId, file: profileFile);
+                  String memberId = const Uuid().v1().replaceAll('-', '');
+                  List<String> defaultPermissions = [
+                    MemberPermissions.createpost.value
+                  ];
 
-              profileStorageResponse.fold(
-                (l) => showSnackBar(context, l.message, true),
-                (r) => forum = forum.copyWith(
-                  image: r,
-                  imageFileName: rule.imageFileName,
-                  imageFileType: rule.imageFileType,
-                ),
-              );
-            }
+                  if (forum.uid == service.uid) {
+                    defaultPermissions.add(MemberPermissions.editforum.value);
+                    defaultPermissions.add(MemberPermissions.addmember.value);
+                    defaultPermissions
+                        .add(MemberPermissions.removemember.value);
+                    defaultPermissions.add(MemberPermissions.createforum.value);
+                    defaultPermissions.add(MemberPermissions.removeforum.value);
+                    defaultPermissions.add(MemberPermissions.removepost.value);
+                    defaultPermissions.add(MemberPermissions.addtocart.value);
+                    defaultPermissions
+                        .add(MemberPermissions.removefromcart.value);
+                    defaultPermissions
+                        .add(MemberPermissions.editmemberpermissions.value);
+                  }
 
-            if (rule.banner != Constants.ruleBannerDefault) {
-              final bannerGetResponse = await http.get(Uri.parse(rule.banner));
-              Directory bannerTempDir = await getTemporaryDirectory();
-              final bannerFile = File(join(bannerTempDir.path,
-                  const Uuid().v1().replaceAll('-', '') + rule.bannerFileName));
-              bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
+                  // create member
+                  Member member = Member(
+                    memberId: memberId,
+                    forumId: forum.forumId,
+                    forumUid: forum.uid,
+                    serviceId: service.serviceId,
+                    serviceUid: service.uid,
+                    selected: memberCount == 0 ? true : false,
+                    permissions: defaultPermissions,
+                    lastUpdateDate: DateTime.now(),
+                    creationDate: DateTime.now(),
+                  );
+                  await _memberRepository.createMember(member);
 
-              // forums/banner/123456
-              final bannerStorageResponse = await _storageRepository.storeFile(
-                  path: 'forums/banner', id: forum.forumId, file: bannerFile);
+                  // get service user
+                  final memberUser = await _ref
+                      .read(authControllerProvider.notifier)
+                      .getUserData(member.serviceUid)
+                      .first;
 
-              bannerStorageResponse.fold(
-                (l) => showSnackBar(context, l.message, true),
-                (r) => forum = forum.copyWith(
-                  banner: r,
-                  bannerFileName: rule.bannerFileName,
-                  bannerFileType: rule.bannerFileType,
-                ),
-              );
-            }
+                  // add member to forums member list
+                  forum.members.add(memberId);
 
-            // Convert rule members into actual members for this forum
-            if (rule.members.isNotEmpty) {
-              List<RuleMember>? ruleMembers =
-                  await _ref.read(getRuleMembersProvider2(rule.ruleId)).first;
+                  // add service to forums service list
+                  forum.services.add(service.serviceId);
 
-              for (RuleMember ruleMember in ruleMembers) {
-                String memberId = const Uuid().v1().replaceAll('-', '');
+                  // update the forum
+                  await _forumRepository.createForum(forum);
 
-                // create member
-                Member member = Member(
-                  memberId: memberId,
-                  forumId: forum.forumId,
-                  forumUid: forum.uid,
-                  serviceId: ruleMember.serviceId,
-                  serviceUid: ruleMember.serviceUid,
-                  selected: ruleMember.selected,
-                  permissions: ruleMember.permissions,
-                  lastUpdateDate: DateTime.now(),
-                  creationDate: DateTime.now(),
-                );
-                await _memberRepository.createMember(member);
+                  // create new forum activity
+                  if (memberUser!.forumActivities.contains(forum.forumId) ==
+                      false) {
+                    final forumActivityController =
+                        _ref.read(forumActivityControllerProvider.notifier);
+                    forumActivityController.createForumActivity(
+                        memberUser.uid, forum.forumId, forum.uid);
 
-                // add member to forums member list
-                forum.members.add(memberId);
+                    // add activity to users forum activity list
+                    memberUser.forumActivities.add(forum.forumId);
+                    await _userProfileRepository.updateUser(memberUser);
+                  }
+                  // *****************************************************************
+                  // *****************************************************************
+                  // *****************************************************************
+                  // *****************************************************************
+                  // HERE ROB HAVE TO CREATE SHOPPING CART + ADD_TO_CART / REMOVE_FROM_CART FOR RULES!!!!
+                  // *****************************************************************
+                  // *****************************************************************
+                  // *****************************************************************
+                  // *****************************************************************
+                }
+              } else {
+                // forum doesn't exist so create it
               }
+            } else {
+              String forumId = const Uuid().v1().replaceAll('-', '');
+              forum = Forum(
+                forumId: forumId,
+                uid: user!.uid,
+                parentId: '',
+                parentUid: '',
+                policyId: policy.policyId,
+                policyUid: policy.uid,
+                ruleId: rule.ruleId,
+                title: rule.title,
+                titleLowercase: rule.title.toLowerCase(),
+                description: rule.description,
+                image: Constants.avatarDefault,
+                imageFileType: 'image/jpeg',
+                imageFileName: Constants.avatarDefault.split('/').last,
+                banner: Constants.forumBannerDefault,
+                bannerFileType: 'image/jpeg',
+                bannerFileName: Constants.forumBannerDefault.split('/').last,
+                public: rule.public,
+                tags: [],
+                services: [],
+                members: [],
+                posts: [],
+                forums: [],
+                breadcrumbs: [],
+                breadcrumbReferences: [],
+                recentPostId: '',
+                lastUpdateDate: DateTime.now(),
+                creationDate: DateTime.now(),
+              );
+
+              if (rule.image != Constants.avatarDefault) {
+                final profileGetResponse =
+                    await http.get(Uri.parse(rule.image));
+                Directory profileTempDir = await getTemporaryDirectory();
+                final profileFile = File(join(
+                    profileTempDir.path,
+                    const Uuid().v1().replaceAll('-', '') +
+                        rule.imageFileName));
+                profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
+
+                // forums/profile/123456
+                final profileStorageResponse =
+                    await _storageRepository.storeFile(
+                        path: 'forums/profile',
+                        id: forum.forumId,
+                        file: profileFile);
+
+                profileStorageResponse.fold(
+                  (l) => showSnackBar(context, l.message, true),
+                  (r) => forum = forum!.copyWith(
+                    image: r,
+                    imageFileName: rule.imageFileName,
+                    imageFileType: rule.imageFileType,
+                  ),
+                );
+              }
+
+              if (rule.banner != Constants.ruleBannerDefault) {
+                final bannerGetResponse =
+                    await http.get(Uri.parse(rule.banner));
+                Directory bannerTempDir = await getTemporaryDirectory();
+                final bannerFile = File(join(
+                    bannerTempDir.path,
+                    const Uuid().v1().replaceAll('-', '') +
+                        rule.bannerFileName));
+                bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
+
+                // forums/banner/123456
+                final bannerStorageResponse =
+                    await _storageRepository.storeFile(
+                        path: 'forums/banner',
+                        id: forum!.forumId,
+                        file: bannerFile);
+
+                bannerStorageResponse.fold(
+                  (l) => showSnackBar(context, l.message, true),
+                  (r) => forum = forum!.copyWith(
+                    banner: r,
+                    bannerFileName: rule.bannerFileName,
+                    bannerFileType: rule.bannerFileType,
+                  ),
+                );
+              }
+
+              // Convert rule members into actual members for this forum
+              if (rule.members.isNotEmpty) {
+                List<RuleMember>? ruleMembers =
+                    await _ref.read(getRuleMembersProvider2(rule.ruleId)).first;
+
+                for (RuleMember ruleMember in ruleMembers) {
+                  String memberId = const Uuid().v1().replaceAll('-', '');
+
+                  // create member
+                  Member member = Member(
+                    memberId: memberId,
+                    forumId: forum!.forumId,
+                    forumUid: forum!.uid,
+                    serviceId: ruleMember.serviceId,
+                    serviceUid: ruleMember.serviceUid,
+                    selected: ruleMember.selected,
+                    permissions: ruleMember.permissions,
+                    lastUpdateDate: DateTime.now(),
+                    creationDate: DateTime.now(),
+                  );
+                  await _memberRepository.createMember(member);
+
+                  // add member to forums member list
+                  forum!.members.add(memberId);
+
+                  // add service to forums service list
+                  forum!.services.add(ruleMember.serviceId);
+                }
+
+                // add the service consuming this policy to the forum
+                if (forum!.services.contains(service.serviceId) == false) {
+                  final memberCount = await _ref
+                      .read(memberControllerProvider.notifier)
+                      .getUserMemberCount(forum!.forumId, service.uid)
+                      .first;
+
+                  String memberId = const Uuid().v1().replaceAll('-', '');
+                  List<String> defaultPermissions = [
+                    MemberPermissions.createpost.value
+                  ];
+
+                  if (forum!.uid == service.uid) {
+                    defaultPermissions.add(MemberPermissions.editforum.value);
+                    defaultPermissions.add(MemberPermissions.addmember.value);
+                    defaultPermissions
+                        .add(MemberPermissions.removemember.value);
+                    defaultPermissions.add(MemberPermissions.createforum.value);
+                    defaultPermissions.add(MemberPermissions.removeforum.value);
+                    defaultPermissions.add(MemberPermissions.removepost.value);
+                    defaultPermissions.add(MemberPermissions.addtocart.value);
+                    defaultPermissions
+                        .add(MemberPermissions.removefromcart.value);
+                    defaultPermissions
+                        .add(MemberPermissions.editmemberpermissions.value);
+                  }
+
+                  // create member
+                  Member member = Member(
+                    memberId: memberId,
+                    forumId: forum!.forumId,
+                    forumUid: forum!.uid,
+                    serviceId: service.serviceId,
+                    serviceUid: service.uid,
+                    selected: memberCount == 0 ? true : false,
+                    permissions: defaultPermissions,
+                    lastUpdateDate: DateTime.now(),
+                    creationDate: DateTime.now(),
+                  );
+                  await _memberRepository.createMember(member);
+
+                  // add member to forums member list
+                  forum!.members.add(memberId);
+
+                  // add service to forums service list
+                  forum!.services.add(service.serviceId);
+                }
+              }
+              await _forumRepository.createForum(forum!);
+              user.forums.add(forumId);
             }
-            await _forumRepository.createForum(forum);
-            user.forums.add(forumId);
           }
         }
         await _userProfileRepository.updateUser(user!);

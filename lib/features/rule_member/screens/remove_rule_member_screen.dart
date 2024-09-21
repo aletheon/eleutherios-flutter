@@ -51,7 +51,7 @@ class _RemoveRuleMemberScreenState
     if (rule!.uid != user.uid) {
       if (manager != null &&
           manager.permissions
-                  .contains(ManagerPermissions.addpotentialmember.value) ==
+                  .contains(ManagerPermissions.addrulemember.value) ==
               false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(

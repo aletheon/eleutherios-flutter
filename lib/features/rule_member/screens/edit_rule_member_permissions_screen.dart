@@ -15,11 +15,11 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
-class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
+class EditRuleMemberPermissionsScreen extends ConsumerStatefulWidget {
   final String policyId;
   final String ruleId;
   final String ruleMemberId;
-  const EditPotentialMemberPermissionsScreen(
+  const EditRuleMemberPermissionsScreen(
       {super.key,
       required this.policyId,
       required this.ruleId,
@@ -27,11 +27,11 @@ class EditPotentialMemberPermissionsScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _EditPotentialMemberPermissionsScreenState();
+      _EditRuleMemberPermissionsScreenState();
 }
 
-class _EditPotentialMemberPermissionsScreenState
-    extends ConsumerState<EditPotentialMemberPermissionsScreen> {
+class _EditRuleMemberPermissionsScreenState
+    extends ConsumerState<EditRuleMemberPermissionsScreen> {
   final GlobalKey _scaffold = GlobalKey();
   void save(RuleMember ruleMember, List<String> permissions) {
     ruleMember = ruleMember.copyWith(permissions: permissions);
@@ -50,7 +50,7 @@ class _EditPotentialMemberPermissionsScreenState
     if (rule!.uid != user.uid) {
       if (manager != null &&
           manager.permissions.contains(
-                  ManagerPermissions.editpotentialmemberpermissions.value) ==
+                  ManagerPermissions.editrulememberpermissions.value) ==
               false) {
         Future.delayed(Duration.zero, () {
           showSnackBar(

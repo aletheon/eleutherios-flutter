@@ -503,6 +503,10 @@ class ForumController extends StateNotifier<bool> {
     return _forumRepository.getForumById(forumId);
   }
 
+  Stream<Forum?> getForumByRuleId(String ruleId) {
+    return _forumRepository.getForumByRuleId(ruleId);
+  }
+
   Stream<List<Forum>> getServiceForums(String serviceId) {
     return _forumRepository.getServiceForums(serviceId);
   }

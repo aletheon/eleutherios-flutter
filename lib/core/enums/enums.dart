@@ -223,9 +223,9 @@ enum ManagerPermissions<String> {
   createrule, // - Create Rule (implies remove own rule)
   editrule, // - Edit Rule (implies editing rule)
   removerule, // - Remove Rule (implies removing other managers rules)
-  addpotentialmember, // - Add Member (implies adding other services to rule)
-  removepotentialmember, // - Remove Member (implies removing other services from rule)
-  editpotentialmemberpermissions, // - Edit Permissions (implies editing permissions for potential members)
+  addrulemember, // - Add Member (implies adding other services to rule)
+  removerulemember, // - Remove Member (implies removing other services from rule)
+  editrulememberpermissions, // - Edit Permissions (implies editing permissions for members)
   addconsumer, // - Add Service (implies adding other services to policy)
   removeconsumer, // - Remove Service (implies removing other services serving in policy)
   editmanagerpermissions, // - Edit Permissions (implies editing permissions for managers)
@@ -246,12 +246,12 @@ extension ManagerPermissionsTypeValue on ManagerPermissions {
         return 'Edit Rule';
       case ManagerPermissions.removerule:
         return 'Remove Rule';
-      case ManagerPermissions.addpotentialmember:
-        return 'Add Member';
-      case ManagerPermissions.removepotentialmember:
-        return 'Remove Member';
-      case ManagerPermissions.editpotentialmemberpermissions:
-        return 'Edit Member Permissions';
+      case ManagerPermissions.addrulemember:
+        return 'Add Rule Member';
+      case ManagerPermissions.removerulemember:
+        return 'Remove Rule Member';
+      case ManagerPermissions.editrulememberpermissions:
+        return 'Edit Rule Member Permissions';
       case ManagerPermissions.addconsumer:
         return 'Add Consumer';
       case ManagerPermissions.removeconsumer:

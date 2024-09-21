@@ -34,7 +34,7 @@ class Rule {
   final DateTime instantiationDate;
   final List<String> services; // copy of member services for redundancy sake
   final List<String>
-      members; // potential members (i.e. services) that will serve in this rule
+      members; // rule members (i.e. services) that will serve in this rule
   final List<String> tags;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
