@@ -185,7 +185,7 @@ enum MemberPermissions<String> {
   removepost, // - Remove Post (implies remove other services posts)
   addtocart, // - Add item (service) to cart
   removefromcart, // - Remove item (service) from cart
-  editmemberpermissions, // - Edit Permissions (implies editing permissions for members)
+  editpermissions, // - Edit Permissions (implies editing permissions for members)
 }
 
 extension MemberPermissionsTypeValue on MemberPermissions {
@@ -209,7 +209,7 @@ extension MemberPermissionsTypeValue on MemberPermissions {
         return 'Add To Cart';
       case MemberPermissions.removefromcart:
         return 'Remove From Cart';
-      case MemberPermissions.editmemberpermissions:
+      case MemberPermissions.editpermissions:
         return 'Edit Permissions';
     }
   }

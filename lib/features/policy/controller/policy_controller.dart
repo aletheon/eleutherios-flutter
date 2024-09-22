@@ -332,7 +332,7 @@ class PolicyController extends StateNotifier<bool> {
                     defaultPermissions
                         .add(MemberPermissions.removefromcart.value);
                     defaultPermissions
-                        .add(MemberPermissions.editmemberpermissions.value);
+                        .add(MemberPermissions.editpermissions.value);
                   }
 
                   // create member
@@ -381,6 +381,7 @@ class PolicyController extends StateNotifier<bool> {
                   // *****************************************************************
                   // *****************************************************************
                   // HERE ROB HAVE TO CREATE SHOPPING CART + ADD_TO_CART / REMOVE_FROM_CART FOR RULES!!!!
+                  // COPY MEMBER EDIT PERMISSIONS OVER TO RULE MEMBER EDIT PERMISSIONS ETC
                   // *****************************************************************
                   // *****************************************************************
                   // *****************************************************************
@@ -528,7 +529,7 @@ class PolicyController extends StateNotifier<bool> {
                     defaultPermissions
                         .add(MemberPermissions.removefromcart.value);
                     defaultPermissions
-                        .add(MemberPermissions.editmemberpermissions.value);
+                        .add(MemberPermissions.editpermissions.value);
                   }
 
                   // create member

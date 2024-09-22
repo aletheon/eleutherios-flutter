@@ -169,8 +169,8 @@ class _ForumToolsScreenState extends ConsumerState<ForumToolsScreen> {
                               )
                             : const SizedBox(),
                         user.uid == forum.uid ||
-                                member!.permissions.contains(MemberPermissions
-                                    .editmemberpermissions.value)
+                                member!.permissions.contains(
+                                    MemberPermissions.editpermissions.value)
                             ? ListTile(
                                 onTap: () => memberPermissions(context),
                                 leading: const Icon(Icons.list_alt_outlined),

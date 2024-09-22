@@ -226,7 +226,7 @@ class MemberController extends StateNotifier<bool> {
           defaultPermissions.add(MemberPermissions.removepost.value);
           defaultPermissions.add(MemberPermissions.addtocart.value);
           defaultPermissions.add(MemberPermissions.removefromcart.value);
-          defaultPermissions.add(MemberPermissions.editmemberpermissions.value);
+          defaultPermissions.add(MemberPermissions.editpermissions.value);
         }
 
         // create member

@@ -52,7 +52,7 @@ class _RuleMemberPermissionsScreenState
         Future.delayed(Duration.zero, () {
           showSnackBar(
               context,
-              'You do not have permission to make changes to member permissions',
+              'You do not have permission to make changes to rule member permissions',
               true);
           Routemaster.of(context).pop();
         });
@@ -81,7 +81,7 @@ class _RuleMemberPermissionsScreenState
           backgroundColor: currentTheme.scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text(
-              'Member Permissions',
+              'Rule Member Permissions',
               style: TextStyle(
                 color: currentTheme.textTheme.bodyMedium!.color!,
               ),
@@ -97,7 +97,7 @@ class _RuleMemberPermissionsScreenState
                       child: Container(
                         alignment: Alignment.topCenter,
                         child: const Text(
-                          'No members',
+                          'No rule members',
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -388,7 +388,84 @@ class _RuleMemberPermissionsScreenState
                                               : const SizedBox(),
                                           ruleMember.permissions.contains(
                                                       MemberPermissions
-                                                          .editmemberpermissions
+                                                          .addtocart.value) ==
+                                                  true
+                                              ? Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 3, bottom: 2),
+                                                  child: const CircleAvatar(
+                                                    radius: 14,
+                                                    backgroundColor:
+                                                        Pallete.greyColor,
+                                                    child: CircleAvatar(
+                                                      radius: 13,
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.shopping_cart,
+                                                            color: Colors.white,
+                                                            size: 10,
+                                                          ),
+                                                          Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                            size: 10,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                          ruleMember.permissions.contains(
+                                                      MemberPermissions
+                                                          .removefromcart
+                                                          .value) ==
+                                                  true
+                                              ? Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 3, bottom: 2),
+                                                  child: const CircleAvatar(
+                                                    radius: 14,
+                                                    backgroundColor:
+                                                        Pallete.greyColor,
+                                                    child: CircleAvatar(
+                                                      radius: 13,
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.shopping_cart,
+                                                            color: Colors.white,
+                                                            size: 10,
+                                                          ),
+                                                          Icon(
+                                                            Icons.remove,
+                                                            color: Colors.white,
+                                                            size: 10,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                          ruleMember.permissions.contains(
+                                                      MemberPermissions
+                                                          .editpermissions
                                                           .value) ==
                                                   true
                                               ? Container(
