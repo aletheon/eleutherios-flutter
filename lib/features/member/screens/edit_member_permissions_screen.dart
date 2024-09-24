@@ -330,7 +330,9 @@ class _EditMemberPermissionsScreenState
                                         },
                                         controlAffinity:
                                             ListTileControlAffinity.trailing,
-                                        activeColor: Pallete.forumColor,
+                                        activeColor: service.price > 0
+                                            ? Pallete.paidServiceColor
+                                            : Pallete.freeServiceColor,
                                       );
                                     },
                                   ),
