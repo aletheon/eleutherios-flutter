@@ -21,6 +21,11 @@ import 'package:reddit_tutorial/features/rule/controller/rule_controller.dart';
 import 'package:reddit_tutorial/features/rule_member/controller/rule_member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_forum/repository/shopping_cart_forum_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_member/repository/shopping_cart_member_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/controller/shopping_cart_user_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_user/repository/shopping_cart_user_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
 import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/member.dart';
@@ -29,6 +34,9 @@ import 'package:reddit_tutorial/models/rule.dart';
 import 'package:reddit_tutorial/models/rule_member.dart';
 import 'package:reddit_tutorial/models/search.dart';
 import 'package:reddit_tutorial/models/service.dart';
+import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
+import 'package:reddit_tutorial/models/shopping_cart_member.dart';
+import 'package:reddit_tutorial/models/shopping_cart_user.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
@@ -99,12 +107,21 @@ final policyControllerProvider =
   final serviceRepository = ref.watch(serviceRepositoryProvider);
   final memberRepository = ref.watch(memberRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
+  final shoppingCartUserRepository =
+      ref.watch(shoppingCartUserRepositoryProvider);
+  final shoppingCartForumRepository =
+      ref.watch(shoppingCartForumRepositoryProvider);
+  final shoppingCartMemberRepository =
+      ref.watch(shoppingCartMemberRepositoryProvider);
   return PolicyController(
       policyRepository: policyRepository,
       userProfileRepository: userProfileRepository,
       forumRepository: forumRepository,
       serviceRepository: serviceRepository,
       memberRepository: memberRepository,
+      shoppingCartUserRepository: shoppingCartUserRepository,
+      shoppingCartForumRepository: shoppingCartForumRepository,
+      shoppingCartMemberRepository: shoppingCartMemberRepository,
       storageRepository: storageRepository,
       ref: ref);
 });
@@ -115,6 +132,9 @@ class PolicyController extends StateNotifier<bool> {
   final ForumRepository _forumRepository;
   final ServiceRepository _serviceRepository;
   final MemberRepository _memberRepository;
+  final ShoppingCartUserRepository _shoppingCartUserRepository;
+  final ShoppingCartForumRepository _shoppingCartForumRepository;
+  final ShoppingCartMemberRepository _shoppingCartMemberRepository;
   final StorageRepository _storageRepository;
   final Ref _ref;
   PolicyController(
@@ -123,6 +143,9 @@ class PolicyController extends StateNotifier<bool> {
       required ForumRepository forumRepository,
       required ServiceRepository serviceRepository,
       required MemberRepository memberRepository,
+      required ShoppingCartUserRepository shoppingCartUserRepository,
+      required ShoppingCartForumRepository shoppingCartForumRepository,
+      required ShoppingCartMemberRepository shoppingCartMemberRepository,
       required StorageRepository storageRepository,
       required Ref ref})
       : _policyRepository = policyRepository,
@@ -130,6 +153,9 @@ class PolicyController extends StateNotifier<bool> {
         _forumRepository = forumRepository,
         _serviceRepository = serviceRepository,
         _memberRepository = memberRepository,
+        _shoppingCartUserRepository = shoppingCartUserRepository,
+        _shoppingCartForumRepository = shoppingCartForumRepository,
+        _shoppingCartMemberRepository = shoppingCartMemberRepository,
         _storageRepository = storageRepository,
         _ref = ref,
         super(false);
@@ -271,10 +297,394 @@ class PolicyController extends StateNotifier<bool> {
     }
   }
 
+  void createForumFromRule(
+      Rule rule, Policy policy, Service service, BuildContext context) async {
+    final forumActivityController =
+        _ref.read(forumActivityControllerProvider.notifier);
+
+    String forumId = const Uuid().v1().replaceAll('-', '');
+    Forum forum = Forum(
+      forumId: forumId,
+      uid: service.uid,
+      parentId: '',
+      parentUid: '',
+      policyId: policy.policyId,
+      policyUid: policy.uid,
+      ruleId: rule.ruleId,
+      title: rule.title,
+      titleLowercase: rule.title.toLowerCase(),
+      description: rule.description,
+      image: Constants.avatarDefault,
+      imageFileType: 'image/jpeg',
+      imageFileName: Constants.avatarDefault.split('/').last,
+      banner: Constants.forumBannerDefault,
+      bannerFileType: 'image/jpeg',
+      bannerFileName: Constants.forumBannerDefault.split('/').last,
+      public: rule.public,
+      tags: [],
+      services: [],
+      members: [],
+      posts: [],
+      forums: [],
+      breadcrumbs: [],
+      breadcrumbReferences: [],
+      recentPostId: '',
+      lastUpdateDate: DateTime.now(),
+      creationDate: DateTime.now(),
+    );
+
+    if (rule.image != Constants.avatarDefault) {
+      final profileGetResponse = await http.get(Uri.parse(rule.image));
+      Directory profileTempDir = await getTemporaryDirectory();
+      final profileFile = File(join(profileTempDir.path,
+          const Uuid().v1().replaceAll('-', '') + rule.imageFileName));
+      profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
+
+      // forums/profile/123456
+      final profileStorageResponse = await _storageRepository.storeFile(
+          path: 'forums/profile', id: forum.forumId, file: profileFile);
+
+      profileStorageResponse.fold(
+        (l) {
+          if (context.mounted) {
+            showSnackBar(context, l.message, true);
+          }
+        },
+        (r) => forum = forum.copyWith(
+          image: r,
+          imageFileName: rule.imageFileName,
+          imageFileType: rule.imageFileType,
+        ),
+      );
+    }
+
+    if (rule.banner != Constants.ruleBannerDefault) {
+      final bannerGetResponse = await http.get(Uri.parse(rule.banner));
+      Directory bannerTempDir = await getTemporaryDirectory();
+      final bannerFile = File(join(bannerTempDir.path,
+          const Uuid().v1().replaceAll('-', '') + rule.bannerFileName));
+      bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
+
+      // forums/banner/123456
+      final bannerStorageResponse = await _storageRepository.storeFile(
+          path: 'forums/banner', id: forum.forumId, file: bannerFile);
+
+      bannerStorageResponse.fold(
+        (l) {
+          if (context.mounted) {
+            showSnackBar(context, l.message, true);
+          }
+        },
+        (r) => forum = forum.copyWith(
+          banner: r,
+          bannerFileName: rule.bannerFileName,
+          bannerFileType: rule.bannerFileType,
+        ),
+      );
+    }
+
+    // create the forum
+    await _forumRepository.createForum(forum);
+
+    // Convert rule members into actual members for this forum
+    if (rule.members.isNotEmpty) {
+      List<RuleMember>? ruleMembers =
+          await _ref.read(getRuleMembersProvider2(rule.ruleId)).first;
+
+      for (RuleMember ruleMember in ruleMembers) {
+        String memberId = const Uuid().v1().replaceAll('-', '');
+
+        // create member
+        Member member = Member(
+          memberId: memberId,
+          forumId: forum.forumId,
+          forumUid: forum.uid,
+          serviceId: ruleMember.serviceId,
+          serviceUid: ruleMember.serviceUid,
+          selected: ruleMember.selected,
+          permissions: ruleMember.permissions,
+          lastUpdateDate: DateTime.now(),
+          creationDate: DateTime.now(),
+        );
+        await _memberRepository.createMember(member);
+
+        // add member to forums member list
+        forum.members.add(memberId);
+
+        // add service to forums service list
+        forum.services.add(ruleMember.serviceId);
+
+        // get member user
+        final memberUser = await _ref
+            .read(authControllerProvider.notifier)
+            .getUserData(member.serviceUid)
+            .first;
+
+        if (memberUser != null) {
+          // create new forum activity for this member
+          if (memberUser.forumActivities.contains(forum.forumId) == false) {
+            forumActivityController.createForumActivity(
+                memberUser.uid, forum.forumId, forum.uid);
+          }
+
+          // create any shopping cart references
+          if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+              member.permissions
+                  .contains(MemberPermissions.removefromcart.value)) {
+            String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
+            String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
+            String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
+
+            // create shopping cart user
+            ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+              shoppingCartUserId: shoppingCartUserId,
+              uid: member.serviceUid,
+              cartUid: member.forumUid,
+              forums: [member.forumId],
+              selectedForumId: member.forumId,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
+
+            // create shopping cart forum
+            ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
+              shoppingCartForumId: shoppingCartForumId,
+              shoppingCartUserId: shoppingCartUserId,
+              uid: member.serviceUid,
+              cartUid: member.forumUid,
+              forumId: member.forumId,
+              members: [member.memberId],
+              services: [member.serviceId],
+              selectedMemberId: member.memberId,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
+
+            // create shopping cart member
+            ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
+              shoppingCartMemberId: shoppingCartMemberId,
+              shoppingCartForumId: shoppingCartForumId,
+              forumId: member.forumId,
+              memberId: member.memberId,
+              serviceId: member.serviceId,
+              serviceUid: member.serviceUid,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
+
+            // get shopping cart user
+            final shoppingCartUser = await _ref
+                .read(shoppingCartUserControllerProvider.notifier)
+                .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+                .first;
+
+            // get shopping cart forum
+            final shoppingCartForum = await _ref
+                .read(shoppingCartForumControllerProvider.notifier)
+                .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
+                .first;
+
+            // create shopping cart user
+            if (shoppingCartUser == null) {
+              await _shoppingCartUserRepository
+                  .createShoppingCartUser(newShoppingCartUser);
+
+              // add uid to users shopping cart user ids list
+              memberUser.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+              await _userProfileRepository.updateUser(memberUser);
+            } else {
+              // update shopping cart user
+              if (shoppingCartUser.forums.contains(member.forumId) == false) {
+                shoppingCartUser.forums.add(member.forumId);
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
+              }
+            }
+
+            // create shopping cart forum
+            if (shoppingCartForum == null) {
+              await _shoppingCartForumRepository
+                  .createShoppingCartForum(newShoppingCartForum);
+            } else {
+              // set shopping cart member - shopping cart forum id to existing id
+              newShoppingCartMember = newShoppingCartMember.copyWith(
+                  shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+
+              // update shopping cart forum
+              shoppingCartForum.members.add(newShoppingCartMember.memberId);
+              shoppingCartForum.services.add(newShoppingCartMember.serviceId);
+              await _shoppingCartForumRepository
+                  .updateShoppingCartForum(shoppingCartForum);
+            }
+            // create shopping cart member
+            await _shoppingCartMemberRepository
+                .createShoppingCartMember(newShoppingCartMember);
+          }
+        }
+      }
+
+      // update the forum
+      await _forumRepository.updateForum(forum);
+    }
+
+    // add the service consuming this policy to the forum
+    if (forum.services.contains(service.serviceId) == false) {
+      final memberCount = await _ref
+          .read(memberControllerProvider.notifier)
+          .getUserMemberCount(forum.forumId, service.uid)
+          .first;
+
+      String memberId = const Uuid().v1().replaceAll('-', '');
+      List<String> defaultPermissions = [MemberPermissions.createpost.value];
+
+      if (forum.uid == service.uid) {
+        defaultPermissions.add(MemberPermissions.editforum.value);
+        defaultPermissions.add(MemberPermissions.addmember.value);
+        defaultPermissions.add(MemberPermissions.removemember.value);
+        defaultPermissions.add(MemberPermissions.createforum.value);
+        defaultPermissions.add(MemberPermissions.removeforum.value);
+        defaultPermissions.add(MemberPermissions.removepost.value);
+        defaultPermissions.add(MemberPermissions.addtocart.value);
+        defaultPermissions.add(MemberPermissions.removefromcart.value);
+        defaultPermissions.add(MemberPermissions.editpermissions.value);
+      }
+
+      // create service member
+      Member member = Member(
+        memberId: memberId,
+        forumId: forum.forumId,
+        forumUid: forum.uid,
+        serviceId: service.serviceId,
+        serviceUid: service.uid,
+        selected: memberCount == 0 ? true : false,
+        permissions: defaultPermissions,
+        lastUpdateDate: DateTime.now(),
+        creationDate: DateTime.now(),
+      );
+      await _memberRepository.createMember(member);
+
+      // add service member to forums member list
+      forum.members.add(memberId);
+
+      // add service to forums service list
+      forum.services.add(service.serviceId);
+
+      // update the forum
+      await _forumRepository.updateForum(forum);
+
+      // get service user
+      final serviceUser = await _ref
+          .read(authControllerProvider.notifier)
+          .getUserData(member.serviceUid)
+          .first;
+
+      if (serviceUser != null) {
+        // create new forum activity for this member
+        if (serviceUser.forumActivities.contains(forum.forumId) == false) {
+          forumActivityController.createForumActivity(
+              serviceUser.uid, forum.forumId, forum.uid);
+        }
+
+        // create any shopping cart references
+        if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+            member.permissions
+                .contains(MemberPermissions.removefromcart.value)) {
+          String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
+          String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
+          String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
+
+          // create shopping cart user
+          ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+            shoppingCartUserId: shoppingCartUserId,
+            uid: member.serviceUid,
+            cartUid: member.forumUid,
+            forums: [member.forumId],
+            selectedForumId: member.forumId,
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // create shopping cart forum
+          ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
+            shoppingCartForumId: shoppingCartForumId,
+            shoppingCartUserId: shoppingCartUserId,
+            uid: member.serviceUid,
+            cartUid: member.forumUid,
+            forumId: member.forumId,
+            members: [member.memberId],
+            services: [member.serviceId],
+            selectedMemberId: member.memberId,
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // create shopping cart member
+          ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
+            shoppingCartMemberId: shoppingCartMemberId,
+            shoppingCartForumId: shoppingCartForumId,
+            forumId: member.forumId,
+            memberId: member.memberId,
+            serviceId: member.serviceId,
+            serviceUid: member.serviceUid,
+            lastUpdateDate: DateTime.now(),
+            creationDate: DateTime.now(),
+          );
+
+          // get shopping cart user
+          final shoppingCartUser = await _ref
+              .read(shoppingCartUserControllerProvider.notifier)
+              .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+              .first;
+
+          // get shopping cart forum
+          final shoppingCartForum = await _ref
+              .read(shoppingCartForumControllerProvider.notifier)
+              .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
+              .first;
+
+          // create shopping cart user
+          if (shoppingCartUser == null) {
+            await _shoppingCartUserRepository
+                .createShoppingCartUser(newShoppingCartUser);
+
+            // add uid to users shopping cart user ids list
+            serviceUser.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+            await _userProfileRepository.updateUser(serviceUser);
+          } else {
+            // update shopping cart user
+            if (shoppingCartUser.forums.contains(member.forumId) == false) {
+              shoppingCartUser.forums.add(member.forumId);
+              await _shoppingCartUserRepository
+                  .updateShoppingCartUser(shoppingCartUser);
+            }
+          }
+
+          // create shopping cart forum
+          if (shoppingCartForum == null) {
+            await _shoppingCartForumRepository
+                .createShoppingCartForum(newShoppingCartForum);
+          } else {
+            // set shopping cart member - shopping cart forum id to existing id
+            newShoppingCartMember = newShoppingCartMember.copyWith(
+                shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+
+            // update shopping cart forum
+            shoppingCartForum.members.add(newShoppingCartMember.memberId);
+            shoppingCartForum.services.add(newShoppingCartMember.serviceId);
+            await _shoppingCartForumRepository
+                .updateShoppingCartForum(shoppingCartForum);
+          }
+          // create shopping cart member
+          await _shoppingCartMemberRepository
+              .createShoppingCartMember(newShoppingCartMember);
+        }
+      }
+    }
+  }
+
   void addPolicyToService(
       String serviceId, String policyId, BuildContext context) async {
     state = true;
-    final user = _ref.read(userProvider);
     Policy? policy = await _ref
         .read(policyControllerProvider.notifier)
         .getPolicyById(policyId)
@@ -284,6 +694,9 @@ class PolicyController extends StateNotifier<bool> {
         .read(serviceControllerProvider.notifier)
         .getServiceById(serviceId)
         .first;
+
+    final forumActivityController =
+        _ref.read(forumActivityControllerProvider.notifier);
 
     if (policy != null && service != null) {
       service.policies.add(policyId);
@@ -297,22 +710,19 @@ class PolicyController extends StateNotifier<bool> {
       if (rules.isNotEmpty) {
         for (Rule rule in rules) {
           if (rule.instantiationType == InstantiationType.consume.value) {
-            Forum? forum;
-
             if (rule.ruleType == RuleType.single.value) {
               // check if the forum for this rule already exists
-              forum = await _ref
+              Forum? forum = await _ref
                   .read(forumControllerProvider.notifier)
                   .getForumByRuleId(rule.ruleId)
                   .first;
 
               if (forum != null) {
-                // forum exists so just put the service in this forum
                 // add the service consuming this policy to the forum
                 if (forum.services.contains(service.serviceId) == false) {
                   final memberCount = await _ref
                       .read(memberControllerProvider.notifier)
-                      .getUserMemberCount(forum!.forumId, service.uid)
+                      .getUserMemberCount(forum.forumId, service.uid)
                       .first;
 
                   String memberId = const Uuid().v1().replaceAll('-', '');
@@ -335,7 +745,7 @@ class PolicyController extends StateNotifier<bool> {
                         .add(MemberPermissions.editpermissions.value);
                   }
 
-                  // create member
+                  // create service member
                   Member member = Member(
                     memberId: memberId,
                     forumId: forum.forumId,
@@ -349,216 +759,147 @@ class PolicyController extends StateNotifier<bool> {
                   );
                   await _memberRepository.createMember(member);
 
-                  // get service user
-                  final memberUser = await _ref
-                      .read(authControllerProvider.notifier)
-                      .getUserData(member.serviceUid)
-                      .first;
-
-                  // add member to forums member list
+                  // add service member to forums member list
                   forum.members.add(memberId);
 
                   // add service to forums service list
                   forum.services.add(service.serviceId);
 
                   // update the forum
-                  await _forumRepository.createForum(forum);
+                  await _forumRepository.updateForum(forum);
 
-                  // create new forum activity
-                  if (memberUser!.forumActivities.contains(forum.forumId) ==
-                      false) {
-                    final forumActivityController =
-                        _ref.read(forumActivityControllerProvider.notifier);
-                    forumActivityController.createForumActivity(
-                        memberUser.uid, forum.forumId, forum.uid);
-
-                    // add activity to users forum activity list
-                    memberUser.forumActivities.add(forum.forumId);
-                    await _userProfileRepository.updateUser(memberUser);
-                  }
-                  // *****************************************************************
-                  // *****************************************************************
-                  // *****************************************************************
-                  // *****************************************************************
-                  // HERE ROB HAVE TO CREATE SHOPPING CART + ADD_TO_CART / REMOVE_FROM_CART FOR RULES!!!!
-                  // COPY MEMBER EDIT PERMISSIONS OVER TO RULE MEMBER EDIT PERMISSIONS ETC
-                  // *****************************************************************
-                  // *****************************************************************
-                  // *****************************************************************
-                  // *****************************************************************
-                }
-              } else {
-                // forum doesn't exist so create it
-              }
-            } else {
-              String forumId = const Uuid().v1().replaceAll('-', '');
-              forum = Forum(
-                forumId: forumId,
-                uid: user!.uid,
-                parentId: '',
-                parentUid: '',
-                policyId: policy.policyId,
-                policyUid: policy.uid,
-                ruleId: rule.ruleId,
-                title: rule.title,
-                titleLowercase: rule.title.toLowerCase(),
-                description: rule.description,
-                image: Constants.avatarDefault,
-                imageFileType: 'image/jpeg',
-                imageFileName: Constants.avatarDefault.split('/').last,
-                banner: Constants.forumBannerDefault,
-                bannerFileType: 'image/jpeg',
-                bannerFileName: Constants.forumBannerDefault.split('/').last,
-                public: rule.public,
-                tags: [],
-                services: [],
-                members: [],
-                posts: [],
-                forums: [],
-                breadcrumbs: [],
-                breadcrumbReferences: [],
-                recentPostId: '',
-                lastUpdateDate: DateTime.now(),
-                creationDate: DateTime.now(),
-              );
-
-              if (rule.image != Constants.avatarDefault) {
-                final profileGetResponse =
-                    await http.get(Uri.parse(rule.image));
-                Directory profileTempDir = await getTemporaryDirectory();
-                final profileFile = File(join(
-                    profileTempDir.path,
-                    const Uuid().v1().replaceAll('-', '') +
-                        rule.imageFileName));
-                profileFile.writeAsBytesSync(profileGetResponse.bodyBytes);
-
-                // forums/profile/123456
-                final profileStorageResponse =
-                    await _storageRepository.storeFile(
-                        path: 'forums/profile',
-                        id: forum.forumId,
-                        file: profileFile);
-
-                profileStorageResponse.fold(
-                  (l) => showSnackBar(context, l.message, true),
-                  (r) => forum = forum!.copyWith(
-                    image: r,
-                    imageFileName: rule.imageFileName,
-                    imageFileType: rule.imageFileType,
-                  ),
-                );
-              }
-
-              if (rule.banner != Constants.ruleBannerDefault) {
-                final bannerGetResponse =
-                    await http.get(Uri.parse(rule.banner));
-                Directory bannerTempDir = await getTemporaryDirectory();
-                final bannerFile = File(join(
-                    bannerTempDir.path,
-                    const Uuid().v1().replaceAll('-', '') +
-                        rule.bannerFileName));
-                bannerFile.writeAsBytesSync(bannerGetResponse.bodyBytes);
-
-                // forums/banner/123456
-                final bannerStorageResponse =
-                    await _storageRepository.storeFile(
-                        path: 'forums/banner',
-                        id: forum!.forumId,
-                        file: bannerFile);
-
-                bannerStorageResponse.fold(
-                  (l) => showSnackBar(context, l.message, true),
-                  (r) => forum = forum!.copyWith(
-                    banner: r,
-                    bannerFileName: rule.bannerFileName,
-                    bannerFileType: rule.bannerFileType,
-                  ),
-                );
-              }
-
-              // Convert rule members into actual members for this forum
-              if (rule.members.isNotEmpty) {
-                List<RuleMember>? ruleMembers =
-                    await _ref.read(getRuleMembersProvider2(rule.ruleId)).first;
-
-                for (RuleMember ruleMember in ruleMembers) {
-                  String memberId = const Uuid().v1().replaceAll('-', '');
-
-                  // create member
-                  Member member = Member(
-                    memberId: memberId,
-                    forumId: forum!.forumId,
-                    forumUid: forum!.uid,
-                    serviceId: ruleMember.serviceId,
-                    serviceUid: ruleMember.serviceUid,
-                    selected: ruleMember.selected,
-                    permissions: ruleMember.permissions,
-                    lastUpdateDate: DateTime.now(),
-                    creationDate: DateTime.now(),
-                  );
-                  await _memberRepository.createMember(member);
-
-                  // add member to forums member list
-                  forum!.members.add(memberId);
-
-                  // add service to forums service list
-                  forum!.services.add(ruleMember.serviceId);
-                }
-
-                // add the service consuming this policy to the forum
-                if (forum!.services.contains(service.serviceId) == false) {
-                  final memberCount = await _ref
-                      .read(memberControllerProvider.notifier)
-                      .getUserMemberCount(forum!.forumId, service.uid)
+                  // get service user
+                  final serviceUser = await _ref
+                      .read(authControllerProvider.notifier)
+                      .getUserData(service.uid)
                       .first;
 
-                  String memberId = const Uuid().v1().replaceAll('-', '');
-                  List<String> defaultPermissions = [
-                    MemberPermissions.createpost.value
-                  ];
+                  if (serviceUser != null) {
+                    // create new forum activity for this service member
+                    if (serviceUser.forumActivities.contains(forum.forumId) ==
+                        false) {
+                      forumActivityController.createForumActivity(
+                          serviceUser.uid, forum.forumId, forum.uid);
+                    }
 
-                  if (forum!.uid == service.uid) {
-                    defaultPermissions.add(MemberPermissions.editforum.value);
-                    defaultPermissions.add(MemberPermissions.addmember.value);
-                    defaultPermissions
-                        .add(MemberPermissions.removemember.value);
-                    defaultPermissions.add(MemberPermissions.createforum.value);
-                    defaultPermissions.add(MemberPermissions.removeforum.value);
-                    defaultPermissions.add(MemberPermissions.removepost.value);
-                    defaultPermissions.add(MemberPermissions.addtocart.value);
-                    defaultPermissions
-                        .add(MemberPermissions.removefromcart.value);
-                    defaultPermissions
-                        .add(MemberPermissions.editpermissions.value);
+                    // create any shopping cart references
+                    if (member.permissions
+                            .contains(MemberPermissions.addtocart.value) ||
+                        member.permissions
+                            .contains(MemberPermissions.removefromcart.value)) {
+                      String shoppingCartUserId =
+                          const Uuid().v1().replaceAll('-', '');
+                      String shoppingCartForumId =
+                          const Uuid().v1().replaceAll('-', '');
+                      String shoppingCartMemberId =
+                          const Uuid().v1().replaceAll('-', '');
+
+                      // create shopping cart user
+                      ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+                        shoppingCartUserId: shoppingCartUserId,
+                        uid: member.serviceUid,
+                        cartUid: member.forumUid,
+                        forums: [member.forumId],
+                        selectedForumId: member.forumId,
+                        lastUpdateDate: DateTime.now(),
+                        creationDate: DateTime.now(),
+                      );
+
+                      // create shopping cart forum
+                      ShoppingCartForum newShoppingCartForum =
+                          ShoppingCartForum(
+                        shoppingCartForumId: shoppingCartForumId,
+                        shoppingCartUserId: shoppingCartUserId,
+                        uid: member.serviceUid,
+                        cartUid: member.forumUid,
+                        forumId: member.forumId,
+                        members: [member.memberId],
+                        services: [member.serviceId],
+                        selectedMemberId: member.memberId,
+                        lastUpdateDate: DateTime.now(),
+                        creationDate: DateTime.now(),
+                      );
+
+                      // create shopping cart member
+                      ShoppingCartMember newShoppingCartMember =
+                          ShoppingCartMember(
+                        shoppingCartMemberId: shoppingCartMemberId,
+                        shoppingCartForumId: shoppingCartForumId,
+                        forumId: member.forumId,
+                        memberId: member.memberId,
+                        serviceId: member.serviceId,
+                        serviceUid: member.serviceUid,
+                        lastUpdateDate: DateTime.now(),
+                        creationDate: DateTime.now(),
+                      );
+
+                      // get shopping cart user
+                      final shoppingCartUser = await _ref
+                          .read(shoppingCartUserControllerProvider.notifier)
+                          .getShoppingCartUserByUserId(
+                              member.serviceUid, member.forumUid)
+                          .first;
+
+                      // get shopping cart forum
+                      final shoppingCartForum = await _ref
+                          .read(shoppingCartForumControllerProvider.notifier)
+                          .getShoppingCartForumByUserId(
+                              member.serviceUid, member.forumId)
+                          .first;
+
+                      // create shopping cart user
+                      if (shoppingCartUser == null) {
+                        await _shoppingCartUserRepository
+                            .createShoppingCartUser(newShoppingCartUser);
+
+                        // add uid to users shopping cart user ids list
+                        serviceUser.shoppingCartUserIds
+                            .add(newShoppingCartUser.cartUid);
+                        await _userProfileRepository.updateUser(serviceUser);
+                      } else {
+                        // update shopping cart user
+                        if (shoppingCartUser.forums.contains(member.forumId) ==
+                            false) {
+                          shoppingCartUser.forums.add(member.forumId);
+                          await _shoppingCartUserRepository
+                              .updateShoppingCartUser(shoppingCartUser);
+                        }
+                      }
+
+                      // create shopping cart forum
+                      if (shoppingCartForum == null) {
+                        await _shoppingCartForumRepository
+                            .createShoppingCartForum(newShoppingCartForum);
+                      } else {
+                        // set shopping cart member - shopping cart forum id to existing id
+                        newShoppingCartMember = newShoppingCartMember.copyWith(
+                            shoppingCartForumId:
+                                shoppingCartForum.shoppingCartForumId);
+
+                        // update shopping cart forum
+                        shoppingCartForum.members
+                            .add(newShoppingCartMember.memberId);
+                        shoppingCartForum.services
+                            .add(newShoppingCartMember.serviceId);
+                        await _shoppingCartForumRepository
+                            .updateShoppingCartForum(shoppingCartForum);
+                      }
+                      // create shopping cart member
+                      await _shoppingCartMemberRepository
+                          .createShoppingCartMember(newShoppingCartMember);
+                    }
                   }
-
-                  // create member
-                  Member member = Member(
-                    memberId: memberId,
-                    forumId: forum!.forumId,
-                    forumUid: forum!.uid,
-                    serviceId: service.serviceId,
-                    serviceUid: service.uid,
-                    selected: memberCount == 0 ? true : false,
-                    permissions: defaultPermissions,
-                    lastUpdateDate: DateTime.now(),
-                    creationDate: DateTime.now(),
-                  );
-                  await _memberRepository.createMember(member);
-
-                  // add member to forums member list
-                  forum!.members.add(memberId);
-
-                  // add service to forums service list
-                  forum!.services.add(service.serviceId);
                 }
+              } else {
+                // ignore: use_build_context_synchronously
+                createForumFromRule(rule, policy, service, context);
               }
-              await _forumRepository.createForum(forum!);
-              user.forums.add(forumId);
+            } else {
+              // ignore: use_build_context_synchronously
+              createForumFromRule(rule, policy, service, context);
             }
           }
         }
-        await _userProfileRepository.updateUser(user!);
         state = false;
         if (context.mounted) {
           showSnackBar(context, 'Policy added successfully', false);

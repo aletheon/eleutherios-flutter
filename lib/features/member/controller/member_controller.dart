@@ -248,7 +248,7 @@ class MemberController extends StateNotifier<bool> {
         forum.services.add(serviceId);
         await _forumRepository.updateForum(forum);
 
-        // create new forum activity
+        // create new forum activity for this member
         if (user!.forumActivities.contains(forumId) == false) {
           final forumActivityController =
               _ref.read(forumActivityControllerProvider.notifier);
@@ -330,7 +330,7 @@ class MemberController extends StateNotifier<bool> {
 
             // add uid to users shopping cart user ids list
             memberUser!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
-            await _userProfileRepository.updateUser(user);
+            await _userProfileRepository.updateUser(memberUser);
           } else {
             // update shopping cart user
             if (shoppingCartUser.forums.contains(member.forumId) == false) {
