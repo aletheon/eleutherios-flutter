@@ -86,7 +86,7 @@ class _EditRuleMemberPermissionsScreenState
                       key: _scaffold,
                       appBar: AppBar(
                         title: Text(
-                          'Edit Member Permissions',
+                          'Edit Rule Member Permissions',
                           style: TextStyle(
                             color: currentTheme.textTheme.bodyMedium!.color!,
                           ),

@@ -174,7 +174,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           creationDate: DateTime.now(),
         );
 
-        if (member != null &&
+        if ((memberId != null && member != null) &&
             member.permissions.contains(MemberPermissions.addtocart.value) ==
                 false) {
           canAddServiceToCart = false;
@@ -315,31 +315,65 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     BuildContext context,
   ) async {
     state = true;
+    Member? member; // placeholder for member
+    bool canAddServiceToCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId)) {
-        if (service.quantity > 0) {
-          shoppingCartItem = shoppingCartItem.copyWith(
-              quantity: shoppingCartItem.quantity + 1);
-          final res = await _shoppingCartItemRepository
-              .updateShoppingCartItem(shoppingCartItem);
+        if (shoppingCartItem.memberId.isNotEmpty) {
+          member = await _ref
+              .read(memberControllerProvider.notifier)
+              .getMemberById(shoppingCartItem.memberId)
+              .first;
+        }
 
-          // update service
-          service = service.copyWith(quantity: service.quantity - 1);
-          await _serviceRepository.updateService(service);
+        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+            member.permissions.contains(MemberPermissions.addtocart.value) ==
+                false) {
+          canAddServiceToCart = false;
+        }
 
-          state = false;
-          res.fold((l) => showSnackBar(context, l.message, true), (r) {
-            if (context.mounted) {
-              showSnackBar(
-                  context, 'Shopping cart item updated successfully!', false);
+        if (canAddServiceToCart) {
+          if (service.type == ServiceType.physical.value) {
+            if (service.quantity > 0) {
+              shoppingCartItem = shoppingCartItem.copyWith(
+                  quantity: shoppingCartItem.quantity + 1);
+              final res = await _shoppingCartItemRepository
+                  .updateShoppingCartItem(shoppingCartItem);
+
+              // update service
+              service = service.copyWith(quantity: service.quantity - 1);
+              await _serviceRepository.updateService(service);
+
+              state = false;
+              res.fold((l) => showSnackBar(context, l.message, true), (r) {
+                if (context.mounted) {
+                  showSnackBar(context,
+                      'Shopping cart item updated successfully!', false);
+                }
+              });
+            } else {
+              state = false;
+              if (context.mounted) {
+                showSnackBar(
+                    context,
+                    'There is not enough of this service to purchase there is zero available',
+                    true);
+              }
             }
-          });
+          } else {
+            state = false;
+            if (context.mounted) {
+              showSnackBar(context,
+                  'Service is non-physical and is cannot be incremented', true);
+            }
+          }
         } else {
+          state = false;
           if (context.mounted) {
             showSnackBar(
                 context,
-                'There is not enough of this service to purchase there is zero available',
+                'Member does not have permission to add item to shopping cart',
                 true);
           }
         }
@@ -359,10 +393,131 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     BuildContext context,
   ) async {
     state = true;
+    Member? member; // placeholder for member
+    bool canRemoveServiceFromCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
       if (shoppingCart.services.contains(service.serviceId)) {
-        if (shoppingCartItem.quantity == 1) {
+        if (shoppingCartItem.memberId.isNotEmpty) {
+          member = await _ref
+              .read(memberControllerProvider.notifier)
+              .getMemberById(shoppingCartItem.memberId)
+              .first;
+        }
+
+        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+            member.permissions
+                    .contains(MemberPermissions.removefromcart.value) ==
+                false) {
+          canRemoveServiceFromCart = false;
+        }
+
+        if (canRemoveServiceFromCart) {
+          if (shoppingCartItem.quantity == 1) {
+            // delete shopping cart item
+            final res = await _shoppingCartItemRepository
+                .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
+
+            // update shopping cart
+            shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+            shoppingCart.services.remove(shoppingCartItem.serviceId);
+            await _shoppingCartRepository.updateShoppingCart(shoppingCart);
+
+            // remove shopping cart item from users shoppingCartItems list
+            user.shoppingCartItemIds
+                .remove(shoppingCartItem.shoppingCartItemId);
+            await _userProfileRepository.updateUser(user);
+
+            // check if we need to remove shopping cart item from owners shoppingCartItems list
+            if (shoppingCart.uid != user.uid) {
+              // get owner
+              UserModel? owner = await _ref
+                  .read(authControllerProvider.notifier)
+                  .getUserData(shoppingCart.uid)
+                  .first;
+
+              if (owner != null) {
+                // remove shopping cart item from owners shoppingCartItems list
+                owner.shoppingCartItemIds
+                    .remove(shoppingCartItem.shoppingCartItemId);
+                await _userProfileRepository.updateUser(owner);
+              }
+            }
+
+            // update service
+            service = service.copyWith(quantity: service.quantity + 1);
+            await _serviceRepository.updateService(service);
+
+            state = false;
+            res.fold((l) => showSnackBar(context, l.message, true), (r) {
+              if (context.mounted) {
+                showSnackBar(
+                    context, 'Shopping cart item removed successfully!', false);
+              }
+            });
+          } else {
+            shoppingCartItem = shoppingCartItem.copyWith(
+                quantity: shoppingCartItem.quantity - 1);
+            final res = await _shoppingCartItemRepository
+                .updateShoppingCartItem(shoppingCartItem);
+
+            // update service
+            service = service.copyWith(quantity: service.quantity + 1);
+            await _serviceRepository.updateService(service);
+
+            state = false;
+            res.fold((l) => showSnackBar(context, l.message, true), (r) {
+              if (context.mounted) {
+                showSnackBar(
+                    context, 'Shopping cart item updated successfully!', false);
+              }
+            });
+          }
+        } else {
+          state = false;
+          if (context.mounted) {
+            showSnackBar(
+                context,
+                'Member does not have permission to remove item from shopping cart',
+                true);
+          }
+        }
+      } else {
+        state = false;
+      }
+    } else {
+      state = false;
+    }
+  }
+
+  void deleteShoppingCartItem(
+    UserModel user,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    Service service,
+    BuildContext context,
+  ) async {
+    state = true;
+    Member? member; // placeholder for member
+    bool canRemoveServiceFromCart = true;
+
+    if (shoppingCart != null && shoppingCartItem != null) {
+      if (shoppingCart.services.contains(service.serviceId) == true) {
+        if (shoppingCartItem.memberId.isNotEmpty) {
+          member = await _ref
+              .read(memberControllerProvider.notifier)
+              .getMemberById(shoppingCartItem.memberId)
+              .first;
+        }
+
+        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+            member.permissions
+                    .contains(MemberPermissions.removefromcart.value) ==
+                false) {
+          canRemoveServiceFromCart = false;
+        }
+
+        if (canRemoveServiceFromCart) {
           // delete shopping cart item
           final res = await _shoppingCartItemRepository
               .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
@@ -392,10 +547,12 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             }
           }
 
-          // update service
-          service = service.copyWith(quantity: service.quantity + 1);
-          await _serviceRepository.updateService(service);
-
+          if (service.type == ServiceType.physical.value) {
+            // update service
+            service = service.copyWith(
+                quantity: service.quantity + shoppingCartItem.quantity);
+            await _serviceRepository.updateService(service);
+          }
           state = false;
           res.fold((l) => showSnackBar(context, l.message, true), (r) {
             if (context.mounted) {
@@ -404,83 +561,14 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             }
           });
         } else {
-          shoppingCartItem = shoppingCartItem.copyWith(
-              quantity: shoppingCartItem.quantity - 1);
-          final res = await _shoppingCartItemRepository
-              .updateShoppingCartItem(shoppingCartItem);
-
-          // update service
-          service = service.copyWith(quantity: service.quantity + 1);
-          await _serviceRepository.updateService(service);
-
           state = false;
-          res.fold((l) => showSnackBar(context, l.message, true), (r) {
-            if (context.mounted) {
-              showSnackBar(
-                  context, 'Shopping cart item updated successfully!', false);
-            }
-          });
-        }
-      } else {
-        state = false;
-      }
-    } else {
-      state = false;
-    }
-  }
-
-  void deleteShoppingCartItem(
-    UserModel user,
-    ShoppingCart? shoppingCart,
-    ShoppingCartItem? shoppingCartItem,
-    Service service,
-    BuildContext context,
-  ) async {
-    state = true;
-    if (shoppingCart != null && shoppingCartItem != null) {
-      if (shoppingCart.services.contains(service.serviceId) == true) {
-        // delete shopping cart item
-        final res = await _shoppingCartItemRepository
-            .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
-
-        // update shopping cart
-        shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
-        shoppingCart.services.remove(shoppingCartItem.serviceId);
-        await _shoppingCartRepository.updateShoppingCart(shoppingCart);
-
-        // remove shopping cart item from users shoppingCartItems list
-        user.shoppingCartItemIds.remove(shoppingCartItem.shoppingCartItemId);
-        await _userProfileRepository.updateUser(user);
-
-        // check if we need to remove shopping cart item from owners shoppingCartItems list
-        if (shoppingCart.uid != user.uid) {
-          // get owner
-          UserModel? owner = await _ref
-              .read(authControllerProvider.notifier)
-              .getUserData(shoppingCart.uid)
-              .first;
-
-          if (owner != null) {
-            // remove shopping cart item from owners shoppingCartItems list
-            owner.shoppingCartItemIds
-                .remove(shoppingCartItem.shoppingCartItemId);
-            await _userProfileRepository.updateUser(owner);
-          }
-        }
-
-        if (service.type == ServiceType.physical.value) {
-          // update service
-          service = service.copyWith(
-              quantity: service.quantity + shoppingCartItem.quantity);
-          await _serviceRepository.updateService(service);
-        }
-        state = false;
-        res.fold((l) => showSnackBar(context, l.message, true), (r) {
           if (context.mounted) {
             showSnackBar(
-                context, 'Shopping cart item removed successfully!', false);
+                context,
+                'Member does not have permission to remove item from shopping cart',
+                true);
           }
-        });
+        }
       } else {
         state = false;
       }
