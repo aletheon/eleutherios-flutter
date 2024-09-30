@@ -260,104 +260,106 @@ class MemberController extends StateNotifier<bool> {
           await _userProfileRepository.updateUser(user);
         }
 
-        // create any shopping cart references
-        if (member.permissions.contains(MemberPermissions.addtocart.value) ||
-            member.permissions
-                .contains(MemberPermissions.removefromcart.value)) {
-          String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
-          String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
-          String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
+        // create member shopping cart references
+        if (member.serviceUid != member.forumUid) {
+          if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+              member.permissions
+                  .contains(MemberPermissions.removefromcart.value)) {
+            String shoppingCartUserId = const Uuid().v1().replaceAll('-', '');
+            String shoppingCartForumId = const Uuid().v1().replaceAll('-', '');
+            String shoppingCartMemberId = const Uuid().v1().replaceAll('-', '');
 
-          // create shopping cart user
-          ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
-            shoppingCartUserId: shoppingCartUserId,
-            uid: member.serviceUid,
-            cartUid: member.forumUid,
-            forums: [member.forumId],
-            selectedForumId: member.forumId,
-            lastUpdateDate: DateTime.now(),
-            creationDate: DateTime.now(),
-          );
+            // create shopping cart user
+            ShoppingCartUser newShoppingCartUser = ShoppingCartUser(
+              shoppingCartUserId: shoppingCartUserId,
+              uid: member.serviceUid,
+              cartUid: member.forumUid,
+              forums: [member.forumId],
+              selectedForumId: member.forumId,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
 
-          // create shopping cart forum
-          ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
-            shoppingCartForumId: shoppingCartForumId,
-            shoppingCartUserId: shoppingCartUserId,
-            uid: member.serviceUid,
-            cartUid: member.forumUid,
-            forumId: member.forumId,
-            members: [member.memberId],
-            services: [member.serviceId],
-            selectedMemberId: member.memberId,
-            lastUpdateDate: DateTime.now(),
-            creationDate: DateTime.now(),
-          );
+            // create shopping cart forum
+            ShoppingCartForum newShoppingCartForum = ShoppingCartForum(
+              shoppingCartForumId: shoppingCartForumId,
+              shoppingCartUserId: shoppingCartUserId,
+              uid: member.serviceUid,
+              cartUid: member.forumUid,
+              forumId: member.forumId,
+              members: [member.memberId],
+              services: [member.serviceId],
+              selectedMemberId: member.memberId,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
 
-          // create shopping cart member
-          ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
-            shoppingCartMemberId: shoppingCartMemberId,
-            shoppingCartForumId: shoppingCartForumId,
-            forumId: member.forumId,
-            memberId: member.memberId,
-            serviceId: member.serviceId,
-            serviceUid: member.serviceUid,
-            lastUpdateDate: DateTime.now(),
-            creationDate: DateTime.now(),
-          );
+            // create shopping cart member
+            ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
+              shoppingCartMemberId: shoppingCartMemberId,
+              shoppingCartForumId: shoppingCartForumId,
+              forumId: member.forumId,
+              memberId: member.memberId,
+              serviceId: member.serviceId,
+              serviceUid: member.serviceUid,
+              lastUpdateDate: DateTime.now(),
+              creationDate: DateTime.now(),
+            );
 
-          // get service user
-          final memberUser = await _ref
-              .read(authControllerProvider.notifier)
-              .getUserData(member.serviceUid)
-              .first;
+            // get service user
+            final memberUser = await _ref
+                .read(authControllerProvider.notifier)
+                .getUserData(member.serviceUid)
+                .first;
 
-          // get shopping cart user
-          final shoppingCartUser = await _ref
-              .read(shoppingCartUserControllerProvider.notifier)
-              .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
-              .first;
+            // get shopping cart user
+            final shoppingCartUser = await _ref
+                .read(shoppingCartUserControllerProvider.notifier)
+                .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
+                .first;
 
-          // get shopping cart forum
-          final shoppingCartForum = await _ref
-              .read(shoppingCartForumControllerProvider.notifier)
-              .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
-              .first;
+            // get shopping cart forum
+            final shoppingCartForum = await _ref
+                .read(shoppingCartForumControllerProvider.notifier)
+                .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
+                .first;
 
-          // create shopping cart user
-          if (shoppingCartUser == null) {
-            await _shoppingCartUserRepository
-                .createShoppingCartUser(newShoppingCartUser);
-
-            // add uid to users shopping cart user ids list
-            memberUser!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
-            await _userProfileRepository.updateUser(memberUser);
-          } else {
-            // update shopping cart user
-            if (shoppingCartUser.forums.contains(member.forumId) == false) {
-              shoppingCartUser.forums.add(member.forumId);
+            // create shopping cart user
+            if (shoppingCartUser == null) {
               await _shoppingCartUserRepository
-                  .updateShoppingCartUser(shoppingCartUser);
+                  .createShoppingCartUser(newShoppingCartUser);
+
+              // add uid to users shopping cart user ids list
+              memberUser!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+              await _userProfileRepository.updateUser(memberUser);
+            } else {
+              // update shopping cart user
+              if (shoppingCartUser.forums.contains(member.forumId) == false) {
+                shoppingCartUser.forums.add(member.forumId);
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
+              }
             }
-          }
 
-          // create shopping cart forum
-          if (shoppingCartForum == null) {
-            await _shoppingCartForumRepository
-                .createShoppingCartForum(newShoppingCartForum);
-          } else {
-            // set shopping cart member - shopping cart forum id to existing id
-            newShoppingCartMember = newShoppingCartMember.copyWith(
-                shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+            // create shopping cart forum
+            if (shoppingCartForum == null) {
+              await _shoppingCartForumRepository
+                  .createShoppingCartForum(newShoppingCartForum);
+            } else {
+              // set shopping cart member - shopping cart forum id to existing id
+              newShoppingCartMember = newShoppingCartMember.copyWith(
+                  shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
 
-            // update shopping cart forum
-            shoppingCartForum.members.add(newShoppingCartMember.memberId);
-            shoppingCartForum.services.add(newShoppingCartMember.serviceId);
-            await _shoppingCartForumRepository
-                .updateShoppingCartForum(shoppingCartForum);
+              // update shopping cart forum
+              shoppingCartForum.members.add(newShoppingCartMember.memberId);
+              shoppingCartForum.services.add(newShoppingCartMember.serviceId);
+              await _shoppingCartForumRepository
+                  .updateShoppingCartForum(shoppingCartForum);
+            }
+            // create shopping cart member
+            await _shoppingCartMemberRepository
+                .createShoppingCartMember(newShoppingCartMember);
           }
-          // create shopping cart member
-          await _shoppingCartMemberRepository
-              .createShoppingCartMember(newShoppingCartMember);
         }
         state = false;
         res.fold((l) => showSnackBar(context, l.message, true), (r) {
@@ -448,104 +450,106 @@ class MemberController extends StateNotifier<bool> {
     );
 
     // update any shopping cart references
-    if (member.permissions.contains(MemberPermissions.addtocart.value) ||
-        member.permissions.contains(MemberPermissions.removefromcart.value)) {
-      if (shoppingCartMember == null) {
-        // create shopping cart user
-        if (shoppingCartUser == null) {
-          print('creating shopping cart user 2');
-          await _shoppingCartUserRepository
-              .createShoppingCartUser(newShoppingCartUser);
-
-          // add uid to users shopping cart user ids list
-          memberUser!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
-          await _userProfileRepository.updateUser(memberUser);
-        } else {
-          // update shopping cart user
-          if (shoppingCartUser.forums.contains(member.forumId) == false) {
-            shoppingCartUser.forums.add(member.forumId);
+    if (member.serviceUid != member.forumUid) {
+      if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+          member.permissions.contains(MemberPermissions.removefromcart.value)) {
+        if (shoppingCartMember == null) {
+          // create shopping cart user
+          if (shoppingCartUser == null) {
             await _shoppingCartUserRepository
-                .updateShoppingCartUser(shoppingCartUser);
-          }
-        }
+                .createShoppingCartUser(newShoppingCartUser);
 
-        // create shopping cart forum
-        if (shoppingCartForum == null) {
-          await _shoppingCartForumRepository
-              .createShoppingCartForum(newShoppingCartForum);
-        } else {
-          // set shopping cart member - shopping cart forum id to existing id
-          newShoppingCartMember = newShoppingCartMember.copyWith(
-              shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
-
-          // update shopping cart forum
-          shoppingCartForum.members.add(newShoppingCartMember.memberId);
-          shoppingCartForum.services.add(newShoppingCartMember.serviceId);
-          await _shoppingCartForumRepository
-              .updateShoppingCartForum(shoppingCartForum);
-        }
-
-        // create shopping cart member
-        await _shoppingCartMemberRepository
-            .createShoppingCartMember(newShoppingCartMember);
-      }
-    } else {
-      // delete shopping cart member
-      if (shoppingCartForum != null && shoppingCartMember != null) {
-        await _shoppingCartMemberRepository
-            .deleteShoppingCartMember(shoppingCartMember.shoppingCartMemberId);
-
-        // update shopping cart forum
-        shoppingCartForum.members.remove(shoppingCartMember.memberId);
-        shoppingCartForum.services.remove(shoppingCartMember.serviceId);
-        await _shoppingCartForumRepository
-            .updateShoppingCartForum(shoppingCartForum);
-
-        // get this users shopping cart member count
-        final shoppingCartMemberCount = await _ref
-            .read(shoppingCartMemberControllerProvider.notifier)
-            .getShoppingCartMemberCount(
-                shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-            .first;
-
-        if (shoppingCartMemberCount > 0) {
-          // set next available shopping cart member as default
-          if (shoppingCartForum.selectedMemberId ==
-              shoppingCartMember.memberId) {
-            // get the rest of the users shopping cart members
-            final userShoppingCartMembers = await _ref
-                .read(shoppingCartMemberControllerProvider.notifier)
-                .getShoppingCartMembers(
-                    shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-                .first;
-
-            if (userShoppingCartMembers.isNotEmpty) {
-              shoppingCartForum = shoppingCartForum.copyWith(
-                  selectedMemberId: userShoppingCartMembers[0].memberId);
-              await _shoppingCartForumRepository
-                  .updateShoppingCartForum(shoppingCartForum);
-            }
-          }
-        } else {
-          // delete shopping cart forum
-          await _shoppingCartForumRepository
-              .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
-
-          if (shoppingCartUser != null) {
-            shoppingCartUser.forums.remove(shoppingCartForum.forumId);
-
-            if (shoppingCartUser.forums.isEmpty) {
-              // remove shopping cart user
-              await _shoppingCartUserRepository
-                  .deleteShoppingCartUser(shoppingCartUser.shoppingCartUserId);
-
-              // add uid to users shopping cart user ids list
-              memberUser!.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
-              await _userProfileRepository.updateUser(memberUser);
-            } else {
-              // update shopping cart user
+            // add uid to users shopping cart user ids list
+            memberUser!.shoppingCartUserIds.add(newShoppingCartUser.cartUid);
+            await _userProfileRepository.updateUser(memberUser);
+          } else {
+            // update shopping cart user
+            if (shoppingCartUser.forums.contains(member.forumId) == false) {
+              shoppingCartUser.forums.add(member.forumId);
               await _shoppingCartUserRepository
                   .updateShoppingCartUser(shoppingCartUser);
+            }
+          }
+
+          // create shopping cart forum
+          if (shoppingCartForum == null) {
+            await _shoppingCartForumRepository
+                .createShoppingCartForum(newShoppingCartForum);
+          } else {
+            // set shopping cart member - shopping cart forum id to existing id
+            newShoppingCartMember = newShoppingCartMember.copyWith(
+                shoppingCartForumId: shoppingCartForum.shoppingCartForumId);
+
+            // update shopping cart forum
+            shoppingCartForum.members.add(newShoppingCartMember.memberId);
+            shoppingCartForum.services.add(newShoppingCartMember.serviceId);
+            await _shoppingCartForumRepository
+                .updateShoppingCartForum(shoppingCartForum);
+          }
+
+          // create shopping cart member
+          await _shoppingCartMemberRepository
+              .createShoppingCartMember(newShoppingCartMember);
+        }
+      } else {
+        // delete shopping cart member
+        if (shoppingCartForum != null && shoppingCartMember != null) {
+          await _shoppingCartMemberRepository.deleteShoppingCartMember(
+              shoppingCartMember.shoppingCartMemberId);
+
+          // update shopping cart forum
+          shoppingCartForum.members.remove(shoppingCartMember.memberId);
+          shoppingCartForum.services.remove(shoppingCartMember.serviceId);
+          await _shoppingCartForumRepository
+              .updateShoppingCartForum(shoppingCartForum);
+
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(
+                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+              .first;
+
+          if (shoppingCartMemberCount > 0) {
+            // set next available shopping cart member as default
+            if (shoppingCartForum.selectedMemberId ==
+                shoppingCartMember.memberId) {
+              // get the rest of the users shopping cart members
+              final userShoppingCartMembers = await _ref
+                  .read(shoppingCartMemberControllerProvider.notifier)
+                  .getShoppingCartMembers(
+                      shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+                  .first;
+
+              if (userShoppingCartMembers.isNotEmpty) {
+                shoppingCartForum = shoppingCartForum.copyWith(
+                    selectedMemberId: userShoppingCartMembers[0].memberId);
+                await _shoppingCartForumRepository
+                    .updateShoppingCartForum(shoppingCartForum);
+              }
+            }
+          } else {
+            // delete shopping cart forum
+            await _shoppingCartForumRepository
+                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+
+            if (shoppingCartUser != null) {
+              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+
+              if (shoppingCartUser.forums.isEmpty) {
+                // remove shopping cart user
+                await _shoppingCartUserRepository.deleteShoppingCartUser(
+                    shoppingCartUser.shoppingCartUserId);
+
+                // add uid to users shopping cart user ids list
+                memberUser!.shoppingCartUserIds
+                    .remove(shoppingCartUser.cartUid);
+                await _userProfileRepository.updateUser(memberUser);
+              } else {
+                // update shopping cart user
+                await _shoppingCartUserRepository
+                    .updateShoppingCartUser(shoppingCartUser);
+              }
             }
           }
         }
@@ -644,83 +648,87 @@ class MemberController extends StateNotifier<bool> {
         }
       }
 
-      // remove any shopping cart references
-      if (member.permissions.contains(MemberPermissions.addtocart.value) ||
-          member.permissions.contains(MemberPermissions.removefromcart.value)) {
-        // get shopping cart user
-        final shoppingCartUser = await _ref
-            .read(shoppingCartUserControllerProvider.notifier)
-            .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
-            .first;
-
-        // get shopping cart forum
-        ShoppingCartForum? shoppingCartForum = await _ref
-            .read(shoppingCartForumControllerProvider.notifier)
-            .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
-            .first;
-
-        // get shopping cart member
-        final shoppingCartMember = await _ref
-            .read(shoppingCartMemberControllerProvider.notifier)
-            .getShoppingCartMemberByMemberId(member.memberId)
-            .first;
-
-        // delete shopping cart member
-        if (shoppingCartForum != null && shoppingCartMember != null) {
-          await _shoppingCartMemberRepository.deleteShoppingCartMember(
-              shoppingCartMember.shoppingCartMemberId);
-
-          // update shopping cart forum
-          shoppingCartForum.members.remove(shoppingCartMember.memberId);
-          shoppingCartForum.services.remove(shoppingCartMember.serviceId);
-          await _shoppingCartForumRepository
-              .updateShoppingCartForum(shoppingCartForum);
-
-          // get this users shopping cart member count
-          final shoppingCartMemberCount = await _ref
-              .read(shoppingCartMemberControllerProvider.notifier)
-              .getShoppingCartMemberCount(
-                  shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+      // remove member shopping cart references
+      if (member.serviceUid != member.forumUid) {
+        if (member.permissions.contains(MemberPermissions.addtocart.value) ||
+            member.permissions
+                .contains(MemberPermissions.removefromcart.value)) {
+          // get shopping cart user
+          final shoppingCartUser = await _ref
+              .read(shoppingCartUserControllerProvider.notifier)
+              .getShoppingCartUserByUserId(member.serviceUid, member.forumUid)
               .first;
 
-          if (shoppingCartMemberCount > 0) {
-            // set next available shopping cart member as default
-            if (shoppingCartForum.selectedMemberId ==
-                shoppingCartMember.memberId) {
-              // get the rest of the users shopping cart members
-              final userShoppingCartMembers = await _ref
-                  .read(shoppingCartMemberControllerProvider.notifier)
-                  .getShoppingCartMembers(
-                      shoppingCartMember.forumId, shoppingCartMember.serviceUid)
-                  .first;
+          // get shopping cart forum
+          ShoppingCartForum? shoppingCartForum = await _ref
+              .read(shoppingCartForumControllerProvider.notifier)
+              .getShoppingCartForumByUserId(member.serviceUid, member.forumId)
+              .first;
 
-              if (userShoppingCartMembers.isNotEmpty) {
-                shoppingCartForum = shoppingCartForum.copyWith(
-                    selectedMemberId: userShoppingCartMembers[0].memberId);
-                await _shoppingCartForumRepository
-                    .updateShoppingCartForum(shoppingCartForum);
-              }
-            }
-          } else {
-            // delete shopping cart forum
+          // get shopping cart member
+          final shoppingCartMember = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberByMemberId(member.memberId)
+              .first;
+
+          // delete shopping cart member
+          if (shoppingCartForum != null && shoppingCartMember != null) {
+            await _shoppingCartMemberRepository.deleteShoppingCartMember(
+                shoppingCartMember.shoppingCartMemberId);
+
+            // update shopping cart forum
+            shoppingCartForum.members.remove(shoppingCartMember.memberId);
+            shoppingCartForum.services.remove(shoppingCartMember.serviceId);
             await _shoppingCartForumRepository
-                .deleteShoppingCartForum(shoppingCartForum.shoppingCartForumId);
+                .updateShoppingCartForum(shoppingCartForum);
 
-            if (shoppingCartUser != null) {
-              shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+            // get this users shopping cart member count
+            final shoppingCartMemberCount = await _ref
+                .read(shoppingCartMemberControllerProvider.notifier)
+                .getShoppingCartMemberCount(
+                    shoppingCartMember.forumId, shoppingCartMember.serviceUid)
+                .first;
 
-              if (shoppingCartUser.forums.isEmpty) {
-                // remove shopping cart user
-                await _shoppingCartUserRepository.deleteShoppingCartUser(
-                    shoppingCartUser.shoppingCartUserId);
+            if (shoppingCartMemberCount > 0) {
+              // set next available shopping cart member as default
+              if (shoppingCartForum.selectedMemberId ==
+                  shoppingCartMember.memberId) {
+                // get the rest of the users shopping cart members
+                final userShoppingCartMembers = await _ref
+                    .read(shoppingCartMemberControllerProvider.notifier)
+                    .getShoppingCartMembers(shoppingCartMember.forumId,
+                        shoppingCartMember.serviceUid)
+                    .first;
 
-                // add uid to users shopping cart user ids list
-                memberUser.shoppingCartUserIds.remove(shoppingCartUser.cartUid);
-                await _userProfileRepository.updateUser(memberUser);
-              } else {
-                // update shopping cart user
-                await _shoppingCartUserRepository
-                    .updateShoppingCartUser(shoppingCartUser);
+                if (userShoppingCartMembers.isNotEmpty) {
+                  shoppingCartForum = shoppingCartForum.copyWith(
+                      selectedMemberId: userShoppingCartMembers[0].memberId);
+                  await _shoppingCartForumRepository
+                      .updateShoppingCartForum(shoppingCartForum);
+                }
+              }
+            } else {
+              // delete shopping cart forum
+              await _shoppingCartForumRepository.deleteShoppingCartForum(
+                  shoppingCartForum.shoppingCartForumId);
+
+              if (shoppingCartUser != null) {
+                shoppingCartUser.forums.remove(shoppingCartForum.forumId);
+
+                if (shoppingCartUser.forums.isEmpty) {
+                  // remove shopping cart user
+                  await _shoppingCartUserRepository.deleteShoppingCartUser(
+                      shoppingCartUser.shoppingCartUserId);
+
+                  // add uid to users shopping cart user ids list
+                  memberUser.shoppingCartUserIds
+                      .remove(shoppingCartUser.cartUid);
+                  await _userProfileRepository.updateUser(memberUser);
+                } else {
+                  // update shopping cart user
+                  await _shoppingCartUserRepository
+                      .updateShoppingCartUser(shoppingCartUser);
+                }
               }
             }
           }
