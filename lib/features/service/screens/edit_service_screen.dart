@@ -562,39 +562,44 @@ class _EditServiceScreenState extends ConsumerState<EditServiceScreen> {
                             const SizedBox(
                               height: 0,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Quantity',
-                                  style: TextStyle(
-                                    color: Pallete.greyColor,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 80,
-                                  child: TextField(
-                                    controller: _quantityController,
-                                    decoration: selectedType ==
-                                            ServiceType.physical.value
-                                        ? const InputDecoration(hintText: '0')
-                                        : const InputDecoration(
-                                            hintText: 'Unlimited'),
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(6),
-                                      FilteringTextInputFormatter.deny(
-                                          RegExp(r'[-]')),
-                                      FilteringTextInputFormatter.deny(
-                                          RegExp(r'[ ]')),
+                            selectedType == ServiceType.physical.value
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Quantity',
+                                        style: TextStyle(
+                                          color: Pallete.greyColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 80,
+                                        child: TextField(
+                                          controller: _quantityController,
+                                          decoration: selectedType ==
+                                                  ServiceType.physical.value
+                                              ? const InputDecoration(
+                                                  hintText: '0')
+                                              : const InputDecoration(
+                                                  hintText: 'Unlimited'),
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(6),
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r'[-]')),
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r'[ ]')),
+                                          ],
+                                          keyboardType: TextInputType.number,
+                                          textAlign: TextAlign.end,
+                                        ),
+                                      ),
                                     ],
-                                    keyboardType: TextInputType.number,
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ),
-                              ],
-                            ),
+                                  )
+                                : const SizedBox(),
                             selectedType == ServiceType.nonphysical.value
                                 ? Row(
                                     mainAxisAlignment:
