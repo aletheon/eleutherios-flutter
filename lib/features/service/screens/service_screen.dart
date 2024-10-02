@@ -19,19 +19,6 @@ import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:tuple/tuple.dart';
 
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// HERE ROB LIST EACH SHOPPING CART USER WITH ADD AND REMOVE BUTTON ON THIS PAGE TO
-// ENABLE END USER TO SELECT WHICH CART THEY WANT TO ADD THE SERVICE TOO
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-
 class ServiceScreen extends ConsumerStatefulWidget {
   final String serviceId;
   const ServiceScreen({super.key, required this.serviceId});
@@ -216,6 +203,107 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   //     getSelectedMember();
   //   });
   // }
+
+  // 1) get user
+  // 2) get shoppingCartUser
+  // 3) get shoppingCartForum
+  // 4) get shoppingCartMember
+  // 5) list each user and the forums associated to them with a dropdown of each selected member with add-to-cart / remove-from-cart buttons
+
+  Widget showShoppingCartUsers(UserModel user) {
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: user.shoppingCartUserIds.length,
+        itemBuilder: (BuildContext context, int index) {
+          final userId = user.shoppingCartUserIds[index];
+
+          return ref.watch(getUserByIdProvider(userId)).when(
+                data: (cartUser) {
+                  if (cartUser != null) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ListTile(
+                          title: Row(
+                            children: [
+                              Text(cartUser.fullName),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                            ],
+                          ),
+                          // user.profilePic == Constants.avatarDefault
+                          //     ? CircleAvatar(
+                          //         backgroundImage:
+                          //             Image.asset(user.profilePic).image,
+                          //         radius: 45,
+                          //       )
+                          //     : Container(
+                          //         alignment: Alignment.bottomLeft,
+                          //         padding: const EdgeInsets.all(20)
+                          //             .copyWith(bottom: 50),
+                          //         child: CircleAvatar(
+                          //           backgroundImage: Image.network(
+                          //             user.profilePic,
+                          //             loadingBuilder:
+                          //                 (context, child, loadingProgress) {
+                          //               return loadingProgress
+                          //                           ?.cumulativeBytesLoaded ==
+                          //                       loadingProgress
+                          //                           ?.expectedTotalBytes
+                          //                   ? child
+                          //                   : const CircularProgressIndicator();
+                          //             },
+                          //           ).image,
+                          //           radius: 45,
+                          //         ),
+                          //       ),
+                          leading:
+                              cartUser.profilePic == Constants.avatarDefault
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          Image.asset(user.profilePic).image,
+                                      radius: 45,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: Image.network(
+                                        user.profilePic,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          return loadingProgress
+                                                      ?.cumulativeBytesLoaded ==
+                                                  loadingProgress
+                                                      ?.expectedTotalBytes
+                                              ? child
+                                              : const CircularProgressIndicator();
+                                        },
+                                      ).image,
+                                      radius: 45,
+                                    ),
+                          // trailing: TextButton(
+                          //   onPressed: () =>
+                          //       registerService(context, ref, forum.forumId),
+                          //   child: const Text(
+                          //     'Add',
+                          //   ),
+                          // ),
+                          // onTap: () => showUserDetails(context, cartUser.uid),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -602,171 +690,167 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                             ),
                                             service.uid != user.uid &&
                                                     service.canBeOrdered == true
-                                                ? Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        width:
-                                                            MediaQuery.sizeOf(
-                                                                    context)
+                                                ? user.shoppingCartUserIds
+                                                        .isEmpty
+                                                    ? Column(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: MediaQuery
+                                                                    .sizeOf(
+                                                                        context)
                                                                 .width,
-                                                        child: const Divider(
-                                                            color: Colors.grey,
-                                                            thickness: 1.0),
-                                                      ),
-                                                      // add to cart button(s)
-                                                      Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: Wrap(
-                                                          crossAxisAlignment:
-                                                              WrapCrossAlignment
-                                                                  .center,
-                                                          children: [
-                                                            service.quantity !=
-                                                                    -1
-                                                                ? Container(
-                                                                    margin: const EdgeInsets
-                                                                        .only(
-                                                                        right:
-                                                                            10),
-                                                                    child: Text(
-                                                                      '${service.quantity} available',
-                                                                      softWrap:
-                                                                          true,
-                                                                    ),
-                                                                  )
-                                                                : const SizedBox(),
-                                                            service.quantity !=
-                                                                    -1
-                                                                ? Card(
-                                                                    color: Colors
-                                                                        .blue,
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                    ),
-                                                                    child:
-                                                                        SizedBox(
-                                                                      height:
-                                                                          35,
-                                                                      width:
-                                                                          120,
-                                                                      child:
-                                                                          AnimatedSwitcher(
-                                                                        duration:
-                                                                            const Duration(milliseconds: 500),
+                                                            child: const Divider(
+                                                                color:
+                                                                    Colors.grey,
+                                                                thickness: 1.0),
+                                                          ),
+                                                          // add to cart button(s)
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .topRight,
+                                                            child: Wrap(
+                                                              crossAxisAlignment:
+                                                                  WrapCrossAlignment
+                                                                      .center,
+                                                              children: [
+                                                                service.quantity !=
+                                                                        -1
+                                                                    ? Container(
+                                                                        margin: const EdgeInsets
+                                                                            .only(
+                                                                            right:
+                                                                                10),
                                                                         child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            IconButton(
-                                                                                icon: const Icon(Icons.remove),
-                                                                                onPressed: () {
-                                                                                  setState(() {
-                                                                                    if (quantity > 0) {
-                                                                                      quantity--;
-                                                                                    }
-                                                                                  });
-                                                                                  decreaseQuantity(
-                                                                                    context,
-                                                                                    shoppingCart,
-                                                                                    shoppingCartItem,
-                                                                                    user,
-                                                                                    service,
-                                                                                  );
-                                                                                }),
-                                                                            shoppingCartItem != null
-                                                                                ? Text((shoppingCartItem.quantity).toString())
-                                                                                : Text(quantity.toString()),
-                                                                            IconButton(
-                                                                                icon: const Icon(Icons.add),
-                                                                                onPressed: () {
-                                                                                  setState(() {
-                                                                                    quantity++;
-                                                                                  });
-                                                                                  increaseQuantity(
-                                                                                    context,
-                                                                                    shoppingCart,
-                                                                                    shoppingCartItem,
-                                                                                    user,
-                                                                                    service,
-                                                                                  );
-                                                                                }),
-                                                                          ],
+                                                                            Text(
+                                                                          '${service.quantity} available',
+                                                                          softWrap:
+                                                                              true,
+                                                                        ),
+                                                                      )
+                                                                    : const SizedBox(),
+                                                                service.quantity !=
+                                                                        -1
+                                                                    ? Card(
+                                                                        color: Colors
+                                                                            .blue,
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                        ),
+                                                                        child:
+                                                                            SizedBox(
+                                                                          height:
+                                                                              35,
+                                                                          width:
+                                                                              120,
+                                                                          child:
+                                                                              AnimatedSwitcher(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                IconButton(
+                                                                                    icon: const Icon(Icons.remove),
+                                                                                    onPressed: () {
+                                                                                      setState(() {
+                                                                                        if (quantity > 0) {
+                                                                                          quantity--;
+                                                                                        }
+                                                                                      });
+                                                                                      decreaseQuantity(
+                                                                                        context,
+                                                                                        shoppingCart,
+                                                                                        shoppingCartItem,
+                                                                                        user,
+                                                                                        service,
+                                                                                      );
+                                                                                    }),
+                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(quantity.toString()),
+                                                                                IconButton(
+                                                                                    icon: const Icon(Icons.add),
+                                                                                    onPressed: () {
+                                                                                      setState(() {
+                                                                                        quantity++;
+                                                                                      });
+                                                                                      increaseQuantity(
+                                                                                        context,
+                                                                                        shoppingCart,
+                                                                                        shoppingCartItem,
+                                                                                        user,
+                                                                                        service,
+                                                                                      );
+                                                                                    }),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : const SizedBox(),
+                                                                shoppingCart.services
+                                                                            .contains(service.serviceId) ==
+                                                                        false
+                                                                    ? Container(
+                                                                        margin:
+                                                                            const EdgeInsets.only(
+                                                                          left:
+                                                                              5,
+                                                                        ),
+                                                                        child:
+                                                                            OutlinedButton(
+                                                                          onPressed: () =>
+                                                                              addToCart(
+                                                                            context,
+                                                                            shoppingCart,
+                                                                            user,
+                                                                            service,
+                                                                          ),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                              backgroundColor: Pallete.darkGreenColor,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                          child:
+                                                                              const Text('Add to Cart'),
+                                                                        ),
+                                                                      )
+                                                                    : Container(
+                                                                        margin:
+                                                                            const EdgeInsets.only(
+                                                                          left:
+                                                                              5,
+                                                                        ),
+                                                                        child:
+                                                                            OutlinedButton(
+                                                                          onPressed: () =>
+                                                                              removeFromCart(
+                                                                            context,
+                                                                            shoppingCart,
+                                                                            shoppingCartItem,
+                                                                            user,
+                                                                            service,
+                                                                          ),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                              backgroundColor: Pallete.redPinkColor,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                          child:
+                                                                              const Text('Remove from Cart'),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  )
-                                                                : const SizedBox(),
-                                                            shoppingCart.services
-                                                                        .contains(
-                                                                            service.serviceId) ==
-                                                                    false
-                                                                ? Container(
-                                                                    margin:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                      left: 5,
-                                                                    ),
-                                                                    child:
-                                                                        OutlinedButton(
-                                                                      onPressed:
-                                                                          () =>
-                                                                              addToCart(
-                                                                        context,
-                                                                        shoppingCart,
-                                                                        user,
-                                                                        service,
-                                                                      ),
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: Pallete.darkGreenColor,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                      child: const Text(
-                                                                          'Add to Cart'),
-                                                                    ),
-                                                                  )
-                                                                : Container(
-                                                                    margin:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                      left: 5,
-                                                                    ),
-                                                                    child:
-                                                                        OutlinedButton(
-                                                                      onPressed:
-                                                                          () =>
-                                                                              removeFromCart(
-                                                                        context,
-                                                                        shoppingCart,
-                                                                        shoppingCartItem,
-                                                                        user,
-                                                                        service,
-                                                                      ),
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: Pallete.redPinkColor,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                      child: const Text(
-                                                                          'Remove from Cart'),
-                                                                    ),
-                                                                  ),
-                                                          ],
-                                                        ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
                                                       )
-                                                    ],
-                                                  )
+                                                    : showShoppingCartUsers(
+                                                        user)
                                                 : const SizedBox(),
                                           ],
                                         ),

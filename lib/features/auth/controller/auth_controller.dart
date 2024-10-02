@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/repository/auth_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart/repository/shopping_cart_repository.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
@@ -15,6 +14,11 @@ final userProvider = StateProvider<UserModel?>((ref) => null);
 //   final authRepository = ref.watch(authRepositoryProvider);
 //   return authRepository.getUserData(uid);
 // });
+
+final getUserByIdProvider =
+    StreamProvider.family.autoDispose((ref, String userId) {
+  return ref.watch(authControllerProvider.notifier).getUserData(userId);
+});
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
