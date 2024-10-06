@@ -49,6 +49,25 @@ class ShoppingCartMemberRepository {
     });
   }
 
+  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(String forumId) {
+    return _shoppingCartMembers
+        .where('forumId', isEqualTo: forumId)
+        .where('selected', isEqualTo: true)
+        .snapshots()
+        .map((event) {
+      if (event.docs.isNotEmpty) {
+        List<ShoppingCartMember> shoppingCartMembers = [];
+        for (var doc in event.docs) {
+          shoppingCartMembers.add(
+              ShoppingCartMember.fromMap(doc.data() as Map<String, dynamic>));
+        }
+        return shoppingCartMembers.first;
+      } else {
+        return null;
+      }
+    });
+  }
+
   Stream<ShoppingCartMember?> getShoppingCartMemberByMemberId(String memberId) {
     return _shoppingCartMembers
         .where('memberId', isEqualTo: memberId)

@@ -6,6 +6,7 @@ class ShoppingCartMember {
       memberId; // member user has been given permission to add items to cart
   final String serviceId;
   final String serviceUid;
+  final bool selected;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   ShoppingCartMember({
@@ -15,6 +16,7 @@ class ShoppingCartMember {
     required this.memberId,
     required this.serviceId,
     required this.serviceUid,
+    required this.selected,
     required this.lastUpdateDate,
     required this.creationDate,
   });
@@ -26,6 +28,7 @@ class ShoppingCartMember {
     String? memberId,
     String? serviceId,
     String? serviceUid,
+    bool? selected,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
@@ -36,6 +39,7 @@ class ShoppingCartMember {
       memberId: memberId ?? this.memberId,
       serviceId: serviceId ?? this.serviceId,
       serviceUid: serviceUid ?? this.serviceUid,
+      selected: selected ?? this.selected,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
     );
@@ -49,6 +53,7 @@ class ShoppingCartMember {
       'memberId': memberId,
       'serviceId': serviceId,
       'serviceUid': serviceUid,
+      'selected': selected,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
     };
@@ -62,6 +67,7 @@ class ShoppingCartMember {
       memberId: map['memberId'] as String,
       serviceId: map['serviceId'] as String,
       serviceUid: map['serviceUid'] as String,
+      selected: map['selected'] as bool,
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
       creationDate:
@@ -71,7 +77,7 @@ class ShoppingCartMember {
 
   @override
   String toString() {
-    return 'ShoppingCartMember(shoppingCartMemberId: $shoppingCartMemberId, shoppingCartForumId: $shoppingCartForumId, memberId: $memberId, forumId: $forumId, serviceId: $serviceId, serviceUid: $serviceUid, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartMember(shoppingCartMemberId: $shoppingCartMemberId, shoppingCartForumId: $shoppingCartForumId, memberId: $memberId, forumId: $forumId, serviceId: $serviceId, serviceUid: $serviceUid, selected: $selected, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -84,6 +90,7 @@ class ShoppingCartMember {
         other.memberId == memberId &&
         other.serviceId == serviceId &&
         other.serviceUid == serviceUid &&
+        other.selected == selected &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
   }
@@ -96,6 +103,7 @@ class ShoppingCartMember {
         memberId.hashCode ^
         serviceId.hashCode ^
         serviceUid.hashCode ^
+        selected.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
   }

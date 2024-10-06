@@ -275,7 +275,6 @@ class MemberController extends StateNotifier<bool> {
               uid: member.serviceUid,
               cartUid: member.forumUid,
               forums: [member.forumId],
-              selectedForumId: member.forumId,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -289,7 +288,6 @@ class MemberController extends StateNotifier<bool> {
               forumId: member.forumId,
               members: [member.memberId],
               services: [member.serviceId],
-              selectedMemberId: member.memberId,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -302,6 +300,7 @@ class MemberController extends StateNotifier<bool> {
               memberId: member.memberId,
               serviceId: member.serviceId,
               serviceUid: member.serviceUid,
+              selected: false,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -418,7 +417,6 @@ class MemberController extends StateNotifier<bool> {
       uid: member.serviceUid,
       cartUid: member.forumUid,
       forums: [member.forumId],
-      selectedForumId: member.forumId,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -432,7 +430,6 @@ class MemberController extends StateNotifier<bool> {
       forumId: member.forumId,
       members: [member.memberId],
       services: [member.serviceId],
-      selectedMemberId: member.memberId,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -445,6 +442,7 @@ class MemberController extends StateNotifier<bool> {
       memberId: member.memberId,
       serviceId: member.serviceId,
       serviceUid: member.serviceUid,
+      selected: false,
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -512,8 +510,7 @@ class MemberController extends StateNotifier<bool> {
 
           if (shoppingCartMemberCount > 0) {
             // set next available shopping cart member as default
-            if (shoppingCartForum.selectedMemberId ==
-                shoppingCartMember.memberId) {
+            if (shoppingCartMember.selected == true) {
               // get the rest of the users shopping cart members
               final userShoppingCartMembers = await _ref
                   .read(shoppingCartMemberControllerProvider.notifier)
@@ -522,10 +519,10 @@ class MemberController extends StateNotifier<bool> {
                   .first;
 
               if (userShoppingCartMembers.isNotEmpty) {
-                shoppingCartForum = shoppingCartForum.copyWith(
-                    selectedMemberId: userShoppingCartMembers[0].memberId);
-                await _shoppingCartForumRepository
-                    .updateShoppingCartForum(shoppingCartForum);
+                userShoppingCartMembers[0] =
+                    userShoppingCartMembers[0].copyWith(selected: true);
+                await _shoppingCartMemberRepository
+                    .updateShoppingCartMember(userShoppingCartMembers[0]);
               }
             }
           } else {
@@ -691,8 +688,7 @@ class MemberController extends StateNotifier<bool> {
 
             if (shoppingCartMemberCount > 0) {
               // set next available shopping cart member as default
-              if (shoppingCartForum.selectedMemberId ==
-                  shoppingCartMember.memberId) {
+              if (shoppingCartMember.selected == true) {
                 // get the rest of the users shopping cart members
                 final userShoppingCartMembers = await _ref
                     .read(shoppingCartMemberControllerProvider.notifier)
@@ -701,10 +697,10 @@ class MemberController extends StateNotifier<bool> {
                     .first;
 
                 if (userShoppingCartMembers.isNotEmpty) {
-                  shoppingCartForum = shoppingCartForum.copyWith(
-                      selectedMemberId: userShoppingCartMembers[0].memberId);
-                  await _shoppingCartForumRepository
-                      .updateShoppingCartForum(shoppingCartForum);
+                  userShoppingCartMembers[0] =
+                      userShoppingCartMembers[0].copyWith(selected: true);
+                  await _shoppingCartMemberRepository
+                      .updateShoppingCartMember(userShoppingCartMembers[0]);
                 }
               }
             } else {

@@ -86,7 +86,6 @@ class ShoppingCartForumController extends StateNotifier<bool> {
       forumId: forumId,
       members: [],
       services: [],
-      selectedMemberId: '',
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
@@ -171,10 +170,8 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         .deleteShoppingCartForumsByShoppingCartUserId(shoppingCartUserId);
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForums(
-      String shoppingCartUserId) {
-    return _shoppingCartForumRepository
-        .getShoppingCartForums(shoppingCartUserId);
+  Stream<List<ShoppingCartForum>> getShoppingCartForums(String uid) {
+    return _shoppingCartForumRepository.getShoppingCartForums(uid);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumById(

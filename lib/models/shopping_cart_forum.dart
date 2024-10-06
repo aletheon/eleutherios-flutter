@@ -8,9 +8,8 @@ class ShoppingCartForum {
   final String
       forumId; // forum user has been given permission to add items to cart
   final List<String>
-      members; // rule members (i.e. services) that will serve in this rule
+      members; // members (i.e. services) that will serve in this forum
   final List<String> services; // list of member services for redundancy sake
-  final String selectedMemberId;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
   ShoppingCartForum({
@@ -20,7 +19,6 @@ class ShoppingCartForum {
     required this.cartUid,
     required this.forumId,
     required this.members,
-    required this.selectedMemberId,
     required this.services,
     required this.lastUpdateDate,
     required this.creationDate,
@@ -34,7 +32,6 @@ class ShoppingCartForum {
     String? forumId,
     List<String>? members,
     List<String>? services,
-    String? selectedMemberId,
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
@@ -45,7 +42,6 @@ class ShoppingCartForum {
       cartUid: cartUid ?? this.cartUid,
       forumId: forumId ?? this.forumId,
       members: members ?? this.members,
-      selectedMemberId: selectedMemberId ?? this.selectedMemberId,
       services: services ?? this.services,
       lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
       creationDate: creationDate ?? this.creationDate,
@@ -60,7 +56,6 @@ class ShoppingCartForum {
       'cartUid': cartUid,
       'forumId': forumId,
       'members': members,
-      'selectedMemberId': selectedMemberId,
       'services': services,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
@@ -76,7 +71,6 @@ class ShoppingCartForum {
       forumId: map['forumId'] as String,
       members: List<String>.from(map['members']),
       services: List<String>.from(map['services']),
-      selectedMemberId: map['selectedMemberId'] as String,
       lastUpdateDate:
           DateTime.fromMillisecondsSinceEpoch(map['lastUpdateDate'] as int),
       creationDate:
@@ -86,7 +80,7 @@ class ShoppingCartForum {
 
   @override
   String toString() {
-    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, uid: $uid, cartUid: $cartUid, forumId: $forumId, members: $members, selectedMemberId: $selectedMemberId, services: $services, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartForum(shoppingCartForumId: $shoppingCartForumId, shoppingCartUserId: $shoppingCartUserId, uid: $uid, cartUid: $cartUid, forumId: $forumId, members: $members, services: $services, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -100,7 +94,6 @@ class ShoppingCartForum {
         other.forumId == forumId &&
         listEquals(other.members, members) &&
         listEquals(other.services, services) &&
-        other.selectedMemberId == selectedMemberId &&
         other.lastUpdateDate == lastUpdateDate &&
         other.creationDate == creationDate;
   }
@@ -114,7 +107,6 @@ class ShoppingCartForum {
         forumId.hashCode ^
         members.hashCode ^
         services.hashCode ^
-        selectedMemberId.hashCode ^
         lastUpdateDate.hashCode ^
         creationDate.hashCode;
   }

@@ -10,6 +10,7 @@ import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
@@ -196,6 +197,13 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     Routemaster.of(context).push('/addforum/${widget.serviceId}');
   }
 
+  void showUserDetails(
+    BuildContext context,
+    String uid,
+  ) {
+    Routemaster.of(context).push('/user/$uid');
+  }
+
   // @override
   // void initState() {
   //   super.initState();
@@ -210,98 +218,214 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   // 4) get shoppingCartMember
   // 5) list each user and the forums associated to them with a dropdown of each selected member with add-to-cart / remove-from-cart buttons
 
-  Widget showShoppingCartUsers(UserModel user) {
-    return Expanded(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: user.shoppingCartUserIds.length,
-        itemBuilder: (BuildContext context, int index) {
-          final userId = user.shoppingCartUserIds[index];
+  Widget showShoppingCartUsers(
+    UserModel user,
+    Service service,
+    ShoppingCart shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+  ) {
+    return ListView.builder(
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      itemCount: user.shoppingCartUserIds.length,
+      itemBuilder: (BuildContext context, int index) {
+        final userId = user.shoppingCartUserIds[index];
 
-          return ref.watch(getUserByIdProvider(userId)).when(
-                data: (cartUser) {
-                  if (cartUser != null) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        ListTile(
-                          title: Row(
-                            children: [
-                              Text(cartUser.fullName),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                            ],
-                          ),
-                          // user.profilePic == Constants.avatarDefault
-                          //     ? CircleAvatar(
-                          //         backgroundImage:
-                          //             Image.asset(user.profilePic).image,
-                          //         radius: 45,
-                          //       )
-                          //     : Container(
-                          //         alignment: Alignment.bottomLeft,
-                          //         padding: const EdgeInsets.all(20)
-                          //             .copyWith(bottom: 50),
-                          //         child: CircleAvatar(
-                          //           backgroundImage: Image.network(
-                          //             user.profilePic,
-                          //             loadingBuilder:
-                          //                 (context, child, loadingProgress) {
-                          //               return loadingProgress
-                          //                           ?.cumulativeBytesLoaded ==
-                          //                       loadingProgress
-                          //                           ?.expectedTotalBytes
-                          //                   ? child
-                          //                   : const CircularProgressIndicator();
-                          //             },
-                          //           ).image,
-                          //           radius: 45,
-                          //         ),
-                          //       ),
-                          leading:
-                              cartUser.profilePic == Constants.avatarDefault
-                                  ? CircleAvatar(
-                                      backgroundImage:
-                                          Image.asset(user.profilePic).image,
-                                      radius: 45,
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage: Image.network(
-                                        user.profilePic,
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          return loadingProgress
-                                                      ?.cumulativeBytesLoaded ==
-                                                  loadingProgress
-                                                      ?.expectedTotalBytes
-                                              ? child
-                                              : const CircularProgressIndicator();
-                                        },
-                                      ).image,
-                                      radius: 45,
-                                    ),
-                          // trailing: TextButton(
-                          //   onPressed: () =>
-                          //       registerService(context, ref, forum.forumId),
-                          //   child: const Text(
-                          //     'Add',
-                          //   ),
-                          // ),
-                          // onTap: () => showUserDetails(context, cartUser.uid),
+        return ref.watch(getUserByIdProvider(userId)).when(
+              data: (cartUser) {
+                if (cartUser != null) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ListTile(
+                        title: Row(
+                          children: [
+                            Text(cartUser.fullName),
+                          ],
                         ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stackTrace) =>
-                    ErrorText(error: error.toString()),
-                loading: () => const Loader(),
-              );
-        },
-      ),
+                        leading: cartUser.profilePic == Constants.avatarDefault
+                            ? CircleAvatar(
+                                backgroundImage:
+                                    Image.asset(cartUser.profilePic).image,
+                                radius: 25,
+                              )
+                            : CircleAvatar(
+                                backgroundImage: Image.network(
+                                  cartUser.profilePic,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    return loadingProgress
+                                                ?.cumulativeBytesLoaded ==
+                                            loadingProgress?.expectedTotalBytes
+                                        ? child
+                                        : const CircularProgressIndicator();
+                                  },
+                                ).image,
+                                radius: 25,
+                              ),
+                        onTap: () => showUserDetails(context, cartUser.uid),
+                      ),
+                      // ref
+                      //         .watch(shoppingCartForumsProvider(cartUser.uid))
+                      //         .when(
+                      //           data: (shoppingCartForums) {
+
+                      //           },
+                      //           error: (error, stackTrace) =>
+                      //               ErrorText(error: error.toString()),
+                      //           loading: () => const Loader(),
+                      //         ),
+
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.sizeOf(context).width,
+                            child: const Divider(
+                                color: Colors.grey, thickness: 1.0),
+                          ),
+                          // add to cart button(s)
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                service.quantity != -1
+                                    ? Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        child: Text(
+                                          '${service.quantity} available',
+                                          softWrap: true,
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                service.quantity != -1
+                                    ? Card(
+                                        color: Colors.blue,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: SizedBox(
+                                          height: 35,
+                                          width: 120,
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                    icon: const Icon(
+                                                        Icons.remove),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        if (quantity > 0) {
+                                                          quantity--;
+                                                        }
+                                                      });
+                                                      decreaseQuantity(
+                                                        context,
+                                                        shoppingCart,
+                                                        shoppingCartItem,
+                                                        user,
+                                                        service,
+                                                      );
+                                                    }),
+                                                shoppingCartItem != null
+                                                    ? Text((shoppingCartItem
+                                                            .quantity)
+                                                        .toString())
+                                                    : Text(quantity.toString()),
+                                                IconButton(
+                                                    icon: const Icon(Icons.add),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        quantity++;
+                                                      });
+                                                      increaseQuantity(
+                                                        context,
+                                                        shoppingCart,
+                                                        shoppingCartItem,
+                                                        user,
+                                                        service,
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                shoppingCart.services
+                                            .contains(service.serviceId) ==
+                                        false
+                                    ? Container(
+                                        margin: const EdgeInsets.only(
+                                          left: 5,
+                                        ),
+                                        child: OutlinedButton(
+                                          onPressed: () => addToCart(
+                                            context,
+                                            shoppingCart,
+                                            user,
+                                            service,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Pallete.darkGreenColor,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 25)),
+                                          child: const Text('Add to Cart'),
+                                        ),
+                                      )
+                                    : Container(
+                                        margin: const EdgeInsets.only(
+                                          left: 5,
+                                        ),
+                                        child: OutlinedButton(
+                                          onPressed: () => removeFromCart(
+                                            context,
+                                            shoppingCart,
+                                            shoppingCartItem,
+                                            user,
+                                            service,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Pallete.redPinkColor,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 25)),
+                                          child: const Text('Remove from Cart'),
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+              error: (error, stackTrace) => ErrorText(error: error.toString()),
+              loading: () => const Loader(),
+            );
+      },
     );
   }
 
@@ -850,7 +974,10 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                         ],
                                                       )
                                                     : showShoppingCartUsers(
-                                                        user)
+                                                        user,
+                                                        service,
+                                                        shoppingCart,
+                                                        shoppingCartItem)
                                                 : const SizedBox(),
                                           ],
                                         ),
