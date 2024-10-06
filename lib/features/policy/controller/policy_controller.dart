@@ -23,6 +23,7 @@ import 'package:reddit_tutorial/features/service/controller/service_controller.d
 import 'package:reddit_tutorial/features/service/repository/service_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_forum/repository/shopping_cart_forum_repository.dart';
+import 'package:reddit_tutorial/features/shopping_cart_member/controller/shopping_cart_member_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_member/repository/shopping_cart_member_repository.dart';
 import 'package:reddit_tutorial/features/shopping_cart_user/controller/shopping_cart_user_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_user/repository/shopping_cart_user_repository.dart';
@@ -441,7 +442,6 @@ class PolicyController extends StateNotifier<bool> {
               uid: member.serviceUid,
               cartUid: member.forumUid,
               forums: [member.forumId],
-              selectedForumId: member.forumId,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -455,10 +455,15 @@ class PolicyController extends StateNotifier<bool> {
               forumId: member.forumId,
               members: [member.memberId],
               services: [member.serviceId],
-              selectedMemberId: member.memberId,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
+
+            // get this users shopping cart member count
+            final shoppingCartMemberCount = await _ref
+                .read(shoppingCartMemberControllerProvider.notifier)
+                .getShoppingCartMemberCount(member.forumId, member.serviceUid)
+                .first;
 
             // create shopping cart member
             ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
@@ -468,6 +473,7 @@ class PolicyController extends StateNotifier<bool> {
               memberId: member.memberId,
               serviceId: member.serviceId,
               serviceUid: member.serviceUid,
+              selected: shoppingCartMemberCount == 0 ? true : false,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -599,7 +605,6 @@ class PolicyController extends StateNotifier<bool> {
             uid: member.serviceUid,
             cartUid: member.forumUid,
             forums: [member.forumId],
-            selectedForumId: member.forumId,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -613,10 +618,15 @@ class PolicyController extends StateNotifier<bool> {
             forumId: member.forumId,
             members: [member.memberId],
             services: [member.serviceId],
-            selectedMemberId: member.memberId,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
+
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(member.forumId, member.serviceUid)
+              .first;
 
           // create shopping cart member
           ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
@@ -626,6 +636,7 @@ class PolicyController extends StateNotifier<bool> {
             memberId: member.memberId,
             serviceId: member.serviceId,
             serviceUid: member.serviceUid,
+            selected: shoppingCartMemberCount == 0 ? true : false,
             lastUpdateDate: DateTime.now(),
             creationDate: DateTime.now(),
           );
@@ -800,7 +811,6 @@ class PolicyController extends StateNotifier<bool> {
                         uid: member.serviceUid,
                         cartUid: member.forumUid,
                         forums: [member.forumId],
-                        selectedForumId: member.forumId,
                         lastUpdateDate: DateTime.now(),
                         creationDate: DateTime.now(),
                       );
@@ -815,10 +825,16 @@ class PolicyController extends StateNotifier<bool> {
                         forumId: member.forumId,
                         members: [member.memberId],
                         services: [member.serviceId],
-                        selectedMemberId: member.memberId,
                         lastUpdateDate: DateTime.now(),
                         creationDate: DateTime.now(),
                       );
+
+                      // get this users shopping cart member count
+                      final shoppingCartMemberCount = await _ref
+                          .read(shoppingCartMemberControllerProvider.notifier)
+                          .getShoppingCartMemberCount(
+                              member.forumId, member.serviceUid)
+                          .first;
 
                       // create shopping cart member
                       ShoppingCartMember newShoppingCartMember =
@@ -829,6 +845,7 @@ class PolicyController extends StateNotifier<bool> {
                         memberId: member.memberId,
                         serviceId: member.serviceId,
                         serviceUid: member.serviceUid,
+                        selected: shoppingCartMemberCount == 0 ? true : false,
                         lastUpdateDate: DateTime.now(),
                         creationDate: DateTime.now(),
                       );
