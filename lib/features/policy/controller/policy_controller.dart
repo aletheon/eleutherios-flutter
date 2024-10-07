@@ -522,6 +522,7 @@ class PolicyController extends StateNotifier<bool> {
               await _shoppingCartForumRepository
                   .updateShoppingCartForum(shoppingCartForum);
             }
+
             // create shopping cart member
             await _shoppingCartMemberRepository
                 .createShoppingCartMember(newShoppingCartMember);
@@ -685,6 +686,7 @@ class PolicyController extends StateNotifier<bool> {
             await _shoppingCartForumRepository
                 .updateShoppingCartForum(shoppingCartForum);
           }
+
           // create shopping cart member
           await _shoppingCartMemberRepository
               .createShoppingCartMember(newShoppingCartMember);
@@ -901,6 +903,7 @@ class PolicyController extends StateNotifier<bool> {
                         await _shoppingCartForumRepository
                             .updateShoppingCartForum(shoppingCartForum);
                       }
+
                       // create shopping cart member
                       await _shoppingCartMemberRepository
                           .createShoppingCartMember(newShoppingCartMember);

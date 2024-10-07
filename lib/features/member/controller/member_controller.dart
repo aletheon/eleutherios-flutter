@@ -292,6 +292,12 @@ class MemberController extends StateNotifier<bool> {
               creationDate: DateTime.now(),
             );
 
+            // get this users shopping cart member count
+            final shoppingCartMemberCount = await _ref
+                .read(shoppingCartMemberControllerProvider.notifier)
+                .getShoppingCartMemberCount(member.forumId, member.serviceUid)
+                .first;
+
             // create shopping cart member
             ShoppingCartMember newShoppingCartMember = ShoppingCartMember(
               shoppingCartMemberId: shoppingCartMemberId,
@@ -300,7 +306,7 @@ class MemberController extends StateNotifier<bool> {
               memberId: member.memberId,
               serviceId: member.serviceId,
               serviceUid: member.serviceUid,
-              selected: false,
+              selected: shoppingCartMemberCount == 0 ? true : false,
               lastUpdateDate: DateTime.now(),
               creationDate: DateTime.now(),
             );
@@ -355,6 +361,7 @@ class MemberController extends StateNotifier<bool> {
               await _shoppingCartForumRepository
                   .updateShoppingCartForum(shoppingCartForum);
             }
+
             // create shopping cart member
             await _shoppingCartMemberRepository
                 .createShoppingCartMember(newShoppingCartMember);
@@ -485,6 +492,16 @@ class MemberController extends StateNotifier<bool> {
                 .updateShoppingCartForum(shoppingCartForum);
           }
 
+          // get this users shopping cart member count
+          final shoppingCartMemberCount = await _ref
+              .read(shoppingCartMemberControllerProvider.notifier)
+              .getShoppingCartMemberCount(newShoppingCartMember.forumId,
+                  newShoppingCartMember.serviceUid)
+              .first;
+
+          newShoppingCartMember = newShoppingCartMember.copyWith(
+              selected: shoppingCartMemberCount == 0 ? true : false);
+
           // create shopping cart member
           await _shoppingCartMemberRepository
               .createShoppingCartMember(newShoppingCartMember);
@@ -538,7 +555,7 @@ class MemberController extends StateNotifier<bool> {
                 await _shoppingCartUserRepository.deleteShoppingCartUser(
                     shoppingCartUser.shoppingCartUserId);
 
-                // add uid to users shopping cart user ids list
+                // remove uid to users shopping cart user ids list
                 memberUser!.shoppingCartUserIds
                     .remove(shoppingCartUser.cartUid);
                 await _userProfileRepository.updateUser(memberUser);

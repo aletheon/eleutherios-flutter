@@ -112,6 +112,7 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
       lastUpdateDate: DateTime.now(),
       creationDate: DateTime.now(),
     );
+
     final res = await _shoppingCartMemberRepository
         .createShoppingCartMember(shoppingCartMember);
     state = false;
