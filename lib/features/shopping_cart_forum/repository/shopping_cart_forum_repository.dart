@@ -49,10 +49,9 @@ class ShoppingCartForumRepository {
     });
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForums(
-      String shoppingCartUserId) {
+  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(String userId) {
     return _shoppingCartForums
-        .where('shoppingCartUserId', isEqualTo: shoppingCartUserId)
+        .where('cartUid', isEqualTo: userId)
         .snapshots()
         .map((event) {
       List<ShoppingCartForum> shoppingCartForums = [];

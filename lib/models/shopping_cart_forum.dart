@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 class ShoppingCartForum {
   final String shoppingCartForumId; // primary key
   final String shoppingCartUserId; // foreign key
-  final String uid; // owner of shopping cart forum (not the same as cartUid)
-  final String cartUid; // owner of the cart
+  final String uid; // owner of service
+  final String cartUid; // owner of the forum
   final String
       forumId; // forum user has been given permission to add items to cart
   final List<String>

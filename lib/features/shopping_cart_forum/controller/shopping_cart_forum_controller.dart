@@ -44,7 +44,7 @@ final shoppingCartForumsProvider =
     StreamProvider.family.autoDispose((ref, String uid) {
   return ref
       .watch(shoppingCartForumControllerProvider.notifier)
-      .getShoppingCartForums(uid);
+      .getShoppingCartForumsByUserId(uid);
 });
 
 final shoppingCartForumControllerProvider =
@@ -170,8 +170,8 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         .deleteShoppingCartForumsByShoppingCartUserId(shoppingCartUserId);
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForums(String uid) {
-    return _shoppingCartForumRepository.getShoppingCartForums(uid);
+  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(String userId) {
+    return _shoppingCartForumRepository.getShoppingCartForumsByUserId(userId);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumById(

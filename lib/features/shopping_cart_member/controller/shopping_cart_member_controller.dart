@@ -42,6 +42,28 @@ final getShoppingCartMemberByMemberIdProvider2 =
   }
 });
 
+final getSelectedShoppingCartMemberProvider =
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartMemberControllerProvider.notifier)
+        .getSelectedShoppingCartMember(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final getSelectedShoppingCartMemberProvider2 =
+    Provider.family.autoDispose((ref, Tuple2 params) {
+  try {
+    return ref
+        .watch(shoppingCartMemberControllerProvider.notifier)
+        .getSelectedShoppingCartMember(params.item1, params.item2);
+  } catch (e) {
+    rethrow;
+  }
+});
+
 final shoppingCartMembersProvider =
     StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
@@ -133,25 +155,25 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
   }
 
   void changedSelected(String forumId, String shoppingCartMemberId) async {
-    // get selected shopping cart member
-    ShoppingCartMember? selectedShoppingCartMember = await _ref
+    // get shopping cart member
+    ShoppingCartMember? shoppingCartMember = await _ref
         .read(shoppingCartMemberControllerProvider.notifier)
-        .getSelectedShoppingCartMember(forumId)
+        .getShoppingCartMemberById(shoppingCartMemberId)
         .first;
 
-    if (selectedShoppingCartMember != null) {
-      selectedShoppingCartMember =
-          selectedShoppingCartMember.copyWith(selected: false);
-      await _shoppingCartMemberRepository
-          .updateShoppingCartMember(selectedShoppingCartMember);
-
-      // update new shopping cart member
-      ShoppingCartMember? shoppingCartMember = await _ref
+    if (shoppingCartMember != null) {
+      // get selected shopping cart member
+      ShoppingCartMember? selectedShoppingCartMember = await _ref
           .read(shoppingCartMemberControllerProvider.notifier)
-          .getShoppingCartMemberByMemberId(shoppingCartMemberId)
+          .getSelectedShoppingCartMember(forumId, shoppingCartMember.serviceUid)
           .first;
 
-      if (shoppingCartMember != null) {
+      if (selectedShoppingCartMember != null) {
+        selectedShoppingCartMember =
+            selectedShoppingCartMember.copyWith(selected: false);
+        await _shoppingCartMemberRepository
+            .updateShoppingCartMember(selectedShoppingCartMember);
+
         shoppingCartMember = shoppingCartMember.copyWith(selected: true);
         await _shoppingCartMemberRepository
             .updateShoppingCartMember(shoppingCartMember);
@@ -268,8 +290,10 @@ class ShoppingCartMemberController extends StateNotifier<bool> {
         .getShoppingCartMemberById(shoppingCartMemberId);
   }
 
-  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(String forumId) {
-    return _shoppingCartMemberRepository.getSelectedShoppingCartMember(forumId);
+  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
+      String forumId, String uid) {
+    return _shoppingCartMemberRepository.getSelectedShoppingCartMember(
+        forumId, uid);
   }
 
   Stream<int> getShoppingCartMemberCount(String forumId, String uid) {

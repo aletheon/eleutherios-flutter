@@ -49,9 +49,11 @@ class ShoppingCartMemberRepository {
     });
   }
 
-  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(String forumId) {
+  Stream<ShoppingCartMember?> getSelectedShoppingCartMember(
+      String forumId, String uid) {
     return _shoppingCartMembers
         .where('forumId', isEqualTo: forumId)
+        .where('serviceUid', isEqualTo: uid)
         .where('selected', isEqualTo: true)
         .snapshots()
         .map((event) {

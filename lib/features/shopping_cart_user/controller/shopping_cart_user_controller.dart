@@ -118,7 +118,7 @@ class ShoppingCartUserController extends StateNotifier<bool> {
         // get shopping cart forums by userId
         final shoppingCartForums = await _ref
             .read(shoppingCartForumControllerProvider.notifier)
-            .getShoppingCartForums(shoppingCartUser.shoppingCartUserId)
+            .getShoppingCartForumsByUserId(shoppingCartUser.cartUid)
             .first;
 
         if (shoppingCartForums.isNotEmpty) {
