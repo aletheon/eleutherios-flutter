@@ -41,10 +41,10 @@ final getShoppingCartForumByUserIdProvider2 =
 });
 
 final shoppingCartForumsProvider =
-    StreamProvider.family.autoDispose((ref, String uid) {
+    StreamProvider.family.autoDispose((ref, Tuple2 params) {
   return ref
       .watch(shoppingCartForumControllerProvider.notifier)
-      .getShoppingCartForumsByUserId(uid);
+      .getShoppingCartForumsByUserId(params.item1, params.item2);
 });
 
 final shoppingCartForumControllerProvider =
@@ -170,8 +170,14 @@ class ShoppingCartForumController extends StateNotifier<bool> {
         .deleteShoppingCartForumsByShoppingCartUserId(shoppingCartUserId);
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(String userId) {
-    return _shoppingCartForumRepository.getShoppingCartForumsByUserId(userId);
+  Stream<List<ShoppingCartForum>> getShoppingCartForums(String cartUid) {
+    return _shoppingCartForumRepository.getShoppingCartForums(cartUid);
+  }
+
+  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(
+      String cartUid, String uid) {
+    return _shoppingCartForumRepository.getShoppingCartForumsByUserId(
+        cartUid, uid);
   }
 
   Stream<ShoppingCartForum?> getShoppingCartForumById(

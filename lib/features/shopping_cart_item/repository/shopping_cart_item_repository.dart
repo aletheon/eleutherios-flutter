@@ -52,10 +52,34 @@ class ShoppingCartItemRepository {
   }
 
   Stream<ShoppingCartItem?> getShoppingCartItemByServiceId(
-      String shoppingCartId, String serviceId) {
-    if (shoppingCartId.isNotEmpty && serviceId.isNotEmpty) {
+    String shoppingCartId,
+    String forumId,
+    String serviceId,
+  ) {
+    if (shoppingCartId.isNotEmpty &&
+        forumId.isNotEmpty &&
+        serviceId.isNotEmpty) {
       return _shoppingCartItems
           .where('shoppingCartId', isEqualTo: shoppingCartId)
+          .where('forumId', isEqualTo: forumId)
+          .where('serviceId', isEqualTo: serviceId)
+          .snapshots()
+          .map((event) {
+        if (event.docs.isNotEmpty) {
+          List<ShoppingCartItem> shoppingCartItems = [];
+          for (var doc in event.docs) {
+            shoppingCartItems.add(
+                ShoppingCartItem.fromMap(doc.data() as Map<String, dynamic>));
+          }
+          return shoppingCartItems.first;
+        } else {
+          return null;
+        }
+      });
+    } else if (shoppingCartId.isNotEmpty && serviceId.isNotEmpty) {
+      return _shoppingCartItems
+          .where('shoppingCartId', isEqualTo: shoppingCartId)
+          .where('forumId', isEqualTo: '')
           .where('serviceId', isEqualTo: serviceId)
           .snapshots()
           .map((event) {

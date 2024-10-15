@@ -49,9 +49,27 @@ class ShoppingCartForumRepository {
     });
   }
 
-  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(String userId) {
+  Stream<List<ShoppingCartForum>> getShoppingCartForumsByUserId(
+      String cartUid, String uid) {
     return _shoppingCartForums
-        .where('cartUid', isEqualTo: userId)
+        .where('cartUid', isEqualTo: cartUid)
+        .where('uid', isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      List<ShoppingCartForum> shoppingCartForums = [];
+      for (var doc in event.docs) {
+        shoppingCartForums
+            .add(ShoppingCartForum.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      shoppingCartForums
+          .sort((a, b) => b.creationDate.compareTo(a.creationDate));
+      return shoppingCartForums;
+    });
+  }
+
+  Stream<List<ShoppingCartForum>> getShoppingCartForums(String cartUid) {
+    return _shoppingCartForums
+        .where('cartUid', isEqualTo: cartUid)
         .snapshots()
         .map((event) {
       List<ShoppingCartForum> shoppingCartForums = [];
