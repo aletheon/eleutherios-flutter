@@ -386,21 +386,55 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                           child: Wrap(
                                                                                             crossAxisAlignment: WrapCrossAlignment.center,
                                                                                             children: [
-                                                                                              Text(
-                                                                                                forum.title,
-                                                                                                style: const TextStyle(
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                  fontSize: 16,
+                                                                                              Padding(
+                                                                                                padding: const EdgeInsets.only(bottom: 5),
+                                                                                                child: Row(
+                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                  children: [
+                                                                                                    forum.image == Constants.avatarDefault
+                                                                                                        ? CircleAvatar(
+                                                                                                            backgroundImage: Image.asset(forum.image).image,
+                                                                                                            radius: 16,
+                                                                                                          )
+                                                                                                        : CircleAvatar(
+                                                                                                            backgroundImage: NetworkImage(forum.image),
+                                                                                                            radius: 16,
+                                                                                                          ),
+                                                                                                    const SizedBox(
+                                                                                                      width: 10,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      forum.title,
+                                                                                                      style: const TextStyle(
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                        fontSize: 14,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    const SizedBox(
+                                                                                                      width: 10,
+                                                                                                    ),
+                                                                                                    selectedService.image == Constants.avatarDefault
+                                                                                                        ? CircleAvatar(
+                                                                                                            backgroundImage: Image.asset(selectedService.image).image,
+                                                                                                            radius: 16,
+                                                                                                          )
+                                                                                                        : CircleAvatar(
+                                                                                                            backgroundImage: NetworkImage(selectedService.image),
+                                                                                                            radius: 16,
+                                                                                                          ),
+                                                                                                    const SizedBox(
+                                                                                                      width: 10,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      selectedService.title,
+                                                                                                      style: const TextStyle(
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                        fontSize: 14,
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  ],
                                                                                                 ),
                                                                                               ),
-                                                                                              Text(
-                                                                                                ' - ${selectedService.title}',
-                                                                                                style: const TextStyle(
-                                                                                                  fontWeight: FontWeight.bold,
-                                                                                                  fontStyle: FontStyle.italic,
-                                                                                                  fontSize: 16,
-                                                                                                ),
-                                                                                              )
                                                                                             ],
                                                                                           ),
                                                                                         ),
