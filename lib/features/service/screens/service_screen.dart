@@ -14,11 +14,9 @@ import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_
 import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_member/controller/shopping_cart_member_controller.dart';
-import 'package:reddit_tutorial/models/forum.dart';
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
-import 'package:reddit_tutorial/models/shopping_cart_forum_member.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum_quantity.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
@@ -39,7 +37,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   String? dropdownUserValue;
   String? dropdownForumValue;
   bool firstTimeThroughQuantities = true;
-  List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
+  late List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
 
   void addToCart(
     BuildContext context,
@@ -212,52 +210,56 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     Routemaster.of(context).push('/user/$uid');
   }
 
-  // class ShoppingCartForumQuantity {
-  // final String shoppingCartId;
-  // final String uid; // owner or superuser of this shopping cart
-  // final String forumId;
-  // final int quantity;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final user = ref.watch(userProvider)!;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     final user = ref.watch(userProvider)!;
+      if (user.shoppingCartUserIds.isNotEmpty) {
+        for (String userId in user.shoppingCartUserIds) {
+          // get cart user
+          UserModel? cartUser = await ref
+              .read(authControllerProvider.notifier)
+              .getUserData(userId)
+              .first;
 
-  //     if (user.shoppingCartUserIds.isNotEmpty) {
-  //       for (String userId in user.shoppingCartUserIds) {
-  //         // get cart user
-  //         UserModel? cartUser = await ref
-  //             .read(authControllerProvider.notifier)
-  //             .getUserData(userId)
-  //             .first;
+          if (cartUser != null) {
+            // get shopping cart forums for this cartUser
+            List<ShoppingCartForum>? shoppingCartForums = await ref
+                .read(shoppingCartForumControllerProvider.notifier)
+                .getShoppingCartForumsByUserId(cartUser.uid, user.uid)
+                .first;
 
-  //         // HERE ROB NEED TO FETCH shoppingCartItem to SET the quantity with that stored in shoppingCartItem
-  //         // return ref
-  //         //                   .watch(getShoppingCartItemByServiceIdProvider(
-  //         //                       Tuple2(shoppingCart!.shoppingCartId,
-  //         //                           widget.serviceId)))
-  //         //                   .when(
-  //         //                     data: (shoppingCartItem) {
+            if (shoppingCartForums.isNotEmpty) {
+              for (ShoppingCartForum shoppingCartForum in shoppingCartForums) {
+                ShoppingCartItem? shoppingCartItem = await ref
+                    .read(shoppingCartItemControllerProvider.notifier)
+                    .getShoppingCartItemByServiceId(cartUser.shoppingCartId,
+                        shoppingCartForum.forumId, widget.serviceId)
+                    .first;
 
-  //         if (cartUser != null) {
-  //           // get shopping cart forums for this cartUser
-  //           List<ShoppingCartForum>? shoppingCartForums = await ref
-  //               .read(shoppingCartForumControllerProvider.notifier)
-  //               .getShoppingCartForumsByUserId(cartUser.uid, user.uid)
-  //               .first;
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
+                ShoppingCartForumQuantity scfq = ShoppingCartForumQuantity(
+                  shoppingCartId: cartUser.shoppingCartId,
+                  uid: userId,
+                  forumId: shoppingCartForum.forumId,
+                  quantity: 0,
+                );
 
-  // 0) give current user ability to add item to their shopping cart
-  // 1) get user
-  // 2) get shoppingCartUser
-  // 3) get shoppingCartForum
-  // 4) get shoppingCartMember
-  // 5) list each user and the forums associated to them with a dropdown of each selected member with add-to-cart / remove-from-cart buttons
+                if (shoppingCartItem != null) {
+                  scfq = scfq.copyWith(quantity: shoppingCartItem.quantity);
+                }
+
+                setState(() {
+                  shoppingCartForumQuantities.add(scfq);
+                });
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 
   Widget showShoppingCartUsers(
     UserModel user,
@@ -282,36 +284,61 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                // ***************************************************
-                                // show user info
-                                // ***************************************************
-                                ListTile(
-                                  title: Text(cartUser.fullName),
-                                  leading: cartUser.profilePic ==
-                                          Constants.avatarDefault
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              Image.asset(cartUser.profilePic)
-                                                  .image,
-                                          radius: 20,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage: Image.network(
-                                            cartUser.profilePic,
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              return loadingProgress
-                                                          ?.cumulativeBytesLoaded ==
-                                                      loadingProgress
-                                                          ?.expectedTotalBytes
-                                                  ? child
-                                                  : const CircularProgressIndicator();
-                                            },
-                                          ).image,
-                                          radius: 20,
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 18.0, bottom: 3),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const Text(
+                                        'Add to ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
                                         ),
-                                  onTap: () =>
-                                      showUserDetails(context, cartUser.uid),
+                                      ),
+                                      cartUser.profilePic ==
+                                              Constants.avatarDefault
+                                          ? CircleAvatar(
+                                              backgroundImage: Image.asset(
+                                                      cartUser.profilePic)
+                                                  .image,
+                                              radius: 16,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage: Image.network(
+                                                cartUser.profilePic,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  return loadingProgress
+                                                              ?.cumulativeBytesLoaded ==
+                                                          loadingProgress
+                                                              ?.expectedTotalBytes
+                                                      ? child
+                                                      : const CircularProgressIndicator();
+                                                },
+                                              ).image,
+                                              radius: 16,
+                                            ),
+                                      Text(
+                                        " ${cartUser.fullName}'s shopping cart",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.sizeOf(context).width,
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(bottom: 8.0),
+                                    child: Divider(
+                                      color: Colors.grey,
+                                      thickness: 1.0,
+                                    ),
+                                  ),
                                 ),
                                 // ***************************************************
                                 // show forum info
@@ -376,178 +403,187 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                   data: (shoppingCartItem) {
                                                                                     return Column(
                                                                                       children: [
-                                                                                        SizedBox(
-                                                                                          width: MediaQuery.sizeOf(context).width,
-                                                                                          child: const Divider(color: Colors.grey, thickness: 1.0),
-                                                                                        ),
-                                                                                        // forum title
-                                                                                        Align(
-                                                                                          alignment: Alignment.topRight,
-                                                                                          child: Wrap(
-                                                                                            crossAxisAlignment: WrapCrossAlignment.center,
+                                                                                        // forum and service title
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                                                                          child: Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.end,
                                                                                             children: [
-                                                                                              Padding(
-                                                                                                padding: const EdgeInsets.only(bottom: 5),
-                                                                                                child: Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                  children: [
-                                                                                                    forum.image == Constants.avatarDefault
-                                                                                                        ? CircleAvatar(
-                                                                                                            backgroundImage: Image.asset(forum.image).image,
-                                                                                                            radius: 16,
-                                                                                                          )
-                                                                                                        : CircleAvatar(
-                                                                                                            backgroundImage: NetworkImage(forum.image),
-                                                                                                            radius: 16,
-                                                                                                          ),
-                                                                                                    const SizedBox(
-                                                                                                      width: 10,
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                      forum.title,
-                                                                                                      style: const TextStyle(
-                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                        fontSize: 14,
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                    const SizedBox(
-                                                                                                      width: 10,
-                                                                                                    ),
-                                                                                                    selectedService.image == Constants.avatarDefault
-                                                                                                        ? CircleAvatar(
-                                                                                                            backgroundImage: Image.asset(selectedService.image).image,
-                                                                                                            radius: 16,
-                                                                                                          )
-                                                                                                        : CircleAvatar(
-                                                                                                            backgroundImage: NetworkImage(selectedService.image),
-                                                                                                            radius: 16,
-                                                                                                          ),
-                                                                                                    const SizedBox(
-                                                                                                      width: 10,
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                      selectedService.title,
-                                                                                                      style: const TextStyle(
-                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                        fontSize: 14,
-                                                                                                      ),
+                                                                                              forum.image == Constants.avatarDefault
+                                                                                                  ? CircleAvatar(
+                                                                                                      backgroundImage: Image.asset(forum.image).image,
+                                                                                                      radius: 14,
                                                                                                     )
-                                                                                                  ],
+                                                                                                  : CircleAvatar(
+                                                                                                      backgroundImage: Image.network(
+                                                                                                        forum.image,
+                                                                                                        loadingBuilder: (context, child, loadingProgress) {
+                                                                                                          return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
+                                                                                                        },
+                                                                                                      ).image,
+                                                                                                      radius: 14,
+                                                                                                    ),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              Text(
+                                                                                                forum.title,
+                                                                                                style: const TextStyle(
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                  fontSize: 14,
                                                                                                 ),
                                                                                               ),
+                                                                                              const SizedBox(
+                                                                                                width: 8,
+                                                                                              ),
+                                                                                              selectedService.image == Constants.avatarDefault
+                                                                                                  ? CircleAvatar(
+                                                                                                      backgroundImage: Image.asset(selectedService.image).image,
+                                                                                                      radius: 14,
+                                                                                                    )
+                                                                                                  : CircleAvatar(
+                                                                                                      backgroundImage: Image.network(
+                                                                                                        selectedService.image,
+                                                                                                        loadingBuilder: (context, child, loadingProgress) {
+                                                                                                          return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
+                                                                                                        },
+                                                                                                      ).image,
+                                                                                                      radius: 14,
+                                                                                                    ),
+                                                                                              const SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              Text(
+                                                                                                selectedService.title,
+                                                                                                style: const TextStyle(
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                  fontSize: 14,
+                                                                                                ),
+                                                                                              )
                                                                                             ],
                                                                                           ),
                                                                                         ),
                                                                                         // add to cart button(s)
-                                                                                        Align(
-                                                                                          alignment: Alignment.topRight,
-                                                                                          child: Wrap(
-                                                                                            crossAxisAlignment: WrapCrossAlignment.center,
-                                                                                            children: [
-                                                                                              service.quantity != -1
-                                                                                                  ? Container(
-                                                                                                      margin: const EdgeInsets.only(right: 10),
-                                                                                                      child: Text(
-                                                                                                        '${service.quantity} available',
-                                                                                                        softWrap: true,
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : const SizedBox(),
-                                                                                              service.quantity != -1
-                                                                                                  ? Card(
-                                                                                                      color: Colors.blue,
-                                                                                                      shape: RoundedRectangleBorder(
-                                                                                                        borderRadius: BorderRadius.circular(10),
-                                                                                                      ),
-                                                                                                      child: SizedBox(
-                                                                                                        height: 35,
-                                                                                                        width: 120,
-                                                                                                        child: AnimatedSwitcher(
-                                                                                                          duration: const Duration(milliseconds: 500),
-                                                                                                          child: Row(
-                                                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                                            children: [
-                                                                                                              IconButton(
-                                                                                                                  icon: const Icon(Icons.remove),
-                                                                                                                  onPressed: () {
-                                                                                                                    setState(() {
-                                                                                                                      if (quantity > 0) {
-                                                                                                                        quantity--;
-                                                                                                                      }
-                                                                                                                    });
-                                                                                                                    decreaseQuantity(
-                                                                                                                      context,
-                                                                                                                      shoppingCart,
-                                                                                                                      shoppingCartItem,
-                                                                                                                      user,
-                                                                                                                      service,
-                                                                                                                    );
-                                                                                                                  }),
-                                                                                                              shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(quantity.toString()),
-                                                                                                              IconButton(
-                                                                                                                  icon: const Icon(Icons.add),
-                                                                                                                  onPressed: () {
-                                                                                                                    setState(() {
-                                                                                                                      quantity++;
-                                                                                                                    });
-                                                                                                                    increaseQuantity(
-                                                                                                                      context,
-                                                                                                                      shoppingCart,
-                                                                                                                      shoppingCartItem,
-                                                                                                                      user,
-                                                                                                                      service,
-                                                                                                                    );
-                                                                                                                  }),
-                                                                                                            ],
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.only(bottom: 5.0),
+                                                                                          child: Align(
+                                                                                            alignment: Alignment.topRight,
+                                                                                            child: Wrap(
+                                                                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                                                                              children: [
+                                                                                                service.quantity != -1
+                                                                                                    ? Container(
+                                                                                                        margin: const EdgeInsets.only(right: 5),
+                                                                                                        child: Text(
+                                                                                                          '${service.quantity} available',
+                                                                                                          softWrap: true,
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    : const SizedBox(),
+                                                                                                service.quantity != -1
+                                                                                                    ? Card(
+                                                                                                        color: Colors.blue,
+                                                                                                        shape: RoundedRectangleBorder(
+                                                                                                          borderRadius: BorderRadius.circular(10),
+                                                                                                        ),
+                                                                                                        child: SizedBox(
+                                                                                                          height: 35,
+                                                                                                          width: 120,
+                                                                                                          child: AnimatedSwitcher(
+                                                                                                            duration: const Duration(milliseconds: 500),
+                                                                                                            child: Row(
+                                                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                              mainAxisSize: MainAxisSize.min,
+                                                                                                              children: [
+                                                                                                                IconButton(
+                                                                                                                    icon: const Icon(Icons.remove),
+                                                                                                                    onPressed: () {
+                                                                                                                      setState(() {
+                                                                                                                        ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        print(scfq.forumId);
+                                                                                                                        if (scfq.quantity > 0) {
+                                                                                                                          int tempQuantity = scfq.quantity - 1;
+                                                                                                                          scfq = scfq.copyWith(quantity: tempQuantity);
+                                                                                                                          shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scfq;
+                                                                                                                        }
+                                                                                                                      });
+                                                                                                                      decreaseQuantity(
+                                                                                                                        context,
+                                                                                                                        shoppingCart,
+                                                                                                                        shoppingCartItem,
+                                                                                                                        user,
+                                                                                                                        service,
+                                                                                                                      );
+                                                                                                                    }),
+                                                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(shoppingCartForumQuantities.where((s) => s.uid == cartUser.uid && s.forumId == forum.forumId).toList().first.quantity.toString()),
+                                                                                                                IconButton(
+                                                                                                                    icon: const Icon(Icons.add),
+                                                                                                                    onPressed: () {
+                                                                                                                      setState(() {
+                                                                                                                        ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        print(scfq.forumId);
+                                                                                                                        int tempQuantity = scfq.quantity + 1;
+                                                                                                                        scfq = scfq.copyWith(quantity: tempQuantity);
+                                                                                                                        shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scfq;
+                                                                                                                      });
+                                                                                                                      increaseQuantity(
+                                                                                                                        context,
+                                                                                                                        shoppingCart,
+                                                                                                                        shoppingCartItem,
+                                                                                                                        user,
+                                                                                                                        service,
+                                                                                                                      );
+                                                                                                                    }),
+                                                                                                              ],
+                                                                                                            ),
                                                                                                           ),
                                                                                                         ),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : const SizedBox(),
-                                                                                              shoppingCart.services.contains(service.serviceId) == false
-                                                                                                  ? Container(
-                                                                                                      margin: const EdgeInsets.only(
-                                                                                                        left: 5,
-                                                                                                      ),
-                                                                                                      child: OutlinedButton(
-                                                                                                        onPressed: () => addToCart(
-                                                                                                          context,
-                                                                                                          shoppingCart,
-                                                                                                          user,
-                                                                                                          service,
+                                                                                                      )
+                                                                                                    : const SizedBox(),
+                                                                                                shoppingCart.services.contains(service.serviceId) == false
+                                                                                                    ? Container(
+                                                                                                        margin: const EdgeInsets.only(
+                                                                                                          left: 3,
                                                                                                         ),
-                                                                                                        style: ElevatedButton.styleFrom(
-                                                                                                            backgroundColor: Pallete.darkGreenColor,
-                                                                                                            shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10),
-                                                                                                            ),
-                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                                                        child: const Text('Add to Cart'),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : Container(
-                                                                                                      margin: const EdgeInsets.only(
-                                                                                                        left: 5,
-                                                                                                      ),
-                                                                                                      child: OutlinedButton(
-                                                                                                        onPressed: () => removeFromCart(
-                                                                                                          context,
-                                                                                                          shoppingCart,
-                                                                                                          shoppingCartItem,
-                                                                                                          user,
-                                                                                                          service,
+                                                                                                        child: OutlinedButton(
+                                                                                                          onPressed: () => addToCart(
+                                                                                                            context,
+                                                                                                            shoppingCart,
+                                                                                                            user,
+                                                                                                            service,
+                                                                                                          ),
+                                                                                                          style: ElevatedButton.styleFrom(
+                                                                                                              backgroundColor: Pallete.darkGreenColor,
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                              ),
+                                                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                                                          child: const Text('Add to Cart'),
                                                                                                         ),
-                                                                                                        style: ElevatedButton.styleFrom(
-                                                                                                            backgroundColor: Pallete.redPinkColor,
-                                                                                                            shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10),
-                                                                                                            ),
-                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                                                        child: const Text('Remove from Cart'),
+                                                                                                      )
+                                                                                                    : Container(
+                                                                                                        margin: const EdgeInsets.only(
+                                                                                                          left: 3,
+                                                                                                        ),
+                                                                                                        child: OutlinedButton(
+                                                                                                          onPressed: () => removeFromCart(
+                                                                                                            context,
+                                                                                                            shoppingCart,
+                                                                                                            shoppingCartItem,
+                                                                                                            user,
+                                                                                                            service,
+                                                                                                          ),
+                                                                                                          style: ElevatedButton.styleFrom(
+                                                                                                              backgroundColor: Pallete.redPinkColor,
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                              ),
+                                                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                                                          child: const Text('Remove from Cart'),
+                                                                                                        ),
                                                                                                       ),
-                                                                                                    ),
-                                                                                            ],
+                                                                                              ],
+                                                                                            ),
                                                                                           ),
                                                                                         )
                                                                                       ],
@@ -1016,6 +1052,19 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                           true
                                                   ? Column(
                                                       children: [
+                                                        const Align(
+                                                          alignment: Alignment
+                                                              .topRight,
+                                                          child: Text(
+                                                            'Add to your shopping cart',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                        ),
                                                         SizedBox(
                                                           width:
                                                               MediaQuery.sizeOf(
@@ -1041,7 +1090,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                       margin: const EdgeInsets
                                                                           .only(
                                                                           right:
-                                                                              10),
+                                                                              5),
                                                                       child:
                                                                           Text(
                                                                         '${service.quantity} available',
@@ -1121,7 +1170,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                   ? Container(
                                                                       margin: const EdgeInsets
                                                                           .only(
-                                                                        left: 5,
+                                                                        left: 3,
                                                                       ),
                                                                       child:
                                                                           OutlinedButton(
@@ -1146,7 +1195,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                   : Container(
                                                                       margin: const EdgeInsets
                                                                           .only(
-                                                                        left: 5,
+                                                                        left: 3,
                                                                       ),
                                                                       child:
                                                                           OutlinedButton(
