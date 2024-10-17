@@ -37,34 +37,31 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   String? dropdownUserValue;
   String? dropdownForumValue;
   bool firstTimeThroughQuantities = true;
-  late List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
+  List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
 
   void addToCart(
     BuildContext context,
     ShoppingCart? shoppingCart,
+    String? forumId,
+    String? memberId,
     UserModel user,
     Service service,
   ) {
     // add physical item to shopping cart
     if (service.type == ServiceType.physical.value) {
       if (service.quantity > 0) {
-        if (user.shoppingCartUserIds.isEmpty) {
-          // add service to the currently logged in user
-          ref
-              .read(shoppingCartItemControllerProvider.notifier)
-              .createShoppingCartItem(
-                user,
-                shoppingCart,
-                null,
-                null,
-                service.serviceId,
-                quantity,
-                context,
-              );
-        } else {
-          // let the user choose which cart they want to add the service to including their own cart
-          Routemaster.of(context).push('add-to-cart');
-        }
+        // add service to the currently logged in user
+        ref
+            .read(shoppingCartItemControllerProvider.notifier)
+            .createShoppingCartItem(
+              user,
+              shoppingCart,
+              null,
+              null,
+              service.serviceId,
+              quantity,
+              context,
+            );
       } else {
         showSnackBar(
             context,
@@ -241,7 +238,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
 
                 ShoppingCartForumQuantity scfq = ShoppingCartForumQuantity(
                   shoppingCartId: cartUser.shoppingCartId,
-                  uid: userId,
+                  uid: cartUser.uid,
                   forumId: shoppingCartForum.forumId,
                   quantity: 0,
                 );
@@ -500,7 +497,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                     onPressed: () {
                                                                                                                       setState(() {
                                                                                                                         ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                        print(scfq.forumId);
                                                                                                                         if (scfq.quantity > 0) {
                                                                                                                           int tempQuantity = scfq.quantity - 1;
                                                                                                                           scfq = scfq.copyWith(quantity: tempQuantity);
@@ -521,7 +517,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                     onPressed: () {
                                                                                                                       setState(() {
                                                                                                                         ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                        print(scfq.forumId);
                                                                                                                         int tempQuantity = scfq.quantity + 1;
                                                                                                                         scfq = scfq.copyWith(quantity: tempQuantity);
                                                                                                                         shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scfq;
@@ -549,6 +544,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                           onPressed: () => addToCart(
                                                                                                             context,
                                                                                                             shoppingCart,
+                                                                                                            forum.forumId,
+                                                                                                            shoppingCartMember.memberId,
                                                                                                             user,
                                                                                                             service,
                                                                                                           ),
@@ -1179,6 +1176,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                 addToCart(
                                                                           context,
                                                                           shoppingCart,
+                                                                          null,
+                                                                          null,
                                                                           user,
                                                                           service,
                                                                         ),
