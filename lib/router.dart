@@ -48,7 +48,6 @@ import 'package:reddit_tutorial/features/service/screens/service_remove_forum_sc
 import 'package:reddit_tutorial/features/service/screens/service_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_tools_screen.dart';
 import 'package:reddit_tutorial/features/service/screens/service_user_profile_screen.dart';
-import 'package:reddit_tutorial/features/shopping_cart/screens/add_to_cart_screen.dart';
 import 'package:reddit_tutorial/features/shopping_cart/screens/view_cart_screen.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/edit_profile_screen.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/user_profile_screen.dart';
