@@ -137,8 +137,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     Member? member; // placeholder for member
     bool canAddServiceToCart = true;
 
-    print('in create shopping cart item');
-
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
         .getServiceById(serviceId)
@@ -176,8 +174,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           lastUpdateDate: DateTime.now(),
           creationDate: DateTime.now(),
         );
-
-        print(shoppingCartItem);
 
         if ((memberId != null && member != null) &&
             member.permissions.contains(MemberPermissions.addtocart.value) ==
