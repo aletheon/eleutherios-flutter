@@ -137,6 +137,8 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     Member? member; // placeholder for member
     bool canAddServiceToCart = true;
 
+    print('in create shopping cart item');
+
     Service? service = await _ref
         .read(serviceControllerProvider.notifier)
         .getServiceById(serviceId)
@@ -174,6 +176,8 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           lastUpdateDate: DateTime.now(),
           creationDate: DateTime.now(),
         );
+
+        print(shoppingCartItem);
 
         if ((memberId != null && member != null) &&
             member.permissions.contains(MemberPermissions.addtocart.value) ==
@@ -331,7 +335,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     bool canAddServiceToCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
-      if (shoppingCart.services.contains(service.serviceId)) {
+      if (shoppingCart.services.contains(service.serviceId) == true ||
+          (shoppingCartItem.forumId.isNotEmpty &&
+              shoppingCart.services.contains(
+                      '${shoppingCartItem.forumId}-${service.serviceId}') ==
+                  true)) {
         if (shoppingCartItem.memberId.isNotEmpty) {
           member = await _ref
               .read(memberControllerProvider.notifier)
@@ -339,7 +347,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
               .first;
         }
 
-        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+        if (member != null &&
             member.permissions.contains(MemberPermissions.addtocart.value) ==
                 false) {
           canAddServiceToCart = false;
@@ -409,7 +417,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     bool canRemoveServiceFromCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
-      if (shoppingCart.services.contains(service.serviceId)) {
+      if (shoppingCart.services.contains(service.serviceId) == true ||
+          (shoppingCartItem.forumId.isNotEmpty &&
+              shoppingCart.services.contains(
+                      '${shoppingCartItem.forumId}-${service.serviceId}') ==
+                  true)) {
         if (shoppingCartItem.memberId.isNotEmpty) {
           member = await _ref
               .read(memberControllerProvider.notifier)
@@ -417,7 +429,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
               .first;
         }
 
-        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+        if (member != null &&
             member.permissions
                     .contains(MemberPermissions.removefromcart.value) ==
                 false) {
@@ -432,9 +444,9 @@ class ShoppingCartItemController extends StateNotifier<bool> {
 
             // update shopping cart
             if (shoppingCartItem.forumId.isNotEmpty) {
-              shoppingCart.items.add(
+              shoppingCart.items.remove(
                   '${shoppingCartItem.forumId}-${shoppingCartItem.shoppingCartItemId}');
-              shoppingCart.services.add(
+              shoppingCart.services.remove(
                   '${shoppingCartItem.forumId}-${shoppingCartItem.serviceId}');
             } else {
               shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
@@ -521,7 +533,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     bool canRemoveServiceFromCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
-      if (shoppingCart.services.contains(service.serviceId) == true) {
+      if (shoppingCart.services.contains(service.serviceId) == true ||
+          (shoppingCartItem.forumId.isNotEmpty &&
+              shoppingCart.services.contains(
+                      '${shoppingCartItem.forumId}-${service.serviceId}') ==
+                  true)) {
         if (shoppingCartItem.memberId.isNotEmpty) {
           member = await _ref
               .read(memberControllerProvider.notifier)
@@ -529,7 +545,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
               .first;
         }
 
-        if ((shoppingCartItem.memberId.isNotEmpty && member != null) &&
+        if (member != null &&
             member.permissions
                     .contains(MemberPermissions.removefromcart.value) ==
                 false) {
@@ -543,9 +559,9 @@ class ShoppingCartItemController extends StateNotifier<bool> {
 
           // update shopping cart
           if (shoppingCartItem.forumId.isNotEmpty) {
-            shoppingCart.items.add(
+            shoppingCart.items.remove(
                 '${shoppingCartItem.forumId}-${shoppingCartItem.shoppingCartItemId}');
-            shoppingCart.services.add(
+            shoppingCart.services.remove(
                 '${shoppingCartItem.forumId}-${shoppingCartItem.serviceId}');
           } else {
             shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);

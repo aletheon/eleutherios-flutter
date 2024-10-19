@@ -57,8 +57,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
             .createShoppingCartItem(
               user,
               shoppingCart,
-              null,
-              null,
+              forumId,
+              memberId,
               service.serviceId,
               addToCartQuantity,
               context,
@@ -76,8 +76,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
           .createShoppingCartItem(
             user,
             shoppingCart,
-            null,
-            null,
+            forumId,
+            memberId,
             service.serviceId,
             1,
             context,
