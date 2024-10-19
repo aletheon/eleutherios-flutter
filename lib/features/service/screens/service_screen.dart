@@ -44,6 +44,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     ShoppingCart? shoppingCart,
     String? forumId,
     String? memberId,
+    int addToCartQuantity,
     UserModel user,
     Service service,
   ) {
@@ -59,7 +60,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
               null,
               null,
               service.serviceId,
-              quantity,
+              addToCartQuantity,
               context,
             );
       } else {
@@ -70,23 +71,17 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
       }
     } else {
       // add non-physical item to shopping cart
-      if (user.shoppingCartUserIds.isEmpty) {
-        // add service to the currently logged in user
-        ref
-            .read(shoppingCartItemControllerProvider.notifier)
-            .createShoppingCartItem(
-              user,
-              shoppingCart,
-              null,
-              null,
-              service.serviceId,
-              1,
-              context,
-            );
-      } else {
-        // let the user choose which cart they want to add the service to including their own cart
-        Routemaster.of(context).push('add-to-cart');
-      }
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .createShoppingCartItem(
+            user,
+            shoppingCart,
+            null,
+            null,
+            service.serviceId,
+            1,
+            context,
+          );
     }
   }
 
@@ -97,21 +92,16 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     UserModel user,
     Service service,
   ) {
-    if (user.shoppingCartUserIds.isEmpty) {
-      // remove service from the currently logged in user
-      ref
-          .read(shoppingCartItemControllerProvider.notifier)
-          .deleteShoppingCartItem(
-            user,
-            shoppingCart,
-            shoppingCartItem,
-            service,
-            context,
-          );
-    } else {
-      // let the user choose which cart they want to remove the service from including their own cart
-      Routemaster.of(context).push('remove-from-cart');
-    }
+    // remove service from the currently logged in user
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .deleteShoppingCartItem(
+          user,
+          shoppingCart,
+          shoppingCartItem,
+          service,
+          context,
+        );
   }
 
   void increaseQuantity(
@@ -275,7 +265,9 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
               data: (cartUser) {
                 if (cartUser != null) {
                   // get the shopping cart
-                  return ref.watch(getShoppingCartByUidProvider(user.uid)).when(
+                  return ref
+                      .watch(getShoppingCartByUidProvider(cartUser.uid))
+                      .when(
                         data: (shoppingCart) {
                           if (shoppingCart != null) {
                             return Column(
@@ -507,7 +499,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                         context,
                                                                                                                         shoppingCart,
                                                                                                                         shoppingCartItem,
-                                                                                                                        user,
+                                                                                                                        cartUser,
                                                                                                                         service,
                                                                                                                       );
                                                                                                                     }),
@@ -525,7 +517,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                         context,
                                                                                                                         shoppingCart,
                                                                                                                         shoppingCartItem,
-                                                                                                                        user,
+                                                                                                                        cartUser,
                                                                                                                         service,
                                                                                                                       );
                                                                                                                     }),
@@ -535,7 +527,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                         ),
                                                                                                       )
                                                                                                     : const SizedBox(),
-                                                                                                shoppingCart.services.contains(service.serviceId) == false
+                                                                                                shoppingCart.services.contains('${forum.forumId}-${service.serviceId}') == false
                                                                                                     ? Container(
                                                                                                         margin: const EdgeInsets.only(
                                                                                                           left: 3,
@@ -546,7 +538,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                             shoppingCart,
                                                                                                             forum.forumId,
                                                                                                             shoppingCartMember.memberId,
-                                                                                                            user,
+                                                                                                            shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
+                                                                                                            cartUser,
                                                                                                             service,
                                                                                                           ),
                                                                                                           style: ElevatedButton.styleFrom(
@@ -567,7 +560,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                             context,
                                                                                                             shoppingCart,
                                                                                                             shoppingCartItem,
-                                                                                                            user,
+                                                                                                            cartUser,
                                                                                                             service,
                                                                                                           ),
                                                                                                           style: ElevatedButton.styleFrom(
@@ -1178,6 +1171,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                           shoppingCart,
                                                                           null,
                                                                           null,
+                                                                          quantity,
                                                                           user,
                                                                           service,
                                                                         ),

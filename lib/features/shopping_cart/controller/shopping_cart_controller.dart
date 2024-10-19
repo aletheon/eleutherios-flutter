@@ -107,8 +107,6 @@ class ShoppingCartController extends StateNotifier<bool> {
   void deleteShoppingCart(String shoppingCartId, BuildContext context) async {
     state = true;
 
-    print('deleting shopping cart $shoppingCartId');
-
     // get shopping cart
     final shoppingCart = await _ref
         .read(shoppingCartControllerProvider.notifier)

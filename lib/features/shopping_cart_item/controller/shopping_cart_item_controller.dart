@@ -190,8 +190,14 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                     .createShoppingCartItem(shoppingCartItem);
 
                 // add service to shopping cart items and service list
-                shoppingCart.items.add(shoppingCartItemId);
-                shoppingCart.services.add(serviceId);
+                if (forum != null) {
+                  shoppingCart.items
+                      .add('${forum.forumId}-$shoppingCartItemId');
+                  shoppingCart.services.add('${forum.forumId}-$serviceId');
+                } else {
+                  shoppingCart.items.add(shoppingCartItemId);
+                  shoppingCart.services.add(serviceId);
+                }
                 await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
                 // add shopping cart item to users shoppingCartItems list
@@ -244,8 +250,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 .createShoppingCartItem(shoppingCartItem);
 
             // add service to shopping cart items and service list
-            shoppingCart.items.add(shoppingCartItemId);
-            shoppingCart.services.add(serviceId);
+            if (forum != null) {
+              shoppingCart.items.add('${forum.forumId}-$shoppingCartItemId');
+              shoppingCart.services.add('${forum.forumId}-$serviceId');
+            } else {
+              shoppingCart.items.add(shoppingCartItemId);
+              shoppingCart.services.add(serviceId);
+            }
             await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
             // add shopping cart item to users shoppingCartItems list
@@ -420,8 +431,15 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
 
             // update shopping cart
-            shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
-            shoppingCart.services.remove(shoppingCartItem.serviceId);
+            if (shoppingCartItem.forumId.isNotEmpty) {
+              shoppingCart.items.add(
+                  '${shoppingCartItem.forumId}-${shoppingCartItem.shoppingCartItemId}');
+              shoppingCart.services.add(
+                  '${shoppingCartItem.forumId}-${shoppingCartItem.serviceId}');
+            } else {
+              shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+              shoppingCart.services.remove(shoppingCartItem.serviceId);
+            }
             await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
             // remove shopping cart item from users shoppingCartItems list
@@ -524,8 +542,16 @@ class ShoppingCartItemController extends StateNotifier<bool> {
               .deleteShoppingCartItem(shoppingCartItem.shoppingCartItemId);
 
           // update shopping cart
-          shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
-          shoppingCart.services.remove(shoppingCartItem.serviceId);
+          if (shoppingCartItem.forumId.isNotEmpty) {
+            shoppingCart.items.add(
+                '${shoppingCartItem.forumId}-${shoppingCartItem.shoppingCartItemId}');
+            shoppingCart.services.add(
+                '${shoppingCartItem.forumId}-${shoppingCartItem.serviceId}');
+          } else {
+            shoppingCart.items.remove(shoppingCartItem.shoppingCartItemId);
+            shoppingCart.services.remove(shoppingCartItem.serviceId);
+          }
+
           await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
           // remove shopping cart item from users shoppingCartItems list
