@@ -461,15 +461,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                               crossAxisAlignment: WrapCrossAlignment.center,
                                                                                               children: [
                                                                                                 service.quantity != -1
-                                                                                                    ? Container(
-                                                                                                        margin: const EdgeInsets.only(right: 5),
-                                                                                                        child: Text(
-                                                                                                          '${service.quantity} available',
-                                                                                                          softWrap: true,
-                                                                                                        ),
-                                                                                                      )
-                                                                                                    : const SizedBox(),
-                                                                                                service.quantity != -1
                                                                                                     ? Card(
                                                                                                         color: Colors.blue,
                                                                                                         shape: RoundedRectangleBorder(
@@ -721,80 +712,98 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      service.image ==
-                                                              Constants
-                                                                  .avatarDefault
-                                                          ? CircleAvatar(
-                                                              backgroundImage:
-                                                                  Image.asset(service
-                                                                          .image)
-                                                                      .image,
-                                                              radius: 35,
-                                                            )
-                                                          : CircleAvatar(
-                                                              backgroundImage:
-                                                                  NetworkImage(
-                                                                      service
-                                                                          .image),
-                                                              radius: 35,
-                                                            ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
                                                       Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              service.title,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 16,
+                                                          service.image ==
+                                                                  Constants
+                                                                      .avatarDefault
+                                                              ? CircleAvatar(
+                                                                  backgroundImage:
+                                                                      Image.asset(
+                                                                              service.image)
+                                                                          .image,
+                                                                  radius: 35,
+                                                                )
+                                                              : CircleAvatar(
+                                                                  backgroundImage:
+                                                                      NetworkImage(
+                                                                          service
+                                                                              .image),
+                                                                  radius: 35,
+                                                                ),
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  service.price >
+                                                                          0
+                                                                      ? Container(
+                                                                          padding: const EdgeInsets
+                                                                              .only(
+                                                                              right: 10),
+                                                                          child:
+                                                                              Text(
+                                                                            NumberFormat.currency(symbol: '${service.currency} ', locale: 'en_US', decimalDigits: 2).format(service.price),
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 16,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : const SizedBox(),
+                                                                  service.public
+                                                                      ? const Icon(
+                                                                          Icons
+                                                                              .lock_open_outlined)
+                                                                      : const Icon(
+                                                                          Icons
+                                                                              .lock_outlined,
+                                                                          color:
+                                                                              Pallete.greyColor),
+                                                                ],
                                                               ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          service.price > 0
-                                                              ? Container(
-                                                                  padding:
-                                                                      const EdgeInsets
+                                                              const SizedBox(
+                                                                height: 3,
+                                                              ),
+                                                              service.quantity !=
+                                                                      -1
+                                                                  ? Container(
+                                                                      margin: const EdgeInsets
                                                                           .only(
                                                                           right:
-                                                                              10),
-                                                                  child: Text(
-                                                                    NumberFormat.currency(
-                                                                            symbol:
-                                                                                '${service.currency} ',
-                                                                            locale:
-                                                                                'en_US',
-                                                                            decimalDigits:
-                                                                                2)
-                                                                        .format(
-                                                                            service.price),
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          16,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : const SizedBox(),
-                                                          service.public
-                                                              ? const Icon(Icons
-                                                                  .lock_open_outlined)
-                                                              : const Icon(
-                                                                  Icons
-                                                                      .lock_outlined,
-                                                                  color: Pallete
-                                                                      .greyColor),
+                                                                              5),
+                                                                      child:
+                                                                          Text(
+                                                                        '${service.quantity} available',
+                                                                        softWrap:
+                                                                            true,
+                                                                      ),
+                                                                    )
+                                                                  : const SizedBox(),
+                                                            ],
+                                                          ),
                                                         ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      Text(
+                                                        service.title,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                        ),
                                                       ),
                                                       const SizedBox(
                                                         height: 5,
@@ -1074,21 +1083,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                 WrapCrossAlignment
                                                                     .center,
                                                             children: [
-                                                              service.quantity !=
-                                                                      -1
-                                                                  ? Container(
-                                                                      margin: const EdgeInsets
-                                                                          .only(
-                                                                          right:
-                                                                              5),
-                                                                      child:
-                                                                          Text(
-                                                                        '${service.quantity} available',
-                                                                        softWrap:
-                                                                            true,
-                                                                      ),
-                                                                    )
-                                                                  : const SizedBox(),
                                                               service.quantity !=
                                                                       -1
                                                                   ? Card(
