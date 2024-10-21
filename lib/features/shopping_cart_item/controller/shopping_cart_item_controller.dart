@@ -204,18 +204,18 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 user.shoppingCartItemIds.add(shoppingCartItemId);
                 await _userProfileRepository.updateUser(user);
 
-                // check if we need to add shopping cart item to owners shoppingCartItems list
-                if (shoppingCart.uid != user.uid) {
-                  // get owner
-                  UserModel? owner = await _ref
+                // check if we need to add shopping cart item to members shoppingCartItems list
+                if (member != null && member.serviceUid != shoppingCart.uid) {
+                  // get member user
+                  UserModel? memberUser = await _ref
                       .read(authControllerProvider.notifier)
-                      .getUserData(shoppingCart.uid)
+                      .getUserData(member.serviceUid)
                       .first;
 
-                  if (owner != null) {
-                    // add shopping cart item to owners shoppingCartItems list
-                    owner.shoppingCartItemIds.add(shoppingCartItemId);
-                    await _userProfileRepository.updateUser(owner);
+                  if (memberUser != null) {
+                    // add shopping cart item to members shoppingCartItems list
+                    memberUser.shoppingCartItemIds.add(shoppingCartItemId);
+                    await _userProfileRepository.updateUser(memberUser);
                   }
                 }
 
@@ -263,18 +263,18 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             user.shoppingCartItemIds.add(shoppingCartItemId);
             await _userProfileRepository.updateUser(user);
 
-            // check if we need to add shopping cart item to owners shoppingCartItems list
-            if (shoppingCart.uid != user.uid) {
-              // get owner
-              UserModel? owner = await _ref
+            // check if we need to add shopping cart item to members shoppingCartItems list
+            if (member != null && member.serviceUid != shoppingCart.uid) {
+              // get member user
+              UserModel? memberUser = await _ref
                   .read(authControllerProvider.notifier)
-                  .getUserData(shoppingCart.uid)
+                  .getUserData(member.serviceUid)
                   .first;
 
-              if (owner != null) {
-                // add shopping cart item to owners shoppingCartItems list
-                owner.shoppingCartItemIds.add(shoppingCartItemId);
-                await _userProfileRepository.updateUser(owner);
+              if (memberUser != null) {
+                // add shopping cart item to members shoppingCartItems list
+                memberUser.shoppingCartItemIds.add(shoppingCartItemId);
+                await _userProfileRepository.updateUser(memberUser);
               }
             }
             state = false;
@@ -455,19 +455,19 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 .remove(shoppingCartItem.shoppingCartItemId);
             await _userProfileRepository.updateUser(user);
 
-            // check if we need to remove shopping cart item from owners shoppingCartItems list
-            if (shoppingCart.uid != user.uid) {
-              // get owner
-              UserModel? owner = await _ref
+            // check if we need to remove shopping cart item from members shoppingCartItems list
+            if (member != null && member.serviceUid != shoppingCart.uid) {
+              // get member user
+              UserModel? memberUser = await _ref
                   .read(authControllerProvider.notifier)
-                  .getUserData(shoppingCart.uid)
+                  .getUserData(member.serviceUid)
                   .first;
 
-              if (owner != null) {
-                // remove shopping cart item from owners shoppingCartItems list
-                owner.shoppingCartItemIds
+              if (memberUser != null) {
+                // remove shopping cart item from members shoppingCartItems list
+                memberUser.shoppingCartItemIds
                     .remove(shoppingCartItem.shoppingCartItemId);
-                await _userProfileRepository.updateUser(owner);
+                await _userProfileRepository.updateUser(memberUser);
               }
             }
 
@@ -570,19 +570,19 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           user.shoppingCartItemIds.remove(shoppingCartItem.shoppingCartItemId);
           await _userProfileRepository.updateUser(user);
 
-          // check if we need to remove shopping cart item from owners shoppingCartItems list
-          if (shoppingCart.uid != user.uid) {
-            // get owner
-            UserModel? owner = await _ref
+          // check if we need to remove shopping cart item from members shoppingCartItems list
+          if (member != null && member.serviceUid != shoppingCart.uid) {
+            // get member user
+            UserModel? memberUser = await _ref
                 .read(authControllerProvider.notifier)
-                .getUserData(shoppingCart.uid)
+                .getUserData(member.serviceUid)
                 .first;
 
-            if (owner != null) {
-              // remove shopping cart item from owners shoppingCartItems list
-              owner.shoppingCartItemIds
+            if (memberUser != null) {
+              // remove shopping cart item from members shoppingCartItems list
+              memberUser.shoppingCartItemIds
                   .remove(shoppingCartItem.shoppingCartItemId);
-              await _userProfileRepository.updateUser(owner);
+              await _userProfileRepository.updateUser(memberUser);
             }
           }
 

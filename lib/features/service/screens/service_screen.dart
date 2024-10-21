@@ -33,10 +33,8 @@ class ServiceScreen extends ConsumerStatefulWidget {
 }
 
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
+  final GlobalKey _scaffold = GlobalKey();
   int quantity = 0;
-  String? dropdownUserValue;
-  String? dropdownForumValue;
-  bool firstTimeThroughQuantities = true;
   List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
 
   void addToCart(
@@ -641,9 +639,12 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
+      key: _scaffold,
+      backgroundColor: currentTheme.scaffoldBackgroundColor,
       body: ref.watch(getServiceByIdProvider(widget.serviceId)).when(
             data: (service) {
               if (service != null) {
