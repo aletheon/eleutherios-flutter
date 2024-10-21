@@ -26,10 +26,8 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final user = ref.watch(userProvider)!;
-      print('here');
 
       if (user.shoppingCartItemIds.isNotEmpty) {
-        print('here 2');
         List<ShoppingCartItem>? shoppingCartItems = await ref
             .read(shoppingCartItemControllerProvider.notifier)
             .getShoppingCartItems(user.shoppingCartId)
@@ -37,7 +35,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
 
         if (shoppingCartItems.isNotEmpty) {
           for (ShoppingCartItem shoppingCartItem in shoppingCartItems) {
-            print(shoppingCartItem);
             ShoppingCartForumQuantity scfq = ShoppingCartForumQuantity(
               shoppingCartId: user.shoppingCartId,
               uid: user.uid,
@@ -47,7 +44,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
 
             setState(() {
               shoppingCartForumQuantities.add(scfq);
-              print(shoppingCartForumQuantities);
             });
           }
         }

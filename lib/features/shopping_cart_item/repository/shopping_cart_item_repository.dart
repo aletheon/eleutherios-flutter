@@ -100,8 +100,6 @@ class ShoppingCartItemRepository {
   }
 
   Stream<List<ShoppingCartItem>> getShoppingCartItems(String shoppingCartId) {
-    print(shoppingCartId);
-
     return _shoppingCartItems
         .where('shoppingCartId', isEqualTo: shoppingCartId)
         .orderBy('forumUid', descending: false)

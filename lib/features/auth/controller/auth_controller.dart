@@ -10,15 +10,15 @@ import 'package:uuid/uuid.dart';
 
 final userProvider = StateProvider<UserModel?>((ref) => null);
 
-// final getUserByIdProvider = Provider.family((ref, String uid) {
-//   final authRepository = ref.watch(authRepositoryProvider);
-//   return authRepository.getUserData(uid);
-// });
-
 final getUserByIdProvider =
     StreamProvider.family.autoDispose((ref, String userId) {
   return ref.watch(authControllerProvider.notifier).getUserData(userId);
 });
+
+// final getUserByIdProvider2 = Provider.family((ref, String uid) {
+//   final authRepository = ref.watch(authRepositoryProvider);
+//   return authRepository.getUserData(uid);
+// });
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
