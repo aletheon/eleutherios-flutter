@@ -1,4 +1,5 @@
 enum ShoppingCartItemType<String> {
+  enduser,
   user,
   forum,
   service,
@@ -7,6 +8,8 @@ enum ShoppingCartItemType<String> {
 extension ShoppingCartItemTypeValue on ShoppingCartItemType {
   String get value {
     switch (this) {
+      case ShoppingCartItemType.enduser:
+        return 'End User';
       case ShoppingCartItemType.user:
         return 'User';
       case ShoppingCartItemType.forum:

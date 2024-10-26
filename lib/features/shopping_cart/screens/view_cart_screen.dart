@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
+import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item_display.dart';
@@ -79,6 +83,11 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
               }
             } else {
               scid = ShoppingCartItemDisplay(
+                type: ShoppingCartItemType.enduser.value,
+                shoppingCartItem: shoppingCartItem,
+              );
+              shoppingCartItemDisplays.add(scid);
+              scid = ShoppingCartItemDisplay(
                 type: ShoppingCartItemType.service.value,
                 shoppingCartItem: shoppingCartItem,
               );
@@ -115,14 +124,188 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                 children: [
                   ...shoppingCartItemDisplays.map((s) {
                     if (s.type == ShoppingCartItemType.user.value) {
-                      return Text(
-                          'Outputting user ${s.shoppingCartItem.forumUid}');
+                      return ref
+                          .watch(
+                            getUserByIdProvider(
+                              s.shoppingCartItem.forumUid,
+                            ),
+                          )
+                          .when(
+                            data: (forumUser) {
+                              if (forumUser != null) {
+                                return ListTile(
+                                  visualDensity: const VisualDensity(
+                                      horizontal: -4, vertical: -4),
+                                  title: Text(forumUser.fullName),
+                                  leading: forumUser.profilePic ==
+                                          Constants.avatarDefault
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              Image.asset(forumUser.profilePic)
+                                                  .image,
+                                          radius: 14,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: Image.network(
+                                            forumUser.profilePic,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              return loadingProgress
+                                                          ?.cumulativeBytesLoaded ==
+                                                      loadingProgress
+                                                          ?.expectedTotalBytes
+                                                  ? child
+                                                  : const CircularProgressIndicator();
+                                            },
+                                          ).image,
+                                          radius: 16,
+                                        ),
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
                     } else if (s.type == ShoppingCartItemType.forum.value) {
-                      return Text(
-                          'Outputting forum ${s.shoppingCartItem.forumId}');
+                      return ref
+                          .watch(
+                            getForumByIdProvider(
+                              s.shoppingCartItem.forumId,
+                            ),
+                          )
+                          .when(
+                            data: (forum) {
+                              if (forum != null) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 0, bottom: 8, left: 60),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          forum.image == Constants.avatarDefault
+                                              ? CircleAvatar(
+                                                  backgroundImage:
+                                                      Image.asset(forum.image)
+                                                          .image,
+                                                  radius: 14,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage:
+                                                      Image.network(
+                                                    forum.image,
+                                                    loadingBuilder: (context,
+                                                        child,
+                                                        loadingProgress) {
+                                                      return loadingProgress
+                                                                  ?.cumulativeBytesLoaded ==
+                                                              loadingProgress
+                                                                  ?.expectedTotalBytes
+                                                          ? child
+                                                          : const CircularProgressIndicator();
+                                                    },
+                                                  ).image,
+                                                  radius: 14,
+                                                ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            forum.title,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
+                    } else if (s.type == ShoppingCartItemType.enduser.value) {
+                      return const ListTile(
+                        visualDensity:
+                            VisualDensity(horizontal: -4, vertical: -4),
+                        title: Text('Items you added to the cart'),
+                      );
                     } else {
-                      return Text(
-                          'Outputting service ${s.shoppingCartItem.serviceId}');
+                      return ref
+                          .watch(
+                            getServiceByIdProvider(
+                              s.shoppingCartItem.serviceId,
+                            ),
+                          )
+                          .when(
+                            data: (service) {
+                              if (service != null) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 0, bottom: 8, left: 100),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          service.image ==
+                                                  Constants.avatarDefault
+                                              ? CircleAvatar(
+                                                  backgroundImage:
+                                                      Image.asset(service.image)
+                                                          .image,
+                                                  radius: 14,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage:
+                                                      Image.network(
+                                                    service.image,
+                                                    loadingBuilder: (context,
+                                                        child,
+                                                        loadingProgress) {
+                                                      return loadingProgress
+                                                                  ?.cumulativeBytesLoaded ==
+                                                              loadingProgress
+                                                                  ?.expectedTotalBytes
+                                                          ? child
+                                                          : const CircularProgressIndicator();
+                                                    },
+                                                  ).image,
+                                                  radius: 14,
+                                                ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            service.title,
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                            error: (error, stackTrace) =>
+                                ErrorText(error: error.toString()),
+                            loading: () => const Loader(),
+                          );
                     }
                   })
                 ],
