@@ -40,8 +40,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   void addToCart(
     BuildContext context,
     ShoppingCart? shoppingCart,
-    String? forumId,
-    String? memberId,
+    String forumId,
+    String memberId,
     int addToCartQuantity,
     UserModel user,
     Service service,
@@ -106,7 +106,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
-    UserModel user,
     Service service,
   ) {
     ref
@@ -247,16 +246,16 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   }
 
   Widget showShoppingCartUsers(
-    UserModel user,
+    UserModel currentUser,
     Service service,
   ) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      itemCount: user.shoppingCartUserIds.length,
+      itemCount: currentUser.shoppingCartUserIds.length,
       itemBuilder: (BuildContext context, int index) {
-        final userId = user.shoppingCartUserIds[index];
+        final userId = currentUser.shoppingCartUserIds[index];
 
         // get the user
         return ref.watch(getUserByIdProvider(userId)).when(
@@ -333,7 +332,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                 // get the shopping cart forums
                                 ref
                                     .watch(shoppingCartForumsProvider(
-                                        Tuple2(cartUser.uid, user.uid)))
+                                        Tuple2(cartUser.uid, currentUser.uid)))
                                     .when(
                                       data: (shoppingCartForums) {
                                         if (shoppingCartForums.isNotEmpty) {
@@ -356,7 +355,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                               getSelectedShoppingCartMemberProvider(
                                                                 Tuple2(
                                                                   forum.forumId,
-                                                                  user.uid,
+                                                                  currentUser
+                                                                      .uid,
                                                                 ),
                                                               ),
                                                             )
@@ -506,7 +506,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                         context,
                                                                                                                         shoppingCart,
                                                                                                                         shoppingCartItem,
-                                                                                                                        cartUser,
                                                                                                                         service,
                                                                                                                       );
                                                                                                                     }),
@@ -1138,7 +1137,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                       context,
                                                                                       shoppingCart,
                                                                                       shoppingCartItem,
-                                                                                      user,
                                                                                       service,
                                                                                     );
                                                                                   }),
@@ -1164,8 +1162,8 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                 addToCart(
                                                                           context,
                                                                           shoppingCart,
-                                                                          null,
-                                                                          null,
+                                                                          '',
+                                                                          '',
                                                                           quantity,
                                                                           user,
                                                                           service,
@@ -1212,9 +1210,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                       ],
                                                     )
                                                   : const SizedBox(),
-                                              service.uid != user.uid &&
-                                                      service.canBeOrdered ==
-                                                          true &&
+                                              service.canBeOrdered == true &&
                                                       user.shoppingCartUserIds
                                                           .isNotEmpty
                                                   ? showShoppingCartUsers(

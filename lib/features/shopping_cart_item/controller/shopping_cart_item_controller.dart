@@ -126,8 +126,8 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   void createShoppingCartItem(
     UserModel user,
     ShoppingCart? shoppingCart,
-    String? forumId,
-    String? memberId,
+    String forumId,
+    String memberId,
     String serviceId,
     int quantity,
     BuildContext context,
@@ -144,15 +144,22 @@ class ShoppingCartItemController extends StateNotifier<bool> {
 
     // ensure shoppingCart and service exist
     if (shoppingCart != null && service != null) {
-      // ensure service is not already an item
-      if (shoppingCart.services.contains(serviceId) == false) {
-        if (forumId != null) {
+      // ensure service is not already in cart
+      if (forumId.isNotEmpty &&
+          shoppingCart.services.contains('$forumId-$serviceId') == true) {
+        canAddServiceToCart = false;
+      } else if (shoppingCart.services.contains(serviceId) == true) {
+        canAddServiceToCart = false;
+      }
+
+      if (canAddServiceToCart == true) {
+        if (forumId.isNotEmpty) {
           forum = await _ref
               .read(forumControllerProvider.notifier)
               .getForumById(forumId)
               .first;
         }
-        if (memberId != null) {
+        if (memberId.isNotEmpty) {
           member = await _ref
               .read(memberControllerProvider.notifier)
               .getMemberById(memberId)
@@ -175,13 +182,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           creationDate: DateTime.now(),
         );
 
-        if ((memberId != null && member != null) &&
+        if ((memberId.isNotEmpty && member != null) &&
             member.permissions.contains(MemberPermissions.addtocart.value) ==
                 false) {
           canAddServiceToCart = false;
         }
 
-        if (canAddServiceToCart) {
+        if (canAddServiceToCart == true) {
           if (service.type == ServiceType.physical.value) {
             if (quantity > 0) {
               if (service.quantity > 0 && service.quantity >= quantity) {
@@ -349,7 +356,7 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           canAddServiceToCart = false;
         }
 
-        if (canAddServiceToCart) {
+        if (canAddServiceToCart == true) {
           if (service.type == ServiceType.physical.value) {
             if (service.quantity > 0) {
               shoppingCartItem = shoppingCartItem.copyWith(

@@ -1,3 +1,22 @@
+enum ShoppingCartItemType<String> {
+  user,
+  forum,
+  service,
+}
+
+extension ShoppingCartItemTypeValue on ShoppingCartItemType {
+  String get value {
+    switch (this) {
+      case ShoppingCartItemType.user:
+        return 'User';
+      case ShoppingCartItemType.forum:
+        return 'Forum';
+      case ShoppingCartItemType.service:
+        return 'Service';
+    }
+  }
+}
+
 enum ServiceType<String> {
   physical,
   nonphysical,
