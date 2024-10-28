@@ -4,12 +4,18 @@ import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
+import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
+import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_item/controller/shopping_cart_item_controller.dart';
+import 'package:reddit_tutorial/models/service.dart';
+import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item_display.dart';
+import 'package:reddit_tutorial/models/shopping_cart_service_quantity.dart';
+import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class ViewCartScreen extends ConsumerStatefulWidget {
@@ -23,8 +29,108 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
   final GlobalKey _scaffold = GlobalKey();
   int quantity = 0;
   List<ShoppingCartItemDisplay> shoppingCartItemDisplays = [];
+  List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
   String lastUserId = '';
   String lastForumId = '';
+
+  void addToCart(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    String forumId,
+    String memberId,
+    int addToCartQuantity,
+    UserModel user,
+    Service service,
+  ) {
+    // add physical item to shopping cart
+    if (service.type == ServiceType.physical.value) {
+      if (service.quantity > 0) {
+        // add service to the currently logged in user
+        ref
+            .read(shoppingCartItemControllerProvider.notifier)
+            .createShoppingCartItem(
+              user,
+              shoppingCart,
+              forumId,
+              memberId,
+              service.serviceId,
+              addToCartQuantity,
+              context,
+            );
+      } else {
+        showSnackBar(
+            context,
+            'There is not enough of this service to purchase there is zero available',
+            true);
+      }
+    } else {
+      // add non-physical item to shopping cart
+      ref
+          .read(shoppingCartItemControllerProvider.notifier)
+          .createShoppingCartItem(
+            user,
+            shoppingCart,
+            forumId,
+            memberId,
+            service.serviceId,
+            1,
+            context,
+          );
+    }
+  }
+
+  void removeFromCart(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    UserModel user,
+    Service service,
+  ) {
+    // remove service from the currently logged in user
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .deleteShoppingCartItem(
+          user,
+          shoppingCart,
+          shoppingCartItem,
+          service,
+          context,
+        );
+  }
+
+  void increaseQuantity(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    Service service,
+  ) {
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .increaseShoppingCartItemQuantity(
+          shoppingCart,
+          shoppingCartItem,
+          service,
+          context,
+        );
+  }
+
+  void decreaseQuantity(
+    BuildContext context,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    UserModel user,
+    Service service,
+  ) {
+    ref
+        .read(shoppingCartItemControllerProvider.notifier)
+        .decreaseShoppingCartItemQuantity(
+          user,
+          shoppingCart,
+          shoppingCartItem,
+          service,
+          context,
+        );
+  }
 
   @override
   void initState() {
@@ -79,6 +185,19 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                     shoppingCartItem: shoppingCartItem,
                   );
                   shoppingCartItemDisplays.add(scid);
+
+                  ShoppingCartServiceQuantity scsq =
+                      ShoppingCartServiceQuantity(
+                    shoppingCartId: shoppingCartItem.shoppingCartId,
+                    uid: shoppingCartItem.shoppingCartUid,
+                    forumId: shoppingCartItem.forumId,
+                    serviceId: shoppingCartItem.serviceId,
+                    quantity: shoppingCartItem.quantity,
+                  );
+
+                  setState(() {
+                    shoppingCartServiceQuantities.add(scsq);
+                  });
                 }
               }
             } else {
@@ -92,6 +211,18 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                 shoppingCartItem: shoppingCartItem,
               );
               shoppingCartItemDisplays.add(scid);
+
+              ShoppingCartServiceQuantity scsq = ShoppingCartServiceQuantity(
+                shoppingCartId: shoppingCartItem.shoppingCartId,
+                uid: shoppingCartItem.shoppingCartUid,
+                forumId: shoppingCartItem.forumId,
+                serviceId: shoppingCartItem.serviceId,
+                quantity: 0,
+              );
+
+              setState(() {
+                shoppingCartServiceQuantities.add(scsq);
+              });
             }
           }
         }
@@ -119,344 +250,412 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 12.0),
               child: Column(
                 children: [
                   ...shoppingCartItemDisplays.map((s) {
-                    if (s.type == ShoppingCartItemType.user.value) {
-                      return ref
-                          .watch(
-                            getUserByIdProvider(
-                              s.shoppingCartItem.forumUid,
-                            ),
-                          )
-                          .when(
-                            data: (forumUser) {
-                              if (forumUser != null) {
-                                return ListTile(
-                                  visualDensity: const VisualDensity(
-                                      horizontal: -4, vertical: -4),
-                                  title: Text(forumUser.fullName),
-                                  leading: forumUser.profilePic ==
-                                          Constants.avatarDefault
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              Image.asset(forumUser.profilePic)
-                                                  .image,
-                                          radius: 14,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage: Image.network(
-                                            forumUser.profilePic,
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              return loadingProgress
-                                                          ?.cumulativeBytesLoaded ==
-                                                      loadingProgress
-                                                          ?.expectedTotalBytes
-                                                  ? child
-                                                  : const CircularProgressIndicator();
-                                            },
-                                          ).image,
-                                          radius: 16,
-                                        ),
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    } else if (s.type == ShoppingCartItemType.forum.value) {
-                      return ref
-                          .watch(
-                            getForumByIdProvider(
-                              s.shoppingCartItem.forumId,
-                            ),
-                          )
-                          .when(
-                            data: (forum) {
-                              if (forum != null) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0, bottom: 8, left: 60),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          forum.image == Constants.avatarDefault
-                                              ? CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.asset(forum.image)
-                                                          .image,
-                                                  radius: 14,
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.network(
-                                                    forum.image,
-                                                    loadingBuilder: (context,
-                                                        child,
-                                                        loadingProgress) {
-                                                      return loadingProgress
-                                                                  ?.cumulativeBytesLoaded ==
-                                                              loadingProgress
-                                                                  ?.expectedTotalBytes
-                                                          ? child
-                                                          : const CircularProgressIndicator();
-                                                    },
-                                                  ).image,
-                                                  radius: 14,
-                                                ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            forum.title,
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
+                    return ref
+                        .watch(
+                          getShoppingCartByIdProvider(
+                            s.shoppingCartItem.shoppingCartId,
+                          ),
+                        )
+                        .when(
+                          data: (shoppingCart) {
+                            if (shoppingCart != null) {
+                              if (s.type == ShoppingCartItemType.user.value) {
+                                return ref
+                                    .watch(
+                                      getUserByIdProvider(
+                                        s.shoppingCartItem.forumUid,
                                       ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    } else if (s.type == ShoppingCartItemType.enduser.value) {
-                      return const ListTile(
-                        visualDensity:
-                            VisualDensity(horizontal: -4, vertical: -4),
-                        title: Text('Items you added to the cart'),
-                      );
-                    } else {
-                      return ref
-                          .watch(
-                            getServiceByIdProvider(
-                              s.shoppingCartItem.serviceId,
-                            ),
-                          )
-                          .when(
-                            data: (service) {
-                              if (service != null) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0, bottom: 8, left: 100),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          service.image ==
-                                                  Constants.avatarDefault
-                                              ? CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.asset(service.image)
-                                                          .image,
-                                                  radius: 14,
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.network(
-                                                    service.image,
-                                                    loadingBuilder: (context,
-                                                        child,
-                                                        loadingProgress) {
-                                                      return loadingProgress
-                                                                  ?.cumulativeBytesLoaded ==
-                                                              loadingProgress
-                                                                  ?.expectedTotalBytes
-                                                          ? child
-                                                          : const CircularProgressIndicator();
-                                                    },
-                                                  ).image,
-                                                  radius: 14,
+                                    )
+                                    .when(
+                                      data: (forumUser) {
+                                        if (forumUser != null) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 0, bottom: 12, left: 15),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    forumUser.profilePic ==
+                                                            Constants
+                                                                .avatarDefault
+                                                        ? CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.asset(forumUser
+                                                                        .profilePic)
+                                                                    .image,
+                                                            radius: 14,
+                                                          )
+                                                        : CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.network(
+                                                              forumUser
+                                                                  .profilePic,
+                                                              loadingBuilder:
+                                                                  (context,
+                                                                      child,
+                                                                      loadingProgress) {
+                                                                return loadingProgress
+                                                                            ?.cumulativeBytesLoaded ==
+                                                                        loadingProgress
+                                                                            ?.expectedTotalBytes
+                                                                    ? child
+                                                                    : const CircularProgressIndicator();
+                                                              },
+                                                            ).image,
+                                                            radius: 14,
+                                                          ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      forumUser.fullName,
+                                                      style: const TextStyle(
+                                                          fontSize: 14),
+                                                    ),
+                                                  ],
                                                 ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            service.title,
-                                            style:
-                                                const TextStyle(fontSize: 14),
-                                          ),
-                                        ],
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox();
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    );
+                              } else if (s.type ==
+                                  ShoppingCartItemType.forum.value) {
+                                return ref
+                                    .watch(
+                                      getForumByIdProvider(
+                                        s.shoppingCartItem.forumId,
                                       ),
-                                    ],
-                                  ),
-                                );
-                              } else {
+                                    )
+                                    .when(
+                                      data: (forum) {
+                                        if (forum != null) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 0, bottom: 5, left: 50),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    forum.image ==
+                                                            Constants
+                                                                .avatarDefault
+                                                        ? CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.asset(forum
+                                                                        .image)
+                                                                    .image,
+                                                            radius: 14,
+                                                          )
+                                                        : CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.network(
+                                                              forum.image,
+                                                              loadingBuilder:
+                                                                  (context,
+                                                                      child,
+                                                                      loadingProgress) {
+                                                                return loadingProgress
+                                                                            ?.cumulativeBytesLoaded ==
+                                                                        loadingProgress
+                                                                            ?.expectedTotalBytes
+                                                                    ? child
+                                                                    : const CircularProgressIndicator();
+                                                              },
+                                                            ).image,
+                                                            radius: 14,
+                                                          ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      forum.title,
+                                                      style: const TextStyle(
+                                                          fontSize: 14),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox();
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    );
+                              } else if (s.type ==
+                                  ShoppingCartItemType.enduser.value) {
                                 return const SizedBox();
+                              } else {
+                                return ref
+                                    .watch(
+                                      getServiceByIdProvider(
+                                        s.shoppingCartItem.serviceId,
+                                      ),
+                                    )
+                                    .when(
+                                      data: (service) {
+                                        if (service != null) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 0,
+                                              bottom: 0,
+                                              right: 5,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    service.image ==
+                                                            Constants
+                                                                .avatarDefault
+                                                        ? CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.asset(service
+                                                                        .image)
+                                                                    .image,
+                                                            radius: 14,
+                                                          )
+                                                        : CircleAvatar(
+                                                            backgroundImage:
+                                                                Image.network(
+                                                              service.image,
+                                                              loadingBuilder:
+                                                                  (context,
+                                                                      child,
+                                                                      loadingProgress) {
+                                                                return loadingProgress
+                                                                            ?.cumulativeBytesLoaded ==
+                                                                        loadingProgress
+                                                                            ?.expectedTotalBytes
+                                                                    ? child
+                                                                    : const CircularProgressIndicator();
+                                                              },
+                                                            ).image,
+                                                            radius: 14,
+                                                          ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      service.title,
+                                                      style: const TextStyle(
+                                                          fontSize: 14),
+                                                    ),
+                                                  ],
+                                                ),
+                                                // add to cart button(s)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 5.0),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: Wrap(
+                                                      crossAxisAlignment:
+                                                          WrapCrossAlignment
+                                                              .center,
+                                                      children: [
+                                                        service.quantity != -1
+                                                            ? Card(
+                                                                color:
+                                                                    Colors.blue,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: SizedBox(
+                                                                  height: 35,
+                                                                  width: 120,
+                                                                  child:
+                                                                      AnimatedSwitcher(
+                                                                    duration: const Duration(
+                                                                        milliseconds:
+                                                                            500),
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        IconButton(
+                                                                            icon:
+                                                                                const Icon(Icons.remove),
+                                                                            onPressed: () {
+                                                                              setState(() {
+                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)];
+                                                                                if (scsq.quantity > 0) {
+                                                                                  int tempQuantity = scsq.quantity - 1;
+                                                                                  scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                  shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)] = scsq;
+                                                                                }
+                                                                              });
+                                                                              decreaseQuantity(
+                                                                                context,
+                                                                                shoppingCart,
+                                                                                s.shoppingCartItem,
+                                                                                user,
+                                                                                service,
+                                                                              );
+                                                                            }),
+                                                                        Text((s.shoppingCartItem.quantity)
+                                                                            .toString()),
+                                                                        IconButton(
+                                                                            icon:
+                                                                                const Icon(Icons.add),
+                                                                            onPressed: () {
+                                                                              setState(() {
+                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)];
+                                                                                int tempQuantity = scsq.quantity + 1;
+                                                                                scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)] = scsq;
+                                                                              });
+                                                                              increaseQuantity(
+                                                                                context,
+                                                                                shoppingCart,
+                                                                                s.shoppingCartItem,
+                                                                                service,
+                                                                              );
+                                                                            }),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : const SizedBox(),
+                                                        shoppingCart.services
+                                                                    .contains(
+                                                                        '${s.shoppingCartItem.forumId}-${service.serviceId}') ==
+                                                                false
+                                                            ? Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  left: 3,
+                                                                ),
+                                                                child:
+                                                                    OutlinedButton(
+                                                                  onPressed: () =>
+                                                                      addToCart(
+                                                                    context,
+                                                                    shoppingCart,
+                                                                    s.shoppingCartItem
+                                                                        .forumId,
+                                                                    s.shoppingCartItem
+                                                                        .memberId,
+                                                                    shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) =>
+                                                                            j.forumId == s.shoppingCartItem.forumId &&
+                                                                            j.serviceId ==
+                                                                                s.shoppingCartItem.serviceId)]
+                                                                        .quantity,
+                                                                    user,
+                                                                    service,
+                                                                  ),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                          backgroundColor: Pallete
+                                                                              .darkGreenColor,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 25)),
+                                                                  child: const Text(
+                                                                      'Add to Cart'),
+                                                                ),
+                                                              )
+                                                            : Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  left: 3,
+                                                                ),
+                                                                child:
+                                                                    OutlinedButton(
+                                                                  onPressed: () =>
+                                                                      removeFromCart(
+                                                                    context,
+                                                                    shoppingCart,
+                                                                    s.shoppingCartItem,
+                                                                    user,
+                                                                    service,
+                                                                  ),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                          backgroundColor: Pallete
+                                                                              .redPinkColor,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              horizontal: 25)),
+                                                                  child: const Text(
+                                                                      'Remove from Cart'),
+                                                                ),
+                                                              ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox();
+                                        }
+                                      },
+                                      error: (error, stackTrace) =>
+                                          ErrorText(error: error.toString()),
+                                      loading: () => const Loader(),
+                                    );
                               }
-                            },
-                            error: (error, stackTrace) =>
-                                ErrorText(error: error.toString()),
-                            loading: () => const Loader(),
-                          );
-                    }
+                            } else {
+                              return const SizedBox();
+                            }
+                          },
+                          error: (error, stackTrace) =>
+                              ErrorText(error: error.toString()),
+                          loading: () => const Loader(),
+                        );
                   })
                 ],
-                // children: [
-                //   ...shoppingCartItems.map((s) {
-                //     // if (index >= shoppingCartItems.length) {
-                //     //   print('in index $lastUserId');
-                //     //   lastUserId = '';
-                //     // }
-
-                //     print('forumUid = ${s.forumUid}');
-                //     print('lastUserId = $lastUserId');
-
-                //     if (s.forumUid != lastUserId) {
-                //       lastUserId = s.forumUid;
-
-                //       print('forumUid 2 = ${s.forumUid}');
-                //       print('lastUserId 2 = $lastUserId');
-
-                //       return ref
-                //           .watch(
-                //             getUserByIdProvider(
-                //               s.forumUid,
-                //             ),
-                //           )
-                //           .when(
-                //             data: (forumUser) {
-                //               // output user info
-                //               return Text(
-                //                   'Outputting forum user ${s.forumId}');
-                //             },
-                //             error: (error, stackTrace) =>
-                //                 ErrorText(error: error.toString()),
-                //             loading: () => const Loader(),
-                //           );
-                //     } else {
-                //       // get service user
-                //       return ref
-                //           .watch(
-                //             getUserByIdProvider(
-                //               s.serviceUid,
-                //             ),
-                //           )
-                //           .when(
-                //             data: (serviceUser) {
-                //               // get service
-                //               return ref
-                //                   .watch(
-                //                     getServiceByIdProvider(
-                //                       s.serviceId,
-                //                     ),
-                //                   )
-                //                   .when(
-                //                     data: (service) {
-                //                       // output service info
-                //                       // output user info
-                //                       return Text(
-                //                           'Outputting service ${s.serviceId}');
-                //                     },
-                //                     error: (error, stackTrace) =>
-                //                         ErrorText(
-                //                             error: error.toString()),
-                //                     loading: () => const Loader(),
-                //                   );
-                //             },
-                //             error: (error, stackTrace) =>
-                //                 ErrorText(error: error.toString()),
-                //             loading: () => const Loader(),
-                //           );
-                //     }
-                //   }),
-                // ],
               ),
-              // child: ListView.builder(
-              //   itemCount: shoppingCartItems.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     ShoppingCartItem shoppingCartItem =
-              //         shoppingCartItems[index];
-
-              //     return Column(
-              //       children: [
-              //         ref
-              //             .watch(
-              //               getUserByIdProvider(
-              //                 shoppingCartItem.forumUid,
-              //               ),
-              //             )
-              //             .when(
-              //               data: (shoppingCartItem) {
-              //                 // output user info
-              //                 return const SizedBox();
-              //               },
-              //               error: (error, stackTrace) =>
-              //                   ErrorText(error: error.toString()),
-              //               loading: () => const Loader(),
-              //             ),
-              //       ],
-              //     );
-
-              //     // return Column(
-              //     //   children: [
-              //     //     shoppingCartItem.forumUid.isNotEmpty
-              //     //         ? ref
-              //     //             .watch(
-              //     //               getUserByIdProvider(
-              //     //                   shoppingCartItem.forumUid),
-              //     //             )
-              //     //             .when(
-              //     //               data: (forumUser) {
-              //     //                 if (forumUser != null) {
-              //     //                   if (lastUserId != forumUser.uid) {
-              //     //                     lastUserId = forumUser.uid;
-              //     //                     // output user information
-              //     //                     // output forum information
-              //     //                     // output service information
-              //     //                     return const SizedBox();
-              //     //                   } else {
-              //     //                     // output forum information
-              //     //                     // output service information
-              //     //                     return const SizedBox();
-              //     //                   }
-              //     //                 } else {
-              //     //                   return const SizedBox();
-              //     //                 }
-              //     //               },
-              //     //               error: (error, stackTrace) =>
-              //     //                   ErrorText(error: error.toString()),
-              //     //               loading: () => const Loader(),
-              //     //             )
-              //     //         : ref
-              //     //             .watch(
-              //     //               getUserByIdProvider(
-              //     //                   shoppingCartItem.serviceUid),
-              //     //             )
-              //     //             .when(
-              //     //               data: (serviceUser) {
-              //     //                 if (serviceUser != null) {
-              //     //                   // output service information
-              //     //                   return const SizedBox();
-              //     //                 } else {
-              //     //                   return const SizedBox();
-              //     //                 }
-              //     //               },
-              //     //               error: (error, stackTrace) =>
-              //     //                   ErrorText(error: error.toString()),
-              //     //               loading: () => const Loader(),
-              //     //             ),
-              //     //   ],
-              //     // );
-              //   },
-              // ),
             ),
             Container(
               child: isLoading ? const Loader() : Container(),

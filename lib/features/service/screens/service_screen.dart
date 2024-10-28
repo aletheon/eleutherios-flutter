@@ -17,8 +17,8 @@ import 'package:reddit_tutorial/features/shopping_cart_member/controller/shoppin
 import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_forum.dart';
-import 'package:reddit_tutorial/models/shopping_cart_forum_quantity.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
+import 'package:reddit_tutorial/models/shopping_cart_service_quantity.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -35,7 +35,7 @@ class ServiceScreen extends ConsumerStatefulWidget {
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   final GlobalKey _scaffold = GlobalKey();
   int quantity = 0;
-  List<ShoppingCartForumQuantity> shoppingCartForumQuantities = [];
+  List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
 
   void addToCart(
     BuildContext context,
@@ -219,23 +219,27 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
               for (ShoppingCartForum shoppingCartForum in shoppingCartForums) {
                 ShoppingCartItem? shoppingCartItem = await ref
                     .read(shoppingCartItemControllerProvider.notifier)
-                    .getShoppingCartItemByServiceId(cartUser.shoppingCartId,
-                        shoppingCartForum.forumId, widget.serviceId)
+                    .getShoppingCartItemByServiceId(
+                      cartUser.shoppingCartId,
+                      shoppingCartForum.forumId,
+                      widget.serviceId,
+                    )
                     .first;
 
-                ShoppingCartForumQuantity scfq = ShoppingCartForumQuantity(
+                ShoppingCartServiceQuantity scsq = ShoppingCartServiceQuantity(
                   shoppingCartId: cartUser.shoppingCartId,
                   uid: cartUser.uid,
                   forumId: shoppingCartForum.forumId,
+                  serviceId: widget.serviceId,
                   quantity: 0,
                 );
 
                 if (shoppingCartItem != null) {
-                  scfq = scfq.copyWith(quantity: shoppingCartItem.quantity);
+                  scsq = scsq.copyWith(quantity: shoppingCartItem.quantity);
                 }
 
                 setState(() {
-                  shoppingCartForumQuantities.add(scfq);
+                  shoppingCartServiceQuantities.add(scsq);
                 });
               }
             }
@@ -477,11 +481,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                     icon: const Icon(Icons.remove),
                                                                                                                     onPressed: () {
                                                                                                                       setState(() {
-                                                                                                                        ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                        if (scfq.quantity > 0) {
-                                                                                                                          int tempQuantity = scfq.quantity - 1;
-                                                                                                                          scfq = scfq.copyWith(quantity: tempQuantity);
-                                                                                                                          shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scfq;
+                                                                                                                        ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        if (scsq.quantity > 0) {
+                                                                                                                          int tempQuantity = scsq.quantity - 1;
+                                                                                                                          scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                                                          shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
                                                                                                                         }
                                                                                                                       });
                                                                                                                       decreaseQuantity(
@@ -492,15 +496,15 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                         service,
                                                                                                                       );
                                                                                                                     }),
-                                                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(shoppingCartForumQuantities.where((s) => s.uid == cartUser.uid && s.forumId == forum.forumId).toList().first.quantity.toString()),
+                                                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(shoppingCartServiceQuantities.where((s) => s.uid == cartUser.uid && s.forumId == forum.forumId).toList().first.quantity.toString()),
                                                                                                                 IconButton(
                                                                                                                     icon: const Icon(Icons.add),
                                                                                                                     onPressed: () {
                                                                                                                       setState(() {
-                                                                                                                        ShoppingCartForumQuantity scfq = shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                        int tempQuantity = scfq.quantity + 1;
-                                                                                                                        scfq = scfq.copyWith(quantity: tempQuantity);
-                                                                                                                        shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scfq;
+                                                                                                                        ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        int tempQuantity = scsq.quantity + 1;
+                                                                                                                        scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                                                        shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
                                                                                                                       });
                                                                                                                       increaseQuantity(
                                                                                                                         context,
@@ -526,7 +530,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                             shoppingCart,
                                                                                                             forum.forumId,
                                                                                                             shoppingCartMember.memberId,
-                                                                                                            shoppingCartForumQuantities[shoppingCartForumQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
+                                                                                                            shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
                                                                                                             cartUser,
                                                                                                             service,
                                                                                                           ),
