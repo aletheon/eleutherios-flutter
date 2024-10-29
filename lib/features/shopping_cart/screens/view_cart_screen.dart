@@ -17,7 +17,6 @@ import 'package:reddit_tutorial/models/shopping_cart_item_display.dart';
 import 'package:reddit_tutorial/models/shopping_cart_service_quantity.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
-import 'package:badges/badges.dart' as mybadge;
 
 class ViewCartScreen extends ConsumerStatefulWidget {
   const ViewCartScreen({super.key});
