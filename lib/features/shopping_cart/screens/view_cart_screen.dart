@@ -256,395 +256,419 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                   ...shoppingCartItemDisplays.map((s) {
                     return ref
                         .watch(
-                          getShoppingCartByIdProvider(
-                            s.shoppingCartItem.shoppingCartId,
+                          getShoppingCartItemByIdProvider(
+                            s.shoppingCartItem.shoppingCartItemId,
                           ),
                         )
                         .when(
-                          data: (shoppingCart) {
-                            if (shoppingCart != null) {
-                              if (s.type == ShoppingCartItemType.user.value) {
-                                return ref
-                                    .watch(
-                                      getUserByIdProvider(
-                                        s.shoppingCartItem.forumUid,
-                                      ),
-                                    )
-                                    .when(
-                                      data: (forumUser) {
-                                        if (forumUser != null) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 0, bottom: 12, left: 15),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    forumUser.profilePic ==
-                                                            Constants
-                                                                .avatarDefault
-                                                        ? CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.asset(forumUser
-                                                                        .profilePic)
-                                                                    .image,
-                                                            radius: 14,
-                                                          )
-                                                        : CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.network(
-                                                              forumUser
-                                                                  .profilePic,
-                                                              loadingBuilder:
-                                                                  (context,
-                                                                      child,
-                                                                      loadingProgress) {
-                                                                return loadingProgress
-                                                                            ?.cumulativeBytesLoaded ==
-                                                                        loadingProgress
-                                                                            ?.expectedTotalBytes
-                                                                    ? child
-                                                                    : const CircularProgressIndicator();
-                                                              },
-                                                            ).image,
-                                                            radius: 14,
-                                                          ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      forumUser.fullName,
-                                                      style: const TextStyle(
-                                                          fontSize: 14),
-                                                    ),
-                                                  ],
+                          data: (shoppingCartItem) {
+                            if (shoppingCartItem != null) {
+                              return ref
+                                  .watch(
+                                    getShoppingCartByIdProvider(
+                                      s.shoppingCartItem.shoppingCartId,
+                                    ),
+                                  )
+                                  .when(
+                                    data: (shoppingCart) {
+                                      if (shoppingCart != null) {
+                                        if (s.type ==
+                                            ShoppingCartItemType.user.value) {
+                                          return ref
+                                              .watch(
+                                                getUserByIdProvider(
+                                                  shoppingCartItem.forumUid,
                                                 ),
-                                              ],
-                                            ),
-                                          );
-                                        } else {
-                                          return const SizedBox();
-                                        }
-                                      },
-                                      error: (error, stackTrace) =>
-                                          ErrorText(error: error.toString()),
-                                      loading: () => const Loader(),
-                                    );
-                              } else if (s.type ==
-                                  ShoppingCartItemType.forum.value) {
-                                return ref
-                                    .watch(
-                                      getForumByIdProvider(
-                                        s.shoppingCartItem.forumId,
-                                      ),
-                                    )
-                                    .when(
-                                      data: (forum) {
-                                        if (forum != null) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 0, bottom: 5, left: 50),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    forum.image ==
-                                                            Constants
-                                                                .avatarDefault
-                                                        ? CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.asset(forum
-                                                                        .image)
-                                                                    .image,
-                                                            radius: 14,
-                                                          )
-                                                        : CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.network(
-                                                              forum.image,
-                                                              loadingBuilder:
-                                                                  (context,
-                                                                      child,
-                                                                      loadingProgress) {
-                                                                return loadingProgress
-                                                                            ?.cumulativeBytesLoaded ==
-                                                                        loadingProgress
-                                                                            ?.expectedTotalBytes
-                                                                    ? child
-                                                                    : const CircularProgressIndicator();
-                                                              },
-                                                            ).image,
-                                                            radius: 14,
-                                                          ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      forum.title,
-                                                      style: const TextStyle(
-                                                          fontSize: 14),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        } else {
-                                          return const SizedBox();
-                                        }
-                                      },
-                                      error: (error, stackTrace) =>
-                                          ErrorText(error: error.toString()),
-                                      loading: () => const Loader(),
-                                    );
-                              } else if (s.type ==
-                                  ShoppingCartItemType.enduser.value) {
-                                return const SizedBox();
-                              } else {
-                                return ref
-                                    .watch(
-                                      getServiceByIdProvider(
-                                        s.shoppingCartItem.serviceId,
-                                      ),
-                                    )
-                                    .when(
-                                      data: (service) {
-                                        if (service != null) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 0,
-                                              bottom: 0,
-                                              right: 5,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    service.image ==
-                                                            Constants
-                                                                .avatarDefault
-                                                        ? CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.asset(service
-                                                                        .image)
-                                                                    .image,
-                                                            radius: 14,
-                                                          )
-                                                        : CircleAvatar(
-                                                            backgroundImage:
-                                                                Image.network(
-                                                              service.image,
-                                                              loadingBuilder:
-                                                                  (context,
-                                                                      child,
-                                                                      loadingProgress) {
-                                                                return loadingProgress
-                                                                            ?.cumulativeBytesLoaded ==
-                                                                        loadingProgress
-                                                                            ?.expectedTotalBytes
-                                                                    ? child
-                                                                    : const CircularProgressIndicator();
-                                                              },
-                                                            ).image,
-                                                            radius: 14,
-                                                          ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      service.title,
-                                                      style: const TextStyle(
-                                                          fontSize: 14),
-                                                    ),
-                                                  ],
-                                                ),
-                                                // add to cart button(s)
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 5.0),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Wrap(
-                                                      crossAxisAlignment:
-                                                          WrapCrossAlignment
-                                                              .center,
-                                                      children: [
-                                                        service.quantity != -1
-                                                            ? Card(
-                                                                color:
-                                                                    Colors.blue,
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                ),
-                                                                child: SizedBox(
-                                                                  height: 35,
-                                                                  width: 120,
-                                                                  child:
-                                                                      AnimatedSwitcher(
-                                                                    duration: const Duration(
-                                                                        milliseconds:
-                                                                            500),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: [
-                                                                        IconButton(
-                                                                            icon:
-                                                                                const Icon(Icons.remove),
-                                                                            onPressed: () {
-                                                                              setState(() {
-                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)];
-                                                                                if (scsq.quantity > 0) {
-                                                                                  int tempQuantity = scsq.quantity - 1;
-                                                                                  scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                  shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)] = scsq;
-                                                                                }
-                                                                              });
-                                                                              decreaseQuantity(
-                                                                                context,
-                                                                                shoppingCart,
-                                                                                s.shoppingCartItem,
-                                                                                user,
-                                                                                service,
-                                                                              );
-                                                                            }),
-                                                                        Text((s.shoppingCartItem.quantity)
-                                                                            .toString()),
-                                                                        IconButton(
-                                                                            icon:
-                                                                                const Icon(Icons.add),
-                                                                            onPressed: () {
-                                                                              setState(() {
-                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)];
-                                                                                int tempQuantity = scsq.quantity + 1;
-                                                                                scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == s.shoppingCartItem.forumId && j.serviceId == s.shoppingCartItem.serviceId)] = scsq;
-                                                                              });
-                                                                              increaseQuantity(
-                                                                                context,
-                                                                                shoppingCart,
-                                                                                s.shoppingCartItem,
-                                                                                service,
-                                                                              );
-                                                                            }),
-                                                                      ],
+                                              )
+                                              .when(
+                                                data: (forumUser) {
+                                                  if (forumUser != null) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 0,
+                                                              bottom: 12,
+                                                              left: 15),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              forumUser.profilePic ==
+                                                                      Constants
+                                                                          .avatarDefault
+                                                                  ? CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image.asset(forumUser.profilePic)
+                                                                              .image,
+                                                                      radius:
+                                                                          14,
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image
+                                                                              .network(
+                                                                        forumUser
+                                                                            .profilePic,
+                                                                        loadingBuilder: (context,
+                                                                            child,
+                                                                            loadingProgress) {
+                                                                          return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes
+                                                                              ? child
+                                                                              : const CircularProgressIndicator();
+                                                                        },
+                                                                      ).image,
+                                                                      radius:
+                                                                          14,
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            : const SizedBox(),
-                                                        shoppingCart.services
-                                                                    .contains(
-                                                                        '${s.shoppingCartItem.forumId}-${service.serviceId}') ==
-                                                                false
-                                                            ? Container(
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 3,
-                                                                ),
-                                                                child:
-                                                                    OutlinedButton(
-                                                                  onPressed: () =>
-                                                                      addToCart(
-                                                                    context,
-                                                                    shoppingCart,
-                                                                    s.shoppingCartItem
-                                                                        .forumId,
-                                                                    s.shoppingCartItem
-                                                                        .memberId,
-                                                                    shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) =>
-                                                                            j.forumId == s.shoppingCartItem.forumId &&
-                                                                            j.serviceId ==
-                                                                                s.shoppingCartItem.serviceId)]
-                                                                        .quantity,
-                                                                    user,
-                                                                    service,
-                                                                  ),
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                          backgroundColor: Pallete
-                                                                              .darkGreenColor,
-                                                                          shape:
-                                                                              RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              horizontal: 25)),
-                                                                  child: const Text(
-                                                                      'Add to Cart'),
-                                                                ),
-                                                              )
-                                                            : Container(
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                  left: 3,
-                                                                ),
-                                                                child:
-                                                                    OutlinedButton(
-                                                                  onPressed: () =>
-                                                                      removeFromCart(
-                                                                    context,
-                                                                    shoppingCart,
-                                                                    s.shoppingCartItem,
-                                                                    user,
-                                                                    service,
-                                                                  ),
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                          backgroundColor: Pallete
-                                                                              .redPinkColor,
-                                                                          shape:
-                                                                              RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                          ),
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              horizontal: 25)),
-                                                                  child: const Text(
-                                                                      'Remove from Cart'),
-                                                                ),
+                                                              const SizedBox(
+                                                                width: 10,
                                                               ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        } else {
+                                                              Text(
+                                                                forumUser
+                                                                    .fullName,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const SizedBox();
+                                                  }
+                                                },
+                                                error: (error, stackTrace) =>
+                                                    ErrorText(
+                                                        error:
+                                                            error.toString()),
+                                                loading: () => const Loader(),
+                                              );
+                                        } else if (s.type ==
+                                            ShoppingCartItemType.forum.value) {
+                                          return ref
+                                              .watch(
+                                                getForumByIdProvider(
+                                                  shoppingCartItem.forumId,
+                                                ),
+                                              )
+                                              .when(
+                                                data: (forum) {
+                                                  if (forum != null) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 0,
+                                                              bottom: 5,
+                                                              left: 50),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              forum.image ==
+                                                                      Constants
+                                                                          .avatarDefault
+                                                                  ? CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image.asset(forum.image)
+                                                                              .image,
+                                                                      radius:
+                                                                          14,
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image
+                                                                              .network(
+                                                                        forum
+                                                                            .image,
+                                                                        loadingBuilder: (context,
+                                                                            child,
+                                                                            loadingProgress) {
+                                                                          return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes
+                                                                              ? child
+                                                                              : const CircularProgressIndicator();
+                                                                        },
+                                                                      ).image,
+                                                                      radius:
+                                                                          14,
+                                                                    ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                forum.title,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const SizedBox();
+                                                  }
+                                                },
+                                                error: (error, stackTrace) =>
+                                                    ErrorText(
+                                                        error:
+                                                            error.toString()),
+                                                loading: () => const Loader(),
+                                              );
+                                        } else if (s.type ==
+                                            ShoppingCartItemType
+                                                .enduser.value) {
                                           return const SizedBox();
+                                        } else {
+                                          return ref
+                                              .watch(
+                                                getServiceByIdProvider(
+                                                  shoppingCartItem.serviceId,
+                                                ),
+                                              )
+                                              .when(
+                                                data: (service) {
+                                                  if (service != null) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        top: 0,
+                                                        bottom: 0,
+                                                        right: 5,
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              service.image ==
+                                                                      Constants
+                                                                          .avatarDefault
+                                                                  ? CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image.asset(service.image)
+                                                                              .image,
+                                                                      radius:
+                                                                          14,
+                                                                    )
+                                                                  : CircleAvatar(
+                                                                      backgroundImage:
+                                                                          Image
+                                                                              .network(
+                                                                        service
+                                                                            .image,
+                                                                        loadingBuilder: (context,
+                                                                            child,
+                                                                            loadingProgress) {
+                                                                          return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes
+                                                                              ? child
+                                                                              : const CircularProgressIndicator();
+                                                                        },
+                                                                      ).image,
+                                                                      radius:
+                                                                          14,
+                                                                    ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                service.title,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          // add to cart button(s)
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    bottom:
+                                                                        5.0),
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topRight,
+                                                              child: Wrap(
+                                                                crossAxisAlignment:
+                                                                    WrapCrossAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  service.quantity !=
+                                                                          -1
+                                                                      ? Card(
+                                                                          color:
+                                                                              Colors.blue,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
+                                                                          ),
+                                                                          child:
+                                                                              SizedBox(
+                                                                            height:
+                                                                                35,
+                                                                            width:
+                                                                                120,
+                                                                            child:
+                                                                                AnimatedSwitcher(
+                                                                              duration: const Duration(milliseconds: 500),
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                children: [
+                                                                                  IconButton(
+                                                                                      icon: const Icon(Icons.remove),
+                                                                                      onPressed: () {
+                                                                                        setState(() {
+                                                                                          ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                          if (scsq.quantity > 0) {
+                                                                                            int tempQuantity = scsq.quantity - 1;
+                                                                                            scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                            shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                          }
+                                                                                        });
+                                                                                        decreaseQuantity(
+                                                                                          context,
+                                                                                          shoppingCart,
+                                                                                          shoppingCartItem,
+                                                                                          user,
+                                                                                          service,
+                                                                                        );
+                                                                                      }),
+                                                                                  Text((shoppingCartItem.quantity).toString()),
+                                                                                  // ****************************************************************************************
+                                                                                  // ****************************************************************************************
+                                                                                  // ****************************************************************************************
+                                                                                  // End user can only increase quantity if they are the member that added the service to the cart
+                                                                                  // ****************************************************************************************
+                                                                                  // ****************************************************************************************
+                                                                                  // ****************************************************************************************
+                                                                                  IconButton(
+                                                                                      icon: const Icon(Icons.add),
+                                                                                      onPressed: () {
+                                                                                        setState(() {
+                                                                                          ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                          int tempQuantity = scsq.quantity + 1;
+                                                                                          scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                          shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                        });
+                                                                                        increaseQuantity(
+                                                                                          context,
+                                                                                          shoppingCart,
+                                                                                          shoppingCartItem,
+                                                                                          service,
+                                                                                        );
+                                                                                      }),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : const SizedBox(),
+                                                                  shoppingCart.services
+                                                                              .contains('${shoppingCartItem.forumId}-${service.serviceId}') ==
+                                                                          false
+                                                                      ? Container(
+                                                                          margin:
+                                                                              const EdgeInsets.only(
+                                                                            left:
+                                                                                3,
+                                                                          ),
+                                                                          child:
+                                                                              OutlinedButton(
+                                                                            onPressed: () =>
+                                                                                addToCart(
+                                                                              context,
+                                                                              shoppingCart,
+                                                                              shoppingCartItem.forumId,
+                                                                              shoppingCartItem.memberId,
+                                                                              shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)].quantity,
+                                                                              user,
+                                                                              service,
+                                                                            ),
+                                                                            style: ElevatedButton.styleFrom(
+                                                                                backgroundColor: Pallete.darkGreenColor,
+                                                                                shape: RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                ),
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                            child:
+                                                                                const Text('Add to Cart'),
+                                                                          ),
+                                                                        )
+                                                                      : Container(
+                                                                          margin:
+                                                                              const EdgeInsets.only(
+                                                                            left:
+                                                                                3,
+                                                                          ),
+                                                                          child:
+                                                                              OutlinedButton(
+                                                                            onPressed: () =>
+                                                                                removeFromCart(
+                                                                              context,
+                                                                              shoppingCart,
+                                                                              shoppingCartItem,
+                                                                              user,
+                                                                              service,
+                                                                            ),
+                                                                            style: ElevatedButton.styleFrom(
+                                                                                backgroundColor: Pallete.redPinkColor,
+                                                                                shape: RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                ),
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                            child:
+                                                                                const Text('Remove from Cart'),
+                                                                          ),
+                                                                        ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const SizedBox();
+                                                  }
+                                                },
+                                                error: (error, stackTrace) =>
+                                                    ErrorText(
+                                                        error:
+                                                            error.toString()),
+                                                loading: () => const Loader(),
+                                              );
                                         }
-                                      },
-                                      error: (error, stackTrace) =>
-                                          ErrorText(error: error.toString()),
-                                      loading: () => const Loader(),
-                                    );
-                              }
+                                      } else {
+                                        return const SizedBox();
+                                      }
+                                    },
+                                    error: (error, stackTrace) =>
+                                        ErrorText(error: error.toString()),
+                                    loading: () => const Loader(),
+                                  );
                             } else {
                               return const SizedBox();
                             }
