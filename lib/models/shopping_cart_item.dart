@@ -6,6 +6,7 @@ class ShoppingCartItem {
       forumId; // forum this service is associated to or being added from
   final String forumUid; // owner or superuser of the forum
   final String memberId; // member adding item to cart
+  final String memberUid;
   final String serviceId; // service being added to cart
   final String serviceUid;
   final int quantity; // number of these service items added to cart
@@ -18,6 +19,7 @@ class ShoppingCartItem {
     required this.forumId,
     required this.forumUid,
     required this.memberId,
+    required this.memberUid,
     required this.serviceId,
     required this.serviceUid,
     required this.quantity,
@@ -32,6 +34,7 @@ class ShoppingCartItem {
     String? forumId,
     String? forumUid,
     String? memberId,
+    String? memberUid,
     String? serviceId,
     String? serviceUid,
     int? quantity,
@@ -45,6 +48,7 @@ class ShoppingCartItem {
       forumId: forumId ?? this.forumId,
       forumUid: forumUid ?? this.forumUid,
       memberId: memberId ?? this.memberId,
+      memberUid: memberUid ?? this.memberUid,
       serviceId: serviceId ?? this.serviceId,
       serviceUid: serviceUid ?? this.serviceUid,
       quantity: quantity ?? this.quantity,
@@ -61,6 +65,7 @@ class ShoppingCartItem {
       'forumId': forumId,
       'forumUid': forumUid,
       'memberId': memberId,
+      'memberUid': memberUid,
       'serviceId': serviceId,
       'serviceUid': serviceUid,
       'quantity': quantity,
@@ -77,6 +82,7 @@ class ShoppingCartItem {
       forumId: map['forumId'] as String,
       forumUid: map['forumUid'] as String,
       memberId: map['memberId'] as String,
+      memberUid: map['memberUid'] as String,
       serviceId: map['serviceId'] as String,
       serviceUid: map['serviceUid'] as String,
       quantity: map['quantity'] as int,
@@ -89,7 +95,7 @@ class ShoppingCartItem {
 
   @override
   String toString() {
-    return 'ShoppingCartItem(shoppingCartItemId: $shoppingCartItemId, shoppingCartId: $shoppingCartId, shoppingCartUid: $shoppingCartUid, forumId: $forumId, forumUid: $forumUid, memberId: $memberId, serviceId: $serviceId, serviceUid: $serviceUid, quantity: $quantity, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'ShoppingCartItem(shoppingCartItemId: $shoppingCartItemId, shoppingCartId: $shoppingCartId, shoppingCartUid: $shoppingCartUid, forumId: $forumId, forumUid: $forumUid, memberId: $memberId, memberUid: $memberUid, serviceId: $serviceId, serviceUid: $serviceUid, quantity: $quantity, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
@@ -102,6 +108,7 @@ class ShoppingCartItem {
         other.forumId == forumId &&
         other.forumUid == forumUid &&
         other.memberId == memberId &&
+        other.memberUid == memberUid &&
         other.serviceId == serviceId &&
         other.serviceUid == serviceUid &&
         other.quantity == quantity &&
@@ -117,6 +124,7 @@ class ShoppingCartItem {
         forumId.hashCode ^
         forumUid.hashCode ^
         memberId.hashCode ^
+        memberUid.hashCode ^
         serviceId.hashCode ^
         serviceUid.hashCode ^
         quantity.hashCode ^

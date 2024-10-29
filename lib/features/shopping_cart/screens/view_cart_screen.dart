@@ -537,112 +537,83 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                                 mainAxisSize: MainAxisSize.min,
                                                                                 children: [
-                                                                                  IconButton(
-                                                                                      icon: const Icon(Icons.remove),
-                                                                                      onPressed: () {
-                                                                                        setState(() {
-                                                                                          ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
-                                                                                          if (scsq.quantity > 0) {
-                                                                                            int tempQuantity = scsq.quantity - 1;
-                                                                                            scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                            shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
-                                                                                          }
-                                                                                        });
-                                                                                        decreaseQuantity(
-                                                                                          context,
-                                                                                          shoppingCart,
-                                                                                          shoppingCartItem,
-                                                                                          user,
-                                                                                          service,
-                                                                                        );
-                                                                                      }),
+                                                                                  // Only the member that added the service to the shopping cart can increase or decrease the quantity
+                                                                                  shoppingCartItem.memberUid.isNotEmpty && shoppingCartItem.memberUid == user.uid
+                                                                                      ? IconButton(
+                                                                                          icon: const Icon(Icons.remove),
+                                                                                          onPressed: () {
+                                                                                            setState(() {
+                                                                                              ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                              if (scsq.quantity > 0) {
+                                                                                                int tempQuantity = scsq.quantity - 1;
+                                                                                                scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                                shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                              }
+                                                                                            });
+                                                                                            decreaseQuantity(
+                                                                                              context,
+                                                                                              shoppingCart,
+                                                                                              shoppingCartItem,
+                                                                                              user,
+                                                                                              service,
+                                                                                            );
+                                                                                          },
+                                                                                        )
+                                                                                      : const SizedBox(),
                                                                                   Text((shoppingCartItem.quantity).toString()),
-                                                                                  // ****************************************************************************************
-                                                                                  // ****************************************************************************************
-                                                                                  // ****************************************************************************************
-                                                                                  // End user can only increase quantity if they are the member that added the service to the cart
-                                                                                  // ****************************************************************************************
-                                                                                  // ****************************************************************************************
-                                                                                  // ****************************************************************************************
-                                                                                  IconButton(
-                                                                                      icon: const Icon(Icons.add),
-                                                                                      onPressed: () {
-                                                                                        setState(() {
-                                                                                          ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
-                                                                                          int tempQuantity = scsq.quantity + 1;
-                                                                                          scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                          shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
-                                                                                        });
-                                                                                        increaseQuantity(
-                                                                                          context,
-                                                                                          shoppingCart,
-                                                                                          shoppingCartItem,
-                                                                                          service,
-                                                                                        );
-                                                                                      }),
+                                                                                  shoppingCartItem.memberUid.isNotEmpty && shoppingCartItem.memberUid == user.uid
+                                                                                      ? IconButton(
+                                                                                          icon: const Icon(Icons.add),
+                                                                                          onPressed: () {
+                                                                                            setState(() {
+                                                                                              ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                              int tempQuantity = scsq.quantity + 1;
+                                                                                              scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                              shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                            });
+                                                                                            increaseQuantity(
+                                                                                              context,
+                                                                                              shoppingCart,
+                                                                                              shoppingCartItem,
+                                                                                              service,
+                                                                                            );
+                                                                                          },
+                                                                                        )
+                                                                                      : const SizedBox(),
                                                                                 ],
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         )
                                                                       : const SizedBox(),
-                                                                  shoppingCart.services
-                                                                              .contains('${shoppingCartItem.forumId}-${service.serviceId}') ==
-                                                                          false
-                                                                      ? Container(
-                                                                          margin:
-                                                                              const EdgeInsets.only(
-                                                                            left:
-                                                                                3,
+                                                                  Container(
+                                                                    margin:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      left: 3,
+                                                                    ),
+                                                                    child:
+                                                                        OutlinedButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              removeFromCart(
+                                                                        context,
+                                                                        shoppingCart,
+                                                                        shoppingCartItem,
+                                                                        user,
+                                                                        service,
+                                                                      ),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                          backgroundColor: Pallete.redPinkColor,
+                                                                          shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
                                                                           ),
-                                                                          child:
-                                                                              OutlinedButton(
-                                                                            onPressed: () =>
-                                                                                addToCart(
-                                                                              context,
-                                                                              shoppingCart,
-                                                                              shoppingCartItem.forumId,
-                                                                              shoppingCartItem.memberId,
-                                                                              shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)].quantity,
-                                                                              user,
-                                                                              service,
-                                                                            ),
-                                                                            style: ElevatedButton.styleFrom(
-                                                                                backgroundColor: Pallete.darkGreenColor,
-                                                                                shape: RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.circular(10),
-                                                                                ),
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                            child:
-                                                                                const Text('Add to Cart'),
-                                                                          ),
-                                                                        )
-                                                                      : Container(
-                                                                          margin:
-                                                                              const EdgeInsets.only(
-                                                                            left:
-                                                                                3,
-                                                                          ),
-                                                                          child:
-                                                                              OutlinedButton(
-                                                                            onPressed: () =>
-                                                                                removeFromCart(
-                                                                              context,
-                                                                              shoppingCart,
-                                                                              shoppingCartItem,
-                                                                              user,
-                                                                              service,
-                                                                            ),
-                                                                            style: ElevatedButton.styleFrom(
-                                                                                backgroundColor: Pallete.redPinkColor,
-                                                                                shape: RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.circular(10),
-                                                                                ),
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                            child:
-                                                                                const Text('Remove from Cart'),
-                                                                          ),
-                                                                        ),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                      child: const Text(
+                                                                          'Remove from Cart'),
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
