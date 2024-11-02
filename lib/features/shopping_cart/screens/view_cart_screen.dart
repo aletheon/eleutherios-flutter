@@ -29,7 +29,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
   final GlobalKey _scaffold = GlobalKey();
   int quantity = 0;
   List<ShoppingCartItemDisplay> shoppingCartItemDisplays = [];
-  List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
+  // List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
   String lastUserId = '';
   String lastForumId = '';
 
@@ -186,18 +186,18 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                   );
                   shoppingCartItemDisplays.add(scid);
 
-                  ShoppingCartServiceQuantity scsq =
-                      ShoppingCartServiceQuantity(
-                    shoppingCartId: shoppingCartItem.shoppingCartId,
-                    uid: shoppingCartItem.shoppingCartUid,
-                    forumId: shoppingCartItem.forumId,
-                    serviceId: shoppingCartItem.serviceId,
-                    quantity: shoppingCartItem.quantity,
-                  );
+                  // ShoppingCartServiceQuantity scsq =
+                  //     ShoppingCartServiceQuantity(
+                  //   shoppingCartId: shoppingCartItem.shoppingCartId,
+                  //   uid: shoppingCartItem.shoppingCartUid,
+                  //   forumId: shoppingCartItem.forumId,
+                  //   serviceId: shoppingCartItem.serviceId,
+                  //   quantity: shoppingCartItem.quantity,
+                  // );
 
-                  setState(() {
-                    shoppingCartServiceQuantities.add(scsq);
-                  });
+                  // setState(() {
+                  //   shoppingCartServiceQuantities.add(scsq);
+                  // });
                 }
               }
             } else {
@@ -212,17 +212,17 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
               );
               shoppingCartItemDisplays.add(scid);
 
-              ShoppingCartServiceQuantity scsq = ShoppingCartServiceQuantity(
-                shoppingCartId: shoppingCartItem.shoppingCartId,
-                uid: shoppingCartItem.shoppingCartUid,
-                forumId: shoppingCartItem.forumId,
-                serviceId: shoppingCartItem.serviceId,
-                quantity: 0,
-              );
+              // ShoppingCartServiceQuantity scsq = ShoppingCartServiceQuantity(
+              //   shoppingCartId: shoppingCartItem.shoppingCartId,
+              //   uid: shoppingCartItem.shoppingCartUid,
+              //   forumId: shoppingCartItem.forumId,
+              //   serviceId: shoppingCartItem.serviceId,
+              //   quantity: shoppingCartItem.quantity,
+              // );
 
-              setState(() {
-                shoppingCartServiceQuantities.add(scsq);
-              });
+              // setState(() {
+              //   shoppingCartServiceQuantities.add(scsq);
+              // });
             }
           }
         }
@@ -272,6 +272,11 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                       .when(
                                         data: (shoppingCart) {
                                           if (shoppingCart != null) {
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+// USER TYPE
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
                                             if (s.type ==
                                                 ShoppingCartItemType
                                                     .user.value) {
@@ -350,7 +355,13 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                     loading: () =>
                                                         const Loader(),
                                                   );
-                                            } else if (s.type ==
+                                            }
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+// FORUM TYPE
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+                                            else if (s.type ==
                                                 ShoppingCartItemType
                                                     .forum.value) {
                                               return ref
@@ -427,11 +438,23 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                     loading: () =>
                                                         const Loader(),
                                                   );
-                                            } else if (s.type ==
+                                            }
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+// END USER TYPE
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+                                            else if (s.type ==
                                                 ShoppingCartItemType
                                                     .enduser.value) {
                                               return const SizedBox();
-                                            } else {
+                                            }
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+// SERVICE TYPE
+// **********************************************************************************************************************************
+// **********************************************************************************************************************************
+                                            else {
                                               return ref
                                                   .watch(
                                                     getServiceByIdProvider(
@@ -527,14 +550,14 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                                           IconButton(
                                                                                             icon: const Icon(Icons.remove),
                                                                                             onPressed: () {
-                                                                                              setState(() {
-                                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
-                                                                                                if (scsq.quantity > 0) {
-                                                                                                  int tempQuantity = scsq.quantity - 1;
-                                                                                                  scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                                  shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
-                                                                                                }
-                                                                                              });
+                                                                                              // setState(() {
+                                                                                              //   ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                              //   if (scsq.quantity > 0) {
+                                                                                              //     int tempQuantity = scsq.quantity - 1;
+                                                                                              //     scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                              //     shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                              //   }
+                                                                                              // });
                                                                                               decreaseQuantity(
                                                                                                 context,
                                                                                                 shoppingCart,
@@ -548,12 +571,12 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                                           IconButton(
                                                                                             icon: const Icon(Icons.add),
                                                                                             onPressed: () {
-                                                                                              setState(() {
-                                                                                                ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
-                                                                                                int tempQuantity = scsq.quantity + 1;
-                                                                                                scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                                shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
-                                                                                              });
+                                                                                              // setState(() {
+                                                                                              //   ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)];
+                                                                                              //   int tempQuantity = scsq.quantity + 1;
+                                                                                              //   scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                              //   shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((j) => j.forumId == shoppingCartItem.forumId && j.serviceId == shoppingCartItem.serviceId)] = scsq;
+                                                                                              // });
                                                                                               increaseQuantity(
                                                                                                 context,
                                                                                                 shoppingCart,
