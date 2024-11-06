@@ -50,19 +50,33 @@ final getShoppingCartItemByServiceIdProvider2 =
   }
 });
 
-final getShoppingCartItemsProvider =
+final getShoppingCartItemsByItemIdsProvider =
+    StreamProvider.family.autoDispose((ref, List<String> shoppingCartIds) {
+  return ref
+      .watch(shoppingCartItemControllerProvider.notifier)
+      .getShoppingCartItemsByItemIds(shoppingCartIds);
+});
+
+final getShoppingCartItemsByItemIdsProvider2 =
+    Provider.family.autoDispose((ref, List<String> shoppingCartIds) {
+  return ref
+      .watch(shoppingCartItemControllerProvider.notifier)
+      .getShoppingCartItemsByItemIds(shoppingCartIds);
+});
+
+final getShoppingCartItemsByShoppingCartIdProvider =
     StreamProvider.family.autoDispose((ref, String shoppingCartId) {
   return ref
       .watch(shoppingCartItemControllerProvider.notifier)
-      .getShoppingCartItems(shoppingCartId);
+      .getShoppingCartItemsByShoppingCartId(shoppingCartId);
 });
 
-final getUserShoppingCartItemsProvider =
+final getUserShoppingCartItemsByShoppingCartIdProvider =
     Provider.family.autoDispose((ref, Tuple2 params) {
   try {
     return ref
         .watch(shoppingCartItemControllerProvider.notifier)
-        .getUserShoppingCartItems(params.item1, params.item2);
+        .getUserShoppingCartItemsByShoppingCartId(params.item1, params.item2);
   } catch (e) {
     rethrow;
   }
