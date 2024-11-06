@@ -141,7 +141,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
       if (user.shoppingCartItemIds.isNotEmpty) {
         List<ShoppingCartItem>? shoppingCartItems = await ref
             .read(shoppingCartItemControllerProvider.notifier)
-            .getShoppingCartItems(user.shoppingCartId)
+            .getShoppingCartItemsByItemIds(user.shoppingCartItemIds)
             .first;
 
         if (shoppingCartItems.isNotEmpty) {

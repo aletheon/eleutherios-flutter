@@ -6,6 +6,12 @@ import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:quiver/iterables.dart' as quiver;
+
+//typedef for readability
+typedef DocumentType = Map<String, dynamic>;
+typedef SnapshotType = QueryDocumentSnapshot<DocumentType?>;
 
 final shoppingCartItemRepositoryProvider = Provider((ref) {
   return ShoppingCartItemRepository(firestore: ref.watch(firestoreProvider));
@@ -99,7 +105,8 @@ class ShoppingCartItemRepository {
     }
   }
 
-  Stream<List<ShoppingCartItem>> getShoppingCartItems(String shoppingCartId) {
+  Stream<List<ShoppingCartItem>> getShoppingCartItemsByShoppingCartId(
+      String shoppingCartId) {
     return _shoppingCartItems
         .where('shoppingCartId', isEqualTo: shoppingCartId)
         .orderBy('forumUid', descending: false)
@@ -115,7 +122,37 @@ class ShoppingCartItemRepository {
     });
   }
 
-  Stream<List<ShoppingCartItem>> getUserShoppingCartItems(
+  // https://github.com/firebase/flutterfire/discussions/7695
+
+  Stream<List<ShoppingCartItem>> getShoppingCartItemsByItemIds(
+    List<String> shoppingCartIds,
+  ) {
+    if (shoppingCartIds.isEmpty) return const Stream.empty();
+
+    //1: generate chunked queries based on uniqueUsers
+    final splitQueries = quiver
+        .partition(shoppingCartIds, 10)
+        .map((e) => _shoppingCartItems.where('shoppingCartItemId', whereIn: e));
+
+    //2: combine them with rxdart
+    return Rx.combineLatest<QuerySnapshot<DocumentType>, List<SnapshotType>>(
+      splitQueries.map((e) {
+        Stream<QuerySnapshot<Map<String, dynamic>>> snapshots =
+            e.snapshots() as Stream<QuerySnapshot<Map<String, dynamic>>>;
+        return snapshots;
+      }),
+      (values) => quiver.merge(values.map((e) => e.docs)).toList(),
+    ).map((docs) {
+      List<ShoppingCartItem> shoppingCartItems = [];
+      for (var doc in docs) {
+        shoppingCartItems
+            .add(ShoppingCartItem.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return shoppingCartItems;
+    });
+  }
+
+  Stream<List<ShoppingCartItem>> getUserShoppingCartItemsByShoppingCartId(
       String shoppingCartId, String uid) {
     return _shoppingCartItems
         .where('shoppingCartId', isEqualTo: shoppingCartId)

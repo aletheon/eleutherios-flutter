@@ -653,13 +653,21 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         .deleteShoppingCartItemsByShoppingCartId(shoppingCartId);
   }
 
-  Stream<List<ShoppingCartItem>> getShoppingCartItems(String shoppingCartId) {
-    return _shoppingCartItemRepository.getShoppingCartItems(shoppingCartId);
+  Stream<List<ShoppingCartItem>> getShoppingCartItemsByItemIds(
+      List<String> shoppingCartIds) {
+    return _shoppingCartItemRepository
+        .getShoppingCartItemsByItemIds(shoppingCartIds);
   }
 
-  Stream<List<ShoppingCartItem>> getUserShoppingCartItems(
+  Stream<List<ShoppingCartItem>> getShoppingCartItemsByShoppingCartId(
+      String shoppingCartId) {
+    return _shoppingCartItemRepository
+        .getShoppingCartItemsByShoppingCartId(shoppingCartId);
+  }
+
+  Stream<List<ShoppingCartItem>> getUserShoppingCartItemsByShoppingCartId(
       String shoppingCartId, String uid) {
-    return _shoppingCartItemRepository.getUserShoppingCartItems(
+    return _shoppingCartItemRepository.getUserShoppingCartItemsByShoppingCartId(
         shoppingCartId, uid);
   }
 
