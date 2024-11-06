@@ -51,17 +51,17 @@ final getShoppingCartItemByServiceIdProvider2 =
 });
 
 final getShoppingCartItemsByItemIdsProvider =
-    StreamProvider.family.autoDispose((ref, List<String> shoppingCartIds) {
+    StreamProvider.family.autoDispose((ref, List<String> shoppingCartItemIds) {
   return ref
       .watch(shoppingCartItemControllerProvider.notifier)
-      .getShoppingCartItemsByItemIds(shoppingCartIds);
+      .getShoppingCartItemsByItemIds(shoppingCartItemIds);
 });
 
 final getShoppingCartItemsByItemIdsProvider2 =
-    Provider.family.autoDispose((ref, List<String> shoppingCartIds) {
+    Provider.family.autoDispose((ref, List<String> shoppingCartItemIds) {
   return ref
       .watch(shoppingCartItemControllerProvider.notifier)
-      .getShoppingCartItemsByItemIds(shoppingCartIds);
+      .getShoppingCartItemsByItemIds(shoppingCartItemIds);
 });
 
 final getShoppingCartItemsByShoppingCartIdProvider =
@@ -138,7 +138,6 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         super(false);
 
   void createShoppingCartItem(
-    UserModel user,
     ShoppingCart? shoppingCart,
     String forumId,
     String memberId,
@@ -147,8 +146,9 @@ class ShoppingCartItemController extends StateNotifier<bool> {
     BuildContext context,
   ) async {
     state = true;
-    Forum? forum; // placeholder for forum
-    Member? member; // placeholder for member
+    Forum? forum;
+    Member? member;
+    UserModel? user;
     bool canAddServiceToCart = true;
 
     Service? service = await _ref
@@ -222,9 +222,25 @@ class ShoppingCartItemController extends StateNotifier<bool> {
                 }
                 await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
+                if (shoppingCartItem.forumUid.isNotEmpty) {
+                  // get forum user
+                  user = await _ref
+                      .read(authControllerProvider.notifier)
+                      .getUserData(shoppingCartItem.forumUid)
+                      .first;
+                } else {
+                  // get shopping cart user
+                  user = await _ref
+                      .read(authControllerProvider.notifier)
+                      .getUserData(shoppingCart.uid)
+                      .first;
+                }
+
                 // add shopping cart item to users shoppingCartItems list
-                user.shoppingCartItemIds.add(shoppingCartItemId);
-                await _userProfileRepository.updateUser(user);
+                if (user != null) {
+                  user.shoppingCartItemIds.add(shoppingCartItemId);
+                  await _userProfileRepository.updateUser(user);
+                }
 
                 // check if we need to add shopping cart item to members shoppingCartItems list
                 if (member != null && member.serviceUid != shoppingCart.uid) {
@@ -281,9 +297,25 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             }
             await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
+            if (shoppingCartItem.forumUid.isNotEmpty) {
+              // get forum user
+              user = await _ref
+                  .read(authControllerProvider.notifier)
+                  .getUserData(shoppingCartItem.forumUid)
+                  .first;
+            } else {
+              // get shopping cart user
+              user = await _ref
+                  .read(authControllerProvider.notifier)
+                  .getUserData(shoppingCart.uid)
+                  .first;
+            }
+
             // add shopping cart item to users shoppingCartItems list
-            user.shoppingCartItemIds.add(shoppingCartItemId);
-            await _userProfileRepository.updateUser(user);
+            if (user != null) {
+              user.shoppingCartItemIds.add(shoppingCartItemId);
+              await _userProfileRepository.updateUser(user);
+            }
 
             // check if we need to add shopping cart item to members shoppingCartItems list
             if (member != null && member.serviceUid != shoppingCart.uid) {
@@ -424,13 +456,13 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void decreaseShoppingCartItemQuantity(
-    UserModel user,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
     Service service,
     BuildContext context,
   ) async {
     state = true;
+    UserModel? user;
     Member? member; // placeholder for member
     bool canRemoveServiceFromCart = true;
 
@@ -444,6 +476,20 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           member = await _ref
               .read(memberControllerProvider.notifier)
               .getMemberById(shoppingCartItem.memberId)
+              .first;
+        }
+
+        if (shoppingCartItem.forumUid.isNotEmpty) {
+          // get forum user
+          user = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(shoppingCartItem.forumUid)
+              .first;
+        } else {
+          // get shopping cart user
+          user = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(shoppingCart.uid)
               .first;
         }
 
@@ -473,9 +519,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
             await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
             // remove shopping cart item from users shoppingCartItems list
-            user.shoppingCartItemIds
-                .remove(shoppingCartItem.shoppingCartItemId);
-            await _userProfileRepository.updateUser(user);
+            if (user != null) {
+              user.shoppingCartItemIds
+                  .remove(shoppingCartItem.shoppingCartItemId);
+              await _userProfileRepository.updateUser(user);
+            }
 
             // check if we need to remove shopping cart item from members shoppingCartItems list
             if (member != null && member.serviceUid != shoppingCart.uid) {
@@ -540,14 +588,14 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   void deleteShoppingCartItem(
-    UserModel user,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
     Service service,
     BuildContext context,
   ) async {
     state = true;
-    Member? member; // placeholder for member
+    UserModel? user;
+    Member? member;
     bool canRemoveServiceFromCart = true;
 
     if (shoppingCart != null && shoppingCartItem != null) {
@@ -560,6 +608,20 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           member = await _ref
               .read(memberControllerProvider.notifier)
               .getMemberById(shoppingCartItem.memberId)
+              .first;
+        }
+
+        if (shoppingCartItem.forumUid.isNotEmpty) {
+          // get forum user
+          user = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(shoppingCartItem.forumUid)
+              .first;
+        } else {
+          // get shopping cart user
+          user = await _ref
+              .read(authControllerProvider.notifier)
+              .getUserData(shoppingCart.uid)
               .first;
         }
 
@@ -589,8 +651,11 @@ class ShoppingCartItemController extends StateNotifier<bool> {
           await _shoppingCartRepository.updateShoppingCart(shoppingCart);
 
           // remove shopping cart item from users shoppingCartItems list
-          user.shoppingCartItemIds.remove(shoppingCartItem.shoppingCartItemId);
-          await _userProfileRepository.updateUser(user);
+          if (user != null) {
+            user.shoppingCartItemIds
+                .remove(shoppingCartItem.shoppingCartItemId);
+            await _userProfileRepository.updateUser(user);
+          }
 
           // check if we need to remove shopping cart item from members shoppingCartItems list
           if (member != null && member.serviceUid != shoppingCart.uid) {
@@ -668,9 +733,9 @@ class ShoppingCartItemController extends StateNotifier<bool> {
   }
 
   Stream<List<ShoppingCartItem>> getShoppingCartItemsByItemIds(
-      List<String> shoppingCartIds) {
+      List<String> shoppingCartItemIds) {
     return _shoppingCartItemRepository
-        .getShoppingCartItemsByItemIds(shoppingCartIds);
+        .getShoppingCartItemsByItemIds(shoppingCartItemIds);
   }
 
   Stream<List<ShoppingCartItem>> getShoppingCartItemsByShoppingCartId(

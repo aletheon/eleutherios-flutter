@@ -125,13 +125,13 @@ class ShoppingCartItemRepository {
   // https://github.com/firebase/flutterfire/discussions/7695
 
   Stream<List<ShoppingCartItem>> getShoppingCartItemsByItemIds(
-    List<String> shoppingCartIds,
+    List<String> shoppingCartItemIds,
   ) {
-    if (shoppingCartIds.isEmpty) return const Stream.empty();
+    if (shoppingCartItemIds.isEmpty) return const Stream.empty();
 
-    //1: generate chunked queries based on uniqueUsers
+    //1: generate chunked queries based on shoppingCartItemIds
     final splitQueries = quiver
-        .partition(shoppingCartIds, 10)
+        .partition(shoppingCartItemIds, 10)
         .map((e) => _shoppingCartItems.where('shoppingCartItemId', whereIn: e));
 
     //2: combine them with rxdart

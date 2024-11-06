@@ -14,7 +14,6 @@ import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item_display.dart';
-import 'package:reddit_tutorial/models/shopping_cart_service_quantity.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
@@ -39,7 +38,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
     String forumId,
     String memberId,
     int addToCartQuantity,
-    UserModel user,
     Service service,
   ) {
     // add physical item to shopping cart
@@ -49,7 +47,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
         ref
             .read(shoppingCartItemControllerProvider.notifier)
             .createShoppingCartItem(
-              user,
               shoppingCart,
               forumId,
               memberId,
@@ -68,7 +65,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
       ref
           .read(shoppingCartItemControllerProvider.notifier)
           .createShoppingCartItem(
-            user,
             shoppingCart,
             forumId,
             memberId,
@@ -83,14 +79,12 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
-    UserModel user,
     Service service,
   ) {
     // remove service from the currently logged in user
     ref
         .read(shoppingCartItemControllerProvider.notifier)
         .deleteShoppingCartItem(
-          user,
           shoppingCart,
           shoppingCartItem,
           service,
@@ -118,13 +112,11 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
-    UserModel user,
     Service service,
   ) {
     ref
         .read(shoppingCartItemControllerProvider.notifier)
         .decreaseShoppingCartItemQuantity(
-          user,
           shoppingCart,
           shoppingCartItem,
           service,
@@ -562,7 +554,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                                                 context,
                                                                                                 shoppingCart,
                                                                                                 shoppingCartItem,
-                                                                                                user,
                                                                                                 service,
                                                                                               );
                                                                                             },
@@ -619,7 +610,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                             context,
                                                                             shoppingCart,
                                                                             shoppingCartItem,
-                                                                            user,
                                                                             service,
                                                                           ),
                                                                           style: ElevatedButton.styleFrom(

@@ -43,7 +43,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     String forumId,
     String memberId,
     int addToCartQuantity,
-    UserModel user,
     Service service,
   ) {
     // add physical item to shopping cart
@@ -53,7 +52,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
         ref
             .read(shoppingCartItemControllerProvider.notifier)
             .createShoppingCartItem(
-              user,
               shoppingCart,
               forumId,
               memberId,
@@ -72,7 +70,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
       ref
           .read(shoppingCartItemControllerProvider.notifier)
           .createShoppingCartItem(
-            user,
             shoppingCart,
             forumId,
             memberId,
@@ -87,14 +84,12 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
-    UserModel user,
     Service service,
   ) {
     // remove service from the currently logged in user
     ref
         .read(shoppingCartItemControllerProvider.notifier)
         .deleteShoppingCartItem(
-          user,
           shoppingCart,
           shoppingCartItem,
           service,
@@ -122,13 +117,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     BuildContext context,
     ShoppingCart? shoppingCart,
     ShoppingCartItem? shoppingCartItem,
-    UserModel user,
     Service service,
   ) {
     ref
         .read(shoppingCartItemControllerProvider.notifier)
         .decreaseShoppingCartItemQuantity(
-          user,
           shoppingCart,
           shoppingCartItem,
           service,
@@ -492,7 +485,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                                         context,
                                                                                                                         shoppingCart,
                                                                                                                         shoppingCartItem,
-                                                                                                                        cartUser,
                                                                                                                         service,
                                                                                                                       );
                                                                                                                     }),
@@ -531,7 +523,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                             forum.forumId,
                                                                                                             shoppingCartMember.memberId,
                                                                                                             shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
-                                                                                                            cartUser,
                                                                                                             service,
                                                                                                           ),
                                                                                                           style: ElevatedButton.styleFrom(
@@ -552,7 +543,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                             context,
                                                                                                             shoppingCart,
                                                                                                             shoppingCartItem,
-                                                                                                            cartUser,
                                                                                                             service,
                                                                                                           ),
                                                                                                           style: ElevatedButton.styleFrom(
@@ -1126,7 +1116,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                       context,
                                                                                       shoppingCart,
                                                                                       shoppingCartItem,
-                                                                                      user,
                                                                                       service,
                                                                                     );
                                                                                   }),
@@ -1169,7 +1158,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                           '',
                                                                           '',
                                                                           quantity,
-                                                                          user,
                                                                           service,
                                                                         ),
                                                                         style: ElevatedButton.styleFrom(
@@ -1195,7 +1183,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                           context,
                                                                           shoppingCart,
                                                                           shoppingCartItem,
-                                                                          user,
                                                                           service,
                                                                         ),
                                                                         style: ElevatedButton.styleFrom(
