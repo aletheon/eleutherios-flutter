@@ -28,7 +28,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
   final GlobalKey _scaffold = GlobalKey();
   int quantity = 0;
   List<ShoppingCartItemDisplay> shoppingCartItemDisplays = [];
-  // List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
   String lastUserId = '';
   String lastForumId = '';
 
@@ -177,19 +176,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                     shoppingCartItem: shoppingCartItem,
                   );
                   shoppingCartItemDisplays.add(scid);
-
-                  // ShoppingCartServiceQuantity scsq =
-                  //     ShoppingCartServiceQuantity(
-                  //   shoppingCartId: shoppingCartItem.shoppingCartId,
-                  //   uid: shoppingCartItem.shoppingCartUid,
-                  //   forumId: shoppingCartItem.forumId,
-                  //   serviceId: shoppingCartItem.serviceId,
-                  //   quantity: shoppingCartItem.quantity,
-                  // );
-
-                  // setState(() {
-                  //   shoppingCartServiceQuantities.add(scsq);
-                  // });
                 }
               }
             } else {
@@ -203,18 +189,6 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                 shoppingCartItem: shoppingCartItem,
               );
               shoppingCartItemDisplays.add(scid);
-
-              // ShoppingCartServiceQuantity scsq = ShoppingCartServiceQuantity(
-              //   shoppingCartId: shoppingCartItem.shoppingCartId,
-              //   uid: shoppingCartItem.shoppingCartUid,
-              //   forumId: shoppingCartItem.forumId,
-              //   serviceId: shoppingCartItem.serviceId,
-              //   quantity: shoppingCartItem.quantity,
-              // );
-
-              // setState(() {
-              //   shoppingCartServiceQuantities.add(scsq);
-              // });
             }
           }
         }
@@ -407,11 +381,18 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                   const SizedBox(
                                                                     width: 10,
                                                                   ),
-                                                                  Text(
-                                                                    forum.title,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            14),
+                                                                  InkWell(
+                                                                    child: Text(
+                                                                      forum
+                                                                          .title,
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              14),
+                                                                    ),
+                                                                    onTap: () {
+                                                                      print(
+                                                                          "clicked");
+                                                                    },
                                                                   ),
                                                                 ],
                                                               ),
