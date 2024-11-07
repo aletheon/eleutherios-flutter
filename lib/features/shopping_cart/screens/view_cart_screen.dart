@@ -297,12 +297,18 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                   const SizedBox(
                                                                     width: 10,
                                                                   ),
-                                                                  Text(
-                                                                    forumUser
-                                                                        .fullName,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            14),
+                                                                  InkWell(
+                                                                    child: Text(
+                                                                      forumUser
+                                                                          .fullName,
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              14),
+                                                                    ),
+                                                                    onTap: () {
+                                                                      print(
+                                                                          "clicked user");
+                                                                    },
                                                                   ),
                                                                 ],
                                                               ),
@@ -391,7 +397,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                     ),
                                                                     onTap: () {
                                                                       print(
-                                                                          "clicked");
+                                                                          "clicked forum");
                                                                     },
                                                                   ),
                                                                 ],
@@ -478,14 +484,23 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                   const SizedBox(
                                                                     width: 10,
                                                                   ),
-                                                                  Text(
-                                                                    service
-                                                                        .title,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            14),
+                                                                  InkWell(
+                                                                    child: Text(
+                                                                      service
+                                                                          .title,
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              14),
+                                                                    ),
+                                                                    onTap: () {
+                                                                      print(
+                                                                          "clicked service");
+                                                                    },
                                                                   ),
                                                                 ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 5,
                                                               ),
                                                               // add to cart button(s)
                                                               Padding(
