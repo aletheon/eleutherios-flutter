@@ -141,11 +141,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     Routemaster.of(context).push('/service/${widget.serviceId}/service-tools');
   }
 
-  void navigateToPolicy(
+  void navigateToForum(
     BuildContext context,
-    String policyId,
+    String forumId,
   ) {
-    Routemaster.of(context).push('/policy/$policyId');
+    Routemaster.of(context).push('/forum/$forumId');
   }
 
   void navigateToLikes(
@@ -416,9 +416,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                                     forum.title,
                                                                                                     style: const TextStyle(fontSize: 14),
                                                                                                   ),
-                                                                                                  onTap: () {
-                                                                                                    print("clicked");
-                                                                                                  },
+                                                                                                  onTap: () => navigateToForum(context, forum.forumId),
                                                                                                 ),
                                                                                               ],
                                                                                             ),

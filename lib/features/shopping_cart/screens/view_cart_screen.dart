@@ -14,8 +14,8 @@ import 'package:reddit_tutorial/models/service.dart';
 import 'package:reddit_tutorial/models/shopping_cart.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item.dart';
 import 'package:reddit_tutorial/models/shopping_cart_item_display.dart';
-import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 class ViewCartScreen extends ConsumerStatefulWidget {
   const ViewCartScreen({super.key});
@@ -121,6 +121,24 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
           service,
           context,
         );
+  }
+
+  void navigateToUserProfile(String uid, BuildContext context) {
+    Routemaster.of(context).push('/user/$uid');
+  }
+
+  void navigateToForum(
+    BuildContext context,
+    String forumId,
+  ) {
+    Routemaster.of(context).push('/forum/$forumId');
+  }
+
+  void navigateToService(
+    BuildContext context,
+    String serviceId,
+  ) {
+    Routemaster.of(context).push('/service/$serviceId');
   }
 
   @override
@@ -305,10 +323,10 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                           fontSize:
                                                                               14),
                                                                     ),
-                                                                    onTap: () {
-                                                                      print(
-                                                                          "clicked user");
-                                                                    },
+                                                                    onTap: () =>
+                                                                        navigateToUserProfile(
+                                                                            user.uid,
+                                                                            context),
                                                                   ),
                                                                 ],
                                                               ),
@@ -395,10 +413,10 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                           fontSize:
                                                                               14),
                                                                     ),
-                                                                    onTap: () {
-                                                                      print(
-                                                                          "clicked forum");
-                                                                    },
+                                                                    onTap: () =>
+                                                                        navigateToForum(
+                                                                            context,
+                                                                            forum.forumId),
                                                                   ),
                                                                 ],
                                                               ),
@@ -492,10 +510,12 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                           fontSize:
                                                                               14),
                                                                     ),
-                                                                    onTap: () {
-                                                                      print(
-                                                                          "clicked service");
-                                                                    },
+                                                                    onTap: () =>
+                                                                        navigateToService(
+                                                                      context,
+                                                                      service
+                                                                          .serviceId,
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),
