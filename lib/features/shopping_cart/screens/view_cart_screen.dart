@@ -674,7 +674,28 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                   ErrorText(error: error.toString()),
                               loading: () => const Loader(),
                             );
-                      })
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 0,
+                          right: 5,
+                          bottom: 12,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Pallete.greenColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 25)),
+                            child: const Text('Checkout'),
+                          ),
+                        ),
+                      ),
                     ],
                   )
                 : Container(
