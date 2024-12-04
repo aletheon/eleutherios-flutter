@@ -48,7 +48,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     // add physical item to shopping cart
     if (service.type == ServiceType.physical.value) {
       if (service.quantity > 0) {
-        // add service to the currently logged in user
         ref
             .read(shoppingCartItemControllerProvider.notifier)
             .createShoppingCartItem(
