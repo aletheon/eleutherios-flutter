@@ -253,409 +253,412 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
       itemBuilder: (BuildContext context, int index) {
         final userId = currentUser.shoppingCartUserIds[index];
 
-        // get the user
-        return ref.watch(getUserByIdProvider(userId)).when(
-              data: (cartUser) {
-                if (cartUser != null) {
-                  // get the shopping cart
-                  return ref
-                      .watch(getShoppingCartByUidProvider(cartUser.uid))
-                      .when(
-                        data: (shoppingCart) {
-                          if (shoppingCart != null) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 18.0, bottom: 3),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      const Text(
-                                        'Add to ',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
+        if (service.uid != userId) {
+          // get the user
+          return ref.watch(getUserByIdProvider(userId)).when(
+                data: (cartUser) {
+                  if (cartUser != null) {
+                    // get the shopping cart
+                    return ref
+                        .watch(getShoppingCartByUidProvider(cartUser.uid))
+                        .when(
+                          data: (shoppingCart) {
+                            if (shoppingCart != null) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 18.0, bottom: 3),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Text(
+                                          'Add to ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
                                         ),
-                                      ),
-                                      cartUser.profilePic ==
-                                              Constants.avatarDefault
-                                          ? CircleAvatar(
-                                              backgroundImage: Image.asset(
-                                                      cartUser.profilePic)
-                                                  .image,
-                                              radius: 16,
-                                            )
-                                          : CircleAvatar(
-                                              backgroundImage: Image.network(
-                                                cartUser.profilePic,
-                                                loadingBuilder: (context, child,
-                                                    loadingProgress) {
-                                                  return loadingProgress
-                                                              ?.cumulativeBytesLoaded ==
-                                                          loadingProgress
-                                                              ?.expectedTotalBytes
-                                                      ? child
-                                                      : const CircularProgressIndicator();
-                                                },
-                                              ).image,
-                                              radius: 16,
-                                            ),
-                                      Text(
-                                        " ${cartUser.fullName}'s shopping cart",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
+                                        cartUser.profilePic ==
+                                                Constants.avatarDefault
+                                            ? CircleAvatar(
+                                                backgroundImage: Image.asset(
+                                                        cartUser.profilePic)
+                                                    .image,
+                                                radius: 16,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage: Image.network(
+                                                  cartUser.profilePic,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    return loadingProgress
+                                                                ?.cumulativeBytesLoaded ==
+                                                            loadingProgress
+                                                                ?.expectedTotalBytes
+                                                        ? child
+                                                        : const CircularProgressIndicator();
+                                                  },
+                                                ).image,
+                                                radius: 16,
+                                              ),
+                                        Text(
+                                          " ${cartUser.fullName}'s shopping cart",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.sizeOf(context).width,
-                                  child: const Padding(
-                                    padding: EdgeInsets.only(bottom: 8.0),
-                                    child: Divider(
-                                      color: Colors.grey,
-                                      thickness: 1.0,
+                                      ],
                                     ),
                                   ),
-                                ),
-                                // ***************************************************
-                                // show forum info
-                                // ***************************************************
-                                // get the shopping cart forums
-                                ref
-                                    .watch(shoppingCartForumsProvider(
-                                        Tuple2(cartUser.uid, currentUser.uid)))
-                                    .when(
-                                      data: (shoppingCartForums) {
-                                        if (shoppingCartForums.isNotEmpty) {
-                                          return Column(
-                                            children: shoppingCartForums
-                                                .map((shoppingCartForum) {
-                                              // get the forum
-                                              return ref
-                                                  .watch(
-                                                    getForumByIdProvider(
-                                                        shoppingCartForum
-                                                            .forumId),
-                                                  )
-                                                  .when(
-                                                    data: (forum) {
-                                                      if (forum != null) {
-                                                        // get selected shopping cart member
-                                                        return ref
-                                                            .watch(
-                                                              getSelectedShoppingCartMemberProvider(
-                                                                Tuple2(
-                                                                  forum.forumId,
-                                                                  currentUser
-                                                                      .uid,
+                                  SizedBox(
+                                    width: MediaQuery.sizeOf(context).width,
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(bottom: 8.0),
+                                      child: Divider(
+                                        color: Colors.grey,
+                                        thickness: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  // ***************************************************
+                                  // show forum info
+                                  // ***************************************************
+                                  // get the shopping cart forums
+                                  ref
+                                      .watch(shoppingCartForumsProvider(Tuple2(
+                                          cartUser.uid, currentUser.uid)))
+                                      .when(
+                                        data: (shoppingCartForums) {
+                                          if (shoppingCartForums.isNotEmpty) {
+                                            return Column(
+                                              children: shoppingCartForums
+                                                  .map((shoppingCartForum) {
+                                                // get the forum
+                                                return ref
+                                                    .watch(
+                                                      getForumByIdProvider(
+                                                          shoppingCartForum
+                                                              .forumId),
+                                                    )
+                                                    .when(
+                                                      data: (forum) {
+                                                        if (forum != null) {
+                                                          // get selected shopping cart member
+                                                          return ref
+                                                              .watch(
+                                                                getSelectedShoppingCartMemberProvider(
+                                                                  Tuple2(
+                                                                    forum
+                                                                        .forumId,
+                                                                    currentUser
+                                                                        .uid,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            )
-                                                            .when(
-                                                              data:
-                                                                  (shoppingCartMember) {
-                                                                if (shoppingCartMember !=
-                                                                    null) {
-                                                                  // get selected shopping cart member service
-                                                                  return ref
-                                                                      .watch(getServiceByIdProvider(
-                                                                          shoppingCartMember
-                                                                              .serviceId))
-                                                                      .when(
-                                                                        data:
-                                                                            (selectedService) {
-                                                                          if (selectedService !=
-                                                                              null) {
-                                                                            // get shopping cart item
-                                                                            return ref
-                                                                                .watch(
-                                                                                  getShoppingCartItemByServiceIdProvider(
-                                                                                    Tuple3(
-                                                                                      shoppingCart.shoppingCartId,
-                                                                                      forum.forumId,
-                                                                                      widget.serviceId,
+                                                              )
+                                                              .when(
+                                                                data:
+                                                                    (shoppingCartMember) {
+                                                                  if (shoppingCartMember !=
+                                                                      null) {
+                                                                    // get selected shopping cart member service
+                                                                    return ref
+                                                                        .watch(getServiceByIdProvider(
+                                                                            shoppingCartMember.serviceId))
+                                                                        .when(
+                                                                          data:
+                                                                              (selectedService) {
+                                                                            if (selectedService !=
+                                                                                null) {
+                                                                              // get shopping cart item
+                                                                              return ref
+                                                                                  .watch(
+                                                                                    getShoppingCartItemByServiceIdProvider(
+                                                                                      Tuple3(
+                                                                                        shoppingCart.shoppingCartId,
+                                                                                        forum.forumId,
+                                                                                        widget.serviceId,
+                                                                                      ),
                                                                                     ),
-                                                                                  ),
-                                                                                )
-                                                                                .when(
-                                                                                  data: (shoppingCartItem) {
-                                                                                    return Column(
-                                                                                      children: [
-                                                                                        // forum and service title
-                                                                                        Column(
-                                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                                          children: [
-                                                                                            Row(
-                                                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                                                              children: [
-                                                                                                forum.image == Constants.avatarDefault
-                                                                                                    ? CircleAvatar(
-                                                                                                        backgroundImage: Image.asset(forum.image).image,
-                                                                                                        radius: 14,
-                                                                                                      )
-                                                                                                    : CircleAvatar(
-                                                                                                        backgroundImage: Image.network(
-                                                                                                          forum.image,
-                                                                                                          loadingBuilder: (context, child, loadingProgress) {
-                                                                                                            return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
-                                                                                                          },
-                                                                                                        ).image,
-                                                                                                        radius: 14,
-                                                                                                      ),
-                                                                                                const SizedBox(
-                                                                                                  width: 10,
-                                                                                                ),
-                                                                                                InkWell(
-                                                                                                  child: Text(
-                                                                                                    forum.title,
-                                                                                                    style: const TextStyle(fontSize: 14),
-                                                                                                  ),
-                                                                                                  onTap: () => navigateToForum(context, forum.forumId),
-                                                                                                ),
-                                                                                              ],
-                                                                                            ),
-                                                                                          ],
-                                                                                        ),
-                                                                                        // Padding(
-                                                                                        //   padding: const EdgeInsets.only(bottom: 8.0),
-                                                                                        //   child: Row(
-                                                                                        //     mainAxisAlignment: MainAxisAlignment.end,
-                                                                                        //     children: [
-                                                                                        //       forum.image == Constants.avatarDefault
-                                                                                        //           ? CircleAvatar(
-                                                                                        //               backgroundImage: Image.asset(forum.image).image,
-                                                                                        //               radius: 14,
-                                                                                        //             )
-                                                                                        //           : CircleAvatar(
-                                                                                        //               backgroundImage: Image.network(
-                                                                                        //                 forum.image,
-                                                                                        //                 loadingBuilder: (context, child, loadingProgress) {
-                                                                                        //                   return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
-                                                                                        //                 },
-                                                                                        //               ).image,
-                                                                                        //               radius: 14,
-                                                                                        //             ),
-                                                                                        //       const SizedBox(
-                                                                                        //         width: 5,
-                                                                                        //       ),
-                                                                                        //       Text(
-                                                                                        //         forum.title,
-                                                                                        //         style: const TextStyle(
-                                                                                        //           fontWeight: FontWeight.bold,
-                                                                                        //           fontSize: 14,
-                                                                                        //         ),
-                                                                                        //       ),
-                                                                                        //       // const SizedBox(
-                                                                                        //       //   width: 8,
-                                                                                        //       // ),
-                                                                                        //       // selectedService.image == Constants.avatarDefault
-                                                                                        //       //     ? CircleAvatar(
-                                                                                        //       //         backgroundImage: Image.asset(selectedService.image).image,
-                                                                                        //       //         radius: 14,
-                                                                                        //       //       )
-                                                                                        //       //     : CircleAvatar(
-                                                                                        //       //         backgroundImage: Image.network(
-                                                                                        //       //           selectedService.image,
-                                                                                        //       //           loadingBuilder: (context, child, loadingProgress) {
-                                                                                        //       //             return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
-                                                                                        //       //           },
-                                                                                        //       //         ).image,
-                                                                                        //       //         radius: 14,
-                                                                                        //       //       ),
-                                                                                        //       // const SizedBox(
-                                                                                        //       //   width: 5,
-                                                                                        //       // ),
-                                                                                        //       // Text(
-                                                                                        //       //   selectedService.title,
-                                                                                        //       //   style: const TextStyle(
-                                                                                        //       //     fontWeight: FontWeight.bold,
-                                                                                        //       //     fontSize: 14,
-                                                                                        //       //   ),
-                                                                                        //       // )
-                                                                                        //     ],
-                                                                                        //   ),
-                                                                                        // ),
-                                                                                        // add to cart button(s)
-                                                                                        Align(
-                                                                                          alignment: Alignment.topRight,
-                                                                                          child: Wrap(
-                                                                                            crossAxisAlignment: WrapCrossAlignment.center,
+                                                                                  )
+                                                                                  .when(
+                                                                                    data: (shoppingCartItem) {
+                                                                                      return Column(
+                                                                                        children: [
+                                                                                          // forum and service title
+                                                                                          Column(
+                                                                                            mainAxisAlignment: MainAxisAlignment.end,
                                                                                             children: [
-                                                                                              service.quantity != -1
-                                                                                                  ? Card(
-                                                                                                      color: Colors.blue,
-                                                                                                      shape: RoundedRectangleBorder(
-                                                                                                        borderRadius: BorderRadius.circular(10),
-                                                                                                      ),
-                                                                                                      child: SizedBox(
-                                                                                                        height: 35,
-                                                                                                        width: 120,
-                                                                                                        child: AnimatedSwitcher(
-                                                                                                          duration: const Duration(milliseconds: 500),
-                                                                                                          child: Row(
-                                                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                                            children: [
-                                                                                                              IconButton(
-                                                                                                                  icon: const Icon(Icons.remove),
-                                                                                                                  onPressed: () {
-                                                                                                                    setState(() {
-                                                                                                                      ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                      if (scsq.quantity > 0) {
-                                                                                                                        int tempQuantity = scsq.quantity - 1;
-                                                                                                                        scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                                                        shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
-                                                                                                                      }
-                                                                                                                    });
-                                                                                                                    decreaseQuantity(
-                                                                                                                      context,
-                                                                                                                      shoppingCart,
-                                                                                                                      shoppingCartItem,
-                                                                                                                      service,
-                                                                                                                    );
-                                                                                                                  }),
-                                                                                                              shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(shoppingCartServiceQuantities.where((s) => s.uid == cartUser.uid && s.forumId == forum.forumId).toList().first.quantity.toString()),
-                                                                                                              IconButton(
-                                                                                                                  icon: const Icon(Icons.add),
-                                                                                                                  onPressed: () {
-                                                                                                                    setState(() {
-                                                                                                                      ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
-                                                                                                                      int tempQuantity = scsq.quantity + 1;
-                                                                                                                      scsq = scsq.copyWith(quantity: tempQuantity);
-                                                                                                                      shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
-                                                                                                                    });
-                                                                                                                    increaseQuantity(
-                                                                                                                      context,
-                                                                                                                      shoppingCart,
-                                                                                                                      shoppingCartItem,
-                                                                                                                      service,
-                                                                                                                    );
-                                                                                                                  }),
-                                                                                                            ],
-                                                                                                          ),
+                                                                                              Row(
+                                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                children: [
+                                                                                                  forum.image == Constants.avatarDefault
+                                                                                                      ? CircleAvatar(
+                                                                                                          backgroundImage: Image.asset(forum.image).image,
+                                                                                                          radius: 14,
+                                                                                                        )
+                                                                                                      : CircleAvatar(
+                                                                                                          backgroundImage: Image.network(
+                                                                                                            forum.image,
+                                                                                                            loadingBuilder: (context, child, loadingProgress) {
+                                                                                                              return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
+                                                                                                            },
+                                                                                                          ).image,
+                                                                                                          radius: 14,
                                                                                                         ),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : const SizedBox(),
-                                                                                              shoppingCart.services.contains('${forum.forumId}-${service.serviceId}') == false
-                                                                                                  ? Container(
-                                                                                                      margin: const EdgeInsets.only(
-                                                                                                        left: 3,
-                                                                                                      ),
-                                                                                                      child: OutlinedButton(
-                                                                                                        onPressed: () => addToCart(
-                                                                                                          context,
-                                                                                                          shoppingCart,
-                                                                                                          forum.forumId,
-                                                                                                          shoppingCartMember.memberId,
-                                                                                                          shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
-                                                                                                          service,
-                                                                                                        ),
-                                                                                                        style: ElevatedButton.styleFrom(
-                                                                                                            backgroundColor: Pallete.darkGreenColor,
-                                                                                                            shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10),
-                                                                                                            ),
-                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                                                        child: const Text('Add to Cart'),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : Container(
-                                                                                                      margin: const EdgeInsets.only(
-                                                                                                        left: 3,
-                                                                                                      ),
-                                                                                                      child: OutlinedButton(
-                                                                                                        onPressed: () => removeFromCart(
-                                                                                                          context,
-                                                                                                          shoppingCart,
-                                                                                                          shoppingCartItem,
-                                                                                                          service,
-                                                                                                        ),
-                                                                                                        style: ElevatedButton.styleFrom(
-                                                                                                            backgroundColor: Pallete.redPinkColor,
-                                                                                                            shape: RoundedRectangleBorder(
-                                                                                                              borderRadius: BorderRadius.circular(10),
-                                                                                                            ),
-                                                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                                                        child: const Text('Remove from Cart'),
-                                                                                                      ),
+                                                                                                  const SizedBox(
+                                                                                                    width: 10,
+                                                                                                  ),
+                                                                                                  InkWell(
+                                                                                                    child: Text(
+                                                                                                      forum.title,
+                                                                                                      style: const TextStyle(fontSize: 14),
                                                                                                     ),
+                                                                                                    onTap: () => navigateToForum(context, forum.forumId),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
                                                                                             ],
                                                                                           ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    );
-                                                                                  },
-                                                                                  error: (error, stackTrace) => ErrorText(error: error.toString()),
-                                                                                  loading: () => const Loader(),
-                                                                                );
-                                                                          } else {
-                                                                            return const SizedBox();
-                                                                          }
-                                                                        },
-                                                                        error: (error,
-                                                                                stackTrace) =>
-                                                                            ErrorText(error: error.toString()),
-                                                                        loading:
-                                                                            () =>
-                                                                                const Loader(),
-                                                                      );
-                                                                } else {
-                                                                  return const SizedBox();
-                                                                }
-                                                              },
-                                                              error: (error,
-                                                                      stackTrace) =>
-                                                                  ErrorText(
-                                                                      error: error
-                                                                          .toString()),
-                                                              loading: () =>
-                                                                  const Loader(),
-                                                            );
-                                                      } else {
-                                                        return const SizedBox();
-                                                      }
-                                                    },
-                                                    error: (error,
-                                                            stackTrace) =>
-                                                        ErrorText(
-                                                            error: error
-                                                                .toString()),
-                                                    loading: () =>
-                                                        const Loader(),
-                                                  );
-                                            }).toList(),
-                                          );
-                                        } else {
-                                          return const SizedBox();
-                                        }
-                                      },
-                                      error: (error, stackTrace) =>
-                                          ErrorText(error: error.toString()),
-                                      loading: () => const Loader(),
-                                    ),
-                              ],
-                            );
-                          } else {
-                            return const SizedBox();
-                          }
-                        },
-                        error: (error, stackTrace) =>
-                            ErrorText(error: error.toString()),
-                        loading: () => const Loader(),
-                      );
-                } else {
-                  return const SizedBox();
-                }
-              },
-              error: (error, stackTrace) => ErrorText(error: error.toString()),
-              loading: () => const Loader(),
-            );
+                                                                                          // Padding(
+                                                                                          //   padding: const EdgeInsets.only(bottom: 8.0),
+                                                                                          //   child: Row(
+                                                                                          //     mainAxisAlignment: MainAxisAlignment.end,
+                                                                                          //     children: [
+                                                                                          //       forum.image == Constants.avatarDefault
+                                                                                          //           ? CircleAvatar(
+                                                                                          //               backgroundImage: Image.asset(forum.image).image,
+                                                                                          //               radius: 14,
+                                                                                          //             )
+                                                                                          //           : CircleAvatar(
+                                                                                          //               backgroundImage: Image.network(
+                                                                                          //                 forum.image,
+                                                                                          //                 loadingBuilder: (context, child, loadingProgress) {
+                                                                                          //                   return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
+                                                                                          //                 },
+                                                                                          //               ).image,
+                                                                                          //               radius: 14,
+                                                                                          //             ),
+                                                                                          //       const SizedBox(
+                                                                                          //         width: 5,
+                                                                                          //       ),
+                                                                                          //       Text(
+                                                                                          //         forum.title,
+                                                                                          //         style: const TextStyle(
+                                                                                          //           fontWeight: FontWeight.bold,
+                                                                                          //           fontSize: 14,
+                                                                                          //         ),
+                                                                                          //       ),
+                                                                                          //       // const SizedBox(
+                                                                                          //       //   width: 8,
+                                                                                          //       // ),
+                                                                                          //       // selectedService.image == Constants.avatarDefault
+                                                                                          //       //     ? CircleAvatar(
+                                                                                          //       //         backgroundImage: Image.asset(selectedService.image).image,
+                                                                                          //       //         radius: 14,
+                                                                                          //       //       )
+                                                                                          //       //     : CircleAvatar(
+                                                                                          //       //         backgroundImage: Image.network(
+                                                                                          //       //           selectedService.image,
+                                                                                          //       //           loadingBuilder: (context, child, loadingProgress) {
+                                                                                          //       //             return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
+                                                                                          //       //           },
+                                                                                          //       //         ).image,
+                                                                                          //       //         radius: 14,
+                                                                                          //       //       ),
+                                                                                          //       // const SizedBox(
+                                                                                          //       //   width: 5,
+                                                                                          //       // ),
+                                                                                          //       // Text(
+                                                                                          //       //   selectedService.title,
+                                                                                          //       //   style: const TextStyle(
+                                                                                          //       //     fontWeight: FontWeight.bold,
+                                                                                          //       //     fontSize: 14,
+                                                                                          //       //   ),
+                                                                                          //       // )
+                                                                                          //     ],
+                                                                                          //   ),
+                                                                                          // ),
+                                                                                          // add to cart button(s)
+                                                                                          Align(
+                                                                                            alignment: Alignment.topRight,
+                                                                                            child: Wrap(
+                                                                                              crossAxisAlignment: WrapCrossAlignment.center,
+                                                                                              children: [
+                                                                                                service.quantity != -1
+                                                                                                    ? Card(
+                                                                                                        color: Colors.blue,
+                                                                                                        shape: RoundedRectangleBorder(
+                                                                                                          borderRadius: BorderRadius.circular(10),
+                                                                                                        ),
+                                                                                                        child: SizedBox(
+                                                                                                          height: 35,
+                                                                                                          width: 120,
+                                                                                                          child: AnimatedSwitcher(
+                                                                                                            duration: const Duration(milliseconds: 500),
+                                                                                                            child: Row(
+                                                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                                                              mainAxisSize: MainAxisSize.min,
+                                                                                                              children: [
+                                                                                                                IconButton(
+                                                                                                                    icon: const Icon(Icons.remove),
+                                                                                                                    onPressed: () {
+                                                                                                                      setState(() {
+                                                                                                                        ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        if (scsq.quantity > 0) {
+                                                                                                                          int tempQuantity = scsq.quantity - 1;
+                                                                                                                          scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                                                          shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
+                                                                                                                        }
+                                                                                                                      });
+                                                                                                                      decreaseQuantity(
+                                                                                                                        context,
+                                                                                                                        shoppingCart,
+                                                                                                                        shoppingCartItem,
+                                                                                                                        service,
+                                                                                                                      );
+                                                                                                                    }),
+                                                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(shoppingCartServiceQuantities.where((s) => s.uid == cartUser.uid && s.forumId == forum.forumId).toList().first.quantity.toString()),
+                                                                                                                IconButton(
+                                                                                                                    icon: const Icon(Icons.add),
+                                                                                                                    onPressed: () {
+                                                                                                                      setState(() {
+                                                                                                                        ShoppingCartServiceQuantity scsq = shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)];
+                                                                                                                        int tempQuantity = scsq.quantity + 1;
+                                                                                                                        scsq = scsq.copyWith(quantity: tempQuantity);
+                                                                                                                        shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)] = scsq;
+                                                                                                                      });
+                                                                                                                      increaseQuantity(
+                                                                                                                        context,
+                                                                                                                        shoppingCart,
+                                                                                                                        shoppingCartItem,
+                                                                                                                        service,
+                                                                                                                      );
+                                                                                                                    }),
+                                                                                                              ],
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    : const SizedBox(),
+                                                                                                shoppingCart.services.contains('${forum.forumId}-${service.serviceId}') == false
+                                                                                                    ? Container(
+                                                                                                        margin: const EdgeInsets.only(
+                                                                                                          left: 3,
+                                                                                                        ),
+                                                                                                        child: OutlinedButton(
+                                                                                                          onPressed: () => addToCart(
+                                                                                                            context,
+                                                                                                            shoppingCart,
+                                                                                                            forum.forumId,
+                                                                                                            shoppingCartMember.memberId,
+                                                                                                            shoppingCartServiceQuantities[shoppingCartServiceQuantities.indexWhere((s) => s.uid == cartUser.uid && s.forumId == forum.forumId)].quantity,
+                                                                                                            service,
+                                                                                                          ),
+                                                                                                          style: ElevatedButton.styleFrom(
+                                                                                                              backgroundColor: Pallete.darkGreenColor,
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                              ),
+                                                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                                                          child: const Text('Add to Cart'),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    : Container(
+                                                                                                        margin: const EdgeInsets.only(
+                                                                                                          left: 3,
+                                                                                                        ),
+                                                                                                        child: OutlinedButton(
+                                                                                                          onPressed: () => removeFromCart(
+                                                                                                            context,
+                                                                                                            shoppingCart,
+                                                                                                            shoppingCartItem,
+                                                                                                            service,
+                                                                                                          ),
+                                                                                                          style: ElevatedButton.styleFrom(
+                                                                                                              backgroundColor: Pallete.redPinkColor,
+                                                                                                              shape: RoundedRectangleBorder(
+                                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                              ),
+                                                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                                                          child: const Text('Remove from Cart'),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      );
+                                                                                    },
+                                                                                    error: (error, stackTrace) => ErrorText(error: error.toString()),
+                                                                                    loading: () => const Loader(),
+                                                                                  );
+                                                                            } else {
+                                                                              return const SizedBox();
+                                                                            }
+                                                                          },
+                                                                          error: (error, stackTrace) =>
+                                                                              ErrorText(error: error.toString()),
+                                                                          loading: () =>
+                                                                              const Loader(),
+                                                                        );
+                                                                  } else {
+                                                                    return const SizedBox();
+                                                                  }
+                                                                },
+                                                                error: (error,
+                                                                        stackTrace) =>
+                                                                    ErrorText(
+                                                                        error: error
+                                                                            .toString()),
+                                                                loading: () =>
+                                                                    const Loader(),
+                                                              );
+                                                        } else {
+                                                          return const SizedBox();
+                                                        }
+                                                      },
+                                                      error: (error,
+                                                              stackTrace) =>
+                                                          ErrorText(
+                                                              error: error
+                                                                  .toString()),
+                                                      loading: () =>
+                                                          const Loader(),
+                                                    );
+                                              }).toList(),
+                                            );
+                                          } else {
+                                            return const SizedBox();
+                                          }
+                                        },
+                                        error: (error, stackTrace) =>
+                                            ErrorText(error: error.toString()),
+                                        loading: () => const Loader(),
+                                      ),
+                                ],
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          },
+                          error: (error, stackTrace) =>
+                              ErrorText(error: error.toString()),
+                          loading: () => const Loader(),
+                        );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+                error: (error, stackTrace) =>
+                    ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              );
+        } else {
+          return const SizedBox();
+        }
       },
     );
   }
@@ -1070,165 +1073,166 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              service.uid != user.uid &&
-                                                      service.canBeOrdered ==
-                                                          true
-                                                  ? Column(
-                                                      children: [
-                                                        const Align(
-                                                          alignment: Alignment
-                                                              .topRight,
-                                                          child: Text(
-                                                            'Add to your shopping cart',
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 14,
+                                              service.canBeOrdered &&
+                                                      service.uid != user.uid
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10.0),
+                                                      child: Column(
+                                                        children: [
+                                                          const Align(
+                                                            alignment: Alignment
+                                                                .topRight,
+                                                            child: Text(
+                                                              'Add to your shopping cart',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 14,
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          width:
-                                                              MediaQuery.sizeOf(
-                                                                      context)
-                                                                  .width,
-                                                          child: const Divider(
-                                                              color:
-                                                                  Colors.grey,
-                                                              thickness: 1.0),
-                                                        ),
-                                                        // add to cart button(s)
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .topRight,
-                                                          child: Wrap(
-                                                            crossAxisAlignment:
-                                                                WrapCrossAlignment
-                                                                    .center,
-                                                            children: [
-                                                              service.quantity !=
-                                                                      -1
-                                                                  ? Card(
-                                                                      color: Colors
-                                                                          .blue,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10),
-                                                                      ),
-                                                                      child:
-                                                                          SizedBox(
-                                                                        height:
-                                                                            35,
-                                                                        width:
-                                                                            120,
+                                                          SizedBox(
+                                                            width: MediaQuery
+                                                                    .sizeOf(
+                                                                        context)
+                                                                .width,
+                                                            child: const Divider(
+                                                                color:
+                                                                    Colors.grey,
+                                                                thickness: 1.0),
+                                                          ),
+                                                          // add to cart button(s)
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .topRight,
+                                                            child: Wrap(
+                                                              crossAxisAlignment:
+                                                                  WrapCrossAlignment
+                                                                      .center,
+                                                              children: [
+                                                                service.quantity !=
+                                                                        -1
+                                                                    ? Card(
+                                                                        color: Colors
+                                                                            .blue,
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                        ),
                                                                         child:
-                                                                            AnimatedSwitcher(
-                                                                          duration:
-                                                                              const Duration(milliseconds: 500),
+                                                                            SizedBox(
+                                                                          height:
+                                                                              35,
+                                                                          width:
+                                                                              120,
                                                                           child:
-                                                                              Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              IconButton(
-                                                                                  icon: const Icon(Icons.remove),
-                                                                                  onPressed: () {
-                                                                                    setState(() {
-                                                                                      if (quantity > 0) {
-                                                                                        quantity--;
-                                                                                      }
-                                                                                    });
-                                                                                    decreaseQuantity(
-                                                                                      context,
-                                                                                      shoppingCart,
-                                                                                      shoppingCartItem,
-                                                                                      service,
-                                                                                    );
-                                                                                  }),
-                                                                              shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(quantity.toString()),
-                                                                              IconButton(
-                                                                                  icon: const Icon(Icons.add),
-                                                                                  onPressed: () {
-                                                                                    setState(() {
-                                                                                      quantity++;
-                                                                                    });
-                                                                                    increaseQuantity(
-                                                                                      context,
-                                                                                      shoppingCart,
-                                                                                      shoppingCartItem,
-                                                                                      service,
-                                                                                    );
-                                                                                  }),
-                                                                            ],
+                                                                              AnimatedSwitcher(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                IconButton(
+                                                                                    icon: const Icon(Icons.remove),
+                                                                                    onPressed: () {
+                                                                                      setState(() {
+                                                                                        if (quantity > 0) {
+                                                                                          quantity--;
+                                                                                        }
+                                                                                      });
+                                                                                      decreaseQuantity(
+                                                                                        context,
+                                                                                        shoppingCart,
+                                                                                        shoppingCartItem,
+                                                                                        service,
+                                                                                      );
+                                                                                    }),
+                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(quantity.toString()),
+                                                                                IconButton(
+                                                                                    icon: const Icon(Icons.add),
+                                                                                    onPressed: () {
+                                                                                      setState(() {
+                                                                                        quantity++;
+                                                                                      });
+                                                                                      increaseQuantity(
+                                                                                        context,
+                                                                                        shoppingCart,
+                                                                                        shoppingCartItem,
+                                                                                        service,
+                                                                                      );
+                                                                                    }),
+                                                                              ],
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    )
-                                                                  : const SizedBox(),
-                                                              shoppingCart.services
-                                                                          .contains(
-                                                                              service.serviceId) ==
-                                                                      false
-                                                                  ? Container(
-                                                                      margin: const EdgeInsets
-                                                                          .only(
-                                                                        left: 3,
-                                                                      ),
-                                                                      child:
-                                                                          OutlinedButton(
-                                                                        onPressed:
-                                                                            () =>
-                                                                                addToCart(
-                                                                          context,
-                                                                          shoppingCart,
-                                                                          '',
-                                                                          '',
-                                                                          quantity,
-                                                                          service,
+                                                                      )
+                                                                    : const SizedBox(),
+                                                                shoppingCart.services
+                                                                            .contains(service.serviceId) ==
+                                                                        false
+                                                                    ? Container(
+                                                                        margin:
+                                                                            const EdgeInsets.only(
+                                                                          left:
+                                                                              3,
                                                                         ),
-                                                                        style: ElevatedButton.styleFrom(
-                                                                            backgroundColor: Pallete.darkGreenColor,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                            ),
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                        child: const Text(
-                                                                            'Add to Cart'),
-                                                                      ),
-                                                                    )
-                                                                  : Container(
-                                                                      margin: const EdgeInsets
-                                                                          .only(
-                                                                        left: 3,
-                                                                      ),
-                                                                      child:
-                                                                          OutlinedButton(
-                                                                        onPressed:
-                                                                            () =>
-                                                                                removeFromCart(
-                                                                          context,
-                                                                          shoppingCart,
-                                                                          shoppingCartItem,
-                                                                          service,
+                                                                        child:
+                                                                            OutlinedButton(
+                                                                          onPressed: () =>
+                                                                              addToCart(
+                                                                            context,
+                                                                            shoppingCart,
+                                                                            '',
+                                                                            '',
+                                                                            quantity,
+                                                                            service,
+                                                                          ),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                              backgroundColor: Pallete.darkGreenColor,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                          child:
+                                                                              const Text('Add to Cart'),
                                                                         ),
-                                                                        style: ElevatedButton.styleFrom(
-                                                                            backgroundColor: Pallete.redPinkColor,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                            ),
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                        child: const Text(
-                                                                            'Remove from Cart'),
+                                                                      )
+                                                                    : Container(
+                                                                        margin:
+                                                                            const EdgeInsets.only(
+                                                                          left:
+                                                                              3,
+                                                                        ),
+                                                                        child:
+                                                                            OutlinedButton(
+                                                                          onPressed: () =>
+                                                                              removeFromCart(
+                                                                            context,
+                                                                            shoppingCart,
+                                                                            shoppingCartItem,
+                                                                            service,
+                                                                          ),
+                                                                          style: ElevatedButton.styleFrom(
+                                                                              backgroundColor: Pallete.redPinkColor,
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
+                                                                          child:
+                                                                              const Text('Remove from Cart'),
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
                                                     )
                                                   : const SizedBox(),
                                               service.canBeOrdered == true &&

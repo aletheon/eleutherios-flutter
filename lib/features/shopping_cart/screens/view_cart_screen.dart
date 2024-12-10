@@ -243,6 +243,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
               userShoppingCartItemDisplays.add(scid);
             }
           }
+
           // set the end marker for user shopping cart items
           if (userShoppingCartItemDisplays.isNotEmpty) {
             ShoppingCartItemDisplay uscid = userShoppingCartItemDisplays.last;
@@ -284,7 +285,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
       body: Stack(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 12.0),
+            padding: const EdgeInsets.only(right: 16, left: 16),
             child: user.shoppingCartItemIds.isNotEmpty
                 ? Column(
                     children: [
@@ -501,28 +502,33 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                               else if (s.type ==
                                                   ShoppingCartItemType
                                                       .enduser.value) {
-                                                return Column(children: [
-                                                  const Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: Text(
-                                                      'Your shopping cart',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 14,
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 16.0),
+                                                  child: Column(children: [
+                                                    const Align(
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      child: Text(
+                                                        'Your shopping cart',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 14,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: MediaQuery.sizeOf(
-                                                            context)
-                                                        .width,
-                                                    child: const Divider(
-                                                        color: Colors.grey,
-                                                        thickness: 1.0),
-                                                  ),
-                                                ]);
+                                                    SizedBox(
+                                                      width: MediaQuery.sizeOf(
+                                                              context)
+                                                          .width,
+                                                      child: const Divider(
+                                                          color: Colors.grey,
+                                                          thickness: 1.0),
+                                                    ),
+                                                  ]),
+                                                );
                                               }
 // **********************************************************************************************************************************
 // **********************************************************************************************************************************
@@ -791,6 +797,7 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                   )
                 : Container(
                     alignment: Alignment.topCenter,
+                    padding: const EdgeInsets.only(top: 10),
                     child: const Text(
                       "No items in cart",
                       style: TextStyle(fontSize: 14),
