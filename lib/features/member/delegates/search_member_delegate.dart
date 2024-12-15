@@ -23,7 +23,6 @@ class SearchMemberDelegate extends SearchDelegate {
 
   List<String> searchValues = ['Private', 'Public'];
   List<String> searchTags = [];
-  bool firstTimeThrough = true;
 
   void addMemberService(BuildContext context, WidgetRef ref, String serviceId) {
     ref

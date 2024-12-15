@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
@@ -724,6 +723,9 @@ class _ViewCartScreenState extends ConsumerState<ViewCartScreen> {
                                                                     ),
                                                                   ),
                                                                 ),
+
+                                                                // HERE ROB UPDATE CHECKOUT BUTTON TO INCLUDE DONNA BEING ABLE TO CHECKOUT FROM HER END
+
                                                                 s.userEndMarker ==
                                                                         true
                                                                     ?

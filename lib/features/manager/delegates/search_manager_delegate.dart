@@ -23,7 +23,6 @@ class SearchManagerDelegate extends SearchDelegate {
 
   List<String> searchValues = ['Private', 'Public'];
   List<String> searchTags = [];
-  bool firstTimeThrough = true;
 
   void showServiceDetails(BuildContext context, String serviceId) {
     Routemaster.of(context).push('/service/$serviceId');

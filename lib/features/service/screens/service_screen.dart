@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/favorite/controller/favorite_controller.dart';
 import 'package:reddit_tutorial/features/forum/controller/forum_controller.dart';
+import 'package:reddit_tutorial/features/member/controller/member_controller.dart';
 import 'package:reddit_tutorial/features/service/controller/service_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart/controller/shopping_cart_controller.dart';
 import 'package:reddit_tutorial/features/shopping_cart_forum/controller/shopping_cart_forum_controller.dart';
@@ -34,6 +35,7 @@ class ServiceScreen extends ConsumerStatefulWidget {
 
 class _ServiceScreenState extends ConsumerState<ServiceScreen> {
   final GlobalKey _scaffold = GlobalKey();
+  bool firstTimeThrough = true;
   int quantity = 0;
   List<ShoppingCartServiceQuantity> shoppingCartServiceQuantities = [];
 
@@ -211,7 +213,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
               for (ShoppingCartForum shoppingCartForum in shoppingCartForums) {
                 ShoppingCartItem? shoppingCartItem = await ref
                     .read(shoppingCartItemControllerProvider.notifier)
-                    .getShoppingCartItemByServiceId(
+                    .getShoppingCartItemByForumServiceId(
                       cartUser.shoppingCartId,
                       shoppingCartForum.forumId,
                       widget.serviceId,
@@ -375,7 +377,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                               // get shopping cart item
                                                                               return ref
                                                                                   .watch(
-                                                                                    getShoppingCartItemByServiceIdProvider(
+                                                                                    getShoppingCartItemByForumServiceIdProvider(
                                                                                       Tuple3(
                                                                                         shoppingCart.shoppingCartId,
                                                                                         forum.forumId,
@@ -422,66 +424,6 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                                                                               ),
                                                                                             ],
                                                                                           ),
-                                                                                          // Padding(
-                                                                                          //   padding: const EdgeInsets.only(bottom: 8.0),
-                                                                                          //   child: Row(
-                                                                                          //     mainAxisAlignment: MainAxisAlignment.end,
-                                                                                          //     children: [
-                                                                                          //       forum.image == Constants.avatarDefault
-                                                                                          //           ? CircleAvatar(
-                                                                                          //               backgroundImage: Image.asset(forum.image).image,
-                                                                                          //               radius: 14,
-                                                                                          //             )
-                                                                                          //           : CircleAvatar(
-                                                                                          //               backgroundImage: Image.network(
-                                                                                          //                 forum.image,
-                                                                                          //                 loadingBuilder: (context, child, loadingProgress) {
-                                                                                          //                   return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
-                                                                                          //                 },
-                                                                                          //               ).image,
-                                                                                          //               radius: 14,
-                                                                                          //             ),
-                                                                                          //       const SizedBox(
-                                                                                          //         width: 5,
-                                                                                          //       ),
-                                                                                          //       Text(
-                                                                                          //         forum.title,
-                                                                                          //         style: const TextStyle(
-                                                                                          //           fontWeight: FontWeight.bold,
-                                                                                          //           fontSize: 14,
-                                                                                          //         ),
-                                                                                          //       ),
-                                                                                          //       // const SizedBox(
-                                                                                          //       //   width: 8,
-                                                                                          //       // ),
-                                                                                          //       // selectedService.image == Constants.avatarDefault
-                                                                                          //       //     ? CircleAvatar(
-                                                                                          //       //         backgroundImage: Image.asset(selectedService.image).image,
-                                                                                          //       //         radius: 14,
-                                                                                          //       //       )
-                                                                                          //       //     : CircleAvatar(
-                                                                                          //       //         backgroundImage: Image.network(
-                                                                                          //       //           selectedService.image,
-                                                                                          //       //           loadingBuilder: (context, child, loadingProgress) {
-                                                                                          //       //             return loadingProgress?.cumulativeBytesLoaded == loadingProgress?.expectedTotalBytes ? child : const CircularProgressIndicator();
-                                                                                          //       //           },
-                                                                                          //       //         ).image,
-                                                                                          //       //         radius: 14,
-                                                                                          //       //       ),
-                                                                                          //       // const SizedBox(
-                                                                                          //       //   width: 5,
-                                                                                          //       // ),
-                                                                                          //       // Text(
-                                                                                          //       //   selectedService.title,
-                                                                                          //       //   style: const TextStyle(
-                                                                                          //       //     fontWeight: FontWeight.bold,
-                                                                                          //       //     fontSize: 14,
-                                                                                          //       //   ),
-                                                                                          //       // )
-                                                                                          //     ],
-                                                                                          //   ),
-                                                                                          // ),
-                                                                                          // add to cart button(s)
                                                                                           Align(
                                                                                             alignment: Alignment.topRight,
                                                                                             child: Wrap(
@@ -663,6 +605,449 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
     );
   }
 
+  Widget showOutput(
+    UserModel currentUser,
+    ShoppingCart? shoppingCart,
+    ShoppingCartItem? shoppingCartItem,
+    Service service,
+  ) {
+    if (shoppingCart != null) {
+      if (shoppingCartItem != null) {
+        if (shoppingCartItem.forumId.isNotEmpty) {
+          // Add to <forum owners> shopping cart
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0, bottom: 3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Add to ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    currentUser.profilePic == Constants.avatarDefault
+                        ? CircleAvatar(
+                            backgroundImage:
+                                Image.asset(currentUser.profilePic).image,
+                            radius: 16,
+                          )
+                        : CircleAvatar(
+                            backgroundImage: Image.network(
+                              currentUser.profilePic,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                return loadingProgress?.cumulativeBytesLoaded ==
+                                        loadingProgress?.expectedTotalBytes
+                                    ? child
+                                    : const CircularProgressIndicator();
+                              },
+                            ).image,
+                            radius: 16,
+                          ),
+                    Text(
+                      " ${currentUser.fullName}'s shopping cart",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width,
+                child: const Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Divider(
+                    color: Colors.grey,
+                    thickness: 1.0,
+                  ),
+                ),
+              ),
+              // ***************************************************
+              // show forum info
+              // ***************************************************
+              // get the forum
+              ref
+                  .watch(
+                    getForumByIdProvider(shoppingCartItem.forumId),
+                  )
+                  .when(
+                    data: (forum) {
+                      if (forum != null) {
+                        return Column(
+                          children: [
+                            // forum and service title
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    forum.image == Constants.avatarDefault
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                Image.asset(forum.image).image,
+                                            radius: 14,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage: Image.network(
+                                              forum.image,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                return loadingProgress
+                                                            ?.cumulativeBytesLoaded ==
+                                                        loadingProgress
+                                                            ?.expectedTotalBytes
+                                                    ? child
+                                                    : const CircularProgressIndicator();
+                                              },
+                                            ).image,
+                                            radius: 14,
+                                          ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                      child: Text(
+                                        forum.title,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      onTap: () => navigateToForum(
+                                          context, forum.forumId),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  service.quantity != -1
+                                      ? Card(
+                                          color: Colors.blue,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: SizedBox(
+                                            height: 35,
+                                            width: 120,
+                                            child: AnimatedSwitcher(
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                              child: Text(
+                                                  (shoppingCartItem.quantity)
+                                                      .toString()),
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                      left: 3,
+                                    ),
+                                    child: OutlinedButton(
+                                      onPressed: () => removeFromCart(
+                                        context,
+                                        shoppingCart,
+                                        shoppingCartItem,
+                                        service,
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Pallete.redPinkColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25)),
+                                      child: const Text('Remove from Cart'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                    error: (error, stackTrace) =>
+                        ErrorText(error: error.toString()),
+                    loading: () => const Loader(),
+                  ),
+            ],
+          );
+        } else {
+          // Add to your shopping cart
+          return Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Column(
+              children: [
+                const Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    'Add to your shopping cart',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.sizeOf(context).width,
+                  child: const Divider(color: Colors.grey, thickness: 1.0),
+                ),
+                // add to cart button(s)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      service.quantity != -1
+                          ? Card(
+                              color: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: SizedBox(
+                                height: 35,
+                                width: 120,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () {
+                                            setState(() {
+                                              if (quantity > 0) {
+                                                quantity--;
+                                              }
+                                            });
+                                            decreaseQuantity(
+                                              context,
+                                              shoppingCart,
+                                              shoppingCartItem,
+                                              service,
+                                            );
+                                          }),
+                                      Text(
+                                          shoppingCartItem.quantity.toString()),
+                                      IconButton(
+                                          icon: const Icon(Icons.add),
+                                          onPressed: () {
+                                            setState(() {
+                                              quantity++;
+                                            });
+                                            increaseQuantity(
+                                              context,
+                                              shoppingCart,
+                                              shoppingCartItem,
+                                              service,
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                      shoppingCart.services.contains(service.serviceId) == false
+                          ? Container(
+                              margin: const EdgeInsets.only(
+                                left: 3,
+                              ),
+                              child: OutlinedButton(
+                                onPressed: () => addToCart(
+                                  context,
+                                  shoppingCart,
+                                  '',
+                                  '',
+                                  quantity,
+                                  service,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Pallete.darkGreenColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25)),
+                                child: const Text('Add to Cart'),
+                              ),
+                            )
+                          : Container(
+                              margin: const EdgeInsets.only(
+                                left: 3,
+                              ),
+                              child: OutlinedButton(
+                                onPressed: () => removeFromCart(
+                                  context,
+                                  shoppingCart,
+                                  shoppingCartItem,
+                                  service,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Pallete.redPinkColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25)),
+                                child: const Text('Remove from Cart'),
+                              ),
+                            ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        }
+      } else {
+        return Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Column(
+            children: [
+              const Align(
+                alignment: Alignment.topRight,
+                child: Text(
+                  'Add to your shopping cart',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width,
+                child: const Divider(color: Colors.grey, thickness: 1.0),
+              ),
+              // add to cart button(s)
+              Align(
+                alignment: Alignment.topRight,
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    service.quantity != -1
+                        ? Card(
+                            color: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SizedBox(
+                              height: 35,
+                              width: 120,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 500),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        icon: const Icon(Icons.remove),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (quantity > 0) {
+                                              quantity--;
+                                            }
+                                          });
+                                          decreaseQuantity(
+                                            context,
+                                            shoppingCart,
+                                            shoppingCartItem,
+                                            service,
+                                          );
+                                        }),
+                                    Text(quantity.toString()),
+                                    IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: () {
+                                          setState(() {
+                                            quantity++;
+                                          });
+                                          increaseQuantity(
+                                            context,
+                                            shoppingCart,
+                                            shoppingCartItem,
+                                            service,
+                                          );
+                                        }),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    shoppingCart.services.contains(service.serviceId) == false
+                        ? Container(
+                            margin: const EdgeInsets.only(
+                              left: 3,
+                            ),
+                            child: OutlinedButton(
+                              onPressed: () => addToCart(
+                                context,
+                                shoppingCart,
+                                '',
+                                '',
+                                quantity,
+                                service,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Pallete.darkGreenColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25)),
+                              child: const Text('Add to Cart'),
+                            ),
+                          )
+                        : Container(
+                            margin: const EdgeInsets.only(
+                              left: 3,
+                            ),
+                            child: OutlinedButton(
+                              onPressed: () => removeFromCart(
+                                context,
+                                shoppingCart,
+                                shoppingCartItem,
+                                service,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Pallete.redPinkColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25)),
+                              child: const Text('Remove from Cart'),
+                            ),
+                          ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      }
+    } else {
+      return const SizedBox();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentTheme = ref.watch(themeNotifierProvider);
@@ -678,7 +1063,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                       data: (shoppingCart) {
                         return ref
                             .watch(
-                              getShoppingCartItemByServiceIdProvider(
+                              getShoppingCartItemByForumServiceIdProvider(
                                 Tuple3(
                                   shoppingCart!.shoppingCartId,
                                   '',
@@ -1075,164 +1460,11 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen> {
                                               ),
                                               service.canBeOrdered &&
                                                       service.uid != user.uid
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 10.0),
-                                                      child: Column(
-                                                        children: [
-                                                          const Align(
-                                                            alignment: Alignment
-                                                                .topRight,
-                                                            child: Text(
-                                                              'Add to your shopping cart',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: MediaQuery
-                                                                    .sizeOf(
-                                                                        context)
-                                                                .width,
-                                                            child: const Divider(
-                                                                color:
-                                                                    Colors.grey,
-                                                                thickness: 1.0),
-                                                          ),
-                                                          // add to cart button(s)
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topRight,
-                                                            child: Wrap(
-                                                              crossAxisAlignment:
-                                                                  WrapCrossAlignment
-                                                                      .center,
-                                                              children: [
-                                                                service.quantity !=
-                                                                        -1
-                                                                    ? Card(
-                                                                        color: Colors
-                                                                            .blue,
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
-                                                                        child:
-                                                                            SizedBox(
-                                                                          height:
-                                                                              35,
-                                                                          width:
-                                                                              120,
-                                                                          child:
-                                                                              AnimatedSwitcher(
-                                                                            duration:
-                                                                                const Duration(milliseconds: 500),
-                                                                            child:
-                                                                                Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              children: [
-                                                                                IconButton(
-                                                                                    icon: const Icon(Icons.remove),
-                                                                                    onPressed: () {
-                                                                                      setState(() {
-                                                                                        if (quantity > 0) {
-                                                                                          quantity--;
-                                                                                        }
-                                                                                      });
-                                                                                      decreaseQuantity(
-                                                                                        context,
-                                                                                        shoppingCart,
-                                                                                        shoppingCartItem,
-                                                                                        service,
-                                                                                      );
-                                                                                    }),
-                                                                                shoppingCartItem != null ? Text((shoppingCartItem.quantity).toString()) : Text(quantity.toString()),
-                                                                                IconButton(
-                                                                                    icon: const Icon(Icons.add),
-                                                                                    onPressed: () {
-                                                                                      setState(() {
-                                                                                        quantity++;
-                                                                                      });
-                                                                                      increaseQuantity(
-                                                                                        context,
-                                                                                        shoppingCart,
-                                                                                        shoppingCartItem,
-                                                                                        service,
-                                                                                      );
-                                                                                    }),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    : const SizedBox(),
-                                                                shoppingCart.services
-                                                                            .contains(service.serviceId) ==
-                                                                        false
-                                                                    ? Container(
-                                                                        margin:
-                                                                            const EdgeInsets.only(
-                                                                          left:
-                                                                              3,
-                                                                        ),
-                                                                        child:
-                                                                            OutlinedButton(
-                                                                          onPressed: () =>
-                                                                              addToCart(
-                                                                            context,
-                                                                            shoppingCart,
-                                                                            '',
-                                                                            '',
-                                                                            quantity,
-                                                                            service,
-                                                                          ),
-                                                                          style: ElevatedButton.styleFrom(
-                                                                              backgroundColor: Pallete.darkGreenColor,
-                                                                              shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                              ),
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                          child:
-                                                                              const Text('Add to Cart'),
-                                                                        ),
-                                                                      )
-                                                                    : Container(
-                                                                        margin:
-                                                                            const EdgeInsets.only(
-                                                                          left:
-                                                                              3,
-                                                                        ),
-                                                                        child:
-                                                                            OutlinedButton(
-                                                                          onPressed: () =>
-                                                                              removeFromCart(
-                                                                            context,
-                                                                            shoppingCart,
-                                                                            shoppingCartItem,
-                                                                            service,
-                                                                          ),
-                                                                          style: ElevatedButton.styleFrom(
-                                                                              backgroundColor: Pallete.redPinkColor,
-                                                                              shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                              ),
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 25)),
-                                                                          child:
-                                                                              const Text('Remove from Cart'),
-                                                                        ),
-                                                                      ),
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
+                                                  ? showOutput(
+                                                      user,
+                                                      shoppingCart,
+                                                      shoppingCartItem,
+                                                      service,
                                                     )
                                                   : const SizedBox(),
                                               service.canBeOrdered == true &&

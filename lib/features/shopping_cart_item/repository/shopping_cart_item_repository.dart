@@ -57,7 +57,7 @@ class ShoppingCartItemRepository {
     }
   }
 
-  Stream<ShoppingCartItem?> getShoppingCartItemByServiceId(
+  Stream<ShoppingCartItem?> getShoppingCartItemByForumServiceId(
     String shoppingCartId,
     String forumId,
     String serviceId,
@@ -85,7 +85,7 @@ class ShoppingCartItemRepository {
     } else if (shoppingCartId.isNotEmpty && serviceId.isNotEmpty) {
       return _shoppingCartItems
           .where('shoppingCartId', isEqualTo: shoppingCartId)
-          .where('forumId', isEqualTo: '')
+          // .where('forumId', isEqualTo: '')
           .where('serviceId', isEqualTo: serviceId)
           .snapshots()
           .map((event) {

@@ -26,24 +26,24 @@ final getShoppingCartItemByIdProvider =
       .getShoppingCartItemById(shoppingCartItemId);
 });
 
-final getShoppingCartItemByServiceIdProvider =
+final getShoppingCartItemByForumServiceIdProvider =
     StreamProvider.family.autoDispose((ref, Tuple3 params) {
   try {
     return ref
         .watch(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(
+        .getShoppingCartItemByForumServiceId(
             params.item1, params.item2, params.item3);
   } catch (e) {
     rethrow;
   }
 });
 
-final getShoppingCartItemByServiceIdProvider2 =
+final getShoppingCartItemByForumServiceIdProvider2 =
     Provider.family.autoDispose((ref, Tuple3 params) {
   try {
     return ref
         .watch(shoppingCartItemControllerProvider.notifier)
-        .getShoppingCartItemByServiceId(
+        .getShoppingCartItemByForumServiceId(
             params.item1, params.item2, params.item3);
   } catch (e) {
     rethrow;
@@ -766,12 +766,12 @@ class ShoppingCartItemController extends StateNotifier<bool> {
         .getShoppingCartItemById(shoppingCartItemId);
   }
 
-  Stream<ShoppingCartItem?> getShoppingCartItemByServiceId(
+  Stream<ShoppingCartItem?> getShoppingCartItemByForumServiceId(
     String shoppingCartId,
     String forumId,
     String serviceId,
   ) {
-    return _shoppingCartItemRepository.getShoppingCartItemByServiceId(
+    return _shoppingCartItemRepository.getShoppingCartItemByForumServiceId(
       shoppingCartId,
       forumId,
       serviceId,
