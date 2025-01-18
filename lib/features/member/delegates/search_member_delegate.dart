@@ -233,7 +233,7 @@ class SearchMemberDelegate extends SearchDelegate {
                       List<Service> servicesNotInForum = [];
                       for (Service service in services) {
                         bool foundService = false;
-                        for (String serviceId in forum!.services) {
+                        for (String serviceId in forum.services) {
                           if (service.serviceId == serviceId) {
                             foundService = true;
                             break;

@@ -462,7 +462,7 @@ class _CreateRuleScreenState extends ConsumerState<CreateRuleScreen> {
     final isLoading = ref.watch(policyControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
 
-    return ref.watch(getPolicyByIdProvider(widget.policyId!)).when(
+    return ref.watch(getPolicyByIdProvider(widget.policyId)).when(
           data: (policy) {
             return ref
                 .watch(getUserSelectedManagerProvider(

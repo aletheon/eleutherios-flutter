@@ -83,7 +83,7 @@ class ServiceRemoveForumScreen extends ConsumerWidget {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        forum!.title,
+                                        forum.title,
                                         textWidthBasis:
                                             TextWidthBasis.longestLine,
                                       ),

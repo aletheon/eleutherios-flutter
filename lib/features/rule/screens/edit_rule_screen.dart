@@ -321,7 +321,7 @@ class _EditRuleScreenState extends ConsumerState<EditRuleScreen> {
                           ),
                           TextFieldTags<String>(
                             textfieldTagsController: _stringTagController,
-                            initialTags: rule!.tags.isNotEmpty ? rule.tags : [],
+                            initialTags: rule.tags.isNotEmpty ? rule.tags : [],
                             textSeparators: const [' ', ','],
                             letterCase: LetterCase.small,
                             validator: (String tag) {

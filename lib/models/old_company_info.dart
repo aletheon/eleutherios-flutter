@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+
 import 'package:reddit_tutorial/models/open_hours.dart';
 
-class Company {
+class OldCompanyInfo {
   final String companyId;
   final String uid; // initial user who created the company
+  final String updateUid; // id of the user updating the company
   final String companyName;
   final String companyNameLowercase;
   final String industry; // sector or industry the company operates in
@@ -35,9 +37,10 @@ class Company {
   final DateTime yearFounded;
   final DateTime lastUpdateDate;
   final DateTime creationDate;
-  Company({
+  OldCompanyInfo({
     required this.companyId,
     required this.uid,
+    required this.updateUid,
     required this.companyName,
     required this.companyNameLowercase,
     required this.industry,
@@ -70,9 +73,10 @@ class Company {
     required this.creationDate,
   });
 
-  Company copyWith({
+  OldCompanyInfo copyWith({
     String? companyId,
     String? uid,
+    String? updateUid,
     String? companyName,
     String? companyNameLowercase,
     String? industry,
@@ -104,9 +108,10 @@ class Company {
     DateTime? lastUpdateDate,
     DateTime? creationDate,
   }) {
-    return Company(
+    return OldCompanyInfo(
       companyId: companyId ?? this.companyId,
       uid: uid ?? this.uid,
+      updateUid: updateUid ?? this.updateUid,
       companyName: companyName ?? this.companyName,
       companyNameLowercase: companyNameLowercase ?? this.companyNameLowercase,
       industry: industry ?? this.industry,
@@ -146,6 +151,7 @@ class Company {
     return <String, dynamic>{
       'companyId': companyId,
       'uid': uid,
+      'updateUid': updateUid,
       'companyName': companyName,
       'companyNameLowercase': companyNameLowercase,
       'industry': industry,
@@ -172,17 +178,18 @@ class Company {
       'website': website,
       'ownershipType': ownershipType,
       'tags': tags,
-      'hours': hours,
+      'hours': hours.map((x) => x.toMap()).toList(),
       'yearFounded': yearFounded.millisecondsSinceEpoch,
       'lastUpdateDate': lastUpdateDate.millisecondsSinceEpoch,
       'creationDate': creationDate.millisecondsSinceEpoch,
     };
   }
 
-  factory Company.fromMap(Map<String, dynamic> map) {
-    return Company(
+  factory OldCompanyInfo.fromMap(Map<String, dynamic> map) {
+    return OldCompanyInfo(
       companyId: map['companyId'] as String,
       uid: map['uid'] as String,
+      updateUid: map['updateUid'] as String,
       companyName: map['companyName'] as String,
       companyNameLowercase: map['companyNameLowercase'] as String,
       industry: map['industry'] as String,
@@ -221,15 +228,16 @@ class Company {
 
   @override
   String toString() {
-    return 'Company(companyId: $companyId, uid: $uid, companyName: $companyName, companyNameLowercase: $companyNameLowercase, industry: $industry, description: $description, houseOrBuildingNumber: $houseOrBuildingNumber, streetName: $streetName, city: $city, stateProvinceOrRegion: $stateProvinceOrRegion, postOrZipcode: $postOrZipcode, country: $country, latitude: $latitude, longitude: $longitude, landmark: $landmark, contactName: $contactName, contactPhone: $contactPhone, contactEmail: $contactEmail, addressVerification: $addressVerification, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, website: $website, ownershipType: $ownershipType, tags: $tags, hours: $hours, yearFounded: $yearFounded, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
+    return 'OldCompanyInfo(companyId: $companyId, uid: $uid, updateUid: $updateUid, companyName: $companyName, companyNameLowercase: $companyNameLowercase, industry: $industry, description: $description, houseOrBuildingNumber: $houseOrBuildingNumber, streetName: $streetName, city: $city, stateProvinceOrRegion: $stateProvinceOrRegion, postOrZipcode: $postOrZipcode, country: $country, latitude: $latitude, longitude: $longitude, landmark: $landmark, contactName: $contactName, contactPhone: $contactPhone, contactEmail: $contactEmail, addressVerification: $addressVerification, image: $image, imageFileType: $imageFileType, imageFileName: $imageFileName, banner: $banner, bannerFileType: $bannerFileType, bannerFileName: $bannerFileName, website: $website, ownershipType: $ownershipType, tags: $tags, hours: $hours, yearFounded: $yearFounded, lastUpdateDate: $lastUpdateDate, creationDate: $creationDate)';
   }
 
   @override
-  bool operator ==(covariant Company other) {
+  bool operator ==(covariant OldCompanyInfo other) {
     if (identical(this, other)) return true;
 
     return other.companyId == companyId &&
         other.uid == uid &&
+        other.updateUid == updateUid &&
         other.companyName == companyName &&
         other.companyNameLowercase == companyNameLowercase &&
         other.industry == industry &&
@@ -266,6 +274,7 @@ class Company {
   int get hashCode {
     return companyId.hashCode ^
         uid.hashCode ^
+        updateUid.hashCode ^
         companyName.hashCode ^
         companyNameLowercase.hashCode ^
         industry.hashCode ^

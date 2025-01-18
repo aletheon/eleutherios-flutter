@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 // Abstract representation of energy or a person, place or thing.
 class Service {
   final String serviceId;
-  final String uid; // owner or superuser of this service
+  final String uid;
   final String title;
   final String titleLowercase;
   final String description;

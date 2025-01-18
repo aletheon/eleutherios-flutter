@@ -1,3 +1,34 @@
+enum DaysOfWeekType<String> {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+}
+
+extension DaysOfWeekTypeValue on DaysOfWeekType {
+  String get value {
+    switch (this) {
+      case DaysOfWeekType.monday:
+        return 'Monday';
+      case DaysOfWeekType.tuesday:
+        return 'Tuesday';
+      case DaysOfWeekType.wednesday:
+        return 'Wednesday';
+      case DaysOfWeekType.thursday:
+        return 'Thursday';
+      case DaysOfWeekType.friday:
+        return 'Friday';
+      case DaysOfWeekType.saturday:
+        return 'Saturday';
+      case DaysOfWeekType.sunday:
+        return 'Sunday';
+    }
+  }
+}
+
 enum ShoppingCartItemType<String> {
   enduser,
   user,
