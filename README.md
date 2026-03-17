@@ -1,3 +1,13 @@
+## ⚠ Intellectual Property Notice
+
+This repository contains material related to a patent-pending governance system
+developed by Eleutherios Ltd. No licence is granted for reproduction,
+modification, or commercial use.
+
+© 2026 Eleutherios Ltd. All Rights Reserved.
+
+---
+
 # Eleutherios
 
 Eleutherios is a smart phone application that enables SMEs or stakeholders within any industry (e.g. healthcare, construction and machinery, food, education, housing, energy etc) to cooperate with one another through the same policy, forum or service layer.
